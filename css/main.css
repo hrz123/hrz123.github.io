@@ -1300,7 +1300,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #2fe369;
+  background: #ff06e4;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1779,6 +1779,11 @@ pre .javascript .function {
 }
 .use-motion .collection-header {
   opacity: 0;
+}
+.article {
+  margin: block-margin 0;
+  font-family: "微软雅黑";
+  lettter-spacing: 2px;
 }
 .posts-collapse {
   margin-left: 55px;
