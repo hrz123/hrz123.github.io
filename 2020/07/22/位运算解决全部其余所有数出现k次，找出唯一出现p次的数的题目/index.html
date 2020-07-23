@@ -33,7 +33,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hrz123.github.io/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/%E4%BD%8D%E8%BF%90%E7%AE%971.png">
 <meta property="article:published_time" content="2020-07-22T15:56:03.000Z">
-<meta property="article:modified_time" content="2020-07-23T14:23:23.432Z">
+<meta property="article:modified_time" content="2020-07-23T14:30:28.279Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="技术博客">
 <meta name="twitter:card" content="summary">
@@ -220,7 +220,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-07-23 22:23:23" itemprop="dateModified" datetime="2020-07-23T22:23:23+08:00">2020-07-23</time>
+                <time title="修改时间：2020-07-23 22:30:28" itemprop="dateModified" datetime="2020-07-23T22:30:28+08:00">2020-07-23</time>
               </span>
 
           
@@ -255,17 +255,17 @@
 <p>k = 5: k1 = 1, k2 = 1, k3 = 1, mask = ~(x1 &amp; ~x2 &amp; x3);</p>
 <p>综上所述，我们的算法将是这样的（nums是输入数组）：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : nums) &#123;</span><br><span class="line">    xm ^= (xm<span class="number">-1</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    xm<span class="number">-1</span> ^= (xm<span class="number">-2</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    .....</span><br><span class="line">    x1 ^= i;</span><br><span class="line">    </span><br><span class="line">    mask = ~(y1 &amp; y2 &amp; ... &amp; ym) where yj = xj <span class="keyword">if</span> kj = <span class="number">1</span>, <span class="keyword">and</span> yj = ~xj <span class="keyword">if</span> kj = <span class="number">0</span> (j = <span class="number">1</span> to m).</span><br><span class="line"></span><br><span class="line">    xm &amp;= mask;</span><br><span class="line">    ......</span><br><span class="line">    x1 &amp;= mask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="位数的一般情况">3. 32位数的一般情况</h3>
+<h2 id="位数的一般情况">3. 32位数的一般情况</h2>
 <p>现在是时候把我们的结果从1位数的情况推广到32位整数了。一个直接的方法是为整数中的每个位创建32个计数器。但是，如果我们利用位操作的优势，我们也许可以”集体“管理所有的32个计数器，其中m是满足m&gt;=logk的最小整数。原因是位操作只适用于每个位，所以对不同位的操作是相互独立的（有点明显，对吧？）。这使得我们可以将32个计数器的对应位归为一个32位整数。下面是一个示意图，展示了如何做到这一点。</p>
 <img data-src="/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/%E4%BD%8D%E8%BF%90%E7%AE%971.png" class>
 <p>最上面的一行是32位的整数，其中每一个位，我们都有一个对应的m位计数器（由向上箭头下面的那一列所示）。由于对32位中每一个位的操作都是相互独立的，所以我们可以将比如说所有计数器的第m位，归为一个32位数（由橙色框所示）。这个32位数中的所有位（表示为xm）将遵循相同的位操作。由于每个计数器有m个位，我们最终得到m个32位数，对应于第二部分中定义的x1, ... , xm，但现在它们是32位数而不是1位数。因此，在上面开发的算法中，我们只需要将x1到xm视为32位整数而不是1位数。其他一切都将是相同的，我们就完成了。很简单，嗯？</p>
-<h3 id="返回什么">4. 返回什么</h3>
+<h2 id="返回什么">4. 返回什么</h2>
 <p>最后就是我们应该返回什么值，或者等价于x1到xm中哪一个会等于单元。为了得到正确的答案，我们需要了解m个32位整数x1到xm代表什么。以x1为例，x1有32位，我们把它们标注为r（r=1到32)。当我们扫描完输入数组后，x1的r-th位的值将由数组中所有元素的r-th为决定（更具体的说，假设数组中所有元素的r-th位1的总计数为q，那么最终r-th位就是q'=q%k，其二进制形式为：q'm, ... , q'1，那么根据定义，x1的r-th位将等于 q'1)。现在你可以问自己这个问题：如果x1的r-th位是1，这意味着什么？</p>
 <p>答案是要找到能对这个1做出贡献的东西，一个出现了k次的元素会有贡献吗？不会，为什么？因为一个元素要做出贡献，至少要同时满足两个条件：这个元素的r-th位是1，这个1的出现次数不是k的整数倍，第一个条件是微不足道的。第二个条件来自于每当1的命中次数为k时，计数器就会回零，也就是x1中的对应位会被重置为0，对于一个出现了k次的元素，不可能同时满足这两个条件（违反第二条），所以它不会有贡献。所以，只有出现p（p%k!=0）次的单个元素才会做出贡献。如果p&gt;k，那么前k*[p/k] ([p/k]表示p/k的整数部分)的元素也不会做出贡献。所以我们总是可以设置p' = p % k，并说这个单元素有效地出现了p'次。</p>
 <p>我们把p‘写成二进制形式：p'm, ... , p'1(注意p' &lt; k, 所以它将适合m位)。这里提出一个声明，xj等于这个单个元素的条件是p'j = 1(j =1 到 m)，下面给出一个快速证明：</p>
 <p>如果xj的r-th位是1，我们可以放心的说这个单一元素的r-th位也是1（否则没有任何东西可以使xj的r-th位是1）。我们还要证明，如果xj的r-th位是0，那么单元素的r-th位只能是0，我们就假设在这种情况下，单元素的r-th位是1，我们看看会发生什么。在扫描结束时，这个1将被计算p'次。根据定义，xj的r-th位将等于p'j，也就是1，这与xj的r-th位为0的假设相矛盾，因此我们得出结论，只要p'j=1，xj的r-th位将始终与单一元素的r-th位相同。由于这对xj中的所有位都是真的（即对若r=1到32来说是真的），所以我们得出结论，只要p'j=1，xj将等于这个单一元素的值。</p>
 <p>所以现在我们应该返回什么就很清楚了。只要用其二进制形式表达p'=p%k，只要p'j = 1，就可以返回对应的xj中的任何一个。总的来说，该算法将在O(n*logk)时间和O(logk)的空间内运行。</p>
-<h3 id="快速例子几个">快速例子几个</h3>
+<h2 id="快速例子几个">快速例子几个</h2>
 <p>Here is a list of few quick examples to show how the algorithm works (you can easily come up with other examples):</p>
 <ol type="1">
 <li><code>k = 2, p = 1</code> <code>k</code> is <code>2</code>, then <code>m = 1</code>, we need only one 32-bit integer (<code>x1</code>) as the counter. And <code>2^m = k</code> so we do not even need a mask! A complete java program will look like:</li>
@@ -366,7 +366,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述"><span class="nav-number">1.</span> <span class="nav-text">1. 问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从只有1bit的特殊情况开始"><span class="nav-number">2.</span> <span class="nav-text">2. 从只有1bit的特殊情况开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#位数的一般情况"><span class="nav-number">2.1.</span> <span class="nav-text">3. 32位数的一般情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回什么"><span class="nav-number">2.2.</span> <span class="nav-text">4. 返回什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速例子几个"><span class="nav-number">2.3.</span> <span class="nav-text">快速例子几个</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题描述"><span class="nav-number">1.</span> <span class="nav-text">1. 问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从只有1bit的特殊情况开始"><span class="nav-number">2.</span> <span class="nav-text">2. 从只有1bit的特殊情况开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#位数的一般情况"><span class="nav-number">3.</span> <span class="nav-text">3. 32位数的一般情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#返回什么"><span class="nav-number">4.</span> <span class="nav-text">4. 返回什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速例子几个"><span class="nav-number">5.</span> <span class="nav-text">快速例子几个</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
