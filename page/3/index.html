@@ -24,33 +24,31 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next &#x3D; head 将pre指向开头 循环开始，只要head不为nil 令tail &#x3D; pre tail往下走k步，只要tail为nil，立即返回dummy.next nxt记录下tail.next，head即将走向的下一个结点 反转head到tail中的节点，返回新的head和tail def reverse(">
-<meta property="og:type" content="article">
-<meta property="og:title" content="K个一组翻转链表">
-<meta property="og:url" content="https://hrz123.github.io/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/index.html">
+  <meta name="description" content="记录我的工作与生活，分享一些想法">
+<meta property="og:type" content="website">
+<meta property="og:title" content="侯瑞哲的博客">
+<meta property="og:url" content="https://hrz123.github.io/page/3/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next &#x3D; head 将pre指向开头 循环开始，只要head不为nil 令tail &#x3D; pre tail往下走k步，只要tail为nil，立即返回dummy.next nxt记录下tail.next，head即将走向的下一个结点 反转head到tail中的节点，返回新的head和tail def reverse(">
+<meta property="og:description" content="记录我的工作与生活，分享一些想法">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-07-20T15:07:50.000Z">
-<meta property="article:modified_time" content="2020-07-20T15:18:34.241Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="技术博客">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://hrz123.github.io/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/">
+<link rel="canonical" href="https://hrz123.github.io/page/3/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : false,
-    isPost : true,
+    isHome : true,
+    isPost : false,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>K个一组翻转链表 | 侯瑞哲的博客</title>
+  <title>侯瑞哲的博客 - Ruizhe's Blog</title>
   
 
 
@@ -181,14 +179,13 @@
         <div class="content-wrap">
           
 
-          <div class="content post posts-expand">
+          <div class="content index posts-expand">
             
-
-    
+      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -200,9 +197,10 @@
       <meta itemprop="name" content="侯瑞哲的博客">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          K个一组翻转链表
-        </h1>
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/" class="post-title-link" itemprop="url">《相信未来》——食指</a>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -210,9 +208,103 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-07-20 23:07:50 / 修改时间：23:18:34" itemprop="dateCreated datePublished" datetime="2020-07-20T23:07:50+08:00">2020-07-20</time>
+              <time title="创建时间：2019-12-05 21:32:42" itemprop="dateCreated datePublished" datetime="2019-12-05T21:32:42+08:00">2019-12-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-30 13:56:37" itemprop="dateModified" datetime="2020-01-30T13:56:37+08:00">2020-01-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>当蜘蛛网无情地查封了我的炉台</p>
+<p>当灰烬的余烟叹息着贫困的悲哀</p>
+<p>我依然固执地铺平失望的灰烬</p>
+<p>用美丽的雪花写下：相信未来</p>
+<p>当我的紫葡萄化为深秋的露水</p>
+<p>当我的鲜花依偎在别人的情怀</p>
+<p>我依然固执地用凝霜的枯藤</p>
+<p>在凄凉的大地上写下：相信未来</p>
+<p>我要用手指那涌向天边的排浪</p>
+<p>我要用手掌那托住太阳的大海</p>
+<p>摇曳着曙光那枝温暖漂亮的笔杆</p>
+<p>用孩子的笔体写下：相信未来</p>
+<p>我之所以坚定地相信未来</p>
+<p>是我相信未来人们的眼睛</p>
+<p>她有拨开历史风尘的睫毛</p>
+<p>她有看透岁月篇章的瞳孔</p>
+<p>不管人们对于我们腐烂的皮肉</p>
+<p>那些迷途的惆怅、失败的苦痛</p>
+<p>是寄予感动的热泪、深切的同情</p>
+<p>还是给以轻蔑的微笑、辛辣的嘲讽</p>
+<p>我坚信人们对于我们的脊骨</p>
+<p>那无数次的探索、迷途、失败和成功</p>
+<p>一定会给予热情、客观、公正的评定</p>
+<p>是的，我焦急地等待着他们的评定</p>
+<p>朋友，坚定地相信未来吧</p>
+<p>相信不屈不挠的努力</p>
+<p>相信战胜死亡的年轻</p>
+<p>相信未来、热爱生命</p>
+<p><br></p>
+<p>食指</p>
+<p>1968年 北京</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2019/12/05/hello-world/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/05/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-05 00:36:46" itemprop="dateCreated datePublished" datetime="2019-12-05T00:36:46+08:00">2019-12-05</time>
             </span>
 
           
@@ -226,69 +318,45 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
-<p>将pre指向开头</p>
-<p>循环开始，只要head不为nil</p>
-<p>令tail = pre</p>
-<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
-<p>nxt记录下tail.next，head即将走向的下一个结点</p>
-<p>反转head到tail中的节点，返回新的head和tail</p>
-<p>def reverse(head, tail):</p>
-<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
-<p>​ while prev != tail:</p>
-<p>​ nxt = cur.next</p>
-<p>​ cur.next = prev</p>
-<p>​ prev = cur</p>
-<p>​ cur = nxt</p>
-<p>​ return tail, head</p>
-<p>将pre的next指向新的head</p>
-<p>pre.next = head</p>
-<p>尾部已相连</p>
-<p>更新pre指向tail</p>
-<p>head指向nxt</p>
-<p>最终head为nil时退出循环</p>
-<p>返回dummy.next</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span><span class="params">(self, head: ListNode, k: int)</span> -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span><span class="params">(self, head, tail)</span>:</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
+          <p>Welcome to <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvLw==">Hexo<i class="fa fa-external-link-alt"></i></span>! This is your very first post. Check <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mv">documentation<i class="fa fa-external-link-alt"></i></span> for more info. If you get any problems when using Hexo, you can find the answer in <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3MvdHJvdWJsZXNob290aW5nLmh0bWw=">troubleshooting<i class="fa fa-external-link-alt"></i></span> or you can ask me on <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2hleG9qcy9oZXhvL2lzc3Vlcw==">GitHub<i class="fa fa-external-link-alt"></i></span>.</p>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="create-a-new-post">Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvd3JpdGluZy5odG1s">Writing<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="run-server">Run server</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvc2VydmVyLmh0bWw=">Server<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="generate-static-files">Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3MvZ2VuZXJhdGluZy5odG1s">Generating<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvb25lLWNvbW1hbmQtZGVwbG95bWVudC5odG1s">Deployment<i class="fa fa-external-link-alt"></i></span></p>
 
+      
     </div>
 
     
     
     
-
       <footer class="post-footer">
-
-        
-  <div class="post-widgets">
-    <div class="wp_rating">
-      <div id="wpac-rating"></div>
-    </div>
-  </div>
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/" rel="prev" title="python实现Trie(字典树、前缀树)">
-      <i class="fa fa-chevron-left"></i> python实现Trie(字典树、前缀树)
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/" rel="next" title="使用函数randa()来实现函数randb()">
-      使用函数randa()来实现函数randb() <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
+        <div class="post-eof"></div>
       </footer>
-    
   </article>
   
   
   
 
 
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
+
 
           </div>
           
-    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -597,30 +665,11 @@ if (document.querySelectorAll('pre.mermaid').length) {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/page/3/',]
       });
       });
   </script>
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : '7084ec045fa25d8924a3',
-      clientSecret: 'e0d215a401dbef576eb67fb1b35215ff4c502f79',
-      repo        : 'comments',
-      owner       : 'hrz123',
-      admin       : ['hrz123'],
-      id          : '2fea97e90661c9c1b110f36eddb9752d',
-        language: 'zh-CN',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
 
     </div>
 </body>
