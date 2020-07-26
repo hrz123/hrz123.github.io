@@ -24,20 +24,22 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="纪念老科 Tomorrow is not grante. Inspire yourself.">
+  <meta name="description" content="参考：https:&#x2F;&#x2F;blog.csdn.net&#x2F;longzw0&#x2F;article&#x2F;details&#x2F;66970832 代码的未来–松本行弘 https:&#x2F;&#x2F;medium.com&#x2F;@NTulswani&#x2F;understanding-and-implementing-a-garbage-collector-a19afb1bc418， 标记清除js代码简单实现 将内存管理，尤其是内存空间的释放实现自动化，这">
 <meta property="og:type" content="article">
-<meta property="og:title" content="科比--曼巴精神永不逝去">
-<meta property="og:url" content="https://hrz123.github.io/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/index.html">
+<meta property="og:title" content="GC的三种基本实现方式和优缺点">
+<meta property="og:url" content="https://hrz123.github.io/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="纪念老科 Tomorrow is not grante. Inspire yourself.">
+<meta property="og:description" content="参考：https:&#x2F;&#x2F;blog.csdn.net&#x2F;longzw0&#x2F;article&#x2F;details&#x2F;66970832 代码的未来–松本行弘 https:&#x2F;&#x2F;medium.com&#x2F;@NTulswani&#x2F;understanding-and-implementing-a-garbage-collector-a19afb1bc418， 标记清除js代码简单实现 将内存管理，尤其是内存空间的释放实现自动化，这">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-01-30T05:34:06.000Z">
-<meta property="article:modified_time" content="2020-07-17T13:23:24.303Z">
+<meta property="og:image" content="https://hrz123.github.io/Users/apple/Downloads/GC2.png">
+<meta property="article:published_time" content="2020-07-26T09:45:34.000Z">
+<meta property="article:modified_time" content="2020-07-26T09:50:47.690Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="技术博客">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hrz123.github.io/Users/apple/Downloads/GC2.png">
 
-<link rel="canonical" href="https://hrz123.github.io/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/">
+<link rel="canonical" href="https://hrz123.github.io/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/">
 
 
 <script id="page-configurations">
@@ -50,7 +52,7 @@
   };
 </script>
 
-  <title>科比--曼巴精神永不逝去 | 侯瑞哲的博客</title>
+  <title>GC的三种基本实现方式和优缺点 | 侯瑞哲的博客</title>
   
 
 
@@ -188,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          科比--曼巴精神永不逝去
+          GC的三种基本实现方式和优缺点
         </h1>
 
         <div class="post-meta">
@@ -210,16 +212,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-01-30 13:34:06" itemprop="dateCreated datePublished" datetime="2020-01-30T13:34:06+08:00">2020-01-30</time>
+              <time title="创建时间：2020-07-26 17:45:34 / 修改时间：17:50:47" itemprop="dateCreated datePublished" datetime="2020-07-26T17:45:34+08:00">2020-07-26</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-07-17 21:23:24" itemprop="dateModified" datetime="2020-07-17T21:23:24+08:00">2020-07-17</time>
-              </span>
 
           
 
@@ -232,8 +228,79 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>纪念老科 Tomorrow is not grante. Inspire yourself.</p>
-<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;"><iframe src="//player.bilibili.com/player.html?aid=668058137&bvid=BV1ua4y1i7ZK&cid=186683490&page=1" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;"> </iframe></div>
+        <h3 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h3><p><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xvbmd6dzAvYXJ0aWNsZS9kZXRhaWxzLzY2OTcwODMy">https://blog.csdn.net/longzw0/article/details/66970832<i class="fa fa-external-link-alt"></i></span></p>
+<p>代码的未来–松本行弘</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9tZWRpdW0uY29tL0BOVHVsc3dhbmkvdW5kZXJzdGFuZGluZy1hbmQtaW1wbGVtZW50aW5nLWEtZ2FyYmFnZS1jb2xsZWN0b3ItYTE5YWZiMWJjNDE477yM">https://medium.com/@NTulswani/understanding-and-implementing-a-garbage-collector-a19afb1bc418，<i class="fa fa-external-link-alt"></i></span> 标记清除js代码简单实现</p>
+<h3 id="将内存管理，尤其是内存空间的释放实现自动化，这就是GC（Garbage-Collection）。"><a href="#将内存管理，尤其是内存空间的释放实现自动化，这就是GC（Garbage-Collection）。" class="headerlink" title="将内存管理，尤其是内存空间的释放实现自动化，这就是GC（Garbage Collection）。"></a>将内存管理，尤其是内存空间的释放实现自动化，这就是GC（Garbage Collection）。</h3><p>GC是一个很古老的技术，从20世纪60年代就开始研究，还发表了不少论文。这项技术在大学实验室级别的地方已经应用了很长时间，但是可以说从20时间90年代Java出现之后，一般程序员才有缘解除到它，在此之前这项技术还只是少数人的专利。</p>
+<h3 id="术语定义"><a href="#术语定义" class="headerlink" title="术语定义"></a>术语定义</h3><h4 id="1-垃圾"><a href="#1-垃圾" class="headerlink" title="1.垃圾"></a>1.垃圾</h4><p>所谓垃圾（Garbage），就是需要回收的对象。作为编写程序的人，是可以做出“这个对象已经不需要了”这样的判断，但是计算机是做不到的。因此如果程序（通过某个变量等等）可能会直接或间接的引用一个对象，那么这个对象就被视为<strong>“存活”；</strong>与之相反，已经引用不到的则被视为<strong>“死亡”</strong>。将这些死亡对象找出来，然后作为垃圾进行回收，这就是GC的本质。</p>
+<h4 id="2-根"><a href="#2-根" class="headerlink" title="2.根"></a>2.根</h4><p>所谓的根（Root），就是判断对象是否被引用的起始点。至于哪里的才是根，不同的语言和编译器都有不同的规定，但基本上是将变量和运行栈空间作为根。</p>
+<h3 id="主要GC实现方式"><a href="#主要GC实现方式" class="headerlink" title="主要GC实现方式"></a>主要GC实现方式</h3><h4 id="1-标记清除方式"><a href="#1-标记清除方式" class="headerlink" title="1.标记清除方式"></a>1.标记清除方式</h4><p>标记清除（Mark and Sweep）是最早开发出来的GC算法（1960年）。它的原理非常简单：<strong>首先从根开始将可能被引用的对象用递归的方式进行标记，然后将没有标记到的对象作为垃圾进行回收。</strong></p>
+<p>初始状态：</p>
+
+
+<p>标记阶段：</p>
+
+
+<p><img data-src="/Users/apple/Downloads/GC2.png" alt="GC2"></p>
+
+
+<p>清除阶段：</p>
+
+
+<p>上述图片显示了标记清楚算法的大致原理。</p>
+<p>”<strong>初始状态</strong>“图中显示了随着程序的运行而分配出一些对象的状态，一个对象可以对其他的对象进行引用。</p>
+<p>”<strong>标记阶段</strong>“图中显示了GC开始执行，从根开始可以在被引用的对象上进行”标记“。大多数情况下，这种标记是通过对象内部的标志（Flag）来实现的。于是，被标记的对象我们将它涂黑。</p>
+<p>紧接着<strong>被标记的对象所能引用的对象</strong>也会被打上标记。重复这一步骤就可以从根开始给可能被间接引用到的对象全部打上标记。到此为止的操作即被称为——<strong>标记阶段</strong>（Mark phase）。标记阶段完成时，<strong>被标记的对象就是”存活“对象，反之为”死亡“对象。</strong></p>
+<p>标记清除算法的处理时间，是和存活对象数域对象总数的总和相关的。</p>
+<p>作为标记清除的变形，还有一种叫做<strong>标记压缩</strong>（Mark and Compat）的算法，它不是将被标记的对象清除，而是将它们不断压缩。</p>
+<h4 id="2-复制收集方式"><a href="#2-复制收集方式" class="headerlink" title="2.复制收集方式"></a>2.复制收集方式</h4><p>标记清除算法有一个缺点，就是在分配了大量对象，并且其中只有一小部分存活的情况下，所消耗的时间会大大超过必要的值，这是因为在清除阶段还需要对大量死亡对象进行扫描。</p>
+<p><strong>复制收集</strong>（Copy and Collection）则试图克服这一缺点。在这种算法中，<strong>会将从根开始被引用的对象复制到另外的空间中，然后，在将复制的对象所能够引用的对象用递归的方式不断复制下去</strong>。</p>
+<p>初始状态（1）——旧空间：</p>
+
+
+<p>新空间的开辟（2）——新空间：</p>
+
+
+<p>复制对象（3）</p>
+
+
+<p>如上图：</p>
+<p>（1）部分是GC开始前的内存状态，这也同时代表着对象在内存中所占用的”旧空间“。</p>
+<p>（2）在旧空间以外开辟”新空间“并将可能从根被引用的对象复制到新空间中。</p>
+<p>（3）从已经复制的对象开始再将可以被引用的对象逐个复制到新空间当中……随着复制的进行，直到复制完成——最终”死亡“对象就留在了”旧空间”当中，接着将旧空间废弃掉，这样就可以将“死亡”对象是哟占用的空间一口气释放出来，而没有必要再次扫描“死亡”对象了。等到下次GC操作时，这次所创建的“新空间”就成为了将来的“旧空间”了。</p>
+<p><strong>复制收集方式</strong>的过程相当于只存在<strong>标记清除方式</strong>中的<strong>标记阶段</strong>。<strong>由于清除阶段中需要对所有对象进行扫描，这样如果存在大量对象，且其中大量对象已经为“死亡”对象的情况下必然会造成不必要的资源和性能上的开销</strong>。</p>
+<p>而在复制收集方式中就不存在这样的开销。<strong>但是和标记相比，将对象复制一份的开销相对要大，因此在“存活”对象相对比例较高的请情况下，反而不利。</strong></p>
+<p>复制收集方式的另一个优点是：它具有局部性（Locality）。在复制收集的过程中，会按照对象被引用的顺序将对象复制到新空间中。于是，关系较近的对象被放置在距离较近的内存空间中的可能性会提高，这样被称为局部性。局部性高的情况下，内存缓存会更容易有效运作，程序的运行也能够得到提高。</p>
+<h3 id="引用计数方式"><a href="#引用计数方式" class="headerlink" title="引用计数方式"></a>引用计数方式</h3><p>引用计数方式是GC算法中最简单也最容易实现的一种，它和标记清除方式差不多是同一个时间被发明出来的。</p>
+<p>它的原理是：<strong>在每个对象中保存该对象的引用计数，当引用发生增减时对计数进行更新。</strong></p>
+<p>引用计数的增减，一般发生在变量复制，对象内容更新，函数结束（局部变量不再被引用）等时间点。当一个对象的引用计数为0时，则说明它将来不会再被引用，因此可以释放相应的内存空间。</p>
+<p>（1）</p>
+
+
+<p>（2）</p>
+
+
+<p>（3）</p>
+
+
+<p>如上图：</p>
+<p>（1）中所有对象都保存着自己被多少个对象进行引用的数量（引用计数）——图中右上角的数字。</p>
+<p>（2）当对象引用发生变化时，引用计数也会跟着变化。在这里图中的对象B到D的引用失效后，对象D的引用计数变为0，由于对象D的引用计数变为0，因此D到E和C的引用计数也分别减少。结果E的引用计数也变为0，于是对象E也会被释放。</p>
+<p>（3）引用计数为0的对象被释放——“存活”的对象被保留下来。而这个GC过程中不需要对所有对象进行扫描。</p>
+<h4 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h4><ul>
+<li>相比标记清除和复制收集方式实现更容易。</li>
+<li>当对象不再被引用的瞬间就会被释放。</li>
+<li>其他GC机制中，要预测一个对象何时会被释放是很困难的，而在引用计数方式中则是立即被释放。</li>
+<li>由于释放操作是针对个别执行的，因此和其他算法相比，由GC而产生的中断时间比较短。</li>
+</ul>
+<h4 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h4>
+
+<ul>
+<li>无法释放循环引用的对象。如上图A，B，C三个对象没有被其他对象引用，而是互相之间循环引用，因此它们的引用计数永远不会为0，结果这些对象就永远不会被释放。</li>
+<li>必须在引用发生增减时对引用计数做出正确的增减，而如果漏掉或者更改了引用计数就会引发很难找到的错误。</li>
+<li>引用计数不适合并行处理。如果多个线程同时对引用计数进行增减的话，引用计数的值就可能会产生不一致的问题（结果就会导致内存错误），为了避免这样的事情发生，对引用计数的操作必须采用独占的方式来进行。如果引用计数操作频繁进行，每次使用都要使用加锁等并发操作，其开销也不可小觑。</li>
+</ul>
+<p>实际的GC实现会涉及很多优化。</p>
 
     </div>
 
@@ -254,13 +321,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/" rel="prev" title="学会承担责任">
-      <i class="fa fa-chevron-left"></i> 学会承担责任
+    <a href="/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/" rel="prev" title="人要多读书">
+      <i class="fa fa-chevron-left"></i> 人要多读书
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/" rel="next" title="弱小和无知不是生存的障碍，傲慢才是--《三体》">
-      弱小和无知不是生存的障碍，傲慢才是--《三体》 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -320,6 +384,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考："><span class="nav-number">1.</span> <span class="nav-text">参考：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将内存管理，尤其是内存空间的释放实现自动化，这就是GC（Garbage-Collection）。"><span class="nav-number">2.</span> <span class="nav-text">将内存管理，尤其是内存空间的释放实现自动化，这就是GC（Garbage Collection）。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#术语定义"><span class="nav-number">3.</span> <span class="nav-text">术语定义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-垃圾"><span class="nav-number">3.1.</span> <span class="nav-text">1.垃圾</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-根"><span class="nav-number">3.2.</span> <span class="nav-text">2.根</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主要GC实现方式"><span class="nav-number">4.</span> <span class="nav-text">主要GC实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-标记清除方式"><span class="nav-number">4.1.</span> <span class="nav-text">1.标记清除方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-复制收集方式"><span class="nav-number">4.2.</span> <span class="nav-text">2.复制收集方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用计数方式"><span class="nav-number">5.</span> <span class="nav-text">引用计数方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优点："><span class="nav-number">5.1.</span> <span class="nav-text">优点：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺点："><span class="nav-number">5.2.</span> <span class="nav-text">缺点：</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -582,7 +647,7 @@ if (document.querySelectorAll('pre.mermaid').length) {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/',]
       });
       });
   </script>
@@ -598,7 +663,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'comments',
       owner       : 'hrz123',
       admin       : ['hrz123'],
-      id          : 'a9445c8974364313ed47677a7a68d9d2',
+      id          : '2bc2641420cea033068cf450d313df67',
         language: 'zh-CN',
       distractionFreeMode: true
     });
