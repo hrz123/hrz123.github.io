@@ -33,7 +33,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hrz123.github.io/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/%E4%BD%8D%E8%BF%90%E7%AE%971.png">
 <meta property="article:published_time" content="2020-07-22T15:56:03.000Z">
-<meta property="article:modified_time" content="2020-07-27T15:27:23.974Z">
+<meta property="article:modified_time" content="2020-07-27T15:37:44.146Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="技术博客">
 <meta name="twitter:card" content="summary">
@@ -220,7 +220,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-07-27 23:27:23" itemprop="dateModified" datetime="2020-07-27T23:27:23+08:00">2020-07-27</time>
+                <time title="修改时间：2020-07-27 23:37:44" itemprop="dateModified" datetime="2020-07-27T23:37:44+08:00">2020-07-27</time>
               </span>
 
           
@@ -281,9 +281,9 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, x3  &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">   </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x3 ^&#x3D; x2 &amp; x1 &amp; i;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; ~x2 &amp; x3);</span><br><span class="line">        x3 &amp;&#x3D; mask;</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 3, in binary form p &#x3D; &#39;011&#39;, then p1 &#x3D; p2 &#x3D; 1, so we can return either x1 or x2. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 4, in binary form p &#x3D; &#39;100&#39;, only p3 &#x3D; 1, which implies we can only return x3.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2 | x3).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>Lastly I would like to thank those for providing feedbacks to make this post better. Hope it helps and happy coding!</p>
 <h2 id="相关力扣题目">相关力扣题目</h2>
-<p>136 https://leetcode-cn.com/problems/single-number/</p>
-<p>137 https://leetcode-cn.com/problems/single-number-ii/</p>
-<p>260 https://leetcode-cn.com/problems/single-number-iii/</p>
+<p>136 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci8=">https://leetcode-cn.com/problems/single-number/<i class="fa fa-external-link-alt"></i></span></p>
+<p>137 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paS8=">https://leetcode-cn.com/problems/single-number-ii/<i class="fa fa-external-link-alt"></i></span></p>
+<p>260 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paWkv">https://leetcode-cn.com/problems/single-number-iii/<i class="fa fa-external-link-alt"></i></span></p>
 
     </div>
 
