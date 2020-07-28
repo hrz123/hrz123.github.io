@@ -1,6 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
+    <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
+    <content><![CDATA[<h2 id="原文">原文</h2>
+<p>https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html</p>
+<p>原文很长，这里摘录总结的内容。</p>
+<h2 id="摘录">摘录</h2>
+<p>让我结束发言。自动计算机已经陪伴我们四分之一个世纪。它们作为工具的能力对我们的社会产生了巨大的影响，但就这种能力而言，它们的影响只是我们文化表面上的一个涟漪，而与之相比，它们在人类文化史上前所未有的智力挑战能力方面将产生更深远的影响。层次系统一户具有这样的特性：在一个层次上被视为无法分隔的东西，在下一个层次上被视为更详细的复合对象；因此，当我们把注意力从一个层次转移到下一个更低层次上时，适用于每个层次的自然空间或时间的颗粒就会减少一个数量级。我们用砖头来理解墙壁，用晶体来理解砖头，用分子来理解晶体等等。在一个层次系统中，可以有意义的区分的层次数量，有点正比于最大和最小的晶粒之间的比例的对数，因此，除非这个比例非常大，否则我们不能期望有很多次的层次。在计算机编程中，我们的基本构建的相关时间最小度量不到一微秒，但我们的程序可能需要几个小时的计算时间。$我不知道有其他任何技术覆盖了10的10次方或更高的比例：计算机，凭借其神奇的速度，似乎是第一个为我们提供了一个高度层次化的既可能又必要的环境。这种挑战，即，面对编程任务，是如此的独特，以至于这种新奇的经验可以给我们很多关于自己的其实。<strong>它应该加深我们对设计和创造过程的理解，它应该让我们更好的控制组织思想的任务。</strong>如果它没有做到这一点，以我的品味，我们应该根本不配拥有电脑！</p>
+<p><strong>它已经给了我们一些教训，我选择在这次演讲中强调的是以下几点。只要我们在处理任务时充分认识到它的巨大困难，只要我们坚持使用适度而优雅的编程语言，只要我们尊重人类思维的内在局限性，并以非常谦逊的程序员的身份处理任务，我们就会把编程工作做得更好。</strong></p>
+<p>ACM Turing Lecture 1972</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>K个一组翻转链表</title>
+    <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
+<p>将pre指向开头</p>
+<p>循环开始，只要head不为nil</p>
+<p>令tail = pre</p>
+<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
+<p>nxt记录下tail.next，head即将走向的下一个结点</p>
+<p>反转head到tail中的节点，返回新的head和tail</p>
+<p>def reverse(head, tail):</p>
+<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
+<p>​ while prev != tail:</p>
+<p>​ nxt = cur.next</p>
+<p>​ cur.next = prev</p>
+<p>​ prev = cur</p>
+<p>​ cur = nxt</p>
+<p>​ return tail, head</p>
+<p>将pre的next指向新的head</p>
+<p>pre.next = head</p>
+<p>尾部已相连</p>
+<p>更新pre指向tail</p>
+<p>head指向nxt</p>
+<p>最终head为nil时退出循环</p>
+<p>返回dummy.next</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span><span class="params">(self, head: ListNode, k: int)</span> -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span><span class="params">(self, head, tail)</span>:</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>想法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2019/12/05/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvLw==">Hexo<i class="fa fa-external-link-alt"></i></span>! This is your very first post. Check <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mv">documentation<i class="fa fa-external-link-alt"></i></span> for more info. If you get any problems when using Hexo, you can find the answer in <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3MvdHJvdWJsZXNob290aW5nLmh0bWw=">troubleshooting<i class="fa fa-external-link-alt"></i></span> or you can ask me on <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2hleG9qcy9oZXhvL2lzc3Vlcw==">GitHub<i class="fa fa-external-link-alt"></i></span>.</p>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="create-a-new-post">Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvd3JpdGluZy5odG1s">Writing<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="run-server">Run server</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvc2VydmVyLmh0bWw=">Server<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="generate-static-files">Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3MvZ2VuZXJhdGluZy5odG1s">Generating<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvb25lLWNvbW1hbmQtZGVwbG95bWVudC5odG1s">Deployment<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>python实现Trie(字典树、前缀树)</title>
+    <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
+<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
+<h2 id="应用">应用：</h2>
+<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
+<h2 id="要实现的方法">要实现的方法</h2>
+<p>一般来讲trie要实现这么几个方法</p>
+<ul>
+<li>插入一个单词insert(word: str) -&gt; None</li>
+<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
+<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
+</ul>
+<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">'#'</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, word: str)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self, word: str)</span> -&gt; bool:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span><span class="params">(self, prefix: str)</span> -&gt; bool:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《相信未来》——食指</title>
+    <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
+    <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
+<p>当灰烬的余烟叹息着贫困的悲哀</p>
+<p>我依然固执地铺平失望的灰烬</p>
+<p>用美丽的雪花写下：相信未来</p>
+<p>当我的紫葡萄化为深秋的露水</p>
+<p>当我的鲜花依偎在别人的情怀</p>
+<p>我依然固执地用凝霜的枯藤</p>
+<p>在凄凉的大地上写下：相信未来</p>
+<p>我要用手指那涌向天边的排浪</p>
+<p>我要用手掌那托住太阳的大海</p>
+<p>摇曳着曙光那枝温暖漂亮的笔杆</p>
+<p>用孩子的笔体写下：相信未来</p>
+<p>我之所以坚定地相信未来</p>
+<p>是我相信未来人们的眼睛</p>
+<p>她有拨开历史风尘的睫毛</p>
+<p>她有看透岁月篇章的瞳孔</p>
+<p>不管人们对于我们腐烂的皮肉</p>
+<p>那些迷途的惆怅、失败的苦痛</p>
+<p>是寄予感动的热泪、深切的同情</p>
+<p>还是给以轻蔑的微笑、辛辣的嘲讽</p>
+<p>我坚信人们对于我们的脊骨</p>
+<p>那无数次的探索、迷途、失败和成功</p>
+<p>一定会给予热情、客观、公正的评定</p>
+<p>是的，我焦急地等待着他们的评定</p>
+<p>朋友，坚定地相信未来吧</p>
+<p>相信不屈不挠的努力</p>
+<p>相信战胜死亡的年轻</p>
+<p>相信未来、热爱生命</p>
+<p><br></p>
+<p>食指</p>
+<p>1968年 北京</p>
+]]></content>
+      <tags>
+        <tag>青春</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现并查集</title>
+    <url>/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
+    <content><![CDATA[<h1 id="python实现并查集">python实现并查集</h1>
+<h2 id="并查集概念">并查集概念</h2>
+<p>并查集（UnionFind）也被称为不相交集数据结构。顾名思义，并查集主要操作是合并与查询，它是把初始不相交的集合经过多次合并操作后合并为一个大集合，然后可以通过查询判断两个元素是否已经在同一个集合中了。</p>
+<p>并查集的应用场景一般就是动态连通性的判断，例如判断网络中的两台电脑是否连通，在程序中判断两个变量名是否指向同一内存地址等。</p>
+<h2 id="并查集的实现">并查集的实现</h2>
+<h3 id="并查集的存储结构">并查集的存储结构</h3>
+<p>并查集逻辑上是森林，我们可以选出一个根结点作为代表，其他子结点指向根结点表示都在同一片森林中。在这里，并不关心结点的子结点是谁，只关心父结点是谁，所以物理上可以简单用python的列表来表示并查集，列表的下标表示结点，列表元素的值表示父结点。</p>
+<h3 id="并查集的api">并查集的API</h3>
+<p>根据并查集的特性，可以设计以下api</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span><span class="params">(object)</span>:</span></span><br><span class="line">  <span class="string">"""并查集"""</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">    <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">    <span class="string">"""查找p的根结点（祖先）"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">    <span class="string">"""连通p,q 让q指向p"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">    <span class="string">"""判断pq是否已经连通"""</span></span><br></pre></td></tr></table></figure>
+<h3 id="并查集的初始化">并查集的初始化</h3>
+<p>并查集的初始化有几种，无非就是用一种特殊的方式来表示初始的每一个元素都不相交，等待后续的合并操作。</p>
+<p>第一种初始化的方式是用列表的下标初始化对应位置的值，当一个并查集S[i] == i时则判断它自己就是根结点。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">  <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">  self.uf = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]   	<span class="comment"># 列表为0位置空出</span></span><br><span class="line">  self.sets_count = n										<span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
+<p>第二种初始化方式将列表每一个结点初始化为-1，列表的节点值为负数表示它自己就是根结点，这样做还有一个好处可以用-n表示自己的子结点数量，下面的按规模优化中可以让结点数量小的树并到结点多的树上，提高find操作的效率。我们就选用这种方式来初始化。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">  <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">  self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]	<span class="comment"># 列表0位置空出</span></span><br><span class="line">  self.sets_count = n										<span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
+<h3 id="并查集的查询">并查集的查询</h3>
+<p>查询操作是查找某个结点所在的集合，返回该集合的根结点，即返回列表的下标。下面是一种简单的查询，代码如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt;= <span class="number">0</span>:</span><br><span class="line">    p = self.yf[p]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
+<p>可以很清楚的看出上面的方法很简单，找到结点元素值为负的表示找到了根结点并返回，但是该种方法在极端情况下（由树退化为链表）效率不高，查找的效率为O(n)，如左下图所示</p>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%861.png" class>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%862.png" class>
+<p>查询是并查集的核心操作之一，它的效率也决定了整个算法的效率，所以在规模很大的情况下，O(n)的时间的复杂度是不被接受的，那就需要改进，改进的方法就是路径压缩。路径压缩的思想也很简单，就是在查找根结点的过程中，顺便把子结点的父结点改成根结点，这样下次查询的效率只需要O(1)的时间复杂度就可以完成，大大提高了效率。改进后效果图如右上图所示。</p>
+<p>路径压缩的find操作可以通过递归来实现</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="string">"""尾递归"""</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">  self.uf[p] = self.find(self.uf[p])</span><br><span class="line">  <span class="keyword">return</span> self.uf[p]</span><br></pre></td></tr></table></figure>
+<p>可以发现这个递归是尾递归，可以改进成循环的方式</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="string">"""查找p的根节点（祖先）"""</span></span><br><span class="line">  r = p															<span class="comment"># 初始p</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt; <span class="number">0</span>:</span><br><span class="line">    p = self.uf[p]</span><br><span class="line">  <span class="keyword">while</span> r != p:											<span class="comment"># 路径压缩，把压缩下来的结点祖先全指向根结点</span></span><br><span class="line">    self.uf[r], r = p, self.uf[r]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
+<h3 id="并查集的合并">并查集的合并</h3>
+<p>合并两棵树的操作可以简单的规定让右边的树的根结点指向左边树的根结点，示意图如左下图所示。</p>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%863.png" class>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%864.png" class>
+<p>直接右往左合并的缺点就是当右边的规模大于左边的规模时，在查找时，做路径压缩需要把右边所有的根结点更改为左边的根结点，如右上图所示，这明显有些划不来，所以合并的一种优化方式就是按规模合并，即吧规模小的树往规模大的树上合并。其实还有一种按秩合并（树高度小的往高度大的合并而不改变树的整体高度）。但是这种方法不与路径压缩兼容，因为路径压缩直接改变了数的高度，所以本人选择按规模合并和路径压缩结合的方式优化并查集。代码如下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">  <span class="string">"""连通p, q 让q指向p"""</span></span><br><span class="line">  proot = self.find(p)</span><br><span class="line">  qroot = self.find(q)</span><br><span class="line">  <span class="keyword">if</span> proot == qroot:</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[proot] &gt; self.uf[qroot]:		<span class="comment"># 负数比较，左边的规模更小</span></span><br><span class="line">    self.uf[qroot] += self.uf[proot]</span><br><span class="line">    self.uf[proot] = qroot</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    self.uf[proot] += self.uf[qroot]		<span class="comment"># 规模相加</span></span><br><span class="line">    self.uf[qroot] = proot</span><br><span class="line">  self.sets_count -= <span class="number">1</span>                  <span class="comment"># 连通后集合总数减一</span></span><br></pre></td></tr></table></figure>
+<h3 id="连通性的判断">连通性的判断</h3>
+<p>有了查找操作，判断两个结点是否连通就显得容易多了，一行代码就可以搞定，就是判断他们的根结点是否相同。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">  <span class="string">"""判断pq是否已经连通"""</span></span><br><span class="line">  <span class="keyword">return</span> self.find(p) == self.find(q)   <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
+<h3 id="完整代码附录">完整代码附录</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">"""并查集类"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">        <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">        self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]    <span class="comment"># 列表0位置空出</span></span><br><span class="line">        self.sets_count = n                     <span class="comment"># 判断并查集里共有几个集合, 初始化默认互相独立</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     """查找p的根结点(祖先)"""</span></span><br><span class="line">    <span class="comment">#     r = p                                   # 初始p</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt; 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     while r != p:                           # 路径压缩, 把搜索下来的结点祖先全指向根结点</span></span><br><span class="line">    <span class="comment">#         self.uf[r], r = p, self.uf[r]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt;= 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">        <span class="string">"""尾递归"""</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">        <span class="string">"""连通p,q 让q指向p"""</span></span><br><span class="line">        proot = self.find(p)</span><br><span class="line">        qroot = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> proot == qroot:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">elif</span> self.uf[proot] &gt; self.uf[qroot]:   <span class="comment"># 负数比较, 左边规模更小</span></span><br><span class="line">            self.uf[qroot] += self.uf[proot]</span><br><span class="line">            self.uf[proot] = qroot</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[proot] += self.uf[qroot]  <span class="comment"># 规模相加</span></span><br><span class="line">            self.uf[qroot] = proot</span><br><span class="line">        self.sets_count -= <span class="number">1</span>                    <span class="comment"># 连通后集合总数减一</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">        <span class="string">"""判断pq是否已经连通"""</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)     <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
+<h2 id="转载">转载</h2>
+<p>出处：https://www.cnblogs.com/yscl/p/10185293.html</p>
+<p>作者：yscl</p>
+<h4 id="参考">参考</h4>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vaGFwamluL3AvNTQ3ODM1Mi5odG1s">数据结构--并查集的原理及实现<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2RtX3ZpbmNlbnQvYXJ0aWNsZS9kZXRhaWxzLzc2NTU3NjQ=">并查集(Union-Find)算法介绍<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h4 id="其他并查集">其他并查集</h4>
+<p>普通的并查集只是简单的记录了和集合的关系，即判断是否属于该集合，而带权并查集则是不仅记录了和集合的关系，还记录了集合内元素的关系，一般就是指代集合内元素和根结点的关系，实现起来也很简单，就是额外利用一个列表value[]，来记录每个节点与根结点的关系。然后在每次合并和路径压缩中更新权值。更新的规则遵循向量法则，处理环类关系的问题中，还可以取模更新。具体可以参考一下文章。</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lqcjM0MjY2MTkvYXJ0aWNsZS9kZXRhaWxzLzgyMzE1MTMz">https://blog.csdn.net/yjr3426619/article/details/82315133<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
+]]></content>
+  </entry>
+  <entry>
     <title>GC的三种基本实现方式和优缺点</title>
     <url>/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/</url>
     <content><![CDATA[<h3 id="参考">参考：</h3>
@@ -76,157 +288,6 @@
 </ul>
 <p>实际的GC实现会涉及很多优化。</p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>K个一组翻转链表</title>
-    <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
-    <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
-<p>将pre指向开头</p>
-<p>循环开始，只要head不为nil</p>
-<p>令tail = pre</p>
-<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
-<p>nxt记录下tail.next，head即将走向的下一个结点</p>
-<p>反转head到tail中的节点，返回新的head和tail</p>
-<p>def reverse(head, tail):</p>
-<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
-<p>​ while prev != tail:</p>
-<p>​ nxt = cur.next</p>
-<p>​ cur.next = prev</p>
-<p>​ prev = cur</p>
-<p>​ cur = nxt</p>
-<p>​ return tail, head</p>
-<p>将pre的next指向新的head</p>
-<p>pre.next = head</p>
-<p>尾部已相连</p>
-<p>更新pre指向tail</p>
-<p>head指向nxt</p>
-<p>最终head为nil时退出循环</p>
-<p>返回dummy.next</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span><span class="params">(self, head: ListNode, k: int)</span> -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span><span class="params">(self, head, tail)</span>:</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
-]]></content>
-  </entry>
-  <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>想法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
-    <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
-    <content><![CDATA[<h2 id="原文">原文</h2>
-<p>https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html</p>
-<p>原文很长，这里摘录总结的内容。</p>
-<h2 id="摘录">摘录</h2>
-<p>让我结束发言。自动计算机已经陪伴我们四分之一个世纪。它们作为工具的能力对我们的社会产生了巨大的影响，但就这种能力而言，它们的影响只是我们文化表面上的一个联谊，而与之相比，它们在人类文化史上前所未有的智力挑战能力方面将产生更深远的影响。层次系统一户具有这样的特性：在一个层次上被视为无法分隔的东西，在下一个层次上被视为更详细的复合对象；因此，当我们把注意力从一个层次转移到下一个更低层次上时，适用于每个层次的自然空间或时间的颗粒就会减少一个数量级。我们用砖头来理解墙壁，用晶体来理解砖头，用分子来理解晶体等等。在一个层次系统中，可以有意义的区分的层次数量，有点正比于最大和最小的晶粒之间的比例的对数，因此，除非这个比例非常大，否则我们不能期望有很多次的层次。在计算机编程中，我们的基本构建的相关时间最小度量不到一微秒，但我们的程序可能需要几个小时的计算时间。$我不知道有其他任何技术覆盖了10的10次方或更高的比例：计算机，凭借其神奇的速度，似乎是第一个为我们提供了一个高度层次化的既可能又必要的环境。这种挑战，即，面对编程任务，是如此的独特，以至于这种新奇的经验可以给我们很多关于自己的其实。<strong>它应该加深我们对设计和创造过程的理解，它应该让我们更好的控制组织思想的任务。</strong>如果它没有做到这一点，以我的品味，我们应该根本不配拥有电脑！</p>
-<p><strong>它已经给了我们一些教训，我选择在这次演讲中强调的是以下几点。只要我们在处理任务时充分认识到它的巨大困难，只要我们坚持使用适度而优雅的编程语言，只要我们尊重人类思维的内在局限性，并以非常谦逊的程序员的身份处理任务，我们就会把编程工作做得更好。</strong></p>
-<p>ACM Turing Lecture 1972</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2019/12/05/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvLw==">Hexo<i class="fa fa-external-link-alt"></i></span>! This is your very first post. Check <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mv">documentation<i class="fa fa-external-link-alt"></i></span> for more info. If you get any problems when using Hexo, you can find the answer in <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3MvdHJvdWJsZXNob290aW5nLmh0bWw=">troubleshooting<i class="fa fa-external-link-alt"></i></span> or you can ask me on <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2hleG9qcy9oZXhvL2lzc3Vlcw==">GitHub<i class="fa fa-external-link-alt"></i></span>.</p>
-<h2 id="quick-start">Quick Start</h2>
-<h3 id="create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvd3JpdGluZy5odG1s">Writing<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="run-server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvc2VydmVyLmh0bWw=">Server<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="generate-static-files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3MvZ2VuZXJhdGluZy5odG1s">Generating<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvb25lLWNvbW1hbmQtZGVwbG95bWVudC5odG1s">Deployment<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>《相信未来》——食指</title>
-    <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
-    <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
-<p>当灰烬的余烟叹息着贫困的悲哀</p>
-<p>我依然固执地铺平失望的灰烬</p>
-<p>用美丽的雪花写下：相信未来</p>
-<p>当我的紫葡萄化为深秋的露水</p>
-<p>当我的鲜花依偎在别人的情怀</p>
-<p>我依然固执地用凝霜的枯藤</p>
-<p>在凄凉的大地上写下：相信未来</p>
-<p>我要用手指那涌向天边的排浪</p>
-<p>我要用手掌那托住太阳的大海</p>
-<p>摇曳着曙光那枝温暖漂亮的笔杆</p>
-<p>用孩子的笔体写下：相信未来</p>
-<p>我之所以坚定地相信未来</p>
-<p>是我相信未来人们的眼睛</p>
-<p>她有拨开历史风尘的睫毛</p>
-<p>她有看透岁月篇章的瞳孔</p>
-<p>不管人们对于我们腐烂的皮肉</p>
-<p>那些迷途的惆怅、失败的苦痛</p>
-<p>是寄予感动的热泪、深切的同情</p>
-<p>还是给以轻蔑的微笑、辛辣的嘲讽</p>
-<p>我坚信人们对于我们的脊骨</p>
-<p>那无数次的探索、迷途、失败和成功</p>
-<p>一定会给予热情、客观、公正的评定</p>
-<p>是的，我焦急地等待着他们的评定</p>
-<p>朋友，坚定地相信未来吧</p>
-<p>相信不屈不挠的努力</p>
-<p>相信战胜死亡的年轻</p>
-<p>相信未来、热爱生命</p>
-<p><br></p>
-<p>食指</p>
-<p>1968年 北京</p>
-]]></content>
-      <tags>
-        <tag>青春</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现Trie(字典树、前缀树)</title>
-    <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
-    <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
-<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
-<h2 id="应用">应用：</h2>
-<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
-<h2 id="要实现的方法">要实现的方法</h2>
-<p>一般来讲trie要实现这么几个方法</p>
-<ul>
-<li>插入一个单词insert(word: str) -&gt; None</li>
-<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
-<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
-</ul>
-<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">'#'</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, word: str)</span> -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self, word: str)</span> -&gt; bool:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span><span class="params">(self, prefix: str)</span> -&gt; bool:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
-]]></content>
-  </entry>
-  <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
   </entry>
   <entry>
     <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
@@ -408,67 +469,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>python实现并查集</title>
-    <url>/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
-    <content><![CDATA[<h1 id="python实现并查集">python实现并查集</h1>
-<h2 id="并查集概念">并查集概念</h2>
-<p>并查集（UnionFind）也被称为不相交集数据结构。顾名思义，并查集主要操作是合并与查询，它是把初始不相交的集合经过多次合并操作后合并为一个大集合，然后可以通过查询判断两个元素是否已经在同一个集合中了。</p>
-<p>并查集的应用场景一般就是动态连通性的判断，例如判断网络中的两台电脑是否连通，在程序中判断两个变量名是否指向同一内存地址等。</p>
-<h2 id="并查集的实现">并查集的实现</h2>
-<h3 id="并查集的存储结构">并查集的存储结构</h3>
-<p>并查集逻辑上是森林，我们可以选出一个根结点作为代表，其他子结点指向根结点表示都在同一片森林中。在这里，并不关心结点的子结点是谁，只关心父结点是谁，所以物理上可以简单用python的列表来表示并查集，列表的下标表示结点，列表元素的值表示父结点。</p>
-<h3 id="并查集的api">并查集的API</h3>
-<p>根据并查集的特性，可以设计以下api</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span><span class="params">(object)</span>:</span></span><br><span class="line">  <span class="string">"""并查集"""</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">    <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">    <span class="string">"""查找p的根结点（祖先）"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">    <span class="string">"""连通p,q 让q指向p"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">    <span class="string">"""判断pq是否已经连通"""</span></span><br></pre></td></tr></table></figure>
-<h3 id="并查集的初始化">并查集的初始化</h3>
-<p>并查集的初始化有几种，无非就是用一种特殊的方式来表示初始的每一个元素都不相交，等待后续的合并操作。</p>
-<p>第一种初始化的方式是用列表的下标初始化对应位置的值，当一个并查集S[i] == i时则判断它自己就是根结点。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">  <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">  self.uf = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]   	<span class="comment"># 列表为0位置空出</span></span><br><span class="line">  self.sets_count = n										<span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
-<p>第二种初始化方式将列表每一个结点初始化为-1，列表的节点值为负数表示它自己就是根结点，这样做还有一个好处可以用-n表示自己的子结点数量，下面的按规模优化中可以让结点数量小的树并到结点多的树上，提高find操作的效率。我们就选用这种方式来初始化。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">  <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">  self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]	<span class="comment"># 列表0位置空出</span></span><br><span class="line">  self.sets_count = n										<span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
-<h3 id="并查集的查询">并查集的查询</h3>
-<p>查询操作是查找某个结点所在的集合，返回该集合的根结点，即返回列表的下标。下面是一种简单的查询，代码如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt;= <span class="number">0</span>:</span><br><span class="line">    p = self.yf[p]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
-<p>可以很清楚的看出上面的方法很简单，找到结点元素值为负的表示找到了根结点并返回，但是该种方法在极端情况下（由树退化为链表）效率不高，查找的效率为O(n)，如左下图所示</p>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%861.png" class>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%862.png" class>
-<p>查询是并查集的核心操作之一，它的效率也决定了整个算法的效率，所以在规模很大的情况下，O(n)的时间的复杂度是不被接受的，那就需要改进，改进的方法就是路径压缩。路径压缩的思想也很简单，就是在查找根结点的过程中，顺便把子结点的父结点改成根结点，这样下次查询的效率只需要O(1)的时间复杂度就可以完成，大大提高了效率。改进后效果图如右上图所示。</p>
-<p>路径压缩的find操作可以通过递归来实现</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="string">"""尾递归"""</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">  self.uf[p] = self.find(self.uf[p])</span><br><span class="line">  <span class="keyword">return</span> self.uf[p]</span><br></pre></td></tr></table></figure>
-<p>可以发现这个递归是尾递归，可以改进成循环的方式</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="string">"""查找p的根节点（祖先）"""</span></span><br><span class="line">  r = p															<span class="comment"># 初始p</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt; <span class="number">0</span>:</span><br><span class="line">    p = self.uf[p]</span><br><span class="line">  <span class="keyword">while</span> r != p:											<span class="comment"># 路径压缩，把压缩下来的结点祖先全指向根结点</span></span><br><span class="line">    self.uf[r], r = p, self.uf[r]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
-<h3 id="并查集的合并">并查集的合并</h3>
-<p>合并两棵树的操作可以简单的规定让右边的树的根结点指向左边树的根结点，示意图如左下图所示。</p>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%863.png" class>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%864.png" class>
-<p>直接右往左合并的缺点就是当右边的规模大于左边的规模时，在查找时，做路径压缩需要把右边所有的根结点更改为左边的根结点，如右上图所示，这明显有些划不来，所以合并的一种优化方式就是按规模合并，即吧规模小的树往规模大的树上合并。其实还有一种按秩合并（树高度小的往高度大的合并而不改变树的整体高度）。但是这种方法不与路径压缩兼容，因为路径压缩直接改变了数的高度，所以本人选择按规模合并和路径压缩结合的方式优化并查集。代码如下</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">  <span class="string">"""连通p, q 让q指向p"""</span></span><br><span class="line">  proot = self.find(p)</span><br><span class="line">  qroot = self.find(q)</span><br><span class="line">  <span class="keyword">if</span> proot == qroot:</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[proot] &gt; self.uf[qroot]:		<span class="comment"># 负数比较，左边的规模更小</span></span><br><span class="line">    self.uf[qroot] += self.uf[proot]</span><br><span class="line">    self.uf[proot] = qroot</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    self.uf[proot] += self.uf[qroot]		<span class="comment"># 规模相加</span></span><br><span class="line">    self.uf[qroot] = proot</span><br><span class="line">  self.sets_count -= <span class="number">1</span>                  <span class="comment"># 连通后集合总数减一</span></span><br></pre></td></tr></table></figure>
-<h3 id="连通性的判断">连通性的判断</h3>
-<p>有了查找操作，判断两个结点是否连通就显得容易多了，一行代码就可以搞定，就是判断他们的根结点是否相同。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">  <span class="string">"""判断pq是否已经连通"""</span></span><br><span class="line">  <span class="keyword">return</span> self.find(p) == self.find(q)   <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
-<h3 id="完整代码附录">完整代码附录</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">"""并查集类"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">        <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">        self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]    <span class="comment"># 列表0位置空出</span></span><br><span class="line">        self.sets_count = n                     <span class="comment"># 判断并查集里共有几个集合, 初始化默认互相独立</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     """查找p的根结点(祖先)"""</span></span><br><span class="line">    <span class="comment">#     r = p                                   # 初始p</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt; 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     while r != p:                           # 路径压缩, 把搜索下来的结点祖先全指向根结点</span></span><br><span class="line">    <span class="comment">#         self.uf[r], r = p, self.uf[r]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt;= 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">        <span class="string">"""尾递归"""</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">        <span class="string">"""连通p,q 让q指向p"""</span></span><br><span class="line">        proot = self.find(p)</span><br><span class="line">        qroot = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> proot == qroot:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">elif</span> self.uf[proot] &gt; self.uf[qroot]:   <span class="comment"># 负数比较, 左边规模更小</span></span><br><span class="line">            self.uf[qroot] += self.uf[proot]</span><br><span class="line">            self.uf[proot] = qroot</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[proot] += self.uf[qroot]  <span class="comment"># 规模相加</span></span><br><span class="line">            self.uf[qroot] = proot</span><br><span class="line">        self.sets_count -= <span class="number">1</span>                    <span class="comment"># 连通后集合总数减一</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">        <span class="string">"""判断pq是否已经连通"""</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)     <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
-<h2 id="转载">转载</h2>
-<p>出处：https://www.cnblogs.com/yscl/p/10185293.html</p>
-<p>作者：yscl</p>
-<h4 id="参考">参考</h4>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vaGFwamluL3AvNTQ3ODM1Mi5odG1s">数据结构--并查集的原理及实现<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2RtX3ZpbmNlbnQvYXJ0aWNsZS9kZXRhaWxzLzc2NTU3NjQ=">并查集(Union-Find)算法介绍<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-<h4 id="其他并查集">其他并查集</h4>
-<p>普通的并查集只是简单的记录了和集合的关系，即判断是否属于该集合，而带权并查集则是不仅记录了和集合的关系，还记录了集合内元素的关系，一般就是指代集合内元素和根结点的关系，实现起来也很简单，就是额外利用一个列表value[]，来记录每个节点与根结点的关系。然后在每次合并和路径压缩中更新权值。更新的规则遵循向量法则，处理环类关系的问题中，还可以取模更新。具体可以参考一下文章。</p>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lqcjM0MjY2MTkvYXJ0aWNsZS9kZXRhaWxzLzgyMzE1MTMz">https://blog.csdn.net/yjr3426619/article/details/82315133<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>实现KMP算法</title>
     <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下https://time.geekbang.org/column/article/71845</p>
@@ -508,6 +508,21 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>Python3版本</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span><span class="params">(p, m)</span>:</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span><span class="params">(p, s)</span>:</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print("Found pattern at index " + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    s = <span class="string">"ABABDABACDABABCABAB"</span></span><br><span class="line">    p = <span class="string">"ABABCABAB"</span></span><br><span class="line">    res = KMPSearch(p, s)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 ]]></content>
+  </entry>
+  <entry>
+    <title>拔智齿</title>
+    <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
+    <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
+<p>因为这个手术不大，所以两颗智齿可以一起拔。晚上疼了一会，就过去了。</p>
+<p>下面的两颗智齿，在长的过程中是横着长的，其实这是很常见的现象，如果不管，会挤坏掉好牙。</p>
+<p>上周已经拔掉了一颗，医生在伤口上缝了针，也是疼了一晚上，没吃止痛药，甚至没吃消炎药，也好了。</p>
+<p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
+<p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
+<p>一切都是好兆头。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
   </entry>
   <entry>
     <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
@@ -610,21 +625,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
   </entry>
   <entry>
-    <title>拔智齿</title>
-    <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
-    <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
-<p>因为这个手术不大，所以两颗智齿可以一起拔。晚上疼了一会，就过去了。</p>
-<p>下面的两颗智齿，在长的过程中是横着长的，其实这是很常见的现象，如果不管，会挤坏掉好牙。</p>
-<p>上周已经拔掉了一颗，医生在伤口上缝了针，也是疼了一晚上，没吃止痛药，甚至没吃消炎药，也好了。</p>
-<p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
-<p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
-<p>一切都是好兆头。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>拔智齿II</title>
     <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
     <content><![CDATA[<p>上午11：30</p>
@@ -686,6 +686,12 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>文凭只是敲门砖--于谦</title>
+    <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
+    <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
+]]></content>
   </entry>
   <entry>
     <title>搞定计算机网络面试</title>
@@ -884,18 +890,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
   </entry>
   <entry>
-    <title>文凭只是敲门砖--于谦</title>
-    <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
-    <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>猫抓老鼠的简单讨论</title>
-    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
-    <content><![CDATA[
-]]></content>
-  </entry>
-  <entry>
     <title>科比--曼巴精神永不逝去</title>
     <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
     <content><![CDATA[纪念老科 Tomorrow is not grante. Inspire yourself.
@@ -906,41 +900,9 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
   </entry>
   <entry>
-    <title>蓄水池算法</title>
-    <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="蓄水池采样算法reservoir-sampling">蓄水池采样算法（Reservoir Sampling）</h1>
-<p>蓄水池采样算法是非常常用的一种<strong>流式数据处理算法</strong>。</p>
-<h2 id="问题">问题</h2>
-<h3 id="大致描述">大致描述：</h3>
-<p>给出一个数据流，这个数据流的长度很大或未知，并且对该数据流中的数据只能访问一次。请写出一个随机选择算法，使得数据流中所有数据被选中的概率相等。</p>
-<h3 id="一些实际问题">一些实际问题</h3>
-<ol type="1">
-<li>从 100,000 分调查报告中抽取1000份进行统计。</li>
-<li>从一本很厚的电话簿中抽取1000人进行姓氏统计。</li>
-<li>从google搜索"Ken Thompson"，从中抽取100个结果查看哪些是今年的。</li>
-</ol>
-<p>这些都是很基本的采样问题。</p>
-<p>既然说的采样问题，最重要的就是做到公平，也就是保证每个元素被采样到的概率是相同的。</p>
-<p>对于第一个问题，我们已经知道数据的规模，通过算法生成[0, 100,000-1]间的随机数1000个，并且保证不重复即可。再取出对应的元素即可。</p>
-<p>但是对于第二和第三个问题，我们不知道数据的整体规模是多大。可能有人会想到，可以先对数据进行一次遍历，计算出数据的规模N，然后按照第一题的方法采样即可。这当然可以，但是并不好。因为这可能需要遍历两次，需要花两次的时间。也可以尝试估算数据的规模，但是这样得到的采样数据可能并不平均。</p>
-<h3 id="问题严格定义">问题严格定义</h3>
-<p>给你一个长度为N的链表。N很大，但你不知道N有多大。你的任务是从这N个元素中随机抽取k个元素。你只能遍历这个链表一次。你的算法必须保证取出的元素恰好有k个，且它们是完全随机的（出现概率相等的）。</p>
-<h2 id="解法">解法</h2>
-<h3 id="蓄水池算法">蓄水池算法：</h3>
-<p>蓄水池算法是针对从一个序列中随机抽取不重复的K个数，保证每个数被抽取到的概率都为K/N这个问题构建的。</p>
-<h3 id="做法">做法：</h3>
-<p>首先构造一个可以容纳k个元素的蓄水池（数组），将序列前k个元素直接放入蓄水池数组中。</p>
-<p>然后从第i = k+1个数据开始，以k/i（k&lt;i&lt;=n）的概率决定它是否进入到蓄水池中。蓄水池中的k个元素被替换出去的概率是相同的。</p>
-<p>当遍历完所有元素之后，数组中剩下的元素即为所需采取的样本。</p>
-<h2 id="证明">证明</h2>
-<p>对于第i个数（i &lt;= k）。在k步之前，被选中的概率为1。当走到第k+1步时，被k+1个元素替换的概率=第k+1个元素被选中的概率<em>i被替换的概率，即为 k/(k+1) </em> 1/k = 1/(k+1)。则不被第k+1个元素替换的概率为1 - 1/(k+1) = k/(k+1)。依次类推，不被K+2个元素替换的概率为1-k/(k+2) * 1/k = (k+1)/(k+2)。则运行到第n步时，第i个数仍保留的概率=被选中的概率<em>不被替换的概率，即： <span class="math display">\[
-1 \times \frac {k}{k+1}\times \frac {k+1}{k+2}\times \frac {k+2}{k+3}\times ...\times \frac {n-1}{n} = \frac {k}{n}
-\]</span> 对于第j个数（j&gt;k）。我们知道，在第j步被选中的概率为k/j。不被j+1个元素替换的概率为1 - k/(j+1) </em> 1/k = j/(j+1)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即： <span class="math display">\[
-\frac {k}{j}\times \frac {j}{j+1}\times \frac {j+1}{j+2}\times \frac {j+2}{j+3}\times ... \times \frac {n-1}{n} = \frac {k}{n}
-\]</span> 所以对于中每个元素，被保留的概率都为k/n。</p>
-<h2 id="实现">实现</h2>
-<p>python3版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span><span class="params">(self, node, k)</span>:</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span><span class="params">(object)</span>:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, val)</span>:</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+    <title>猫抓老鼠的简单讨论</title>
+    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
+    <content><![CDATA[
 ]]></content>
   </entry>
   <entry>
@@ -951,79 +913,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <h6 id="leetcode-877">leetcode 877</h6>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 也可以使用第2中解法</span></span><br><span class="line"><span class="comment"># 数学规律</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 先拿者可以拿到序号为 1,3,5...n-1 的石子堆，</span></span><br><span class="line"><span class="comment"># 也可以拿到序号为 2,4,6...n 的石子堆。</span></span><br><span class="line"><span class="comment"># 因为总石子数为奇数，所以这两种方式中，其中一种拿到的石子数大于另一种。</span></span><br><span class="line"><span class="comment"># 所以不按照拿尽量多的石子数，按照这种纯奇数序号或者纯偶数序号的方式拿，先拿者总可以赢。</span></span><br></pre></td></tr></table></figure>
 ]]></content>
-  </entry>
-  <entry>
-    <title>郭德纲写给儿子郭麒麟的家书</title>
-    <url>/2020/07/23/%E9%83%AD%E5%BE%B7%E7%BA%B2%E5%86%99%E7%BB%99%E5%84%BF%E5%AD%90%E9%83%AD%E9%BA%92%E9%BA%9F%E7%9A%84%E5%AE%B6%E4%B9%A6/</url>
-    <content><![CDATA[<h3 id="人生的真谛要用自己一辈子去理解">人生的真谛要用自己一辈子去理解</h3>
-<p>甲午年，正月初九。我儿子十八了，正所谓成人长大。学名奇临，取奇妙降临之意。后下海，艺名麒麟，乃仿周大师之遗韵。</p>
-<p>人生一世，极不容易。登天难，求人更难。黄连苦，无钱更苦。江湖险，人心更险。春冰薄，人情更薄。过去有句话：既落江湖内，便是薄命人。我本不愿儿从艺，奈何人自有志无法横栏。但有几句话要说清楚。</p>
-<p>艺人分几类，相隔种种。一是普通艺人，有一技之长，凭能耐吃饭。一是名演员，知名度高，但不代表艺术高，此类要两说。一是角儿，何为角儿？舞台上的顶梁柱、剧团班社的灵魂。贴出你的名字要保证卖得出票，全团老少指着你吃饭。角儿是有责任的艺人。</p>
-<p>郭麒麟刚十八，我不希望儿子大红。人红麻烦多，一大三大，名气大后，开销大压力大是非大。红起来容易，难的是接住自己。年三十吃顿饺子容易，之后呢？得天天吃饺子才行啊，可你有那么多的面和馅儿吗？所以，要多下功夫，并且要保持一个好心态。很多人不成功的原因，主要是太尊重自己了。</p>
-<p>一个人刚出道，不狂是没有出息的。但如果一直狂，是肯定没出息的。你眼中的你，和别人眼中的你，不是一回事。无限赞美自己，只是一种胆怯。我一直认为，恐惧到头就是愤怒。发挥无敌想象，给自己描绘了一个童话世界，白衣如雪来去如风。剑影刀光闪过后，你满脸冷酷地立于珠峰顶端，傲视苍生无比英武。此时我要问的是：孩子，你怎么下去？不让古人，是谓有志；不让今人，是谓无良。记住了，小俗便雅，大雅则俗。有人夸你，别信。有人骂你，别听。周围人随意捧骂，不可与之交，因其无志兴也。记住，言语多反复，当防欺诈。忘恩思小过，定会反戈。开口说大义，临大难必变节。逢人称兄弟，即深交也平常。</p>
-<p>另外，凡事要慎重。江湖子弟，拿得起来放得下。身边人很重要。一根稻草，扔街上就是垃圾，捆上白菜就是白菜价，捆上大闸蟹就是大闸蟹价。包括脚下的平台，也极重要。同样是一个人，步行一小时能走多远？骑车呢？开车呢？坐飞机呢？平台会决定你的速度，且记且记。</p>
-<p>此外，钱财要珍惜，但不可看得太重。财乃天地至公之物，假手于人罢了，雨打残花风卷流云，轮番更转而已。穷转富，富转穷，哪有百世富家翁？至于交友，吃点亏也无妨。人每所谓穷通寿夭为命所系，岂不知造物之报施，全视人之自取。芸芸众生富贵贫寒，不是谁都可以傲视乾坤。其中有命有运，要知因果懂善恶，我儿且记，但行好事，莫问前程。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>银行家算法</title>
-    <url>/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h2 id="一句话">一句话</h2>
-<p>当一个进程申请使用资源的时候，银行家算法通过先<strong>试探</strong>分配给该进程资源，然后通过安全性算法判断分配后的系统是否处于安全状态，若不安全则试探分配作废，让该进程继续等待。</p>
-<blockquote>
-<p>那么此时会有一个问题，如何判断系统是否处于安全状态？算法流程将用下面一张图来表示。</p>
-</blockquote>
-<h2 id="一张图">一张图</h2>
-<img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%951.png" class>
-<ul>
-<li><p>首先是银行家算法中的<strong>进程</strong>：</p>
-<ul>
-<li><p>包含进程Pi的需求资源数量（也是最大需求资源数量，MAX）</p></li>
-<li><p>已分配给该进程的资源A（Allocation）</p></li>
-<li><p>还需要的资源数量N（Need= M - A）</p></li>
-</ul></li>
-<li><p>Available为空闲资源数量，即资源池（注意：资源池的剩余资源数量+已分配给所有进程的资源数量=系统中的资源总量）</p></li>
-</ul>
-<p>假设进程P1申请资源，银行家算法先<strong>试探</strong>的分配给它（当然先要看看当前资源池中的资源数量够不够），若申请的资源数量小于等于Available，然后接着判断分配给P1后剩余的资源，能不能使进程队列的某个进程执行完毕，若没有进程可执行完毕，则系统处于不安全状态（即此时没有一个进程能够完成并释放资源，随时间推移，系统终将处于死锁状态）。</p>
-<p>若有进程可执行完毕，则假设回收已分配给它的资源（剩余资源数量增加），把这个进程标记为可完成，并继续判断队列中的其他进程，<strong>若所有进程都可执行完毕，则系统处于安全状态，并根据可完成进程的分配顺序生成安全序列</strong>（如{P0, P3, P2, P1}表示将申请后的剩余资源Work先分配给P0 -&gt; 回收（Work+已分配给P0的A0=Work） -&gt; 分配给P3 -&gt; 回收（Work + A3 = Work）-&gt; 分配给P2 -&gt; ...... 满足所有进程）。</p>
-<p>如此就可避免系统存在潜在死锁的风险。</p>
-<h2 id="来个例子">来个例子</h2>
-<p>在银行家算法中，若出现下述资源分配情况：</p>
-<img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%952" class>
-<blockquote>
-<p>注：题中共四种资源，P0的Allocation为（0，0， 3， 2）表示已分配给P0的第一种资源和第二种资源为0个，第三种资源3个，第四种资源2个。</p>
-</blockquote>
-<ol type="1">
-<li><p>该状态是否安全？</p></li>
-<li><p>若进程P2提出请求Request（1，2，2，2）后，系统能否将资源分配给它？</p></li>
-<li><p>利用安全性算法对上面的状态进行分析（见下表），找到一个安全序列{P0, P3, P4, P1, P2}，故系统是安全的。</p>
-<img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%953" class></li>
-<li><p>P2发出请求向量Request(1,2,2,2)，系统按银行家算法进行检查:</p>
-<ol type="1">
-<li><p>Request2(1,2,2,2) &lt;= Need2(2,3,5,6)</p></li>
-<li><p>Request2(1,2,2,2) &lt;= Available(1,6,2,2)</p></li>
-<li><p>系统先假定可为P2分配资源，并修改Available，Allovation2和Need2向量：</p>
-<ol type="1">
-<li>Available = （0，4，0，0）</li>
-<li>Allocation2 = （2，5，7，6）</li>
-<li>Need2 = （1，1，3，4）</li>
-</ol>
-<p>此时在进行安全检查，发现Available=(0, 4, 0, 0)，不能满足任何一个进程，所以判定系统进入不安全状态，即不能分配给P2相应的Request(1,2,2,2)。</p></li>
-</ol></li>
-</ol>
-<h2 id="简单伪代码">简单伪代码</h2>
-<p>P - 进程的集合</p>
-<p>Mp - 进程p的最大的请求数目</p>
-<p>Cp - 进程p当前被分配的资源</p>
-<p>A - 当前可用的资源</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (P !&#x3D; ∅) &#123;</span><br><span class="line">    found &#x3D; FALSE;</span><br><span class="line">    foreach (p ∈ P) &#123;</span><br><span class="line">    		&#x2F;&#x2F; Mp - Cp就是Need</span><br><span class="line">        if (Mp − Cp ≤ A) &#123;</span><br><span class="line">             &#x2F;* p可以获得他所需的资源。假设他得到资源后执行；执行终止，并释放所拥有的资源。*&#x2F;</span><br><span class="line">             A &#x3D; A + Cp ;</span><br><span class="line">             P &#x3D; P − &#123;p&#125;;</span><br><span class="line">             found &#x3D; TRUE;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (! found) return FAIL;</span><br><span class="line">&#125;</span><br><span class="line">return OK;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
   </entry>
   <entry>
     <title>深入理解MySQL索引底层实现原理丨技术干货</title>
@@ -1102,5 +991,116 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <li>B-Tree巧妙地利用磁盘预读原理，将一个节点的大小设为等于一个页。每次新建节点时，直接申请一个页的空间，这样就保证一个节点物理上也存储在一个页里，加之计算机存储分配都是按页对齐的，就实现了一个node只需一次I/O。</li>
 </ol>
 ]]></content>
+  </entry>
+  <entry>
+    <title>蓄水池算法</title>
+    <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="蓄水池采样算法reservoir-sampling">蓄水池采样算法（Reservoir Sampling）</h1>
+<p>蓄水池采样算法是非常常用的一种<strong>流式数据处理算法</strong>。</p>
+<h2 id="问题">问题</h2>
+<h3 id="大致描述">大致描述：</h3>
+<p>给出一个数据流，这个数据流的长度很大或未知，并且对该数据流中的数据只能访问一次。请写出一个随机选择算法，使得数据流中所有数据被选中的概率相等。</p>
+<h3 id="一些实际问题">一些实际问题</h3>
+<ol type="1">
+<li>从 100,000 分调查报告中抽取1000份进行统计。</li>
+<li>从一本很厚的电话簿中抽取1000人进行姓氏统计。</li>
+<li>从google搜索"Ken Thompson"，从中抽取100个结果查看哪些是今年的。</li>
+</ol>
+<p>这些都是很基本的采样问题。</p>
+<p>既然说的采样问题，最重要的就是做到公平，也就是保证每个元素被采样到的概率是相同的。</p>
+<p>对于第一个问题，我们已经知道数据的规模，通过算法生成[0, 100,000-1]间的随机数1000个，并且保证不重复即可。再取出对应的元素即可。</p>
+<p>但是对于第二和第三个问题，我们不知道数据的整体规模是多大。可能有人会想到，可以先对数据进行一次遍历，计算出数据的规模N，然后按照第一题的方法采样即可。这当然可以，但是并不好。因为这可能需要遍历两次，需要花两次的时间。也可以尝试估算数据的规模，但是这样得到的采样数据可能并不平均。</p>
+<h3 id="问题严格定义">问题严格定义</h3>
+<p>给你一个长度为N的链表。N很大，但你不知道N有多大。你的任务是从这N个元素中随机抽取k个元素。你只能遍历这个链表一次。你的算法必须保证取出的元素恰好有k个，且它们是完全随机的（出现概率相等的）。</p>
+<h2 id="解法">解法</h2>
+<h3 id="蓄水池算法">蓄水池算法：</h3>
+<p>蓄水池算法是针对从一个序列中随机抽取不重复的K个数，保证每个数被抽取到的概率都为K/N这个问题构建的。</p>
+<h3 id="做法">做法：</h3>
+<p>首先构造一个可以容纳k个元素的蓄水池（数组），将序列前k个元素直接放入蓄水池数组中。</p>
+<p>然后从第i = k+1个数据开始，以k/i（k&lt;i&lt;=n）的概率决定它是否进入到蓄水池中。蓄水池中的k个元素被替换出去的概率是相同的。</p>
+<p>当遍历完所有元素之后，数组中剩下的元素即为所需采取的样本。</p>
+<h2 id="证明">证明</h2>
+<p>对于第i个数（i &lt;= k）。在k步之前，被选中的概率为1。当走到第k+1步时，被k+1个元素替换的概率=第k+1个元素被选中的概率<em>i被替换的概率，即为 k/(k+1) </em> 1/k = 1/(k+1)。则不被第k+1个元素替换的概率为1 - 1/(k+1) = k/(k+1)。依次类推，不被K+2个元素替换的概率为1-k/(k+2) * 1/k = (k+1)/(k+2)。则运行到第n步时，第i个数仍保留的概率=被选中的概率<em>不被替换的概率，即： <span class="math display">\[
+1 \times \frac {k}{k+1}\times \frac {k+1}{k+2}\times \frac {k+2}{k+3}\times ...\times \frac {n-1}{n} = \frac {k}{n}
+\]</span> 对于第j个数（j&gt;k）。我们知道，在第j步被选中的概率为k/j。不被j+1个元素替换的概率为1 - k/(j+1) </em> 1/k = j/(j+1)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即： <span class="math display">\[
+\frac {k}{j}\times \frac {j}{j+1}\times \frac {j+1}{j+2}\times \frac {j+2}{j+3}\times ... \times \frac {n-1}{n} = \frac {k}{n}
+\]</span> 所以对于中每个元素，被保留的概率都为k/n。</p>
+<h2 id="实现">实现</h2>
+<p>python3版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span><span class="params">(self, node, k)</span>:</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span><span class="params">(object)</span>:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, val)</span>:</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>郭德纲写给儿子郭麒麟的家书</title>
+    <url>/2020/07/23/%E9%83%AD%E5%BE%B7%E7%BA%B2%E5%86%99%E7%BB%99%E5%84%BF%E5%AD%90%E9%83%AD%E9%BA%92%E9%BA%9F%E7%9A%84%E5%AE%B6%E4%B9%A6/</url>
+    <content><![CDATA[<h3 id="人生的真谛要用自己一辈子去理解">人生的真谛要用自己一辈子去理解</h3>
+<p>甲午年，正月初九。我儿子十八了，正所谓成人长大。学名奇临，取奇妙降临之意。后下海，艺名麒麟，乃仿周大师之遗韵。</p>
+<p>人生一世，极不容易。登天难，求人更难。黄连苦，无钱更苦。江湖险，人心更险。春冰薄，人情更薄。过去有句话：既落江湖内，便是薄命人。我本不愿儿从艺，奈何人自有志无法横栏。但有几句话要说清楚。</p>
+<p>艺人分几类，相隔种种。一是普通艺人，有一技之长，凭能耐吃饭。一是名演员，知名度高，但不代表艺术高，此类要两说。一是角儿，何为角儿？舞台上的顶梁柱、剧团班社的灵魂。贴出你的名字要保证卖得出票，全团老少指着你吃饭。角儿是有责任的艺人。</p>
+<p>郭麒麟刚十八，我不希望儿子大红。人红麻烦多，一大三大，名气大后，开销大压力大是非大。红起来容易，难的是接住自己。年三十吃顿饺子容易，之后呢？得天天吃饺子才行啊，可你有那么多的面和馅儿吗？所以，要多下功夫，并且要保持一个好心态。很多人不成功的原因，主要是太尊重自己了。</p>
+<p>一个人刚出道，不狂是没有出息的。但如果一直狂，是肯定没出息的。你眼中的你，和别人眼中的你，不是一回事。无限赞美自己，只是一种胆怯。我一直认为，恐惧到头就是愤怒。发挥无敌想象，给自己描绘了一个童话世界，白衣如雪来去如风。剑影刀光闪过后，你满脸冷酷地立于珠峰顶端，傲视苍生无比英武。此时我要问的是：孩子，你怎么下去？不让古人，是谓有志；不让今人，是谓无良。记住了，小俗便雅，大雅则俗。有人夸你，别信。有人骂你，别听。周围人随意捧骂，不可与之交，因其无志兴也。记住，言语多反复，当防欺诈。忘恩思小过，定会反戈。开口说大义，临大难必变节。逢人称兄弟，即深交也平常。</p>
+<p>另外，凡事要慎重。江湖子弟，拿得起来放得下。身边人很重要。一根稻草，扔街上就是垃圾，捆上白菜就是白菜价，捆上大闸蟹就是大闸蟹价。包括脚下的平台，也极重要。同样是一个人，步行一小时能走多远？骑车呢？开车呢？坐飞机呢？平台会决定你的速度，且记且记。</p>
+<p>此外，钱财要珍惜，但不可看得太重。财乃天地至公之物，假手于人罢了，雨打残花风卷流云，轮番更转而已。穷转富，富转穷，哪有百世富家翁？至于交友，吃点亏也无妨。人每所谓穷通寿夭为命所系，岂不知造物之报施，全视人之自取。芸芸众生富贵贫寒，不是谁都可以傲视乾坤。其中有命有运，要知因果懂善恶，我儿且记，但行好事，莫问前程。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>银行家算法</title>
+    <url>/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="一句话">一句话</h2>
+<p>当一个进程申请使用资源的时候，银行家算法通过先<strong>试探</strong>分配给该进程资源，然后通过安全性算法判断分配后的系统是否处于安全状态，若不安全则试探分配作废，让该进程继续等待。</p>
+<blockquote>
+<p>那么此时会有一个问题，如何判断系统是否处于安全状态？算法流程将用下面一张图来表示。</p>
+</blockquote>
+<h2 id="一张图">一张图</h2>
+<img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%951.png" class>
+<ul>
+<li><p>首先是银行家算法中的<strong>进程</strong>：</p>
+<ul>
+<li><p>包含进程Pi的需求资源数量（也是最大需求资源数量，MAX）</p></li>
+<li><p>已分配给该进程的资源A（Allocation）</p></li>
+<li><p>还需要的资源数量N（Need= M - A）</p></li>
+</ul></li>
+<li><p>Available为空闲资源数量，即资源池（注意：资源池的剩余资源数量+已分配给所有进程的资源数量=系统中的资源总量）</p></li>
+</ul>
+<p>假设进程P1申请资源，银行家算法先<strong>试探</strong>的分配给它（当然先要看看当前资源池中的资源数量够不够），若申请的资源数量小于等于Available，然后接着判断分配给P1后剩余的资源，能不能使进程队列的某个进程执行完毕，若没有进程可执行完毕，则系统处于不安全状态（即此时没有一个进程能够完成并释放资源，随时间推移，系统终将处于死锁状态）。</p>
+<p>若有进程可执行完毕，则假设回收已分配给它的资源（剩余资源数量增加），把这个进程标记为可完成，并继续判断队列中的其他进程，<strong>若所有进程都可执行完毕，则系统处于安全状态，并根据可完成进程的分配顺序生成安全序列</strong>（如{P0, P3, P2, P1}表示将申请后的剩余资源Work先分配给P0 -&gt; 回收（Work+已分配给P0的A0=Work） -&gt; 分配给P3 -&gt; 回收（Work + A3 = Work）-&gt; 分配给P2 -&gt; ...... 满足所有进程）。</p>
+<p>如此就可避免系统存在潜在死锁的风险。</p>
+<h2 id="来个例子">来个例子</h2>
+<p>在银行家算法中，若出现下述资源分配情况：</p>
+<img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%952" class>
+<blockquote>
+<p>注：题中共四种资源，P0的Allocation为（0，0， 3， 2）表示已分配给P0的第一种资源和第二种资源为0个，第三种资源3个，第四种资源2个。</p>
+</blockquote>
+<ol type="1">
+<li><p>该状态是否安全？</p></li>
+<li><p>若进程P2提出请求Request（1，2，2，2）后，系统能否将资源分配给它？</p></li>
+<li><p>利用安全性算法对上面的状态进行分析（见下表），找到一个安全序列{P0, P3, P4, P1, P2}，故系统是安全的。</p>
+<img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%953" class></li>
+<li><p>P2发出请求向量Request(1,2,2,2)，系统按银行家算法进行检查:</p>
+<ol type="1">
+<li><p>Request2(1,2,2,2) &lt;= Need2(2,3,5,6)</p></li>
+<li><p>Request2(1,2,2,2) &lt;= Available(1,6,2,2)</p></li>
+<li><p>系统先假定可为P2分配资源，并修改Available，Allovation2和Need2向量：</p>
+<ol type="1">
+<li>Available = （0，4，0，0）</li>
+<li>Allocation2 = （2，5，7，6）</li>
+<li>Need2 = （1，1，3，4）</li>
+</ol>
+<p>此时在进行安全检查，发现Available=(0, 4, 0, 0)，不能满足任何一个进程，所以判定系统进入不安全状态，即不能分配给P2相应的Request(1,2,2,2)。</p></li>
+</ol></li>
+</ol>
+<h2 id="简单伪代码">简单伪代码</h2>
+<p>P - 进程的集合</p>
+<p>Mp - 进程p的最大的请求数目</p>
+<p>Cp - 进程p当前被分配的资源</p>
+<p>A - 当前可用的资源</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (P !&#x3D; ∅) &#123;</span><br><span class="line">    found &#x3D; FALSE;</span><br><span class="line">    foreach (p ∈ P) &#123;</span><br><span class="line">    		&#x2F;&#x2F; Mp - Cp就是Need</span><br><span class="line">        if (Mp − Cp ≤ A) &#123;</span><br><span class="line">             &#x2F;* p可以获得他所需的资源。假设他得到资源后执行；执行终止，并释放所拥有的资源。*&#x2F;</span><br><span class="line">             A &#x3D; A + Cp ;</span><br><span class="line">             P &#x3D; P − &#123;p&#125;;</span><br><span class="line">             found &#x3D; TRUE;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (! found) return FAIL;</span><br><span class="line">&#125;</span><br><span class="line">return OK;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
   </entry>
 </search>
