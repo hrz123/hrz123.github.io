@@ -78,6 +78,33 @@
 ]]></content>
   </entry>
   <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>想法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
+    <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
+    <content><![CDATA[<h2 id="原文">原文</h2>
+<p>https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html</p>
+<p>原文很长，这里摘录总结的内容。</p>
+<h2 id="摘录">摘录</h2>
+<p>让我结束发言。自动计算机已经陪伴我们四分之一个世纪。它们作为工具的能力对我们的社会产生了巨大的影响，但就这种能力而言，它们的影响只是我们文化表面上的一个涟漪，而与之相比，它们在人类文化史上前所未有的智力挑战能力方面将产生更深远的影响。层次系统一户具有这样的特性：在一个层次上被视为无法分隔的东西，在下一个层次上被视为更详细的复合对象；因此，当我们把注意力从一个层次转移到下一个更低层次上时，适用于每个层次的自然空间或时间的颗粒就会减少一个数量级。我们用砖头来理解墙壁，用晶体来理解砖头，用分子来理解晶体等等。在一个层次系统中，可以有意义的区分的层次数量，有点正比于最大和最小的晶粒之间的比例的对数，因此，除非这个比例非常大，否则我们不能期望有很多次的层次。在计算机编程中，我们的基本构建的相关时间最小度量不到一微秒，但我们的程序可能需要几个小时的计算时间。我不知道有其他任何技术覆盖了10的10次方或更高的比例：计算机，凭借其神奇的速度，似乎是第一个为我们提供了一个高度层次化的既可能又必要的环境。这种挑战，即，面对编程任务，是如此的独特，以至于这种新奇的经验可以给我们很多关于自己的启示。<strong>它应该加深我们对设计和创造过程的理解，它应该让我们更好的控制组织思想的任务。</strong>如果它没有做到这一点，以我的品味，我们应该根本不配拥有电脑！</p>
+<p><strong>它已经给了我们一些教训，我选择在这次演讲中强调的是以下几点。只要我们在处理任务时充分认识到它的巨大困难，只要我们坚持使用适度而优雅的编程语言，只要我们尊重人类思维的内在局限性，并以非常谦逊的程序员的身份处理任务，我们就会把编程工作做得更好。</strong></p>
+<p>ACM Turing Lecture 1972</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>K个一组翻转链表</title>
     <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
     <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
@@ -104,33 +131,6 @@
 <p>返回dummy.next</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span><span class="params">(self, head: ListNode, k: int)</span> -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span><span class="params">(self, head, tail)</span>:</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
 ]]></content>
-  </entry>
-  <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>想法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
-    <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
-    <content><![CDATA[<h2 id="原文">原文</h2>
-<p>https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html</p>
-<p>原文很长，这里摘录总结的内容。</p>
-<h2 id="摘录">摘录</h2>
-<p>让我结束发言。自动计算机已经陪伴我们四分之一个世纪。它们作为工具的能力对我们的社会产生了巨大的影响，但就这种能力而言，它们的影响只是我们文化表面上的一个涟漪，而与之相比，它们在人类文化史上前所未有的智力挑战能力方面将产生更深远的影响。层次系统一户具有这样的特性：在一个层次上被视为无法分隔的东西，在下一个层次上被视为更详细的复合对象；因此，当我们把注意力从一个层次转移到下一个更低层次上时，适用于每个层次的自然空间或时间的颗粒就会减少一个数量级。我们用砖头来理解墙壁，用晶体来理解砖头，用分子来理解晶体等等。在一个层次系统中，可以有意义的区分的层次数量，有点正比于最大和最小的晶粒之间的比例的对数，因此，除非这个比例非常大，否则我们不能期望有很多次的层次。在计算机编程中，我们的基本构建的相关时间最小度量不到一微秒，但我们的程序可能需要几个小时的计算时间。我不知道有其他任何技术覆盖了10的10次方或更高的比例：计算机，凭借其神奇的速度，似乎是第一个为我们提供了一个高度层次化的既可能又必要的环境。这种挑战，即，面对编程任务，是如此的独特，以至于这种新奇的经验可以给我们很多关于自己的启示。<strong>它应该加深我们对设计和创造过程的理解，它应该让我们更好的控制组织思想的任务。</strong>如果它没有做到这一点，以我的品味，我们应该根本不配拥有电脑！</p>
-<p><strong>它已经给了我们一些教训，我选择在这次演讲中强调的是以下几点。只要我们在处理任务时充分认识到它的巨大困难，只要我们坚持使用适度而优雅的编程语言，只要我们尊重人类思维的内在局限性，并以非常谦逊的程序员的身份处理任务，我们就会把编程工作做得更好。</strong></p>
-<p>ACM Turing Lecture 1972</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
   </entry>
   <entry>
     <title>Hello World</title>
@@ -172,116 +172,6 @@
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>《相信未来》——食指</title>
-    <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
-    <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
-<p>当灰烬的余烟叹息着贫困的悲哀</p>
-<p>我依然固执地铺平失望的灰烬</p>
-<p>用美丽的雪花写下：相信未来</p>
-<p>当我的紫葡萄化为深秋的露水</p>
-<p>当我的鲜花依偎在别人的情怀</p>
-<p>我依然固执地用凝霜的枯藤</p>
-<p>在凄凉的大地上写下：相信未来</p>
-<p>我要用手指那涌向天边的排浪</p>
-<p>我要用手掌那托住太阳的大海</p>
-<p>摇曳着曙光那枝温暖漂亮的笔杆</p>
-<p>用孩子的笔体写下：相信未来</p>
-<p>我之所以坚定地相信未来</p>
-<p>是我相信未来人们的眼睛</p>
-<p>她有拨开历史风尘的睫毛</p>
-<p>她有看透岁月篇章的瞳孔</p>
-<p>不管人们对于我们腐烂的皮肉</p>
-<p>那些迷途的惆怅、失败的苦痛</p>
-<p>是寄予感动的热泪、深切的同情</p>
-<p>还是给以轻蔑的微笑、辛辣的嘲讽</p>
-<p>我坚信人们对于我们的脊骨</p>
-<p>那无数次的探索、迷途、失败和成功</p>
-<p>一定会给予热情、客观、公正的评定</p>
-<p>是的，我焦急地等待着他们的评定</p>
-<p>朋友，坚定地相信未来吧</p>
-<p>相信不屈不挠的努力</p>
-<p>相信战胜死亡的年轻</p>
-<p>相信未来、热爱生命</p>
-<p><br></p>
-<p>食指</p>
-<p>1968年 北京</p>
-]]></content>
-      <tags>
-        <tag>青春</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
-]]></content>
-  </entry>
-  <entry>
-    <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
-    <url>/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/</url>
-    <content><![CDATA[<h2 id="问题描述">1. 问题描述</h2>
-<p>给出只包含int类型的数组，所有值出现k(k&gt;1)次，除了一个值，这个值出现了p次（p&gt;1, p%k!=0)。找到这个值。</p>
-<h2 id="从只有1bit的特殊情况开始">2. 从只有1bit的特殊情况开始</h2>
-<p>为了应用位运算，我们应该重新思考integers是如何在计算机中被表示的--通过位。让我们先考虑1位。假如我们有一数组的一bit数（除了0就是1），我们要统计数组中的1，使得当统计1的计数器到达k时，计数器回到0并且重新统计（k和我们问题中提到的k一样）。为了跟踪我们已经遇到多少个1，我们需要一个计数器。假设计数器二进制表示有m位：xm, ..., x1（最重要的位到最不重要的位）。我们至少可以总结出计数器的以下四个特性。</p>
-<ol type="1">
-<li>计数器有一个初始状态，简单来讲为0</li>
-<li>对于数组中的每一个输入，如果我们击中0，计数器应该保持不变</li>
-<li>对于数组中的每一个输入，如果我们击中1，计数器应该增加1</li>
-<li>为了覆盖k个计数，我们要求2^m&gt;=k，这意味着m &gt; logk</li>
-</ol>
-<p>这里是关键部分：当我们扫描数组时，计数器（从x1到xm）中的每个位如何变化。注意，我们被提示使用位运算。为了满足第2个属性，回想一下，如果另一个操作数为0，有哪些位操作不会改变操作数？是的，有位与x=x|0和位异或x=x^0。</p>
-<p>好了，我们现在有一个表达式：x = x | i或者x = x^i，其中i是数组中的扫描元素。哪一个更好呢？我们还不知道。所以，让我们开始实际的计算。</p>
-<p>开始的时候，计数器的所有位都初始化为0，即xm=0, ..., x1=0。由于我们要选择的位操作，保证了计数器的所有位在遇到0时都保持不变，所以直到我们遇到数组中第一个1，计数器将是0。当我们遇到第一个1的时候，我们得到：xm = 0, ... , x2=0, x1=1。让我们继续下去，直到打出第二个1，之后我们得到：xm=0, ... , x2=1, x1=0。注意，x1从1变成了0。对于x1 = x1 | i，在第二次计数之后，x1仍然会是1。所以很明显，我们应该使用x1 = x1 ^ i，那么x2, ..., xm呢？我们的想法是找到x2, ... , xm将改变其值的条件。以x2为例。如果我们打了一个1，需要改变x2的值，那么在我们进行改变之前，x1的值一定是多少？答案是：x1必须是1，否则我们不应该改变x2，因为把x1从0改成1就可以了。因此，只有当x1和i都是1时，x2才会改变值，或者数学上说，x2 = x2 ^ (x1 &amp; i)。同理，xm只有在，xm-1, ... , x1和i都是1的时候才会改变数值：xm = xm ^ (xm-1 &amp; ... &amp; x1 &amp; i)。ok，我们找到了这个位运算。</p>
-<p>但是，你可能会注意到，上面发现的位运算将从0开始计数，直到2^m-1，而不是k。如果k &lt; 2^m - 1，我们需要一些”切割“机制，以在计数达到k时将计数器重新初始化为0。为此，我们对xm, ... , x1应用位AND，并使用一些称为mask的变量，即xm = xm &amp; mask, ... , x1 = x1 &amp; mask。如果我们能保证只有当计数达到k时，mask才为0，而在其他所有计数情况下为1，那么我们就完成了。我们如何实现这一点呢？试着想一想，计数为k的情况与其他所有情况的区别是什么？是的，是1的计数！对于每一个计数，我们对计数器的每一个位都有唯一的值，这可以看作是它的状态。如果我们把k写成二进制形式：km, ... ,k1, 我们就可以构造mask如下。</p>
-<p>mask = ~(y1 &amp; y2 &amp; .. &amp; ym)，其中如果kj = 1, yj = xj， 如果kj = 0， yj = -xj ( j = 1 to m )</p>
-<p>简单来讲，就是只有当x1..xm和k的所有位都相等的时候，mask才会为0</p>
-<p>我们来举一些例子：</p>
-<p>k = 3: k1 = 1, k2 = 1, mask = ~(x1 &amp; x2);</p>
-<p>k = 5: k1 = 1, k2 = 1, k3 = 1, mask = ~(x1 &amp; ~x2 &amp; x3);</p>
-<p>综上所述，我们的算法将是这样的（nums是输入数组）：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : nums) &#123;</span><br><span class="line">    xm ^= (xm<span class="number">-1</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    xm<span class="number">-1</span> ^= (xm<span class="number">-2</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    .....</span><br><span class="line">    x1 ^= i;</span><br><span class="line">    </span><br><span class="line">    mask = ~(y1 &amp; y2 &amp; ... &amp; ym) where yj = xj <span class="keyword">if</span> kj = <span class="number">1</span>, <span class="keyword">and</span> yj = ~xj <span class="keyword">if</span> kj = <span class="number">0</span> (j = <span class="number">1</span> to m).</span><br><span class="line"></span><br><span class="line">    xm &amp;= mask;</span><br><span class="line">    ......</span><br><span class="line">    x1 &amp;= mask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="位数的一般情况">3. 32位数的一般情况</h2>
-<p>现在是时候把我们的结果从1位数的情况推广到32位整数了。一个直接的方法是为整数中的每个位创建32个计数器。但是，如果我们利用位操作的优势，我们也许可以”集体“管理所有的32个计数器，其中m是满足m&gt;=logk的最小整数。原因是位操作只适用于每个位，所以对不同位的操作是相互独立的（有点明显，对吧？）。这使得我们可以将32个计数器的对应位归为一个32位整数。下面是一个示意图，展示了如何做到这一点。</p>
-<img data-src="/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/%E4%BD%8D%E8%BF%90%E7%AE%971.png" class>
-<p>最上面的一行是32位的整数，其中每一个位，我们都有一个对应的m位计数器（由向上箭头下面的那一列所示）。由于对32位中每一个位的操作都是相互独立的，所以我们可以将比如说所有计数器的第m位，归为一个32位数（由橙色框所示）。这个32位数中的所有位（表示为xm）将遵循相同的位操作。由于每个计数器有m个位，我们最终得到m个32位数，对应于第二部分中定义的x1, ... , xm，但现在它们是32位数而不是1位数。因此，在上面开发的算法中，我们只需要将x1到xm视为32位整数而不是1位数。其他一切都将是相同的，我们就完成了。很简单，嗯？</p>
-<h2 id="返回什么">4. 返回什么</h2>
-<p>最后就是我们应该返回什么值，或者等价于x1到xm中哪一个会等于单元。为了得到正确的答案，我们需要了解m个32位整数x1到xm代表什么。以x1为例，x1有32位，我们把它们标注为r（r=1到32)。当我们扫描完输入数组后，x1的r-th位的值将由数组中所有元素的r-th为决定（更具体的说，假设数组中所有元素的r-th位1的总计数为q，那么最终r-th位就是q'=q%k，其二进制形式为：q'm, ... , q'1，那么根据定义，x1的r-th位将等于 q'1)。现在你可以问自己这个问题：如果x1的r-th位是1，这意味着什么？</p>
-<p>答案是要找到能对这个1做出贡献的东西，一个出现了k次的元素会有贡献吗？不会，为什么？因为一个元素要做出贡献，至少要同时满足两个条件：这个元素的r-th位是1，这个1的出现次数不是k的整数倍，第一个条件是微不足道的。第二个条件来自于每当1的命中次数为k时，计数器就会回零，也就是x1中的对应位会被重置为0，对于一个出现了k次的元素，不可能同时满足这两个条件（违反第二条），所以它不会有贡献。所以，只有出现p（p%k!=0）次的单个元素才会做出贡献。如果p&gt;k，那么前k*[p/k] ([p/k]表示p/k的整数部分)的元素也不会做出贡献。所以我们总是可以设置p' = p % k，并说这个单元素有效地出现了p'次。</p>
-<p>我们把p‘写成二进制形式：p'm, ... , p'1(注意p' &lt; k, 所以它将适合m位)。这里提出一个声明，xj等于这个单个元素的条件是p'j = 1(j =1 到 m)，下面给出一个快速证明：</p>
-<p>如果xj的r-th位是1，我们可以放心的说这个单一元素的r-th位也是1（否则没有任何东西可以使xj的r-th位是1）。我们还要证明，如果xj的r-th位是0，那么单元素的r-th位只能是0，我们就假设在这种情况下，单元素的r-th位是1，我们看看会发生什么。在扫描结束时，这个1将被计算p'次。根据定义，xj的r-th位将等于p'j，也就是1，这与xj的r-th位为0的假设相矛盾，因此我们得出结论，只要p'j=1，xj的r-th位将始终与单一元素的r-th位相同。由于这对xj中的所有位都是真的（即对若r=1到32来说是真的），所以我们得出结论，只要p'j=1，xj将等于这个单一元素的值。</p>
-<p>所以现在我们应该返回什么就很清楚了。只要用其二进制形式表达p'=p%k，只要p'j = 1，就可以返回对应的xj中的任何一个。总的来说，该算法将在O(n*logk)时间和O(logk)的空间内运行。</p>
-<h2 id="快速例子几个">快速例子几个</h2>
-<p>Here is a list of few quick examples to show how the algorithm works (you can easily come up with other examples):</p>
-<ol type="1">
-<li><code>k = 2, p = 1</code> <code>k</code> is <code>2</code>, then <code>m = 1</code>, we need only one 32-bit integer (<code>x1</code>) as the counter. And <code>2^m = k</code> so we do not even need a mask! A complete java program will look like:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    return x1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="2" type="1">
-<li><code>k = 3, p = 1</code> <code>k</code> is <code>3</code>, then <code>m = 2</code>, we need two 32-bit integers(<code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we do need a mask. Write <code>k</code> in its binary form: <code>k = '11'</code>, then <code>k1 = 1</code>, <code>k2 = 1</code>, so we have <code>mask = ~(x1 &amp; x2)</code>. A complete java program will look like:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; x2);</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 1, in binary form p &#x3D; &#39;01&#39;, then p1 &#x3D; 1, so we should return x1. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 2, in binary form p &#x3D; &#39;10&#39;, then p2 &#x3D; 1, and we should return x2.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="3" type="1">
-<li><code>k = 5, p = 3</code> <code>k</code> is <code>5</code>, then <code>m = 3</code>, we need three 32-bit integers(<code>x3</code>, <code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we need a mask. Write <code>k</code> in its binary form: <code>k = '101'</code>, then <code>k1 = 1</code>, <code>k2 = 0</code>, <code>k3 = 1</code>, so we have <code>mask = ~(x1 &amp; ~x2 &amp; x3)</code>. A complete java program will look like:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, x3  &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">   </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x3 ^&#x3D; x2 &amp; x1 &amp; i;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; ~x2 &amp; x3);</span><br><span class="line">        x3 &amp;&#x3D; mask;</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 3, in binary form p &#x3D; &#39;011&#39;, then p1 &#x3D; p2 &#x3D; 1, so we can return either x1 or x2. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 4, in binary form p &#x3D; &#39;100&#39;, only p3 &#x3D; 1, which implies we can only return x3.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2 | x3).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Lastly I would like to thank those for providing feedbacks to make this post better. Hope it helps and happy coding!</p>
-<h2 id="相关力扣题目">相关力扣题目</h2>
-<p>136 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci8=">https://leetcode-cn.com/problems/single-number/<i class="fa fa-external-link-alt"></i></span></p>
-<p>137 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paS8=">https://leetcode-cn.com/problems/single-number-ii/<i class="fa fa-external-link-alt"></i></span></p>
-<p>260 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paWkv">https://leetcode-cn.com/problems/single-number-iii/<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
   </entry>
   <entry>
     <title>python实现并查集</title>
@@ -345,6 +235,116 @@
       </tags>
   </entry>
   <entry>
+    <title>《相信未来》——食指</title>
+    <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
+    <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
+<p>当灰烬的余烟叹息着贫困的悲哀</p>
+<p>我依然固执地铺平失望的灰烬</p>
+<p>用美丽的雪花写下：相信未来</p>
+<p>当我的紫葡萄化为深秋的露水</p>
+<p>当我的鲜花依偎在别人的情怀</p>
+<p>我依然固执地用凝霜的枯藤</p>
+<p>在凄凉的大地上写下：相信未来</p>
+<p>我要用手指那涌向天边的排浪</p>
+<p>我要用手掌那托住太阳的大海</p>
+<p>摇曳着曙光那枝温暖漂亮的笔杆</p>
+<p>用孩子的笔体写下：相信未来</p>
+<p>我之所以坚定地相信未来</p>
+<p>是我相信未来人们的眼睛</p>
+<p>她有拨开历史风尘的睫毛</p>
+<p>她有看透岁月篇章的瞳孔</p>
+<p>不管人们对于我们腐烂的皮肉</p>
+<p>那些迷途的惆怅、失败的苦痛</p>
+<p>是寄予感动的热泪、深切的同情</p>
+<p>还是给以轻蔑的微笑、辛辣的嘲讽</p>
+<p>我坚信人们对于我们的脊骨</p>
+<p>那无数次的探索、迷途、失败和成功</p>
+<p>一定会给予热情、客观、公正的评定</p>
+<p>是的，我焦急地等待着他们的评定</p>
+<p>朋友，坚定地相信未来吧</p>
+<p>相信不屈不挠的努力</p>
+<p>相信战胜死亡的年轻</p>
+<p>相信未来、热爱生命</p>
+<p><br></p>
+<p>食指</p>
+<p>1968年 北京</p>
+]]></content>
+      <tags>
+        <tag>青春</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
+]]></content>
+  </entry>
+  <entry>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
+    <url>/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/</url>
+    <content><![CDATA[<h2 id="问题描述">1. 问题描述</h2>
+<p>给出只包含int类型的数组，所有值出现k(k&gt;1)次，除了一个值，这个值出现了p次（p&gt;1, p%k!=0)。找到这个值。</p>
+<h2 id="从只有1bit的特殊情况开始">2. 从只有1bit的特殊情况开始</h2>
+<p>为了应用位运算，我们应该重新思考integers是如何在计算机中被表示的--通过位。让我们先考虑1位。假如我们有一数组的一bit数（除了0就是1），我们要统计数组中的1，使得当统计1的计数器到达k时，计数器回到0并且重新统计（k和我们问题中提到的k一样）。为了跟踪我们已经遇到多少个1，我们需要一个计数器。假设计数器二进制表示有m位：xm, ..., x1（最重要的位到最不重要的位）。我们至少可以总结出计数器的以下四个特性。</p>
+<ol type="1">
+<li>计数器有一个初始状态，简单来讲为0</li>
+<li>对于数组中的每一个输入，如果我们击中0，计数器应该保持不变</li>
+<li>对于数组中的每一个输入，如果我们击中1，计数器应该增加1</li>
+<li>为了覆盖k个计数，我们要求2^m&gt;=k，这意味着m &gt; logk</li>
+</ol>
+<p>这里是关键部分：当我们扫描数组时，计数器（从x1到xm）中的每个位如何变化。注意，我们被提示使用位运算。为了满足第2个属性，回想一下，如果另一个操作数为0，有哪些位操作不会改变操作数？是的，有位与x=x|0和位异或x=x^0。</p>
+<p>好了，我们现在有一个表达式：x = x | i或者x = x^i，其中i是数组中的扫描元素。哪一个更好呢？我们还不知道。所以，让我们开始实际的计算。</p>
+<p>开始的时候，计数器的所有位都初始化为0，即xm=0, ..., x1=0。由于我们要选择的位操作，保证了计数器的所有位在遇到0时都保持不变，所以直到我们遇到数组中第一个1，计数器将是0。当我们遇到第一个1的时候，我们得到：xm = 0, ... , x2=0, x1=1。让我们继续下去，直到打出第二个1，之后我们得到：xm=0, ... , x2=1, x1=0。注意，x1从1变成了0。对于x1 = x1 | i，在第二次计数之后，x1仍然会是1。所以很明显，我们应该使用x1 = x1 ^ i，那么x2, ..., xm呢？我们的想法是找到x2, ... , xm将改变其值的条件。以x2为例。如果我们打了一个1，需要改变x2的值，那么在我们进行改变之前，x1的值一定是多少？答案是：x1必须是1，否则我们不应该改变x2，因为把x1从0改成1就可以了。因此，只有当x1和i都是1时，x2才会改变值，或者数学上说，x2 = x2 ^ (x1 &amp; i)。同理，xm只有在，xm-1, ... , x1和i都是1的时候才会改变数值：xm = xm ^ (xm-1 &amp; ... &amp; x1 &amp; i)。ok，我们找到了这个位运算。</p>
+<p>但是，你可能会注意到，上面发现的位运算将从0开始计数，直到2^m-1，而不是k。如果k &lt; 2^m - 1，我们需要一些”切割“机制，以在计数达到k时将计数器重新初始化为0。为此，我们对xm, ... , x1应用位AND，并使用一些称为mask的变量，即xm = xm &amp; mask, ... , x1 = x1 &amp; mask。如果我们能保证只有当计数达到k时，mask才为0，而在其他所有计数情况下为1，那么我们就完成了。我们如何实现这一点呢？试着想一想，计数为k的情况与其他所有情况的区别是什么？是的，是1的计数！对于每一个计数，我们对计数器的每一个位都有唯一的值，这可以看作是它的状态。如果我们把k写成二进制形式：km, ... ,k1, 我们就可以构造mask如下。</p>
+<p>mask = ~(y1 &amp; y2 &amp; .. &amp; ym)，其中如果kj = 1, yj = xj， 如果kj = 0， yj = -xj ( j = 1 to m )</p>
+<p>简单来讲，就是只有当x1..xm和k的所有位都相等的时候，mask才会为0</p>
+<p>我们来举一些例子：</p>
+<p>k = 3: k1 = 1, k2 = 1, mask = ~(x1 &amp; x2);</p>
+<p>k = 5: k1 = 1, k2 = 1, k3 = 1, mask = ~(x1 &amp; ~x2 &amp; x3);</p>
+<p>综上所述，我们的算法将是这样的（nums是输入数组）：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : nums) &#123;</span><br><span class="line">    xm ^= (xm<span class="number">-1</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    xm<span class="number">-1</span> ^= (xm<span class="number">-2</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    .....</span><br><span class="line">    x1 ^= i;</span><br><span class="line">    </span><br><span class="line">    mask = ~(y1 &amp; y2 &amp; ... &amp; ym) where yj = xj <span class="keyword">if</span> kj = <span class="number">1</span>, <span class="keyword">and</span> yj = ~xj <span class="keyword">if</span> kj = <span class="number">0</span> (j = <span class="number">1</span> to m).</span><br><span class="line"></span><br><span class="line">    xm &amp;= mask;</span><br><span class="line">    ......</span><br><span class="line">    x1 &amp;= mask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="位数的一般情况">3. 32位数的一般情况</h2>
+<p>现在是时候把我们的结果从1位数的情况推广到32位整数了。一个直接的方法是为整数中的每个位创建32个计数器。但是，如果我们利用位操作的优势，我们也许可以”集体“管理所有的32个计数器，其中m是满足m&gt;=logk的最小整数。原因是位操作只适用于每个位，所以对不同位的操作是相互独立的（有点明显，对吧？）。这使得我们可以将32个计数器的对应位归为一个32位整数。下面是一个示意图，展示了如何做到这一点。</p>
+<img data-src="/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/%E4%BD%8D%E8%BF%90%E7%AE%971.png" class>
+<p>最上面的一行是32位的整数，其中每一个位，我们都有一个对应的m位计数器（由向上箭头下面的那一列所示）。由于对32位中每一个位的操作都是相互独立的，所以我们可以将比如说所有计数器的第m位，归为一个32位数（由橙色框所示）。这个32位数中的所有位（表示为xm）将遵循相同的位操作。由于每个计数器有m个位，我们最终得到m个32位数，对应于第二部分中定义的x1, ... , xm，但现在它们是32位数而不是1位数。因此，在上面开发的算法中，我们只需要将x1到xm视为32位整数而不是1位数。其他一切都将是相同的，我们就完成了。很简单，嗯？</p>
+<h2 id="返回什么">4. 返回什么</h2>
+<p>最后就是我们应该返回什么值，或者等价于x1到xm中哪一个会等于单一元素。为了得到正确的答案，我们需要了解m个32位整数x1到xm代表什么。以x1为例，x1有32位，我们把它们标注为r（r=1到32)。当我们扫描完输入数组后，x1的r-th位的值将由数组中所有元素的r-th为决定（更具体的说，假设数组中所有元素的r-th位1的总计数为q，那么最终r-th位就是q'=q%k，其二进制形式为：q'm, ... , q'1，那么根据定义，x1的r-th位将等于 q'1)。现在你可以问自己这个问题：如果x1的r-th位是1，这意味着什么？</p>
+<p>答案是要找到能对这个1做出贡献的东西，一个出现了k次的元素会有贡献吗？不会，为什么？因为一个元素要做出贡献，至少要同时满足两个条件：这个元素的r-th位是1，这个1的出现次数不是k的整数倍，第一个条件是微不足道的。第二个条件来自于每当1的命中次数为k时，计数器就会回零，也就是x1中的对应位会被重置为0，对于一个出现了k次的元素，不可能同时满足这两个条件（违反第二条），所以它不会有贡献。所以，只有出现p（p%k!=0）次的单个元素才会做出贡献。如果p&gt;k，那么前k*[p/k] ([p/k]表示p/k的整数部分)的元素也不会做出贡献。所以我们总是可以设置p' = p % k，并说这个单元素有效地出现了p'次。</p>
+<p>我们把p‘写成二进制形式：p'm, ... , p'1(注意p' &lt; k, 所以它将适合m位)。这里提出一个声明，xj等于这个单个元素的条件是p'j = 1(j =1 到 m)，下面给出一个快速证明：</p>
+<p>如果xj的r-th位是1，我们可以放心的说这个单一元素的r-th位也是1（否则没有任何东西可以使xj的r-th位是1）。我们还要证明，如果xj的r-th位是0，那么单元素的r-th位只能是0，我们就假设在这种情况下，单元素的r-th位是1，我们看看会发生什么。在扫描结束时，这个1将被计算p'次。根据定义，xj的r-th位将等于p'j，也就是1，这与xj的r-th位为0的假设相矛盾，因此我们得出结论，只要p'j=1，xj的r-th位将始终与单一元素的r-th位相同。由于这对xj中的所有位都是真的（即对若r=1到32来说是真的），所以我们得出结论，只要p'j=1，xj将等于这个单一元素的值。</p>
+<p>所以现在我们应该返回什么就很清楚了。只要用其二进制形式表达p'=p%k，只要p'j = 1，就可以返回对应的xj中的任何一个。总的来说，该算法将在O(n*logk)时间和O(logk)的空间内运行。</p>
+<h2 id="快速例子几个">快速例子几个</h2>
+<p>Here is a list of few quick examples to show how the algorithm works (you can easily come up with other examples):</p>
+<ol type="1">
+<li><code>k = 2, p = 1</code> <code>k</code> is <code>2</code>, then <code>m = 1</code>, we need only one 32-bit integer (<code>x1</code>) as the counter. And <code>2^m = k</code> so we do not even need a mask! A complete java program will look like:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    return x1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li><code>k = 3, p = 1</code> <code>k</code> is <code>3</code>, then <code>m = 2</code>, we need two 32-bit integers(<code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we do need a mask. Write <code>k</code> in its binary form: <code>k = '11'</code>, then <code>k1 = 1</code>, <code>k2 = 1</code>, so we have <code>mask = ~(x1 &amp; x2)</code>. A complete java program will look like:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; x2);</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 1, in binary form p &#x3D; &#39;01&#39;, then p1 &#x3D; 1, so we should return x1. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 2, in binary form p &#x3D; &#39;10&#39;, then p2 &#x3D; 1, and we should return x2.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3" type="1">
+<li><code>k = 5, p = 3</code> <code>k</code> is <code>5</code>, then <code>m = 3</code>, we need three 32-bit integers(<code>x3</code>, <code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we need a mask. Write <code>k</code> in its binary form: <code>k = '101'</code>, then <code>k1 = 1</code>, <code>k2 = 0</code>, <code>k3 = 1</code>, so we have <code>mask = ~(x1 &amp; ~x2 &amp; x3)</code>. A complete java program will look like:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, x3  &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">   </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x3 ^&#x3D; x2 &amp; x1 &amp; i;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; ~x2 &amp; x3);</span><br><span class="line">        x3 &amp;&#x3D; mask;</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 3, in binary form p &#x3D; &#39;011&#39;, then p1 &#x3D; p2 &#x3D; 1, so we can return either x1 or x2. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 4, in binary form p &#x3D; &#39;100&#39;, only p3 &#x3D; 1, which implies we can only return x3.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2 | x3).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Lastly I would like to thank those for providing feedbacks to make this post better. Hope it helps and happy coding!</p>
+<h2 id="相关力扣题目">相关力扣题目</h2>
+<p>136 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci8=">https://leetcode-cn.com/problems/single-number/<i class="fa fa-external-link-alt"></i></span></p>
+<p>137 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paS8=">https://leetcode-cn.com/problems/single-number-ii/<i class="fa fa-external-link-alt"></i></span></p>
+<p>260 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paWkv">https://leetcode-cn.com/problems/single-number-iii/<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+  </entry>
+  <entry>
     <title>使用函数randa()来实现函数randb()</title>
     <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
     <content><![CDATA[<h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
@@ -380,6 +380,56 @@
 <p>从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure></li>
 </ol>
+]]></content>
+  </entry>
+  <entry>
+    <title>学会承担责任</title>
+    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>感想</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>实现KMP算法</title>
+    <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下https://time.geekbang.org/column/article/71845</p>
+<h2 id="概述">概述</h2>
+<p>字符串匹配算法，可以分为单模式串匹配算法，和多模式串匹配算法，单模式串匹配算法包括了BF（暴力匹配O(m*n)，但因为可以及早停止，实际感觉并没有很差）、RK（O(n)，n为主串长度，利用哈希加速，哈希函数要取好，不要超过int的最大值，遍历一遍主串就可以算出全部n-m+1个哈希值）、BM（Boyer-Moore，性能最好的算法，使用好后缀、坏字符，从最后一个字符开始匹配）、KMP（好前缀、坏字符）四种算法。</p>
+<p>这里介绍不是那么复杂的KMP算法。</p>
+<p>（PS. 其实个人觉得，要学好算法，语文非常地重要，不亚于数学，要严谨准确而清晰易懂）</p>
+<h2 id="思路与算法">思路与算法</h2>
+<h3 id="kmp-算法基本原理">KMP 算法基本原理</h3>
+<p>在模式串和主串匹配的过程中，把不能匹配的那个字符叫作<strong>坏字符</strong>，把已经匹配的那段字符串叫作<strong>好前缀</strong>。</p>
+
+<p>当遇到坏字符的时候，我们就要把模式串往后滑动，在滑动的过程中，只要模式串和好前缀有上下重合，前面几个字符的比较，就相当于拿好前缀的后缀子串，跟模式串的前缀子串在比较。这个比较的过程能否更高效了呢？可以不用一个字符一个字符的比较了吗？</p>
+
+<p>KMP 算法就是在试图寻找一种规律：在模式串和主串匹配的过程中，当遇到坏字符后，对于已经比对过的好前缀，能否找到一种规律，将模式串一次性滑动很多位？</p>
+<p>我们只需要拿好前缀本身，在它的后缀子串中，查找最长的那个可以跟好前缀的前缀子串匹配的。假设最长的可匹配的那部分前缀子串是{v}，长度是k。我们把模式串一次性往后滑动 j - k 位，相当于，每次遇到坏字符，我们就把j更新为k，i不变，然后继续比较。</p>
+
+<p>为了表述起来方便，我把好前缀的所有后缀子串中，最长的可匹配前缀子串的那个后缀子串，叫做<strong>最长可匹配后缀子串</strong>；对应的前缀子串，叫做<strong>最长可匹配前缀子串</strong>。</p>
+
+<p>如何来求好前缀的最长可匹配前缀和后缀子串呢？我们发现，这个问题其实不涉及主串，只需要通过模式串本身就能求解。所以，能不能事先预处理计算好，在模式串和主串匹配的过程中，直接拿过来就用呢？</p>
+<p>其实和BM算法（后面会讲到）类似，KMP算法可以提前构建一个数组，用来存储模式串中每个前缀（这些前缀都有可能是好前缀）的最长可匹配前缀子串的结尾字符下标。我们把这个数组定义为<strong>next数组</strong>（或者叫longest prefix suffix，最长的前缀的后缀的下标，如果到了结尾就用-1表示不存在)，很多书中还给这个数组起了一个名字，叫<strong>失效函数</strong>（failure function）。</p>
+<p>数组的下标是每个前缀结尾字符下标，数组的值是这个前缀的最长可以匹配前缀子串的结尾字符下标。这句话有点拗口，举个例子就懂了。</p>
+
+<p>有个next数组，我们很容易就可以实现KMP算法了。我先假设next数组已经计算好了，先给出KMP算法的框架代码。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span><span class="params">(p, s)</span>:</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print("Found pattern at index " + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="失效函数计算方法">失效函数计算方法</h3>
+<p>基本原理剪完了，现在来看最复杂的部分，也就是next数组是如何计算的。</p>
+<p>当然，我们可以用非常笨的方法，比如要计算下面这个模式串 b 的 next[4]，我们就把 b[0, 4]的所有后缀子串，从长到短找出来，依次看看，是否能跟模式串的前缀子串匹配。很显然，这个方法也可以计算得到 next 数组，但是效率非常低。有没有更加高效的方法呢？</p>
+
+<p>我们按照下标从小到大，依次计算 next 数组的值。当我们要计算 next[i]的时候，前面的 next[0]，next[1]，……，next[i-1]应该已经计算出来了。利用已经计算出来的 next 值，我们是否可以快速推导出 next[i]的值呢？如果 next[i-1]=k-1，也就是说，子串 b[0, k-1]是 b[0, i-1]的最长可匹配前缀子串。如果子串 b[0, k-1]的下一个字符 b[k]，与 b[0, i-1]的下一个字符 b[i]匹配，那子串 b[0, k]就是 b[0, i]的最长可匹配前缀子串。所以，next[i]等于 k。但是，如果 b[0, k-1]的下一字符 b[k]跟 b[0, i-1]的下一个字符 b[i]不相等呢？这个时候就不能简单地通过 next[i-1]得到 next[i]了。这个时候该怎么办呢？</p>
+<p>我们假设 b[0, i]的最长可匹配后缀子串是 b[r, i]。如果我们把最后一个字符去掉，那 b[r, i-1]肯定是 b[0, i-1]的可匹配后缀子串，但不一定是最长可匹配后缀子串。所以，既然 b[0, i-1]最长可匹配后缀子串对应的模式串的前缀子串的下一个字符并不等于 b[i]，那么我们就可以考察 b[0, i-1]的次长可匹配后缀子串 b[x, i-1]对应的可匹配前缀子串 b[0, i-1-x]的下一个字符 b[i-x]是否等于 b[i]。如果等于，那 b[x, i]就是 b[0, i]的最长可匹配后缀子串。</p>
+<p>可是，如何求得b[0, i-1]的次长可匹配后缀子串呢？次长可匹配后缀子串肯定被包含在最长可匹配后缀子串中，而最长可匹配后缀子串又对应最长可匹配前缀子串又对应最长可匹配前缀子串b[0, y]。于是，查找b[0, i-1]的次长可匹配后缀子串，这个问题就变成，查找b[0, y]的最长匹配后缀子串，其中y = next[i-1]</p>
+
+<p>按照这个思路，我们可以考察完所有的 b[0, i-1]的可匹配后缀子串 b[y, i-1]，直到找到一个可匹配的后缀子串，它对应的前缀子串的下一个字符等于 b[i]，那这个 b[y, i]就是 b[0, i]的最长可匹配后缀子串。</p>
+<p>前面已经给出 KMP 算法的框架代码了，现在把这部分的代码也写出来了。这两部分代码合在一起，就是整个 KMP 算法的代码实现。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span><span class="params">(p, m)</span>:</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br></pre></td></tr></table></figure>
+<h2 id="最后整体的实现">最后整体的实现</h2>
+<p>Python3版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span><span class="params">(p, m)</span>:</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span><span class="params">(p, s)</span>:</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print("Found pattern at index " + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    s = <span class="string">"ABABDABACDABABCABAB"</span></span><br><span class="line">    p = <span class="string">"ABABCABAB"</span></span><br><span class="line">    res = KMPSearch(p, s)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 ]]></content>
   </entry>
   <entry>
@@ -460,53 +510,26 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>学会承担责任</title>
-    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
-    <content><![CDATA[
+    <title>拔智齿</title>
+    <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
+    <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
+<p>因为这个手术不大，所以两颗智齿可以一起拔。晚上疼了一会，就过去了。</p>
+<p>下面的两颗智齿，在长的过程中是横着长的，其实这是很常见的现象，如果不管，会挤坏掉好牙。</p>
+<p>上周已经拔掉了一颗，医生在伤口上缝了针，也是疼了一晚上，没吃止痛药，甚至没吃消炎药，也好了。</p>
+<p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
+<p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
+<p>一切都是好兆头。</p>
 ]]></content>
       <tags>
-        <tag>感想</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
-    <title>实现KMP算法</title>
-    <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下https://time.geekbang.org/column/article/71845</p>
-<h2 id="概述">概述</h2>
-<p>字符串匹配算法，可以分为单模式串匹配算法，和多模式串匹配算法，单模式串匹配算法包括了BF（暴力匹配O(m*n)，但因为可以及早停止，实际感觉并没有很差）、RK（O(n)，n为主串长度，利用哈希加速，哈希函数要取好，不要超过int的最大值，遍历一遍主串就可以算出全部n-m+1个哈希值）、BM（Boyer-Moore，性能最好的算法，使用好后缀、坏字符，从最后一个字符开始匹配）、KMP（好前缀、坏字符）四种算法。</p>
-<p>这里介绍不是那么复杂的KMP算法。</p>
-<p>（PS. 其实个人觉得，要学好算法，语文非常地重要，不亚于数学，要严谨准确而清晰易懂）</p>
-<h2 id="思路与算法">思路与算法</h2>
-<h3 id="kmp-算法基本原理">KMP 算法基本原理</h3>
-<p>在模式串和主串匹配的过程中，把不能匹配的那个字符叫作<strong>坏字符</strong>，把已经匹配的那段字符串叫作<strong>好前缀</strong>。</p>
-
-<p>当遇到坏字符的时候，我们就要把模式串往后滑动，在滑动的过程中，只要模式串和好前缀有上下重合，前面几个字符的比较，就相当于拿好前缀的后缀子串，跟模式串的前缀子串在比较。这个比较的过程能否更高效了呢？可以不用一个字符一个字符的比较了吗？</p>
-
-<p>KMP 算法就是在试图寻找一种规律：在模式串和主串匹配的过程中，当遇到坏字符后，对于已经比对过的好前缀，能否找到一种规律，将模式串一次性滑动很多位？</p>
-<p>我们只需要拿好前缀本身，在它的后缀子串中，查找最长的那个可以跟好前缀的前缀子串匹配的。假设最长的可匹配的那部分前缀子串是{v}，长度是k。我们把模式串一次性往后滑动 j - k 位，相当于，每次遇到坏字符，我们就把j更新为k，i不变，然后继续比较。</p>
-
-<p>为了表述起来方便，我把好前缀的所有后缀子串中，最长的可匹配前缀子串的那个后缀子串，叫做<strong>最长可匹配后缀子串</strong>；对应的前缀子串，叫做<strong>最长可匹配前缀子串</strong>。</p>
-
-<p>如何来求好前缀的最长可匹配前缀和后缀子串呢？我们发现，这个问题其实不涉及主串，只需要通过模式串本身就能求解。所以，能不能事先预处理计算好，在模式串和主串匹配的过程中，直接拿过来就用呢？</p>
-<p>其实和BM算法（后面会讲到）类似，KMP算法可以提前构建一个数组，用来存储模式串中每个前缀（这些前缀都有可能是好前缀）的最长可匹配前缀子串的结尾字符下标。我们把这个数组定义为<strong>next数组</strong>（或者叫longest prefix suffix，最长的前缀的后缀的下标，如果到了结尾就用-1表示不存在)，很多书中还给这个数组起了一个名字，叫<strong>失效函数</strong>（failure function）。</p>
-<p>数组的下标是每个前缀结尾字符下标，数组的值是这个前缀的最长可以匹配前缀子串的结尾字符下标。这句话有点拗口，举个例子就懂了。</p>
-
-<p>有个next数组，我们很容易就可以实现KMP算法了。我先假设next数组已经计算好了，先给出KMP算法的框架代码。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span><span class="params">(p, s)</span>:</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print("Found pattern at index " + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
-<h3 id="失效函数计算方法">失效函数计算方法</h3>
-<p>基本原理剪完了，现在来看最复杂的部分，也就是next数组是如何计算的。</p>
-<p>当然，我们可以用非常笨的方法，比如要计算下面这个模式串 b 的 next[4]，我们就把 b[0, 4]的所有后缀子串，从长到短找出来，依次看看，是否能跟模式串的前缀子串匹配。很显然，这个方法也可以计算得到 next 数组，但是效率非常低。有没有更加高效的方法呢？</p>
-
-<p>我们按照下标从小到大，依次计算 next 数组的值。当我们要计算 next[i]的时候，前面的 next[0]，next[1]，……，next[i-1]应该已经计算出来了。利用已经计算出来的 next 值，我们是否可以快速推导出 next[i]的值呢？如果 next[i-1]=k-1，也就是说，子串 b[0, k-1]是 b[0, i-1]的最长可匹配前缀子串。如果子串 b[0, k-1]的下一个字符 b[k]，与 b[0, i-1]的下一个字符 b[i]匹配，那子串 b[0, k]就是 b[0, i]的最长可匹配前缀子串。所以，next[i]等于 k。但是，如果 b[0, k-1]的下一字符 b[k]跟 b[0, i-1]的下一个字符 b[i]不相等呢？这个时候就不能简单地通过 next[i-1]得到 next[i]了。这个时候该怎么办呢？</p>
-<p>我们假设 b[0, i]的最长可匹配后缀子串是 b[r, i]。如果我们把最后一个字符去掉，那 b[r, i-1]肯定是 b[0, i-1]的可匹配后缀子串，但不一定是最长可匹配后缀子串。所以，既然 b[0, i-1]最长可匹配后缀子串对应的模式串的前缀子串的下一个字符并不等于 b[i]，那么我们就可以考察 b[0, i-1]的次长可匹配后缀子串 b[x, i-1]对应的可匹配前缀子串 b[0, i-1-x]的下一个字符 b[i-x]是否等于 b[i]。如果等于，那 b[x, i]就是 b[0, i]的最长可匹配后缀子串。</p>
-<p>可是，如何求得b[0, i-1]的次长可匹配后缀子串呢？次长可匹配后缀子串肯定被包含在最长可匹配后缀子串中，而最长可匹配后缀子串又对应最长可匹配前缀子串又对应最长可匹配前缀子串b[0, y]。于是，查找b[0, i-1]的次长可匹配后缀子串，这个问题就变成，查找b[0, y]的最长匹配后缀子串，其中y = next[i-1]</p>
-
-<p>按照这个思路，我们可以考察完所有的 b[0, i-1]的可匹配后缀子串 b[y, i-1]，直到找到一个可匹配的后缀子串，它对应的前缀子串的下一个字符等于 b[i]，那这个 b[y, i]就是 b[0, i]的最长可匹配后缀子串。</p>
-<p>前面已经给出 KMP 算法的框架代码了，现在把这部分的代码也写出来了。这两部分代码合在一起，就是整个 KMP 算法的代码实现。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span><span class="params">(p, m)</span>:</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br></pre></td></tr></table></figure>
-<h2 id="最后整体的实现">最后整体的实现</h2>
-<p>Python3版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span><span class="params">(p, m)</span>:</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span><span class="params">(p, s)</span>:</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print("Found pattern at index " + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    s = <span class="string">"ABABDABACDABABCABAB"</span></span><br><span class="line">    p = <span class="string">"ABABCABAB"</span></span><br><span class="line">    res = KMPSearch(p, s)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
   </entry>
   <entry>
@@ -607,29 +630,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
     <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
     <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
     <content><![CDATA[
-]]></content>
-  </entry>
-  <entry>
-    <title>拔智齿</title>
-    <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
-    <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
-<p>因为这个手术不大，所以两颗智齿可以一起拔。晚上疼了一会，就过去了。</p>
-<p>下面的两颗智齿，在长的过程中是横着长的，其实这是很常见的现象，如果不管，会挤坏掉好牙。</p>
-<p>上周已经拔掉了一颗，医生在伤口上缝了针，也是疼了一晚上，没吃止痛药，甚至没吃消炎药，也好了。</p>
-<p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
-<p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
-<p>一切都是好兆头。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
   </entry>
   <entry>
@@ -884,9 +884,9 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
   </entry>
   <entry>
-    <title>文凭只是敲门砖--于谦</title>
-    <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
-    <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
+    <title>猫抓老鼠的简单讨论</title>
+    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
+    <content><![CDATA[
 ]]></content>
   </entry>
   <entry>
@@ -965,12 +965,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <li>预读的长度一般为页（page）的整倍数。页是计算机管理存储器的逻辑块，硬件及操作系统往往将主存和磁盘存储区分割为连续的大小相等的块，每个存储块称为一页（在许多操作系统中，页得大小通常为4k），主存和磁盘以页为单位交换数据。当程序要读取的数据不在主存中时，会触发一个缺页异常，此时系统会向磁盘发出读盘信号，磁盘会找到数据的起始位置并向后连续读取一页或几页载入内存中，然后异常返回，程序继续运行。</li>
 <li>B-Tree巧妙地利用磁盘预读原理，将一个节点的大小设为等于一个页。每次新建节点时，直接申请一个页的空间，这样就保证一个节点物理上也存储在一个页里，加之计算机存储分配都是按页对齐的，就实现了一个node只需一次I/O。</li>
 </ol>
-]]></content>
-  </entry>
-  <entry>
-    <title>猫抓老鼠的简单讨论</title>
-    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
-    <content><![CDATA[
 ]]></content>
   </entry>
   <entry>
@@ -1102,5 +1096,11 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>文凭只是敲门砖--于谦</title>
+    <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
+    <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
+]]></content>
   </entry>
 </search>
