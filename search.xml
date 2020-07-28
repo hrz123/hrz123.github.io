@@ -174,67 +174,6 @@
       </tags>
   </entry>
   <entry>
-    <title>python实现并查集</title>
-    <url>/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
-    <content><![CDATA[<h1 id="python实现并查集">python实现并查集</h1>
-<h2 id="并查集概念">并查集概念</h2>
-<p>并查集（UnionFind）也被称为不相交集数据结构。顾名思义，并查集主要操作是合并与查询，它是把初始不相交的集合经过多次合并操作后合并为一个大集合，然后可以通过查询判断两个元素是否已经在同一个集合中了。</p>
-<p>并查集的应用场景一般就是动态连通性的判断，例如判断网络中的两台电脑是否连通，在程序中判断两个变量名是否指向同一内存地址等。</p>
-<h2 id="并查集的实现">并查集的实现</h2>
-<h3 id="并查集的存储结构">并查集的存储结构</h3>
-<p>并查集逻辑上是森林，我们可以选出一个根结点作为代表，其他子结点指向根结点表示都在同一片森林中。在这里，并不关心结点的子结点是谁，只关心父结点是谁，所以物理上可以简单用python的列表来表示并查集，列表的下标表示结点，列表元素的值表示父结点。</p>
-<h3 id="并查集的api">并查集的API</h3>
-<p>根据并查集的特性，可以设计以下api</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span><span class="params">(object)</span>:</span></span><br><span class="line">  <span class="string">"""并查集"""</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">    <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">    <span class="string">"""查找p的根结点（祖先）"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">    <span class="string">"""连通p,q 让q指向p"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">    <span class="string">"""判断pq是否已经连通"""</span></span><br></pre></td></tr></table></figure>
-<h3 id="并查集的初始化">并查集的初始化</h3>
-<p>并查集的初始化有几种，无非就是用一种特殊的方式来表示初始的每一个元素都不相交，等待后续的合并操作。</p>
-<p>第一种初始化的方式是用列表的下标初始化对应位置的值，当一个并查集S[i] == i时则判断它自己就是根结点。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">  <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">  self.uf = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]   	<span class="comment"># 列表为0位置空出</span></span><br><span class="line">  self.sets_count = n										<span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
-<p>第二种初始化方式将列表每一个结点初始化为-1，列表的节点值为负数表示它自己就是根结点，这样做还有一个好处可以用-n表示自己的子结点数量，下面的按规模优化中可以让结点数量小的树并到结点多的树上，提高find操作的效率。我们就选用这种方式来初始化。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">  <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">  self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]	<span class="comment"># 列表0位置空出</span></span><br><span class="line">  self.sets_count = n										<span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
-<h3 id="并查集的查询">并查集的查询</h3>
-<p>查询操作是查找某个结点所在的集合，返回该集合的根结点，即返回列表的下标。下面是一种简单的查询，代码如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt;= <span class="number">0</span>:</span><br><span class="line">    p = self.yf[p]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
-<p>可以很清楚的看出上面的方法很简单，找到结点元素值为负的表示找到了根结点并返回，但是该种方法在极端情况下（由树退化为链表）效率不高，查找的效率为O(n)，如左下图所示</p>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%861.png" class>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%862.png" class>
-<p>查询是并查集的核心操作之一，它的效率也决定了整个算法的效率，所以在规模很大的情况下，O(n)的时间的复杂度是不被接受的，那就需要改进，改进的方法就是路径压缩。路径压缩的思想也很简单，就是在查找根结点的过程中，顺便把子结点的父结点改成根结点，这样下次查询的效率只需要O(1)的时间复杂度就可以完成，大大提高了效率。改进后效果图如右上图所示。</p>
-<p>路径压缩的find操作可以通过递归来实现</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="string">"""尾递归"""</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">  self.uf[p] = self.find(self.uf[p])</span><br><span class="line">  <span class="keyword">return</span> self.uf[p]</span><br></pre></td></tr></table></figure>
-<p>可以发现这个递归是尾递归，可以改进成循环的方式</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="string">"""查找p的根节点（祖先）"""</span></span><br><span class="line">  r = p															<span class="comment"># 初始p</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt; <span class="number">0</span>:</span><br><span class="line">    p = self.uf[p]</span><br><span class="line">  <span class="keyword">while</span> r != p:											<span class="comment"># 路径压缩，把压缩下来的结点祖先全指向根结点</span></span><br><span class="line">    self.uf[r], r = p, self.uf[r]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
-<h3 id="并查集的合并">并查集的合并</h3>
-<p>合并两棵树的操作可以简单的规定让右边的树的根结点指向左边树的根结点，示意图如左下图所示。</p>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%863.png" class>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%864.png" class>
-<p>直接右往左合并的缺点就是当右边的规模大于左边的规模时，在查找时，做路径压缩需要把右边所有的根结点更改为左边的根结点，如右上图所示，这明显有些划不来，所以合并的一种优化方式就是按规模合并，即吧规模小的树往规模大的树上合并。其实还有一种按秩合并（树高度小的往高度大的合并而不改变树的整体高度）。但是这种方法不与路径压缩兼容，因为路径压缩直接改变了数的高度，所以本人选择按规模合并和路径压缩结合的方式优化并查集。代码如下</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">  <span class="string">"""连通p, q 让q指向p"""</span></span><br><span class="line">  proot = self.find(p)</span><br><span class="line">  qroot = self.find(q)</span><br><span class="line">  <span class="keyword">if</span> proot == qroot:</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[proot] &gt; self.uf[qroot]:		<span class="comment"># 负数比较，左边的规模更小</span></span><br><span class="line">    self.uf[qroot] += self.uf[proot]</span><br><span class="line">    self.uf[proot] = qroot</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    self.uf[proot] += self.uf[qroot]		<span class="comment"># 规模相加</span></span><br><span class="line">    self.uf[qroot] = proot</span><br><span class="line">  self.sets_count -= <span class="number">1</span>                  <span class="comment"># 连通后集合总数减一</span></span><br></pre></td></tr></table></figure>
-<h3 id="连通性的判断">连通性的判断</h3>
-<p>有了查找操作，判断两个结点是否连通就显得容易多了，一行代码就可以搞定，就是判断他们的根结点是否相同。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">  <span class="string">"""判断pq是否已经连通"""</span></span><br><span class="line">  <span class="keyword">return</span> self.find(p) == self.find(q)   <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
-<h3 id="完整代码附录">完整代码附录</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">"""并查集类"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">        <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">        self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]    <span class="comment"># 列表0位置空出</span></span><br><span class="line">        self.sets_count = n                     <span class="comment"># 判断并查集里共有几个集合, 初始化默认互相独立</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     """查找p的根结点(祖先)"""</span></span><br><span class="line">    <span class="comment">#     r = p                                   # 初始p</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt; 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     while r != p:                           # 路径压缩, 把搜索下来的结点祖先全指向根结点</span></span><br><span class="line">    <span class="comment">#         self.uf[r], r = p, self.uf[r]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt;= 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">        <span class="string">"""尾递归"""</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">        <span class="string">"""连通p,q 让q指向p"""</span></span><br><span class="line">        proot = self.find(p)</span><br><span class="line">        qroot = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> proot == qroot:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">elif</span> self.uf[proot] &gt; self.uf[qroot]:   <span class="comment"># 负数比较, 左边规模更小</span></span><br><span class="line">            self.uf[qroot] += self.uf[proot]</span><br><span class="line">            self.uf[proot] = qroot</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[proot] += self.uf[qroot]  <span class="comment"># 规模相加</span></span><br><span class="line">            self.uf[qroot] = proot</span><br><span class="line">        self.sets_count -= <span class="number">1</span>                    <span class="comment"># 连通后集合总数减一</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">        <span class="string">"""判断pq是否已经连通"""</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)     <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
-<h2 id="转载">转载</h2>
-<p>出处：https://www.cnblogs.com/yscl/p/10185293.html</p>
-<p>作者：yscl</p>
-<h4 id="参考">参考</h4>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vaGFwamluL3AvNTQ3ODM1Mi5odG1s">数据结构--并查集的原理及实现<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2RtX3ZpbmNlbnQvYXJ0aWNsZS9kZXRhaWxzLzc2NTU3NjQ=">并查集(Union-Find)算法介绍<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-<h4 id="其他并查集">其他并查集</h4>
-<p>普通的并查集只是简单的记录了和集合的关系，即判断是否属于该集合，而带权并查集则是不仅记录了和集合的关系，还记录了集合内元素的关系，一般就是指代集合内元素和根结点的关系，实现起来也很简单，就是额外利用一个列表value[]，来记录每个节点与根结点的关系。然后在每次合并和路径压缩中更新权值。更新的规则遵循向量法则，处理环类关系的问题中，还可以取模更新。具体可以参考一下文章。</p>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lqcjM0MjY2MTkvYXJ0aWNsZS9kZXRhaWxzLzgyMzE1MTMz">https://blog.csdn.net/yjr3426619/article/details/82315133<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>《相信未来》——食指</title>
     <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
     <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
@@ -303,8 +242,8 @@
 <li>为了覆盖k个计数，我们要求2^m&gt;=k，这意味着m &gt; logk</li>
 </ol>
 <p>这里是关键部分：当我们扫描数组时，计数器（从x1到xm）中的每个位如何变化。注意，我们被提示使用位运算。为了满足第2个属性，回想一下，如果另一个操作数为0，有哪些位操作不会改变操作数？是的，有位与x=x|0和位异或x=x^0。</p>
-<p>好了，我们现在有一个表达式：x = x | i或者x = x^i，其中i是数组中的扫描元素。哪一个更好呢》我们还不知道。所以，让我们开始实际的计算。</p>
-<p>开始的时候，计数器的所有位都初始化为0，即xm=0, ..., x1=0。由于我们要选择的位操作，保证了计数器的所有位在遇到0时都保持不变，所以知道我们遇到数组中第一个1，计数器将是0。当我们遇到第一个1的时候，我们得到：xm = 0, ... , x2=0, x1=1。让我们继续下去，直到打出第二个1，之后我们得到：xm=0, ... , x2=1, x1=0。注意，x1从1变成了0。对于x1 = x1 | i，在第二次计数之后，x1仍然会是1。所以很明显，我们应该使用x1 = x1 ^ i，那么x2, ..., xm呢？我们的想法是找到x2, ... , xm将改变其值的条件。以x2为例。如果我们打了一个1，需要改变x2的值，那么在我们进行改变之前，x1的值一定是多少？答案是：x1必须是1，否则我们不应该改变x2，因为把x1从0改成1就可以了。因此，只有当x1和i都是1时，x2才会改变值，或者数学上说，x2 = x2 ^ (x1 &amp; i)。同理，xm只有在，xm-1, ... , x1和i都是1的时候才会改变数值：xm = xm ^ (xm-1 &amp; ... &amp; x1 &amp; i)。ok，我们找到了这个位运算。</p>
+<p>好了，我们现在有一个表达式：x = x | i或者x = x^i，其中i是数组中的扫描元素。哪一个更好呢？我们还不知道。所以，让我们开始实际的计算。</p>
+<p>开始的时候，计数器的所有位都初始化为0，即xm=0, ..., x1=0。由于我们要选择的位操作，保证了计数器的所有位在遇到0时都保持不变，所以直到我们遇到数组中第一个1，计数器将是0。当我们遇到第一个1的时候，我们得到：xm = 0, ... , x2=0, x1=1。让我们继续下去，直到打出第二个1，之后我们得到：xm=0, ... , x2=1, x1=0。注意，x1从1变成了0。对于x1 = x1 | i，在第二次计数之后，x1仍然会是1。所以很明显，我们应该使用x1 = x1 ^ i，那么x2, ..., xm呢？我们的想法是找到x2, ... , xm将改变其值的条件。以x2为例。如果我们打了一个1，需要改变x2的值，那么在我们进行改变之前，x1的值一定是多少？答案是：x1必须是1，否则我们不应该改变x2，因为把x1从0改成1就可以了。因此，只有当x1和i都是1时，x2才会改变值，或者数学上说，x2 = x2 ^ (x1 &amp; i)。同理，xm只有在，xm-1, ... , x1和i都是1的时候才会改变数值：xm = xm ^ (xm-1 &amp; ... &amp; x1 &amp; i)。ok，我们找到了这个位运算。</p>
 <p>但是，你可能会注意到，上面发现的位运算将从0开始计数，直到2^m-1，而不是k。如果k &lt; 2^m - 1，我们需要一些”切割“机制，以在计数达到k时将计数器重新初始化为0。为此，我们对xm, ... , x1应用位AND，并使用一些称为mask的变量，即xm = xm &amp; mask, ... , x1 = x1 &amp; mask。如果我们能保证只有当计数达到k时，mask才为0，而在其他所有计数情况下为1，那么我们就完成了。我们如何实现这一点呢？试着想一想，计数为k的情况与其他所有情况的区别是什么？是的，是1的计数！对于每一个计数，我们对计数器的每一个位都有唯一的值，这可以看作是它的状态。如果我们把k写成二进制形式：km, ... ,k1, 我们就可以构造mask如下。</p>
 <p>mask = ~(y1 &amp; y2 &amp; .. &amp; ym)，其中如果kj = 1, yj = xj， 如果kj = 0， yj = -xj ( j = 1 to m )</p>
 <p>简单来讲，就是只有当x1..xm和k的所有位都相等的时候，mask才会为0</p>
@@ -345,6 +284,67 @@
 ]]></content>
   </entry>
   <entry>
+    <title>python实现并查集</title>
+    <url>/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
+    <content><![CDATA[<h1 id="python实现并查集">python实现并查集</h1>
+<h2 id="并查集概念">并查集概念</h2>
+<p>并查集（UnionFind）也被称为不相交集数据结构。顾名思义，并查集主要操作是合并与查询，它是把初始不相交的集合经过多次合并操作后合并为一个大集合，然后可以通过查询判断两个元素是否已经在同一个集合中了。</p>
+<p>并查集的应用场景一般就是动态连通性的判断，例如判断网络中的两台电脑是否连通，在程序中判断两个变量名是否指向同一内存地址等。</p>
+<h2 id="并查集的实现">并查集的实现</h2>
+<h3 id="并查集的存储结构">并查集的存储结构</h3>
+<p>并查集逻辑上是森林，我们可以选出一个根结点作为代表，其他子结点指向根结点表示都在同一片森林中。在这里，并不关心结点的子结点是谁，只关心父结点是谁，所以物理上可以简单用python的列表来表示并查集，列表的下标表示结点，列表元素的值表示父结点。</p>
+<h3 id="并查集的api">并查集的API</h3>
+<p>根据并查集的特性，可以设计以下api</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span><span class="params">(object)</span>:</span></span><br><span class="line">  <span class="string">"""并查集"""</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">    <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">    <span class="string">"""查找p的根结点（祖先）"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">    <span class="string">"""连通p,q 让q指向p"""</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">    <span class="string">"""判断pq是否已经连通"""</span></span><br></pre></td></tr></table></figure>
+<h3 id="并查集的初始化">并查集的初始化</h3>
+<p>并查集的初始化有几种，无非就是用一种特殊的方式来表示初始的每一个元素都不相交，等待后续的合并操作。</p>
+<p>第一种初始化的方式是用列表的下标初始化对应位置的值，当一个并查集S[i] == i时则判断它自己就是根结点。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">  <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">  self.uf = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]   	<span class="comment"># 列表为0位置空出</span></span><br><span class="line">  self.sets_count = n										<span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
+<p>第二种初始化方式将列表每一个结点初始化为-1，列表的节点值为负数表示它自己就是根结点，这样做还有一个好处可以用-n表示自己的子结点数量，下面的按规模优化中可以让结点数量小的树并到结点多的树上，提高find操作的效率。我们就选用这种方式来初始化。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">  <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">  self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]	<span class="comment"># 列表0位置空出</span></span><br><span class="line">  self.sets_count = n										<span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
+<h3 id="并查集的查询">并查集的查询</h3>
+<p>查询操作是查找某个结点所在的集合，返回该集合的根结点，即返回列表的下标。下面是一种简单的查询，代码如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt;= <span class="number">0</span>:</span><br><span class="line">    p = self.yf[p]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
+<p>可以很清楚的看出上面的方法很简单，找到结点元素值为负的表示找到了根结点并返回，但是该种方法在极端情况下（由树退化为链表）效率不高，查找的效率为O(n)，如左下图所示</p>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%861.png" class>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%862.png" class>
+<p>查询是并查集的核心操作之一，它的效率也决定了整个算法的效率，所以在规模很大的情况下，O(n)的时间的复杂度是不被接受的，那就需要改进，改进的方法就是路径压缩。路径压缩的思想也很简单，就是在查找根结点的过程中，顺便把子结点的父结点改成根结点，这样下次查询的效率只需要O(1)的时间复杂度就可以完成，大大提高了效率。改进后效果图如右上图所示。</p>
+<p>路径压缩的find操作可以通过递归来实现</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="string">"""尾递归"""</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">  self.uf[p] = self.find(self.uf[p])</span><br><span class="line">  <span class="keyword">return</span> self.uf[p]</span><br></pre></td></tr></table></figure>
+<p>可以发现这个递归是尾递归，可以改进成循环的方式</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">  <span class="string">"""查找p的根节点（祖先）"""</span></span><br><span class="line">  r = p															<span class="comment"># 初始p</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt; <span class="number">0</span>:</span><br><span class="line">    p = self.uf[p]</span><br><span class="line">  <span class="keyword">while</span> r != p:											<span class="comment"># 路径压缩，把压缩下来的结点祖先全指向根结点</span></span><br><span class="line">    self.uf[r], r = p, self.uf[r]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
+<h3 id="并查集的合并">并查集的合并</h3>
+<p>合并两棵树的操作可以简单的规定让右边的树的根结点指向左边树的根结点，示意图如左下图所示。</p>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%863.png" class>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%864.png" class>
+<p>直接右往左合并的缺点就是当右边的规模大于左边的规模时，在查找时，做路径压缩需要把右边所有的根结点更改为左边的根结点，如右上图所示，这明显有些划不来，所以合并的一种优化方式就是按规模合并，即吧规模小的树往规模大的树上合并。其实还有一种按秩合并（树高度小的往高度大的合并而不改变树的整体高度）。但是这种方法不与路径压缩兼容，因为路径压缩直接改变了数的高度，所以本人选择按规模合并和路径压缩结合的方式优化并查集。代码如下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">  <span class="string">"""连通p, q 让q指向p"""</span></span><br><span class="line">  proot = self.find(p)</span><br><span class="line">  qroot = self.find(q)</span><br><span class="line">  <span class="keyword">if</span> proot == qroot:</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[proot] &gt; self.uf[qroot]:		<span class="comment"># 负数比较，左边的规模更小</span></span><br><span class="line">    self.uf[qroot] += self.uf[proot]</span><br><span class="line">    self.uf[proot] = qroot</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    self.uf[proot] += self.uf[qroot]		<span class="comment"># 规模相加</span></span><br><span class="line">    self.uf[qroot] = proot</span><br><span class="line">  self.sets_count -= <span class="number">1</span>                  <span class="comment"># 连通后集合总数减一</span></span><br></pre></td></tr></table></figure>
+<h3 id="连通性的判断">连通性的判断</h3>
+<p>有了查找操作，判断两个结点是否连通就显得容易多了，一行代码就可以搞定，就是判断他们的根结点是否相同。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">  <span class="string">"""判断pq是否已经连通"""</span></span><br><span class="line">  <span class="keyword">return</span> self.find(p) == self.find(q)   <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
+<h3 id="完整代码附录">完整代码附录</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">"""并查集类"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, n)</span>:</span></span><br><span class="line">        <span class="string">"""长度为n的并查集"""</span></span><br><span class="line">        self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]    <span class="comment"># 列表0位置空出</span></span><br><span class="line">        self.sets_count = n                     <span class="comment"># 判断并查集里共有几个集合, 初始化默认互相独立</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     """查找p的根结点(祖先)"""</span></span><br><span class="line">    <span class="comment">#     r = p                                   # 初始p</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt; 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     while r != p:                           # 路径压缩, 把搜索下来的结点祖先全指向根结点</span></span><br><span class="line">    <span class="comment">#         self.uf[r], r = p, self.uf[r]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt;= 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, p)</span>:</span></span><br><span class="line">        <span class="string">"""尾递归"""</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">        <span class="string">"""连通p,q 让q指向p"""</span></span><br><span class="line">        proot = self.find(p)</span><br><span class="line">        qroot = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> proot == qroot:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">elif</span> self.uf[proot] &gt; self.uf[qroot]:   <span class="comment"># 负数比较, 左边规模更小</span></span><br><span class="line">            self.uf[qroot] += self.uf[proot]</span><br><span class="line">            self.uf[proot] = qroot</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[proot] += self.uf[qroot]  <span class="comment"># 规模相加</span></span><br><span class="line">            self.uf[qroot] = proot</span><br><span class="line">        self.sets_count -= <span class="number">1</span>                    <span class="comment"># 连通后集合总数减一</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span><span class="params">(self, p, q)</span>:</span></span><br><span class="line">        <span class="string">"""判断pq是否已经连通"""</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)     <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
+<h2 id="转载">转载</h2>
+<p>出处：https://www.cnblogs.com/yscl/p/10185293.html</p>
+<p>作者：yscl</p>
+<h4 id="参考">参考</h4>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vaGFwamluL3AvNTQ3ODM1Mi5odG1s">数据结构--并查集的原理及实现<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2RtX3ZpbmNlbnQvYXJ0aWNsZS9kZXRhaWxzLzc2NTU3NjQ=">并查集(Union-Find)算法介绍<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h4 id="其他并查集">其他并查集</h4>
+<p>普通的并查集只是简单的记录了和集合的关系，即判断是否属于该集合，而带权并查集则是不仅记录了和集合的关系，还记录了集合内元素的关系，一般就是指代集合内元素和根结点的关系，实现起来也很简单，就是额外利用一个列表value[]，来记录每个节点与根结点的关系。然后在每次合并和路径压缩中更新权值。更新的规则遵循向量法则，处理环类关系的问题中，还可以取模更新。具体可以参考一下文章。</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lqcjM0MjY2MTkvYXJ0aWNsZS9kZXRhaWxzLzgyMzE1MTMz">https://blog.csdn.net/yjr3426619/article/details/82315133<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用函数randa()来实现函数randb()</title>
     <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
     <content><![CDATA[<h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
@@ -381,15 +381,6 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure></li>
 </ol>
 ]]></content>
-  </entry>
-  <entry>
-    <title>学会承担责任</title>
-    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>感想</tag>
-      </tags>
   </entry>
   <entry>
     <title>双蛋问题以及更主要的其更通用化且有用的问题的解</title>
@@ -466,6 +457,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>学会承担责任</title>
+    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>感想</tag>
       </tags>
   </entry>
   <entry>
