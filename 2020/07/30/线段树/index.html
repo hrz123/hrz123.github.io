@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st2.png">
 <meta property="og:image" content="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st3.png">
 <meta property="article:published_time" content="2020-07-30T03:54:36.000Z">
-<meta property="article:modified_time" content="2020-07-30T07:21:34.238Z">
+<meta property="article:modified_time" content="2020-07-30T09:30:48.299Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="数据结构与算法">
 <meta name="twitter:card" content="summary">
@@ -217,7 +217,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-07-30 11:54:36 / 修改时间：15:21:34" itemprop="dateCreated datePublished" datetime="2020-07-30T11:54:36+08:00">2020-07-30</time>
+              <time title="创建时间：2020-07-30 11:54:36 / 修改时间：17:30:48" itemprop="dateCreated datePublished" datetime="2020-07-30T11:54:36+08:00">2020-07-30</time>
             </span>
 
           
@@ -236,7 +236,7 @@
 <p>https://www.geeksforgeeks.org/segment-tree-set-1-sum-of-given-range/</p>
 <p>原文我觉得挺不错的，暂时觉得先不翻译。</p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">https://stackoverflow.com/questions/17466218/what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text=Segment%20tree%20stores%20intervals%2C%20and,with%20a%20given%20interval%22%20queries.<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="实际问题">实际问题</h2>
+<h2 id="实际问题简单记想快速知道数组的某一区间和同时数组的修改频繁使得这两种操作都变成ologn用线段树可利用思想解决最大子段和问题">实际问题（简单记，想快速知道数组的某一区间和，同时数组的修改频繁，使得这两种操作都变成O(logn)，用线段树，可利用思想解决最大子段和问题）</h2>
 <p>Let us consider the following problem to understand Segment Trees.</p>
 <p>We have an array arr[0 . . . n-1]. We should be able to <strong>1</strong> Find the sum of elements from index l to r where 0 &lt;= l &lt;= r &lt;= n-1</p>
 <p><strong>2</strong> Change value of a specified element of the array to a new value x. We need to do arr[i] = x where 0 &lt;= i &lt;= n-1.</p>
@@ -403,7 +403,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">实际问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E9%A2%98%E7%9B%AE"><span class="nav-number">3.</span> <span class="nav-text">示例题目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spoj-gss1"><span class="nav-number">3.1.</span> <span class="nav-text">SPOJ-GSS1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#input"><span class="nav-number">3.2.</span> <span class="nav-text">Input</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#output"><span class="nav-number">3.3.</span> <span class="nav-text">Output</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#example"><span class="nav-number">3.4.</span> <span class="nav-text">Example</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E9%97%AE%E9%A2%98%E7%AE%80%E5%8D%95%E8%AE%B0%E6%83%B3%E5%BF%AB%E9%80%9F%E7%9F%A5%E9%81%93%E6%95%B0%E7%BB%84%E7%9A%84%E6%9F%90%E4%B8%80%E5%8C%BA%E9%97%B4%E5%92%8C%E5%90%8C%E6%97%B6%E6%95%B0%E7%BB%84%E7%9A%84%E4%BF%AE%E6%94%B9%E9%A2%91%E7%B9%81%E4%BD%BF%E5%BE%97%E8%BF%99%E4%B8%A4%E7%A7%8D%E6%93%8D%E4%BD%9C%E9%83%BD%E5%8F%98%E6%88%90ologn%E7%94%A8%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%8F%AF%E5%88%A9%E7%94%A8%E6%80%9D%E6%83%B3%E8%A7%A3%E5%86%B3%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">实际问题（简单记，想快速知道数组的某一区间和，同时数组的修改频繁，使得这两种操作都变成O(logn)，用线段树，可利用思想解决最大子段和问题）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E9%A2%98%E7%9B%AE"><span class="nav-number">3.</span> <span class="nav-text">示例题目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spoj-gss1"><span class="nav-number">3.1.</span> <span class="nav-text">SPOJ-GSS1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#input"><span class="nav-number">3.2.</span> <span class="nav-text">Input</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#output"><span class="nav-number">3.3.</span> <span class="nav-text">Output</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#example"><span class="nav-number">3.4.</span> <span class="nav-text">Example</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
