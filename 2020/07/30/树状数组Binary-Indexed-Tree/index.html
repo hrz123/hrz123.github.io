@@ -24,22 +24,23 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}},"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="参考： https:&#x2F;&#x2F;www.geeksforgeeks.org&#x2F;interval-tree&#x2F; https:&#x2F;&#x2F;stackoverflow.com&#x2F;questions&#x2F;17466218&#x2F;what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text&#x3D;Segment%20tree%20st">
+  <meta name="description" content="参考 https:&#x2F;&#x2F;www.geeksforgeeks.org&#x2F;binary-indexed-tree-or-fenwick-tree-2&#x2F; 实际问题 We have an array arr[0 . . . n-1]. We would like to 1 Compute the sum of the first i elements. 2 Modify the value of a spec">
 <meta property="og:type" content="article">
-<meta property="og:title" content="区间树">
-<meta property="og:url" content="https://hrz123.github.io/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/index.html">
+<meta property="og:title" content="树状数组Binary Indexed Tree">
+<meta property="og:url" content="https://hrz123.github.io/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="参考： https:&#x2F;&#x2F;www.geeksforgeeks.org&#x2F;interval-tree&#x2F; https:&#x2F;&#x2F;stackoverflow.com&#x2F;questions&#x2F;17466218&#x2F;what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text&#x3D;Segment%20tree%20st">
+<meta property="og:description" content="参考 https:&#x2F;&#x2F;www.geeksforgeeks.org&#x2F;binary-indexed-tree-or-fenwick-tree-2&#x2F; 实际问题 We have an array arr[0 . . . n-1]. We would like to 1 Compute the sum of the first i elements. 2 Modify the value of a spec">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hrz123.github.io/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png">
-<meta property="article:published_time" content="2020-07-30T07:03:10.000Z">
-<meta property="article:modified_time" content="2020-07-30T07:22:06.414Z">
+<meta property="og:image" content="https://hrz123.github.io/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%841.png">
+<meta property="og:image" content="https://hrz123.github.io/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%842.png">
+<meta property="article:published_time" content="2020-07-30T08:35:20.000Z">
+<meta property="article:modified_time" content="2020-07-30T08:52:16.069Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="数据结构与算法">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://hrz123.github.io/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png">
+<meta name="twitter:image" content="https://hrz123.github.io/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%841.png">
 
-<link rel="canonical" href="https://hrz123.github.io/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/">
+<link rel="canonical" href="https://hrz123.github.io/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/">
 
 
 <script id="page-configurations">
@@ -52,7 +53,7 @@
   };
 </script>
 
-  <title>区间树 | 侯瑞哲的博客</title>
+  <title>树状数组Binary Indexed Tree | 侯瑞哲的博客</title>
   
 
 
@@ -190,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -203,7 +204,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          区间树
+          树状数组Binary Indexed Tree
         </h1>
 
         <div class="post-meta">
@@ -214,7 +215,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-07-30 15:03:10 / 修改时间：15:22:06" itemprop="dateCreated datePublished" datetime="2020-07-30T15:03:10+08:00">2020-07-30</time>
+              <time title="创建时间：2020-07-30 16:35:20 / 修改时间：16:52:16" itemprop="dateCreated datePublished" datetime="2020-07-30T16:35:20+08:00">2020-07-30</time>
             </span>
 
           
@@ -228,30 +229,40 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="参考">参考：</h2>
-<p>https://www.geeksforgeeks.org/interval-tree/</p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">https://stackoverflow.com/questions/17466218/what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text=Segment%20tree%20stores%20intervals%2C%20and,with%20a%20given%20interval%22%20queries.<i class="fa fa-external-link-alt"></i></span></p>
+        <h2 id="参考">参考</h2>
+<p>https://www.geeksforgeeks.org/binary-indexed-tree-or-fenwick-tree-2/</p>
 <h2 id="实际问题">实际问题</h2>
-<p>Consider a situation where we have a set of intervals and we need following operations to be implemented efficiently. <strong>1)</strong> Add an interval <strong>2)</strong> Remove an interval <strong>3)</strong> Given an interval x, find if x overlaps with any of the existing intervals.</p>
-<p>考虑我们有一个集合的区间，并且我们需要以下操作能够有效率的实现：</p>
+<p>We have an array arr[0 . . . n-1]. We would like to <strong>1</strong> Compute the sum of the first i elements. <strong>2</strong> Modify the value of a specified element of the array arr[i] = x where 0 &lt;= i &lt;= n-1.</p>
+<p>A <strong>simple solution</strong> is to run a loop from 0 to i-1 and calculate the sum of the elements. To update a value, simply do arr[i] = x. The first operation takes O(n) time and the second operation takes O(1) time.</p>
+<p>Another simple solution is to create an extra array and store the sum of the first i-th elements at the i-th index in this new array. The sum of a given range can now be calculated in O(1) time, but the update operation takes O(n) time now. This works well if there are a large number of query operations but a very few number of update operations.</p>
+<p><strong>Could we perform both the query and update operations in O(log n) time?</strong> One efficient solution is to use <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span> that performs both operations in O(Logn) time.</p>
+<p><em>An alternative solution is Binary Indexed Tree, which also achieves O(Logn) time complexity for both operations. Compared with Segment Tree, Binary Indexed Tree requires less space and is easier to implement.</em>.</p>
+<p>给定一个数组[0, .., n-1]，我们想：</p>
 <ol type="1">
-<li>添加一个区间</li>
-<li>删除一个区间</li>
-<li>对于一个给定的区间x，找出x是否有和任意一个已经存在的区间有重合。</li>
+<li>计算出前i个元素的和</li>
+<li>将任何一个元素改为x，arr[i] = x where 0&lt;=i&lt;=n-1</li>
 </ol>
-<p><strong><em>Interval Tree:</em></strong> The idea is to augment a self-balancing Binary Search Tree (BST) like <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcmVkLWJsYWNrLXRyZWUtc2V0LTEtaW50cm9kdWN0aW9uLTIv">Red Black Tree<i class="fa fa-external-link-alt"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYXZsLXRyZWUtc2V0LTEtaW5zZXJ0aW9uLw==">AVL Tree<i class="fa fa-external-link-alt"></i></span>, etc to maintain set of intervals so that all operations can be done in O(Logn) time.</p>
-<p>Every node of Interval Tree stores following information. a) <strong>i</strong>: An interval which is represented as a pair <em>[low, high]</em> b) <strong>max</strong>: Maximum <em>high</em> value in subtree rooted with this node.</p>
-<p>区间的最小值用作BST的键值来保持BST的顺序。那么插入和删除就和自平衡BST的插入删除一样。</p>
-<img data-src="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png" class>
-<p>那么我们就来看找重合区间的操作。</p>
-<p>Following is algorithm for searching an overlapping interval <em>x</em> in an Interval tree rooted with <em>root</em>.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Interval overlappingIntervalSearch(root, x)</span><br><span class="line">1) If x overlaps with root&#39;s interval, return the root&#39;s interval.</span><br><span class="line"></span><br><span class="line">2) If left child of root is not empty and the max  in left child </span><br><span class="line">is greater than x&#39;s low value, recur for left child</span><br><span class="line"></span><br><span class="line">3) Else recur for right child.</span><br></pre></td></tr></table></figure>
-<p><strong><em>How does the above algorithm work?</em></strong> Let the interval to be searched be x. We need to prove this in for following two cases.</p>
-<p><strong><em>Case 1:</em></strong> <em>When we go to right subtree, one of the following must be true.</em> a) There is an overlap in right subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: We go to right subtree only when either left is NULL or maximum value in left is smaller than <em>x.low</em>. So the interval cannot be present in left subtree.</p>
-<p><strong><em>Case 2:</em></strong> <em>When we go to left subtree, one of the following must be true.</em> a) There is an overlap in left subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: This is the most important part. We need to consider following facts. … We went to left subtree because <em>x.low &lt;= max</em> in left subtree …. max in left subtree is a high of one of the intervals let us say <em>[a, max]</em> in left subtree. …. Since <em>x</em> doesn’t overlap with any node in left subtree <em>x.low</em> must be smaller than ‘<em>a</em>‘. …. All nodes in BST are ordered by low value, so all nodes in right subtree must have low value greater than ‘<em>a</em>‘. …. From above two facts, we can say all intervals in right subtree have low value greater than <em>x.low</em>. So <em>x</em> cannot overlap with any interval in right subtree.</p>
-<p><strong>Applications of Interval Tree:</strong> Interval tree is mainly a geometric data structure and often used for windowing queries, for instance, to find all roads on a computerized map inside a rectangular viewport, or to find all visible elements inside a three-dimensional scene (Source <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9JbnRlcnZhbF90cmVl">Wiki<i class="fa fa-external-link-alt"></i></span>).</p>
-<p><strong>Interval Tree vs <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span></strong> Both segment and interval trees store intervals. Segment tree is mainly optimized for queries for a given point, and interval trees are mainly optimized for overlapping queries for a given interval.</p>
-<p>区间树和线段树都是存储区间的，不同的是线段是针对给定点的查询进行优化，区间树针对给定区间的重叠查询进行优化。</p>
+<p>和线段树的实际问题的区别在于，线段树是从l到r任何一段，树状数组只是前i个。</p>
+<p>同样第一个简单的解法就是循环求和O(n)，改变为O(1)。</p>
+<p>或者创建一个新数组的每个元素存的前i个数的和，这样求和就是O(1)，但是改变后数组就要调整O(n)的时间复杂度。</p>
+<p><strong>Representation</strong> Binary Indexed Tree is represented as an array. Let the array be BITree[]. Each node of the Binary Indexed Tree stores the sum of some elements of the input array. The size of the Binary Indexed Tree is equal to the size of the input array, denoted as n. In the code below, we use a size of n+1 for ease of implementation.</p>
+<p><strong>Construction</strong> We initialize all the values in BITree[] as 0. Then we call update() for all the indexes, the update() operation is discussed below.</p>
+<p><strong>Operations</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">getSum(x): Returns the sum of the sub-array arr[0,...,x]</span><br><span class="line">&#x2F;&#x2F; Returns the sum of the sub-array arr[0,...,x] using BITree[0..n], which is constructed from arr[0..n-1]</span><br><span class="line">1) Initialize the output sum as 0, the current index as x+1.</span><br><span class="line">2) Do following while the current index is greater than 0.</span><br><span class="line">...a) Add BITree[index] to sum</span><br><span class="line">...b) Go to the parent of BITree[index].  The parent can be obtained by removing</span><br><span class="line">     the last set bit from the current index, i.e., index &#x3D; index - (index &amp; (-index))【index&amp;(index-1) 也可以】</span><br><span class="line">3) Return sum.</span><br></pre></td></tr></table></figure>
+<img data-src="/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%841.png" class>
+<p>The diagram above provides an example of how getSum() is working. Here are some important observations.</p>
+<p>BITree[0] is a dummy node.</p>
+<p>BITree[y] is the parent of BITree[x], if and only if y can be obtained by removing the last set bit from the binary representation of x, that is y = x – (x &amp; (-x)).【index&amp;(index-1) 也可以】</p>
+<p>The child node BITree[x] of the node BITree[y] stores the sum of the elements between y(inclusive) and x(exclusive): arr[y,…,x).</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">update(x, val): Updates the Binary Indexed Tree (BIT) by performing arr[index] +&#x3D; val</span><br><span class="line">&#x2F;&#x2F; Note that the update(x, val) operation will not change arr[].  It only makes changes to BITree[]</span><br><span class="line">1) Initialize the current index as x+1.</span><br><span class="line">2) Do the following while the current index is smaller than or equal to n.</span><br><span class="line">...a) Add the val to BITree[index]</span><br><span class="line">...b) Go to parent of BITree[index].  The parent can be obtained by incrementing</span><br><span class="line">     the last set bit of the current index, i.e., index &#x3D; index + (index &amp; (-index))</span><br></pre></td></tr></table></figure>
+<img data-src="/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%842.png" class>
+<p>The update function needs to make sure that all the BITree nodes which contain arr[i] within their ranges being updated. We loop over such nodes in the BITree by repeatedly adding the decimal number corresponding to the last set bit of the current index.</p>
+<p><strong>How does Binary Indexed Tree work?</strong> The idea is based on the fact that all positive integers can be represented as the sum of powers of 2. For example 19 can be represented as 16 + 2 + 1. Every node of the BITree stores the sum of n elements where n is a power of 2. For example, in the first diagram above (the diagram for getSum()), the sum of the first 12 elements can be obtained by the sum of the last 4 elements (from 9 to 12) plus the sum of 8 elements (from 1 to 8). The number of set bits in the binary representation of a number n is O(Logn). Therefore, we traverse at-most O(Logn) nodes in both getSum() and update() operations. The time complexity of the construction is O(nLogn) as it calls update() for all n elements.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Python implementation of Binary Indexed Tree </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Returns sum of arr[0..index]. This function assumes </span></span><br><span class="line"><span class="comment"># that the array is preprocessed and partial sums of </span></span><br><span class="line"><span class="comment"># array elements are stored in BITree[]. </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getsum</span>(<span class="params">BITTree,i</span>):</span> </span><br><span class="line">    s = <span class="number">0</span> <span class="comment">#initialize result </span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># index in BITree[] is 1 more than the index in arr[] </span></span><br><span class="line">   i = i+<span class="number">1</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># Traverse ancestors of BITree[index] </span></span><br><span class="line">   <span class="keyword">while</span> i &gt; <span class="number">0</span>: </span><br><span class="line"></span><br><span class="line">       <span class="comment"># Add current element of BITree to sum </span></span><br><span class="line">      s += BITTree[i] </span><br><span class="line"></span><br><span class="line">        <span class="comment"># Move index to parent node in getSum View </span></span><br><span class="line">      i -= i &amp; (-i) </span><br><span class="line">    <span class="keyword">return</span> s </span><br><span class="line"></span><br><span class="line"><span class="comment"># Updates a node in Binary Index Tree (BITree) at given index </span></span><br><span class="line"><span class="comment"># in BITree. The given value &#x27;val&#x27; is added to BITree[i] and </span></span><br><span class="line"><span class="comment"># all of its ancestors in tree. </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updatebit</span>(<span class="params">BITTree , n , i ,v</span>):</span> </span><br><span class="line"></span><br><span class="line">   <span class="comment"># index in BITree[] is 1 more than the index in arr[] </span></span><br><span class="line">   i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># Traverse all ancestors and add &#x27;val&#x27; </span></span><br><span class="line">    <span class="keyword">while</span> i &lt;= n: </span><br><span class="line"></span><br><span class="line">      <span class="comment"># Add &#x27;val&#x27; to current node of BI Tree </span></span><br><span class="line">        BITTree[i] += v </span><br><span class="line"></span><br><span class="line">        <span class="comment"># Update index to that of parent in update View </span></span><br><span class="line">     i += i &amp; (-i) </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Constructs and returns a Binary Indexed Tree for given </span></span><br><span class="line"><span class="comment"># array of size n. </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">construct</span>(<span class="params">arr, n</span>):</span> </span><br><span class="line"></span><br><span class="line"> <span class="comment"># Create and initialize BITree[] as 0 </span></span><br><span class="line">   BITTree = [<span class="number">0</span>]*(n+<span class="number">1</span>) </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Store the actual values in BITree[] using update() </span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n): </span><br><span class="line">     updatebit(BITTree, n, i, arr[i]) </span><br><span class="line"></span><br><span class="line">   <span class="comment"># Uncomment below lines to see contents of BITree[] </span></span><br><span class="line"> <span class="comment">#for i in range(1,n+1): </span></span><br><span class="line"> <span class="comment">#  print BITTree[i], </span></span><br><span class="line">    <span class="keyword">return</span> BITTree </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Driver code to test above methods </span></span><br><span class="line">freq = [<span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>] </span><br><span class="line">BITTree = construct(freq,len(freq)) </span><br><span class="line">print(<span class="string">&quot;Sum of elements in arr[0..5] is &quot;</span> + str(getsum(BITTree,<span class="number">5</span>))) </span><br><span class="line">freq[<span class="number">3</span>] += <span class="number">6</span></span><br><span class="line">updatebit(BITTree, len(freq), <span class="number">3</span>, <span class="number">6</span>) </span><br><span class="line">print(<span class="string">&quot;Sum of elements in arr[0..5]&quot;</span>+</span><br><span class="line">                   <span class="string">&quot; after update is &quot;</span> + str(getsum(BITTree,<span class="number">5</span>))) </span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Raju Varshney </span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>Output:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Sum of elements in arr[0..5] is 12</span><br><span class="line">Sum of elements in arr[0..5] after update is 18</span><br></pre></td></tr></table></figure>
+<p><strong>Can we extend the Binary Indexed Tree to computing the sum of a range in O(Logn) time?</strong> Yes. rangeSum(l, r) = getSum(r) – getSum(l-1).</p>
+<p><strong>Applications:</strong> The implementation of the arithmetic coding algorithm.</p>
 
     </div>
 
@@ -275,13 +286,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/" rel="prev" title="线段树">
-      <i class="fa fa-chevron-left"></i> 线段树
+    <a href="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/" rel="prev" title="区间树">
+      <i class="fa fa-chevron-left"></i> 区间树
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/" rel="next" title="树状数组Binary Indexed Tree">
-      树状数组Binary Indexed Tree <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -341,7 +349,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">实际问题</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">实际问题</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -604,7 +612,7 @@ if (document.querySelectorAll('pre.mermaid').length) {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/',]
       });
       });
   </script>
@@ -620,7 +628,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'comments',
       owner       : 'hrz123',
       admin       : ['hrz123'],
-      id          : 'ffe709767d08fb0cafdf80cc17918237',
+      id          : '8fce3e2d2fc5c775c07d2d080226cfb3',
         language: 'zh-CN',
       distractionFreeMode: true
     });
