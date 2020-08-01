@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="概念 工作中对外提供的API接口设计都要考虑限流，如果不考虑限流，会造成系统的连锁反应，轻者响应缓慢，重者系统宕机，整个业务线崩溃，如何应对这种情况呢，我们可以对请求进行引流或者直接拒绝等操作，保持系统的可用性和稳定性，防止因流量暴增而导致的系统运行缓慢或宕机。 在开发高并发系统时有三把利器用来保护系统：缓存、降级和限流 缓存：缓存的目的是提升系统访问速度和增大系统处理容量 降级：降级是当服务器压">
+  <meta name="description" content="概念工作中对外提供的API接口设计都要考虑限流，如果不考虑限流，会造成系统的连锁反应，轻者响应缓慢，重者系统宕机，整个业务线崩溃，如何应对这种情况呢，我们可以对请求进行引流或者直接拒绝等操作，保持系统的可用性和稳定性，防止因流量暴增而导致的系统运行缓慢或宕机。 在开发高并发系统时有三把利器用来保护系统：缓存、降级和限流 缓存：缓存的目的是提升系统访问速度和增大系统处理容量 降级：降级是当服务器压力">
 <meta property="og:type" content="article">
 <meta property="og:title" content="接口限流算法：漏桶算法 &amp; 令牌桶算法">
 <meta property="og:url" content="https://hrz123.github.io/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="概念 工作中对外提供的API接口设计都要考虑限流，如果不考虑限流，会造成系统的连锁反应，轻者响应缓慢，重者系统宕机，整个业务线崩溃，如何应对这种情况呢，我们可以对请求进行引流或者直接拒绝等操作，保持系统的可用性和稳定性，防止因流量暴增而导致的系统运行缓慢或宕机。 在开发高并发系统时有三把利器用来保护系统：缓存、降级和限流 缓存：缓存的目的是提升系统访问速度和增大系统处理容量 降级：降级是当服务器压">
+<meta property="og:description" content="概念工作中对外提供的API接口设计都要考虑限流，如果不考虑限流，会造成系统的连锁反应，轻者响应缓慢，重者系统宕机，整个业务线崩溃，如何应对这种情况呢，我们可以对请求进行引流或者直接拒绝等操作，保持系统的可用性和稳定性，防止因流量暴增而导致的系统运行缓慢或宕机。 在开发高并发系统时有三把利器用来保护系统：缓存、降级和限流 缓存：缓存的目的是提升系统访问速度和增大系统处理容量 降级：降级是当服务器压力">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hrz123.github.io/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%951.png">
 <meta property="og:image" content="https://hrz123.github.io/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%952.png">
@@ -243,17 +243,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="概念">概念</h2>
-<p>工作中对外提供的API接口设计都要考虑限流，如果不考虑限流，会造成系统的连锁反应，轻者响应缓慢，重者系统宕机，整个业务线崩溃，如何应对这种情况呢，我们可以对请求进行引流或者直接拒绝等操作，保持系统的可用性和稳定性，防止因流量暴增而导致的系统运行缓慢或宕机。</p>
+        <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>工作中对外提供的API接口设计都要考虑限流，如果不考虑限流，会造成系统的连锁反应，轻者响应缓慢，重者系统宕机，整个业务线崩溃，如何应对这种情况呢，我们可以对请求进行引流或者直接拒绝等操作，保持系统的可用性和稳定性，防止因流量暴增而导致的系统运行缓慢或宕机。</p>
 <p>在开发高并发系统时有三把利器用来保护系统：<strong>缓存、降级和限流</strong></p>
 <p><strong>缓存：</strong>缓存的目的是提升系统访问速度和增大系统处理容量</p>
 <p><strong>降级：</strong>降级是当服务器压力剧增的情况下，根据当前业务情况及流量对一些服务和页面有策略的降级，以此释放服务器资源以保证核心任务的正常运行</p>
 <p><strong>限流：</strong>限流的目的是通过对并发访问/请求进行限速，或者对一个时间窗口内的请求进行限速来保护系统，一旦达到限制速率则可以拒绝服务、排队或等待、降级等处理</p>
-<h2 id="限流算法">限流算法</h2>
-<p>常用的限流算法有<strong>令牌桶</strong>和<strong>漏桶</strong>，而Google开源项目Guava中的RateLimiter使用的就是令牌桶控制算法。</p>
-<h3 id="漏桶算法">漏桶算法</h3>
-<p>把请求比作是水，水来了都先放进桶里，并以限定的速度出水，当水来得过猛而水不够快时就会导致水直接溢出，即拒绝服务。</p>
+<h2 id="限流算法"><a href="#限流算法" class="headerlink" title="限流算法"></a>限流算法</h2><p>常用的限流算法有<strong>令牌桶</strong>和<strong>漏桶</strong>，而Google开源项目Guava中的RateLimiter使用的就是令牌桶控制算法。</p>
+<h3 id="漏桶算法"><a href="#漏桶算法" class="headerlink" title="漏桶算法"></a>漏桶算法</h3><p>把请求比作是水，水来了都先放进桶里，并以限定的速度出水，当水来得过猛而水不够快时就会导致水直接溢出，即拒绝服务。</p>
 <img data-src="/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%951.png" class>
+
 <p>漏斗有一个进水口和一个出水口，出水口以一定速率出水，并且有一个最大出水率：</p>
 <p>在漏斗中没有水的时候，</p>
 <ul>
@@ -266,21 +264,18 @@
 <li>如果漏斗未满，且有进水的话，那么这些水会积在漏斗中</li>
 <li>如果漏斗已满，且有进水的话，那么这些水会溢出到漏斗之外</li>
 </ul>
-<h3 id="令牌桶算法">令牌桶算法</h3>
-<p>对于很多应用场景来说，除了要求能够限制数据的平均传输速率外，还要求允许某种程度的突发传输。这时候漏桶算法可能就不合适了，令牌桶算法更为适合。</p>
+<h3 id="令牌桶算法"><a href="#令牌桶算法" class="headerlink" title="令牌桶算法"></a>令牌桶算法</h3><p>对于很多应用场景来说，除了要求能够限制数据的平均传输速率外，还要求允许某种程度的突发传输。这时候漏桶算法可能就不合适了，令牌桶算法更为适合。</p>
 <p>令牌桶算法的原理是系统以恒定的速率产生令牌，然后把令牌放到令牌桶中，令牌桶有一个容量，当令牌桶满了的时候，再向其中放令牌，那么多余的令牌会被丢弃；当想要处理一个请求的时候，需要从令牌桶中取出一个令牌，如果此时令牌桶没有令牌，那么则拒绝该请求。</p>
 <img data-src="/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%952.png" class>
+
 <p>google guava实现了令牌桶限流算法：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dvb2dsZS9ndWF2YQ==">https://github.com/google/guava<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="令牌桶算法-vs-漏桶算法">令牌桶算法 vs 漏桶算法</h3>
-<p><strong>漏桶：</strong></p>
+<h3 id="令牌桶算法-vs-漏桶算法"><a href="#令牌桶算法-vs-漏桶算法" class="headerlink" title="令牌桶算法 vs 漏桶算法"></a>令牌桶算法 vs 漏桶算法</h3><p><strong>漏桶：</strong></p>
 <p>漏桶的出水速度是恒定的，那么意味着如果瞬时大流量的话，将有大部分请求被丢弃掉（也就是所谓的溢出）。</p>
 <p><strong>令牌桶：</strong></p>
 <p>生成令牌的速度时恒定的，而请求去哪令牌是没有速度限制的。这意味，面对瞬时大流量，该算法可以在短时间内请求拿到大量令牌，而且拿令牌的过程并不是消耗很大的事情。</p>
-<h2 id="最后">最后</h2>
-<p>不论是对于令牌桶拿不到令牌被拒绝，还是漏桶的水满了溢出，都是为了保证大部分流量的正常使用，而牺牲掉了少部分流量，这是合理的，如果因为极少部分流量需要保证的话，那么就可能导致系统达到极限而挂掉，得不偿失。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>不论是对于令牌桶拿不到令牌被拒绝，还是漏桶的水满了溢出，都是为了保证大部分流量的正常使用，而牺牲掉了少部分流量，这是合理的，如果因为极少部分流量需要保证的话，那么就可能导致系统达到极限而挂掉，得不偿失。</p>
 <p>本文讲的单机的限流，是JVM级别的限流，所有的令牌生成都是在内存中，在分布式环境下不能直接这么用，可以使用，可以使用redis限流</p>
-<h2 id="出处">出处</h2>
-<p>https://www.ymq.io/2018/08/11/RateLimiter/</p>
+<h2 id="出处"><a href="#出处" class="headerlink" title="出处"></a>出处</h2><p><span class="exturl" data-url="aHR0cHM6Ly93d3cueW1xLmlvLzIwMTgvMDgvMTEvUmF0ZUxpbWl0ZXIv">https://www.ymq.io/2018/08/11/RateLimiter/<i class="fa fa-external-link-alt"></i></span></p>
 
     </div>
 
@@ -386,7 +381,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
