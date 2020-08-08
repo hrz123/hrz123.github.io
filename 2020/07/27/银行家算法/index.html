@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="一句话 当一个进程申请使用资源的时候，银行家算法通过先试探分配给该进程资源，然后通过安全性算法判断分配后的系统是否处于安全状态，若不安全则试探分配作废，让该进程继续等待。  那么此时会有一个问题，如何判断系统是否处于安全状态？算法流程将用下面一张图来表示。  一张图   首先是银行家算法中的进程：  包含进程Pi的需求资源数量（也是最大需求资源数量，MAX） 已分配给该进程的资源A（Allocat">
+  <meta name="description" content="一句话当一个进程申请使用资源的时候，银行家算法通过先试探分配给该进程资源，然后通过安全性算法判断分配后的系统是否处于安全状态，若不安全则试探分配作废，让该进程继续等待。  那么此时会有一个问题，如何判断系统是否处于安全状态？算法流程将用下面一张图来表示。  一张图   首先是银行家算法中的进程：  包含进程Pi的需求资源数量（也是最大需求资源数量，MAX）  已分配给该进程的资源A（Allocat">
 <meta property="og:type" content="article">
 <meta property="og:title" content="银行家算法">
 <meta property="og:url" content="https://hrz123.github.io/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="一句话 当一个进程申请使用资源的时候，银行家算法通过先试探分配给该进程资源，然后通过安全性算法判断分配后的系统是否处于安全状态，若不安全则试探分配作废，让该进程继续等待。  那么此时会有一个问题，如何判断系统是否处于安全状态？算法流程将用下面一张图来表示。  一张图   首先是银行家算法中的进程：  包含进程Pi的需求资源数量（也是最大需求资源数量，MAX） 已分配给该进程的资源A（Allocat">
+<meta property="og:description" content="一句话当一个进程申请使用资源的时候，银行家算法通过先试探分配给该进程资源，然后通过安全性算法判断分配后的系统是否处于安全状态，若不安全则试探分配作废，让该进程继续等待。  那么此时会有一个问题，如何判断系统是否处于安全状态？算法流程将用下面一张图来表示。  一张图   首先是银行家算法中的进程：  包含进程Pi的需求资源数量（也是最大需求资源数量，MAX）  已分配给该进程的资源A（Allocat">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hrz123.github.io/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%951.png">
 <meta property="og:image" content="https://hrz123.github.io/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%952">
@@ -244,55 +244,66 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="一句话">一句话</h2>
-<p>当一个进程申请使用资源的时候，银行家算法通过先<strong>试探</strong>分配给该进程资源，然后通过安全性算法判断分配后的系统是否处于安全状态，若不安全则试探分配作废，让该进程继续等待。</p>
+        <h2 id="一句话"><a href="#一句话" class="headerlink" title="一句话"></a>一句话</h2><p>当一个进程申请使用资源的时候，银行家算法通过先<strong>试探</strong>分配给该进程资源，然后通过安全性算法判断分配后的系统是否处于安全状态，若不安全则试探分配作废，让该进程继续等待。</p>
 <blockquote>
 <p>那么此时会有一个问题，如何判断系统是否处于安全状态？算法流程将用下面一张图来表示。</p>
 </blockquote>
-<h2 id="一张图">一张图</h2>
-<img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%951.png" class>
+<h2 id="一张图"><a href="#一张图" class="headerlink" title="一张图"></a>一张图</h2><img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%951.png" class>
+
 <ul>
 <li><p>首先是银行家算法中的<strong>进程</strong>：</p>
 <ul>
-<li><p>包含进程Pi的需求资源数量（也是最大需求资源数量，MAX）</p></li>
-<li><p>已分配给该进程的资源A（Allocation）</p></li>
-<li><p>还需要的资源数量N（Need= M - A）</p></li>
-</ul></li>
-<li><p>Available为空闲资源数量，即资源池（注意：资源池的剩余资源数量+已分配给所有进程的资源数量=系统中的资源总量）</p></li>
+<li><p>包含进程Pi的需求资源数量（也是最大需求资源数量，MAX）</p>
+</li>
+<li><p>已分配给该进程的资源A（Allocation）</p>
+</li>
+<li><p>还需要的资源数量N（Need= M - A）</p>
+</li>
+</ul>
+</li>
+<li><p>Available为空闲资源数量，即资源池（注意：资源池的剩余资源数量+已分配给所有进程的资源数量=系统中的资源总量）</p>
+</li>
 </ul>
 <p>假设进程P1申请资源，银行家算法先<strong>试探</strong>的分配给它（当然先要看看当前资源池中的资源数量够不够），若申请的资源数量小于等于Available，然后接着判断分配给P1后剩余的资源，能不能使进程队列的某个进程执行完毕，若没有进程可执行完毕，则系统处于不安全状态（即此时没有一个进程能够完成并释放资源，随时间推移，系统终将处于死锁状态）。</p>
-<p>若有进程可执行完毕，则假设回收已分配给它的资源（剩余资源数量增加），把这个进程标记为可完成，并继续判断队列中的其他进程，<strong>若所有进程都可执行完毕，则系统处于安全状态，并根据可完成进程的分配顺序生成安全序列</strong>（如{P0, P3, P2, P1}表示将申请后的剩余资源Work先分配给P0 -&gt; 回收（Work+已分配给P0的A0=Work） -&gt; 分配给P3 -&gt; 回收（Work + A3 = Work）-&gt; 分配给P2 -&gt; ...... 满足所有进程）。</p>
+<p>若有进程可执行完毕，则假设回收已分配给它的资源（剩余资源数量增加），把这个进程标记为可完成，并继续判断队列中的其他进程，<strong>若所有进程都可执行完毕，则系统处于安全状态，并根据可完成进程的分配顺序生成安全序列</strong>（如{P0, P3, P2, P1}表示将申请后的剩余资源Work先分配给P0 -&gt; 回收（Work+已分配给P0的A0=Work） -&gt; 分配给P3 -&gt; 回收（Work + A3 = Work）-&gt; 分配给P2 -&gt; …… 满足所有进程）。</p>
 <p>如此就可避免系统存在潜在死锁的风险。</p>
-<h2 id="来个例子">来个例子</h2>
-<p>在银行家算法中，若出现下述资源分配情况：</p>
+<h2 id="来个例子"><a href="#来个例子" class="headerlink" title="来个例子"></a>来个例子</h2><p>在银行家算法中，若出现下述资源分配情况：</p>
 <img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%952" class>
+
 <blockquote>
 <p>注：题中共四种资源，P0的Allocation为（0，0， 3， 2）表示已分配给P0的第一种资源和第二种资源为0个，第三种资源3个，第四种资源2个。</p>
 </blockquote>
-<ol type="1">
-<li><p>该状态是否安全？</p></li>
-<li><p>若进程P2提出请求Request（1，2，2，2）后，系统能否将资源分配给它？</p></li>
+<ol>
+<li>该状态是否安全？</li>
+<li>若进程P2提出请求Request（1，2，2，2）后，系统能否将资源分配给它？</li>
+</ol>
+<ol>
 <li><p>利用安全性算法对上面的状态进行分析（见下表），找到一个安全序列{P0, P3, P4, P1, P2}，故系统是安全的。</p>
-<img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%953" class></li>
+<img data-src="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%953" class>
+</li>
 <li><p>P2发出请求向量Request(1,2,2,2)，系统按银行家算法进行检查:</p>
-<ol type="1">
-<li><p>Request2(1,2,2,2) &lt;= Need2(2,3,5,6)</p></li>
-<li><p>Request2(1,2,2,2) &lt;= Available(1,6,2,2)</p></li>
+<ol>
+<li><p>Request2(1,2,2,2) &lt;= Need2(2,3,5,6)</p>
+</li>
+<li><p>Request2(1,2,2,2) &lt;= Available(1,6,2,2)</p>
+</li>
 <li><p>系统先假定可为P2分配资源，并修改Available，Allovation2和Need2向量：</p>
-<ol type="1">
+<ol>
 <li>Available = （0，4，0，0）</li>
 <li>Allocation2 = （2，5，7，6）</li>
 <li>Need2 = （1，1，3，4）</li>
 </ol>
-<p>此时在进行安全检查，发现Available=(0, 4, 0, 0)，不能满足任何一个进程，所以判定系统进入不安全状态，即不能分配给P2相应的Request(1,2,2,2)。</p></li>
-</ol></li>
+<p>此时在进行安全检查，发现Available=(0, 4, 0, 0)，不能满足任何一个进程，所以判定系统进入不安全状态，即不能分配给P2相应的Request(1,2,2,2)。</p>
+</li>
 </ol>
-<h2 id="简单伪代码">简单伪代码</h2>
-<p>P - 进程的集合</p>
+</li>
+</ol>
+<h2 id="简单伪代码"><a href="#简单伪代码" class="headerlink" title="简单伪代码"></a>简单伪代码</h2><p>P - 进程的集合</p>
 <p>Mp - 进程p的最大的请求数目</p>
 <p>Cp - 进程p当前被分配的资源</p>
 <p>A - 当前可用的资源</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">while (P !&#x3D; ∅) &#123;</span><br><span class="line">    found &#x3D; FALSE;</span><br><span class="line">    foreach (p ∈ P) &#123;</span><br><span class="line">            &#x2F;&#x2F; Mp - Cp就是Need</span><br><span class="line">        if (Mp − Cp ≤ A) &#123;</span><br><span class="line">             &#x2F;* p可以获得他所需的资源。假设他得到资源后执行；执行终止，并释放所拥有的资源。*&#x2F;</span><br><span class="line">             A &#x3D; A + Cp ;</span><br><span class="line">             P &#x3D; P − &#123;p&#125;;</span><br><span class="line">             found &#x3D; TRUE;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (! found) return FAIL;</span><br><span class="line">&#125;</span><br><span class="line">return OK;</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
