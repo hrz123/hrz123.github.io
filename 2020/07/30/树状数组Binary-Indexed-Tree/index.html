@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://hrz123.github.io/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%841.png">
 <meta property="og:image" content="https://hrz123.github.io/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%842.png">
 <meta property="article:published_time" content="2020-07-30T08:35:20.000Z">
-<meta property="article:modified_time" content="2020-08-08T08:11:14.741Z">
+<meta property="article:modified_time" content="2020-08-08T08:23:56.106Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="数据结构与算法">
 <meta name="twitter:card" content="summary">
@@ -221,7 +221,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-08 16:11:14" itemprop="dateModified" datetime="2020-08-08T16:11:14+08:00">2020-08-08</time>
+                <time title="修改时间：2020-08-08 16:23:56" itemprop="dateModified" datetime="2020-08-08T16:23:56+08:00">2020-08-08</time>
               </span>
 
           
@@ -283,6 +283,15 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Sum of elements in arr[0..5] is 12</span><br><span class="line">Sum of elements in arr[0..5] after update is 18</span><br></pre></td></tr></table></figure>
 <p><strong>Can we extend the Binary Indexed Tree to computing the sum of a range in O(Logn) time?</strong> Yes. rangeSum(l, r) = getSum(r) – getSum(l-1).</p>
 <p><strong>Applications:</strong> The implementation of the arithmetic coding algorithm.</p>
+<h2 id="典型题目">典型题目</h2>
+<p>leetcode 315 计算右侧小于当前元素的个数</p>
+<p>给定一个整数数组 nums，按要求返回一个新数组 counts。数组 counts 有该性质： counts[i] 的值是 nums[i] 右侧小于 nums[i] 的元素的数量。</p>
+<p>示例：</p>
+<p>输入：[5,2,6,1] 输出：[2,1,1,0] 解释： 5 的右侧有 2 个更小的元素 (2 和 1) 2 的右侧仅有 1 个更小的元素 (1) 6 的右侧有 1 个更小的元素 (1) 1 的右侧有 0 个更小的元素</p>
+<p>链接：https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self</p>
+<p>树状数组解法，用每个数的rank来离散化，反序插入树状数组中，前一位的前缀和就是右侧小于当前元素的个数。</p>
+<p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSmaller</span>(<span class="params">self, nums: List[int]</span>) -&gt; List[int]:</span></span><br><span class="line">        rank = &#123;val: i + <span class="number">1</span> <span class="keyword">for</span> i, val <span class="keyword">in</span> enumerate(sorted(nums))&#125;</span><br><span class="line">        n = len(nums)</span><br><span class="line">        res = []</span><br><span class="line"></span><br><span class="line">        BITree = [<span class="number">0</span>] * (n + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">i, k=<span class="number">1</span></span>):</span></span><br><span class="line">            <span class="keyword">while</span> i &lt;= n:</span><br><span class="line">                BITree[i] += k</span><br><span class="line">                i += (i &amp; -i)</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">i</span>):</span></span><br><span class="line">            s = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> i:</span><br><span class="line">                s += BITree[i]</span><br><span class="line">                i -= (i &amp; -i)</span><br><span class="line">            <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> x <span class="keyword">in</span> reversed(nums):</span><br><span class="line">            res.append(getSum(rank[x] - <span class="number">1</span>))</span><br><span class="line">            update(rank[x])</span><br><span class="line">        <span class="keyword">return</span> res[::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -372,7 +381,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E9%97%AE%E9%A2%98%E7%AE%80%E5%8D%95%E8%AE%B0%E6%83%B3%E5%BF%AB%E9%80%9F%E7%9F%A5%E9%81%93%E6%95%B0%E7%BB%84%E7%9A%84%E5%89%8D%E7%BC%80%E5%92%8C%E5%90%8C%E6%97%B6%E6%95%B0%E7%BB%84%E7%9A%84%E4%BF%AE%E6%94%B9%E9%A2%91%E7%B9%81%E7%94%A8%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E4%BD%BF%E5%BE%97%E8%BF%99%E4%B8%A4%E7%A7%8D%E6%93%8D%E4%BD%9C%E9%83%BD%E5%8F%98%E6%88%90ologn%E4%B8%A4%E8%BE%B9%E6%9F%A5%E8%AF%A2%E7%9A%84%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E5%8F%AF%E4%BB%A5%E7%9B%B8%E5%BD%93%E4%BA%8E%E7%BA%BF%E6%AE%B5%E6%A0%91%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="nav-number">2.</span> <span class="nav-text">实际问题（简单记，想快速知道数组的前缀和，同时数组的修改频繁，用树状数组，使得这两种操作都变成O(logn)，两边查询的树状数组可以相当于线段树的功能）</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E9%97%AE%E9%A2%98%E7%AE%80%E5%8D%95%E8%AE%B0%E6%83%B3%E5%BF%AB%E9%80%9F%E7%9F%A5%E9%81%93%E6%95%B0%E7%BB%84%E7%9A%84%E5%89%8D%E7%BC%80%E5%92%8C%E5%90%8C%E6%97%B6%E6%95%B0%E7%BB%84%E7%9A%84%E4%BF%AE%E6%94%B9%E9%A2%91%E7%B9%81%E7%94%A8%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E4%BD%BF%E5%BE%97%E8%BF%99%E4%B8%A4%E7%A7%8D%E6%93%8D%E4%BD%9C%E9%83%BD%E5%8F%98%E6%88%90ologn%E4%B8%A4%E8%BE%B9%E6%9F%A5%E8%AF%A2%E7%9A%84%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E5%8F%AF%E4%BB%A5%E7%9B%B8%E5%BD%93%E4%BA%8E%E7%BA%BF%E6%AE%B5%E6%A0%91%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="nav-number">2.</span> <span class="nav-text">实际问题（简单记，想快速知道数组的前缀和，同时数组的修改频繁，用树状数组，使得这两种操作都变成O(logn)，两边查询的树状数组可以相当于线段树的功能）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E9%A2%98%E7%9B%AE"><span class="nav-number">3.</span> <span class="nav-text">典型题目</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
