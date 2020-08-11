@@ -393,122 +393,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 34.在排序数组中查找元素的第一个和最后一个位置</title>
-    <url>/2020/08/10/leetcode-34-%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE/</url>
-    <content><![CDATA[<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><ol start="34">
-<li>在排序数组中查找元素的第一个和最后一个位置</li>
-</ol>
-<p>给定一个按照升序排列的整数数组 <code>nums</code>，和一个目标值 <code>target</code>。找出给定目标值在数组中的开始位置和结束位置。</p>
-<p>你的算法时间复杂度必须是 <em>O</em>(log <em>n</em>) 级别。</p>
-<p>如果数组中不存在目标值，返回 <code>[-1, -1]</code>。</p>
-<p><strong>示例 1:</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8</span><br><span class="line">输出: [3,4]</span><br></pre></td></tr></table></figure>
-
-<p><strong>示例 2:</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 6</span><br><span class="line">输出: [-1,-1]</span><br></pre></td></tr></table></figure>
-
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这道题目当然可以给找左边界和右边界各写一个二分查找代码，因为比较简单就不写了。我们来看一下如何用一段代码找到临界索引。</p>
-<p>我们有几个前提条件</p>
-<ol>
-<li>数组中可能不出现该值。</li>
-<li>数组中可能有重复元素。</li>
-</ol>
-<p>我们来分析一下：</p>
-<ol>
-<li><p>对于一个元素，我们如果以插入的视角来看的话，这个元素有n+1个插入位置，对应的索引分别是0，1，2…，n。</p>
-<ol>
-<li>如果我们插入的位置，左边都小于该元素，右边都大于等于该元素，那么插入位置的索引，就是第一个大于等于该元素的索引；</li>
-<li>如果我们插入的位置，左边都小于等于该元素，右边都大于该元素，那么插入位置的索引，就是第一个大于该元素的索引，而这个索引减1，就是最后一个小于等于该元素的索引。</li>
-</ol>
-</li>
-<li><p>由于数组中可能不存在该值，我们第一步求得第一个大于等于该元素的索引，</p>
-<ol>
-<li>可能为n，也就是说数组中没有大于等于该值的元素</li>
-<li>可能该索引对应的值不是等于该值，而是大于该值</li>
-</ol>
-<p>在这两种情况下，我们就不用再继续求右边的边界了。直接返回-1，-1</p>
-</li>
-<li><p>这两种情况，仅仅是对于nums[mid] == target时，采取的策略不同，我们可以用一个参数控制不同的表现</p>
-</li>
-</ol>
-<p>示例代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">        l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">        <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                        r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                        l = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> l</span><br></pre></td></tr></table></figure>
-
-<p>这里返回的就是右侧集合的开始位置的下标。</p>
-<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><p>这道题的解法如下，加上了不在数组的判断</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">searchRange</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; List[int]:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">            l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">            <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                    r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    l = mid + <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> l</span><br><span class="line"></span><br><span class="line">        left = binary_search(nums, target, <span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">if</span> left == len(nums) <span class="keyword">or</span> nums[left] != target:</span><br><span class="line">            <span class="keyword">return</span> [<span class="number">-1</span>, <span class="number">-1</span>]</span><br><span class="line">        <span class="keyword">return</span> [left, binary_search(nums, target, <span class="literal">False</span>) - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 363.矩形区域不超过K的最大数值和，通过此题好好了解前缀和的各种应用和变化</title>
-    <url>/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/</url>
-    <content><![CDATA[<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>给定一个非空二维矩阵 matrix 和一个整数 k，找到这个矩阵内部不大于 k 的最大矩形和。</p>
-<p>示例:</p>
-<p>输入: matrix = [[1,0,1],[0,-2,3]], k = 2<br>输出: 2<br>解释: 矩形区域 [[0, 1], [-2, 3]] 的数值和是 2，且 2 是不超过 k 的最大数字（k = 2）。<br>说明：</p>
-<p>矩阵内的矩形区域面积必须大于 0。<br>如果行数远大于列数，你将如何解答呢？</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这道题目的思路是固定左右边界，对行进行前缀和和二分查找。</p>
-<p>我们知道，前缀和可以让我们O(1)的时间复杂度知道任何区间和。</p>
-<p>前缀和的典型构建方法：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pre = [<span class="number">0</span>]</span><br><span class="line">p = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">    p += n</span><br><span class="line">    pre.append(p)</span><br></pre></td></tr></table></figure>
-
-<p>比如我们想知道i,j之间的区间和，包括i，j索引的话，我们的方法是pre[j+1] - pre[i]。</p>
-<p>通过前缀和的变种，我们可以解决一些新的问题。</p>
-<p>我们将前缀和变成hash set，就可以快速判断是否有一个区间和等于target。</p>
-<p>我们可以插入排序的方法替换掉单纯的append，使前缀和有序，这样就可以用二分查找找到最接近某个target的区间和。</p>
-<p>这道题目就利用了第二种想法。</p>
-<p>我们固定左右边界，left和right，先将left到right之间的每一行的所有数值累加。这样我们就有了一列数。通过固定所有这样的left和right我们也就枚举了矩形所有的左边界和右边界。接着我们用第二种方法，边构建前缀和，编计算最接近target的矩形面积。</p>
-<p>其大致代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pre = [<span class="number">0</span>]</span><br><span class="line">p = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> r <span class="keyword">in</span> total:</span><br><span class="line">    p += r</span><br><span class="line">    loc = bisect.bisect_left(pre, p - k)</span><br><span class="line">    <span class="keyword">if</span> loc != len(pre):</span><br><span class="line">        res = max(res, p - pre[loc])</span><br><span class="line">    bisect.insort(pre, p)</span><br></pre></td></tr></table></figure>
-
-<p>有了这段代码，再加上我们固定左右边界的代码，我们就可以解决这个问题。计算一下复杂度。</p>
-<p>固定左右边界需要O(n^2)的时间复杂度，n为矩形的列数。生成前缀和遍历需要O(m)，m为矩阵的行数，搜索是O(logm)的，但是插入是O(m)的。所以总体上还是O(n^2m^2)的。但是常数项比较低。</p>
-<h2 id="总体代码如下"><a href="#总体代码如下" class="headerlink" title="总体代码如下"></a>总体代码如下</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxSumSubmatrix</span>(<span class="params">self, matrix: List[List[int]], k: int</span>) -&gt; int:</span></span><br><span class="line">        m, n = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        total = [<span class="number">0</span>] * m</span><br><span class="line">        res = float(<span class="string">&#x27;-inf&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> left <span class="keyword">in</span> range(n):</span><br><span class="line">            total[:] = [<span class="number">0</span>] * m</span><br><span class="line">            <span class="keyword">for</span> right <span class="keyword">in</span> range(left, n):</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">                    total[i] += matrix[i][right]</span><br><span class="line">                pre = [<span class="number">0</span>]</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">                <span class="keyword">for</span> r <span class="keyword">in</span> total:</span><br><span class="line">                    p += r</span><br><span class="line">                    loc = bisect.bisect_left(pre, p - k)</span><br><span class="line">                    <span class="keyword">if</span> loc != len(pre):</span><br><span class="line">                        res = max(res, p - pre[loc])</span><br><span class="line">                    bisect.insort(pre, p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-
-<h2 id="另一道相似题目"><a href="#另一道相似题目" class="headerlink" title="另一道相似题目"></a>另一道相似题目</h2><ol start="1546">
-<li>和为目标值的最大数目不重叠非空子数组数目</li>
-</ol>
-<p>给你一个数组 nums 和一个整数 target 。</p>
-<p>请你返回 非空不重叠 子数组的最大数目，且每个子数组中数字和都为 target 。</p>
-<p>示例 1：</p>
-<p>输入：nums = [1,1,1,1,1], target = 2<br>输出：2<br>解释：总共有 2 个不重叠子数组（加粗数字表示） [1,1,1,1,1] ，它们的和为目标值 2 。<br>示例 2：</p>
-<p>输入：nums = [-1,3,5,1,4,2,-9], target = 6<br>输出：2<br>解释：总共有 3 个子数组和为 6 。<br>([5,1], [4,2], [3,5,1,4,2,-9]) 但只有前 2 个是不重叠的。<br>示例 3：</p>
-<p>输入：nums = [-2,6,6,3,5,4,1,2,8], target = 10<br>输出：3<br>示例 4：</p>
-<p>输入：nums = [0,0,0], target = 0<br>输出：3</p>
-<p>提示：</p>
-<p>1 &lt;= nums.length &lt;= 10^5<br>-10^4 &lt;= nums[i] &lt;= 10^4<br>0 &lt;= target &lt;= 10^6</p>
-<p>这道题目就是使用了第一种前缀和的变化，并应用了贪心的思想。</p>
-<p>一旦发现target在区间和中，我们就重新统计前缀和。示例代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxNonOverlapping</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; int:</span></span><br><span class="line">        pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">        p = <span class="number">0</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">            p += n</span><br><span class="line">            <span class="keyword">if</span> p - target <span class="keyword">in</span> pre:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">                pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                pre.add(p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 41.缺失的第一个正数</title>
-    <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
-    <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数"><a href="#leetcode-41-缺失的第一个正数" class="headerlink" title="leetcode 41 缺失的第一个正数"></a>leetcode 41 缺失的第一个正数</h3><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。</p>
-<p>示例 1:</p>
-<p>输入: [1,2,0]<br>输出: 3<br>示例 2:</p>
-<p>输入: [3,4,-1,1]<br>输出: 2<br>示例 3:</p>
-<p>输入: [7,8,9,11,12]<br>输出: 1</p>
-<p>提示：</p>
-<p>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。</p>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>这道题目和不使用任何额外空间的计数排序很像，因为都对时空复杂度做了严格的限制，我们都不得不改变原数组，设法将其改为我们能够利用的数据结构。否则这两道题目都无法有「真正」的解。不使用额外空间计数排序的那道题目规定数组的元素有一定的范围，我们可以利用32位整数的前16位计数，最终输出计数排序的结果。</p>
-<p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
-<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>python实现Trie(字典树、前缀树)</title>
     <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
     <content><![CDATA[<h2 id="wiki-百科上的介绍："><a href="#wiki-百科上的介绍：" class="headerlink" title="wiki 百科上的介绍："></a>wiki 百科上的介绍：</h2><p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
@@ -589,6 +473,103 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 363.矩形区域不超过K的最大数值和，通过此题好好了解前缀和的各种应用和变化</title>
+    <url>/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/</url>
+    <content><![CDATA[<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>给定一个非空二维矩阵 matrix 和一个整数 k，找到这个矩阵内部不大于 k 的最大矩形和。</p>
+<p>示例:</p>
+<p>输入: matrix = [[1,0,1],[0,-2,3]], k = 2<br>输出: 2<br>解释: 矩形区域 [[0, 1], [-2, 3]] 的数值和是 2，且 2 是不超过 k 的最大数字（k = 2）。<br>说明：</p>
+<p>矩阵内的矩形区域面积必须大于 0。<br>如果行数远大于列数，你将如何解答呢？</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这道题目的思路是固定左右边界，对行进行前缀和和二分查找。</p>
+<p>我们知道，前缀和可以让我们O(1)的时间复杂度知道任何区间和。</p>
+<p>前缀和的典型构建方法：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pre = [<span class="number">0</span>]</span><br><span class="line">p = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">    p += n</span><br><span class="line">    pre.append(p)</span><br></pre></td></tr></table></figure>
+
+<p>比如我们想知道i,j之间的区间和，包括i，j索引的话，我们的方法是pre[j+1] - pre[i]。</p>
+<p>通过前缀和的变种，我们可以解决一些新的问题。</p>
+<p>我们将前缀和变成hash set，就可以快速判断是否有一个区间和等于target。</p>
+<p>我们可以插入排序的方法替换掉单纯的append，使前缀和有序，这样就可以用二分查找找到最接近某个target的区间和。</p>
+<p>这道题目就利用了第二种想法。</p>
+<p>我们固定左右边界，left和right，先将left到right之间的每一行的所有数值累加。这样我们就有了一列数。通过固定所有这样的left和right我们也就枚举了矩形所有的左边界和右边界。接着我们用第二种方法，边构建前缀和，编计算最接近target的矩形面积。</p>
+<p>其大致代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pre = [<span class="number">0</span>]</span><br><span class="line">p = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> r <span class="keyword">in</span> total:</span><br><span class="line">    p += r</span><br><span class="line">    loc = bisect.bisect_left(pre, p - k)</span><br><span class="line">    <span class="keyword">if</span> loc != len(pre):</span><br><span class="line">        res = max(res, p - pre[loc])</span><br><span class="line">    bisect.insort(pre, p)</span><br></pre></td></tr></table></figure>
+
+<p>有了这段代码，再加上我们固定左右边界的代码，我们就可以解决这个问题。计算一下复杂度。</p>
+<p>固定左右边界需要O(n^2)的时间复杂度，n为矩形的列数。生成前缀和遍历需要O(m)，m为矩阵的行数，搜索是O(logm)的，但是插入是O(m)的。所以总体上还是O(n^2m^2)的。但是常数项比较低。</p>
+<h2 id="总体代码如下"><a href="#总体代码如下" class="headerlink" title="总体代码如下"></a>总体代码如下</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxSumSubmatrix</span>(<span class="params">self, matrix: List[List[int]], k: int</span>) -&gt; int:</span></span><br><span class="line">        m, n = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        total = [<span class="number">0</span>] * m</span><br><span class="line">        res = float(<span class="string">&#x27;-inf&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> left <span class="keyword">in</span> range(n):</span><br><span class="line">            total[:] = [<span class="number">0</span>] * m</span><br><span class="line">            <span class="keyword">for</span> right <span class="keyword">in</span> range(left, n):</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">                    total[i] += matrix[i][right]</span><br><span class="line">                pre = [<span class="number">0</span>]</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">                <span class="keyword">for</span> r <span class="keyword">in</span> total:</span><br><span class="line">                    p += r</span><br><span class="line">                    loc = bisect.bisect_left(pre, p - k)</span><br><span class="line">                    <span class="keyword">if</span> loc != len(pre):</span><br><span class="line">                        res = max(res, p - pre[loc])</span><br><span class="line">                    bisect.insort(pre, p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+
+<h2 id="另一道相似题目"><a href="#另一道相似题目" class="headerlink" title="另一道相似题目"></a>另一道相似题目</h2><ol start="1546">
+<li>和为目标值的最大数目不重叠非空子数组数目</li>
+</ol>
+<p>给你一个数组 nums 和一个整数 target 。</p>
+<p>请你返回 非空不重叠 子数组的最大数目，且每个子数组中数字和都为 target 。</p>
+<p>示例 1：</p>
+<p>输入：nums = [1,1,1,1,1], target = 2<br>输出：2<br>解释：总共有 2 个不重叠子数组（加粗数字表示） [1,1,1,1,1] ，它们的和为目标值 2 。<br>示例 2：</p>
+<p>输入：nums = [-1,3,5,1,4,2,-9], target = 6<br>输出：2<br>解释：总共有 3 个子数组和为 6 。<br>([5,1], [4,2], [3,5,1,4,2,-9]) 但只有前 2 个是不重叠的。<br>示例 3：</p>
+<p>输入：nums = [-2,6,6,3,5,4,1,2,8], target = 10<br>输出：3<br>示例 4：</p>
+<p>输入：nums = [0,0,0], target = 0<br>输出：3</p>
+<p>提示：</p>
+<p>1 &lt;= nums.length &lt;= 10^5<br>-10^4 &lt;= nums[i] &lt;= 10^4<br>0 &lt;= target &lt;= 10^6</p>
+<p>这道题目就是使用了第一种前缀和的变化，并应用了贪心的思想。</p>
+<p>一旦发现target在区间和中，我们就重新统计前缀和。示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxNonOverlapping</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; int:</span></span><br><span class="line">        pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">        p = <span class="number">0</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">            p += n</span><br><span class="line">            <span class="keyword">if</span> p - target <span class="keyword">in</span> pre:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">                pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                pre.add(p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 34.在排序数组中查找元素的第一个和最后一个位置</title>
+    <url>/2020/08/10/leetcode-34-%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE/</url>
+    <content><![CDATA[<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><ol start="34">
+<li>在排序数组中查找元素的第一个和最后一个位置</li>
+</ol>
+<p>给定一个按照升序排列的整数数组 <code>nums</code>，和一个目标值 <code>target</code>。找出给定目标值在数组中的开始位置和结束位置。</p>
+<p>你的算法时间复杂度必须是 <em>O</em>(log <em>n</em>) 级别。</p>
+<p>如果数组中不存在目标值，返回 <code>[-1, -1]</code>。</p>
+<p><strong>示例 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8</span><br><span class="line">输出: [3,4]</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 6</span><br><span class="line">输出: [-1,-1]</span><br></pre></td></tr></table></figure>
+
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这道题目当然可以给找左边界和右边界各写一个二分查找代码，因为比较简单就不写了。我们来看一下如何用一段代码找到临界索引。</p>
+<p>我们有几个前提条件</p>
+<ol>
+<li>数组中可能不出现该值。</li>
+<li>数组中可能有重复元素。</li>
+</ol>
+<p>我们来分析一下：</p>
+<ol>
+<li><p>对于一个元素，我们如果以插入的视角来看的话，这个元素有n+1个插入位置，对应的索引分别是0，1，2…，n。</p>
+<ol>
+<li>如果我们插入的位置，左边都小于该元素，右边都大于等于该元素，那么插入位置的索引，就是第一个大于等于该元素的索引；</li>
+<li>如果我们插入的位置，左边都小于等于该元素，右边都大于该元素，那么插入位置的索引，就是第一个大于该元素的索引，而这个索引减1，就是最后一个小于等于该元素的索引。</li>
+</ol>
+</li>
+<li><p>由于数组中可能不存在该值，我们第一步求得第一个大于等于该元素的索引，</p>
+<ol>
+<li>可能为n，也就是说数组中没有大于等于该值的元素</li>
+<li>可能该索引对应的值不是等于该值，而是大于该值</li>
+</ol>
+<p>在这两种情况下，我们就不用再继续求右边的边界了。直接返回-1，-1</p>
+</li>
+<li><p>这两种情况，仅仅是对于nums[mid] == target时，采取的策略不同，我们可以用一个参数控制不同的表现</p>
+</li>
+</ol>
+<p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">        l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">        <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                        r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                        l = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> l</span><br></pre></td></tr></table></figure>
+
+<p>这里返回的就是右侧集合的开始位置的下标。</p>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><p>这道题的解法如下，加上了不在数组的判断</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">searchRange</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; List[int]:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">            l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">            <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                    r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    l = mid + <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> l</span><br><span class="line"></span><br><span class="line">        left = binary_search(nums, target, <span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">if</span> left == len(nums) <span class="keyword">or</span> nums[left] != target:</span><br><span class="line">            <span class="keyword">return</span> [<span class="number">-1</span>, <span class="number">-1</span>]</span><br><span class="line">        <span class="keyword">return</span> [left, binary_search(nums, target, <span class="literal">False</span>) - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python实现简单布隆过滤器</title>
     <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
     <content><![CDATA[<h2 id="布隆过滤器"><a href="#布隆过滤器" class="headerlink" title="布隆过滤器"></a>布隆过滤器</h2><p>布隆过滤器vshash table</p>
@@ -659,12 +640,22 @@
       </tags>
   </entry>
   <entry>
-    <title>一次犯罪不过是污染了水流，而一次不公正的司法却污染了水源</title>
-    <url>/2020/08/08/%E4%B8%80%E6%AC%A1%E7%8A%AF%E7%BD%AA%E4%B8%8D%E8%BF%87%E6%98%AF%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%B5%81%EF%BC%8C%E8%80%8C%E4%B8%80%E6%AC%A1%E4%B8%8D%E5%85%AC%E6%AD%A3%E7%9A%84%E5%8F%B8%E6%B3%95%E5%8D%B4%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%BA%90/</url>
-    <content><![CDATA[<p>张玉环事件有感</p>
+    <title>leetcode 41.缺失的第一个正数</title>
+    <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
+    <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数"><a href="#leetcode-41-缺失的第一个正数" class="headerlink" title="leetcode 41 缺失的第一个正数"></a>leetcode 41 缺失的第一个正数</h3><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。</p>
+<p>示例 1:</p>
+<p>输入: [1,2,0]<br>输出: 3<br>示例 2:</p>
+<p>输入: [3,4,-1,1]<br>输出: 2<br>示例 3:</p>
+<p>输入: [7,8,9,11,12]<br>输出: 1</p>
+<p>提示：</p>
+<p>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>这道题目和不使用任何额外空间的计数排序很像，因为都对时空复杂度做了严格的限制，我们都不得不改变原数组，设法将其改为我们能够利用的数据结构。否则这两道题目都无法有「真正」的解。不使用额外空间计数排序的那道题目规定数组的元素有一定的范围，我们可以利用32位整数的前16位计数，最终输出计数排序的结果。</p>
+<p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <tags>
-        <tag>生活</tag>
+        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -678,118 +669,12 @@
       </tags>
   </entry>
   <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
-    <url>/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/</url>
-    <content><![CDATA[<h2 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1. 问题描述"></a>1. 问题描述</h2><p>给出只包含int类型的数组，所有值出现k(k&gt;1)次，除了一个值，这个值出现了p次（p&gt;1, p%k!=0)。找到这个值。</p>
-<h2 id="2-从只有1bit的特殊情况开始"><a href="#2-从只有1bit的特殊情况开始" class="headerlink" title="2. 从只有1bit的特殊情况开始"></a>2. 从只有1bit的特殊情况开始</h2><p>为了应用位运算，我们应该重新思考integers是如何在计算机中被表示的–通过位。让我们先考虑1位。假如我们有一数组的一bit数（除了0就是1），我们要统计数组中的1，使得当统计1的计数器到达k时，计数器回到0并且重新统计（k和我们问题中提到的k一样）。为了跟踪我们已经遇到多少个1，我们需要一个计数器。假设计数器二进制表示有m位：xm, …, x1（最重要的位到最不重要的位）。我们至少可以总结出计数器的以下四个特性。</p>
-<ol>
-<li>计数器有一个初始状态，简单来讲为0</li>
-<li>对于数组中的每一个输入，如果我们击中0，计数器应该保持不变</li>
-<li>对于数组中的每一个输入，如果我们击中1，计数器应该增加1</li>
-<li>为了覆盖k个计数，我们要求2^m&gt;=k，这意味着m &gt; logk</li>
-</ol>
-<p>这里是关键部分：当我们扫描数组时，计数器（从x1到xm）中的每个位如何变化。注意，我们被提示使用位运算。为了满足第2个属性，回想一下，如果另一个操作数为0，有哪些位操作不会改变操作数？是的，有位与x=x|0和位异或x=x^0。</p>
-<p>好了，我们现在有一个表达式：x = x | i或者x = x^i，其中i是数组中的扫描元素。哪一个更好呢？我们还不知道。所以，让我们开始实际的计算。</p>
-<p>开始的时候，计数器的所有位都初始化为0，即xm=0, …, x1=0。由于我们要选择的位操作，保证了计数器的所有位在遇到0时都保持不变，所以直到我们遇到数组中第一个1，计数器将是0。当我们遇到第一个1的时候，我们得到：xm = 0, … , x2=0,  x1=1。让我们继续下去，直到打出第二个1，之后我们得到：xm=0, … , x2=1, x1=0。注意，x1从1变成了0。对于x1 = x1 | i，在第二次计数之后，x1仍然会是1。所以很明显，我们应该使用x1 = x1 ^ i，那么x2, …, xm呢？我们的想法是找到x2, … , xm将改变其值的条件。以x2为例。如果我们打了一个1，需要改变x2的值，那么在我们进行改变之前，x1的值一定是多少？答案是：x1必须是1，否则我们不应该改变x2，因为把x1从0改成1就可以了。因此，只有当x1和i都是1时，x2才会改变值，或者数学上说，x2 = x2 ^ (x1 &amp; i)。同理，xm只有在，xm-1, … , x1和i都是1的时候才会改变数值：xm = xm ^ (xm-1 &amp; … &amp; x1 &amp; i)。ok，我们找到了这个位运算。</p>
-<p>但是，你可能会注意到，上面发现的位运算将从0开始计数，直到2^m-1，而不是k。如果k &lt; 2^m - 1，我们需要一些”切割“机制，以在计数达到k时将计数器重新初始化为0。为此，我们对xm, … , x1应用位AND，并使用一些称为mask的变量，即xm = xm &amp; mask, … , x1 = x1 &amp; mask。如果我们能保证只有当计数达到k时，mask才为0，而在其他所有计数情况下为1，那么我们就完成了。我们如何实现这一点呢？试着想一想，计数为k的情况与其他所有情况的区别是什么？是的，是1的计数！对于每一个计数，我们对计数器的每一个位都有唯一的值，这可以看作是它的状态。如果我们把k写成二进制形式：km, … ,k1, 我们就可以构造mask如下。</p>
-<p>mask = ~(y1 &amp; y2 &amp; .. &amp; ym)，其中如果kj = 1, yj = xj， 如果kj = 0， yj = -xj ( j = 1 to m )  </p>
-<p>简单来讲，就是只有当x1..xm和k的所有位都相等的时候，mask才会为0</p>
-<p>我们来举一些例子：</p>
-<p>k = 3: k1  = 1, k2 = 1, mask = ~(x1 &amp; x2);</p>
-<p>k = 5: k1 = 1, k2 = 1, k3 = 1, mask = ~(x1 &amp; ~x2 &amp; x3);</p>
-<p>综上所述，我们的算法将是这样的（nums是输入数组）：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : nums) &#123;</span><br><span class="line">    xm ^= (xm<span class="number">-1</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    xm<span class="number">-1</span> ^= (xm<span class="number">-2</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    .....</span><br><span class="line">    x1 ^= i;</span><br><span class="line">    </span><br><span class="line">    mask = ~(y1 &amp; y2 &amp; ... &amp; ym) where yj = xj <span class="keyword">if</span> kj = <span class="number">1</span>, <span class="keyword">and</span> yj = ~xj <span class="keyword">if</span> kj = <span class="number">0</span> (j = <span class="number">1</span> to m).</span><br><span class="line"></span><br><span class="line">    xm &amp;= mask;</span><br><span class="line">    ......</span><br><span class="line">    x1 &amp;= mask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-32位数的一般情况"><a href="#3-32位数的一般情况" class="headerlink" title="3. 32位数的一般情况"></a>3. 32位数的一般情况</h2><p>现在是时候把我们的结果从1位数的情况推广到32位整数了。一个直接的方法是为整数中的每个位创建32个计数器。但是，如果我们利用位操作的优势，我们也许可以”集体“管理所有的32个计数器，其中m是满足m&gt;=logk的最小整数。原因是位操作只适用于每个位，所以对不同位的操作是相互独立的（有点明显，对吧？）。这使得我们可以将32个计数器的对应位归为一个32位整数。下面是一个示意图，展示了如何做到这一点。</p>
-<img data-src="/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/%E4%BD%8D%E8%BF%90%E7%AE%971.png" class>
-
-<p>最上面的一行是32位的整数，其中每一个位，我们都有一个对应的m位计数器（由向上箭头下面的那一列所示）。由于对32位中每一个位的操作都是相互独立的，所以我们可以将比如说所有计数器的第m位，归为一个32位数（由橙色框所示）。这个32位数中的所有位（表示为xm）将遵循相同的位操作。由于每个计数器有m个位，我们最终得到m个32位数，对应于第二部分中定义的x1, … , xm，但现在它们是32位数而不是1位数。因此，在上面开发的算法中，我们只需要将x1到xm视为32位整数而不是1位数。其他一切都将是相同的，我们就完成了。很简单，嗯？</p>
-<h2 id="4-返回什么"><a href="#4-返回什么" class="headerlink" title="4. 返回什么"></a>4. 返回什么</h2><p>最后就是我们应该返回什么值，或者等价于x1到xm中哪一个会等于单一元素。为了得到正确的答案，我们需要了解m个32位整数x1到xm代表什么。以x1为例，x1有32位，我们把它们标注为r（r=1到32)。当我们扫描完输入数组后，x1的r-th位的值将由数组中所有元素的r-th为决定（更具体的说，假设数组中所有元素的r-th位1的总计数为q，那么最终r-th位就是q’=q%k，其二进制形式为：q’m, … , q’1，那么根据定义，x1的r-th位将等于 q’1)。现在你可以问自己这个问题：如果x1的r-th位是1，这意味着什么？</p>
-<p>答案是要找到能对这个1做出贡献的东西，一个出现了k次的元素会有贡献吗？不会，为什么？因为一个元素要做出贡献，至少要同时满足两个条件：这个元素的r-th位是1，这个1的出现次数不是k的整数倍，第一个条件是微不足道的。第二个条件来自于每当1的命中次数为k时，计数器就会回零，也就是x1中的对应位会被重置为0，对于一个出现了k次的元素，不可能同时满足这两个条件（违反第二条），所以它不会有贡献。所以，只有出现p（p%k!=0）次的单个元素才会做出贡献。如果p&gt;k，那么前k*[p/k] ([p/k]表示p/k的整数部分)的元素也不会做出贡献。所以我们总是可以设置p’ = p % k，并说这个单元素有效地出现了p’次。</p>
-<p>我们把p‘写成二进制形式：p’m, … , p’1(注意p’ &lt; k, 所以它将适合m位)。这里提出一个声明，xj等于这个单个元素的条件是p’j = 1(j =1 到 m)，下面给出一个快速证明：</p>
-<p>如果xj的r-th位是1，我们可以放心的说这个单一元素的r-th位也是1（否则没有任何东西可以使xj的r-th位是1）。我们还要证明，如果xj的r-th位是0，那么单元素的r-th位只能是0，我们就假设在这种情况下，单元素的r-th位是1，我们看看会发生什么。在扫描结束时，这个1将被计算p’次。根据定义，xj的r-th位将等于p’j，也就是1，这与xj的r-th位为0的假设相矛盾，因此我们得出结论，只要p’j=1，xj的r-th位将始终与单一元素的r-th位相同。由于这对xj中的所有位都是真的（即对若r=1到32来说是真的），所以我们得出结论，只要p’j=1，xj将等于这个单一元素的值。</p>
-<p>所以现在我们应该返回什么就很清楚了。只要用其二进制形式表达p’=p%k，只要p’j = 1，就可以返回对应的xj中的任何一个。总的来说，该算法将在O(n*logk)时间和O(logk)的空间内运行。</p>
-<h2 id="快速例子几个"><a href="#快速例子几个" class="headerlink" title="快速例子几个"></a>快速例子几个</h2><p>Here is a list of few quick examples to show how the algorithm works (you can easily come up with other examples):</p>
-<ol>
-<li><code>k = 2, p = 1</code><br><code>k</code> is <code>2</code>, then <code>m = 1</code>, we need only one 32-bit integer (<code>x1</code>) as the counter. And <code>2^m = k</code> so we do not even need a mask! A complete java program will look like:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    return x1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><code>k = 3, p = 1</code><br><code>k</code> is <code>3</code>, then <code>m = 2</code>, we need two 32-bit integers(<code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we do need a mask. Write <code>k</code> in its binary form: <code>k = &#39;11&#39;</code>, then <code>k1 = 1</code>, <code>k2 = 1</code>, so we have <code>mask = ~(x1 &amp; x2)</code>. A complete java program will look like:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; x2);</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 1, in binary form p &#x3D; &#39;01&#39;, then p1 &#x3D; 1, so we should return x1. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 2, in binary form p &#x3D; &#39;10&#39;, then p2 &#x3D; 1, and we should return x2.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><code>k = 5, p = 3</code><br><code>k</code> is <code>5</code>, then <code>m = 3</code>, we need three 32-bit integers(<code>x3</code>, <code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we need a mask. Write <code>k</code> in its binary form: <code>k = &#39;101&#39;</code>, then <code>k1 = 1</code>, <code>k2 = 0</code>, <code>k3 = 1</code>, so we have <code>mask = ~(x1 &amp; ~x2 &amp; x3)</code>. A complete java program will look like:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, x3  &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">   </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x3 ^&#x3D; x2 &amp; x1 &amp; i;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; ~x2 &amp; x3);</span><br><span class="line">        x3 &amp;&#x3D; mask;</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 3, in binary form p &#x3D; &#39;011&#39;, then p1 &#x3D; p2 &#x3D; 1, so we can return either x1 or x2. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 4, in binary form p &#x3D; &#39;100&#39;, only p3 &#x3D; 1, which implies we can only return x3.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2 | x3).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>Lastly I would like to thank those for providing feedbacks to make this post better. Hope it helps and happy coding!</p>
-<h2 id="相关力扣题目"><a href="#相关力扣题目" class="headerlink" title="相关力扣题目"></a>相关力扣题目</h2><p>136 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci8=">https://leetcode-cn.com/problems/single-number/<i class="fa fa-external-link-alt"></i></span></p>
-<p>137 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paS8=">https://leetcode-cn.com/problems/single-number-ii/<i class="fa fa-external-link-alt"></i></span></p>
-<p>260 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paWkv">https://leetcode-cn.com/problems/single-number-iii/<i class="fa fa-external-link-alt"></i></span></p>
+    <title>一次犯罪不过是污染了水流，而一次不公正的司法却污染了水源</title>
+    <url>/2020/08/08/%E4%B8%80%E6%AC%A1%E7%8A%AF%E7%BD%AA%E4%B8%8D%E8%BF%87%E6%98%AF%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%B5%81%EF%BC%8C%E8%80%8C%E4%B8%80%E6%AC%A1%E4%B8%8D%E5%85%AC%E6%AD%A3%E7%9A%84%E5%8F%B8%E6%B3%95%E5%8D%B4%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%BA%90/</url>
+    <content><![CDATA[<p>张玉环事件有感</p>
 ]]></content>
       <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用函数randa()来实现函数randb()</title>
-    <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
-    <content><![CDATA[<h1 id="使用函数randa-来实现函数randb"><a href="#使用函数randa-来实现函数randb" class="headerlink" title="使用函数randa()来实现函数randb()"></a>使用函数randa()来实现函数randb()</h1><p>原文引自：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdydWl0YW8xOTkxL2FydGljbGUvZGV0YWlscy81MTY3ODgxNQ==">https://blog.csdn.net/wangruitao1991/article/details/51678815<i class="fa fa-external-link-alt"></i></span></p>
-<p>我们由浅入深，首先来看：</p>
-<ol>
-<li><p>给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5</p>
-<p>rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand7，直到它生成1到5之间的数，然后返回。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand5</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>);  <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">5</span>)&#123;</span><br><span class="line">    x = rand7();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个函数可以等概率的产生1到5的数码？首先，它确确实实只会返回1到5这几个数，其次，对于这些数，都是由rand7等概率的产生的1/7，没有对任何一个数有偏袒，直觉告诉我们，rand5就是等概率的产生1到5的。事实呢？让我们来计算一下，产生1到5中的数是不是1/5就OK了。</p>
-<p>产生1的概率：等于第一次产生1的概率，加上第一次生成6，7第二次产生1的概率，加上…<br>$$<br>p(x=1) = 1/7 + 2/7 * 1/7 + (2/7)^2 * 1/7 + … \</p>
-<p>= 1/7 * (1 + 2/7 + (2/7)^2+…)\</p>
-<p>= 1/7 * 1 / (1-2/7)\</p>
-<p>= 1/5\<br>$$<br>其他同理，所以从上面的分析，我们可以得到一个一般的结论，如果a &gt; b，那么一定可以用randa实现randb。其中，randa表示等概率生成1到a的函数，randb表示等概率生成1到b的函数。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">;<span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randb</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    inx x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span> (x &gt; b) &#123;</span><br><span class="line">        x = randa();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里还有没有优化的空间呢。我们想如果a大于b很多，那么这个循环大多数是无法退出的。这是我们可以找到一个最接近a的b的整数倍*<em>b * (A/b)*</em>，大于这个整数倍就继续循环，否则就返回 **randa()%b + 1 **。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randa</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x =  ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">//  max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; b * (a / b)) &#123;</span><br><span class="line">    x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>好了，a大于b时这个问题得到完美的解决了。那么a小于b的时候呢。</p>
-<p>比如，如何用rand5实现rand7。</p>
-<p>我们只需要将rand5映射到一个能产生更大随机数的randa，a &gt; 7，这个问题就可以解决了。这里要注意，映射之后的randa也应该是等概率生成1到a的。</p>
-<p>如何映射呢。其实可以将rand5想象成一个五进制数。2个rand5就可以表示25种情况。</p>
-<p>5 * (rand5() - 1) + rand5()，可以等概率的产生1-25之间的数字。</p>
-<p>根据上面的模板我们可以得到以下的代码：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">7</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<p>   在根据上面的模板简化：</p>
-   <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">21</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % <span class="number">7</span> +<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>   通过上文分析，我们可以得到步骤如下：</p>
-<ol>
-<li>如果a &gt; b，进入步骤2；否则构造Randa2 = a * (Randa – 1) + Randa， 表示生成1到a2 随机数的函数。如果a2 仍小于b，继教构造 Randa3 = a * (Randa2 - 1) + Randa…直到ak &gt; b，这时我们得到Randak , 我们记为RandA。</li>
-<li>步骤1中我们得到了RandA(可能是Randa或Randak )，其中A &gt; b， 我们用下述代码构造Randb：</li>
-</ol>
-   <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// A &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Randb</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span>(x &gt; b*(A/b)) <span class="comment">// b*(A/b)表示最接近A且小于A的b的倍数</span></span><br><span class="line">        x = RandA();</span><br><span class="line">    <span class="keyword">return</span> x%b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>   从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
-   <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -822,6 +707,14 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -901,9 +794,57 @@
       </tags>
   </entry>
   <entry>
+    <title>使用函数randa()来实现函数randb()</title>
+    <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
+    <content><![CDATA[<h1 id="使用函数randa-来实现函数randb"><a href="#使用函数randa-来实现函数randb" class="headerlink" title="使用函数randa()来实现函数randb()"></a>使用函数randa()来实现函数randb()</h1><p>原文引自：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdydWl0YW8xOTkxL2FydGljbGUvZGV0YWlscy81MTY3ODgxNQ==">https://blog.csdn.net/wangruitao1991/article/details/51678815<i class="fa fa-external-link-alt"></i></span></p>
+<p>我们由浅入深，首先来看：</p>
+<ol>
+<li><p>给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5</p>
+<p>rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand7，直到它生成1到5之间的数，然后返回。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand5</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>);  <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">5</span>)&#123;</span><br><span class="line">    x = rand7();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数可以等概率的产生1到5的数码？首先，它确确实实只会返回1到5这几个数，其次，对于这些数，都是由rand7等概率的产生的1/7，没有对任何一个数有偏袒，直觉告诉我们，rand5就是等概率的产生1到5的。事实呢？让我们来计算一下，产生1到5中的数是不是1/5就OK了。</p>
+<p>产生1的概率：等于第一次产生1的概率，加上第一次生成6，7第二次产生1的概率，加上…<br>$$<br>p(x=1) = 1/7 + 2/7 * 1/7 + (2/7)^2 * 1/7 + … \</p>
+<p>= 1/7 * (1 + 2/7 + (2/7)^2+…)\</p>
+<p>= 1/7 * 1 / (1-2/7)\</p>
+<p>= 1/5\<br>$$<br>其他同理，所以从上面的分析，我们可以得到一个一般的结论，如果a &gt; b，那么一定可以用randa实现randb。其中，randa表示等概率生成1到a的函数，randb表示等概率生成1到b的函数。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">;<span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randb</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    inx x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span> (x &gt; b) &#123;</span><br><span class="line">        x = randa();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里还有没有优化的空间呢。我们想如果a大于b很多，那么这个循环大多数是无法退出的。这是我们可以找到一个最接近a的b的整数倍*<em>b * (A/b)*</em>，大于这个整数倍就继续循环，否则就返回 **randa()%b + 1 **。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randa</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x =  ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">//  max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; b * (a / b)) &#123;</span><br><span class="line">    x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>好了，a大于b时这个问题得到完美的解决了。那么a小于b的时候呢。</p>
+<p>比如，如何用rand5实现rand7。</p>
+<p>我们只需要将rand5映射到一个能产生更大随机数的randa，a &gt; 7，这个问题就可以解决了。这里要注意，映射之后的randa也应该是等概率生成1到a的。</p>
+<p>如何映射呢。其实可以将rand5想象成一个五进制数。2个rand5就可以表示25种情况。</p>
+<p>5 * (rand5() - 1) + rand5()，可以等概率的产生1-25之间的数字。</p>
+<p>根据上面的模板我们可以得到以下的代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">7</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<p>   在根据上面的模板简化：</p>
+   <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">21</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % <span class="number">7</span> +<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>   通过上文分析，我们可以得到步骤如下：</p>
+<ol>
+<li>如果a &gt; b，进入步骤2；否则构造Randa2 = a * (Randa – 1) + Randa， 表示生成1到a2 随机数的函数。如果a2 仍小于b，继教构造 Randa3 = a * (Randa2 - 1) + Randa…直到ak &gt; b，这时我们得到Randak , 我们记为RandA。</li>
+<li>步骤1中我们得到了RandA(可能是Randa或Randak )，其中A &gt; b， 我们用下述代码构造Randb：</li>
+</ol>
+   <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// A &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Randb</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span>(x &gt; b*(A/b)) <span class="comment">// b*(A/b)表示最接近A且小于A的b的倍数</span></span><br><span class="line">        x = RandA();</span><br><span class="line">    <span class="keyword">return</span> x%b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>   从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
+   <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>堆的实现(大顶堆、小顶堆)</title>
     <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">if</span> a[p] &lt; a[i]:</span><br><span class="line">            a[p], a[i] = a[i], a[p]</span><br><span class="line">            i = p</span><br><span class="line">            p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
@@ -917,52 +858,70 @@
       </tags>
   </entry>
   <entry>
-    <title>实现KMP算法</title>
-    <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83MTg0NQ==">https://time.geekbang.org/column/article/71845<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>字符串匹配算法，可以分为单模式串匹配算法，和多模式串匹配算法，单模式串匹配算法包括了BF（暴力匹配O(m*n)，但因为可以及早停止，实际感觉并没有很差）、RK（O(n)，n为主串长度，利用哈希加速，哈希函数要取好，不要超过int的最大值，遍历一遍主串就可以算出全部n-m+1个哈希值）、BM（Boyer-Moore，性能最好的算法，使用好后缀、坏字符，从最后一个字符开始匹配）、KMP（好前缀、坏字符）四种算法。</p>
-<p>这里介绍不是那么复杂的KMP算法。</p>
-<p>（PS. 其实个人觉得，要学好算法，语文非常地重要，不亚于数学，要严谨准确而清晰易懂）</p>
-<h2 id="思路与算法"><a href="#思路与算法" class="headerlink" title="思路与算法"></a>思路与算法</h2><h3 id="KMP-算法基本原理"><a href="#KMP-算法基本原理" class="headerlink" title="KMP 算法基本原理"></a>KMP 算法基本原理</h3><p>在模式串和主串匹配的过程中，把不能匹配的那个字符叫作<strong>坏字符</strong>，把已经匹配的那段字符串叫作<strong>好前缀</strong>。</p>
+    <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
+    <url>/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/</url>
+    <content><![CDATA[<h2 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1. 问题描述"></a>1. 问题描述</h2><p>给出只包含int类型的数组，所有值出现k(k&gt;1)次，除了一个值，这个值出现了p次（p&gt;1, p%k!=0)。找到这个值。</p>
+<h2 id="2-从只有1bit的特殊情况开始"><a href="#2-从只有1bit的特殊情况开始" class="headerlink" title="2. 从只有1bit的特殊情况开始"></a>2. 从只有1bit的特殊情况开始</h2><p>为了应用位运算，我们应该重新思考integers是如何在计算机中被表示的–通过位。让我们先考虑1位。假如我们有一数组的一bit数（除了0就是1），我们要统计数组中的1，使得当统计1的计数器到达k时，计数器回到0并且重新统计（k和我们问题中提到的k一样）。为了跟踪我们已经遇到多少个1，我们需要一个计数器。假设计数器二进制表示有m位：xm, …, x1（最重要的位到最不重要的位）。我们至少可以总结出计数器的以下四个特性。</p>
+<ol>
+<li>计数器有一个初始状态，简单来讲为0</li>
+<li>对于数组中的每一个输入，如果我们击中0，计数器应该保持不变</li>
+<li>对于数组中的每一个输入，如果我们击中1，计数器应该增加1</li>
+<li>为了覆盖k个计数，我们要求2^m&gt;=k，这意味着m &gt; logk</li>
+</ol>
+<p>这里是关键部分：当我们扫描数组时，计数器（从x1到xm）中的每个位如何变化。注意，我们被提示使用位运算。为了满足第2个属性，回想一下，如果另一个操作数为0，有哪些位操作不会改变操作数？是的，有位与x=x|0和位异或x=x^0。</p>
+<p>好了，我们现在有一个表达式：x = x | i或者x = x^i，其中i是数组中的扫描元素。哪一个更好呢？我们还不知道。所以，让我们开始实际的计算。</p>
+<p>开始的时候，计数器的所有位都初始化为0，即xm=0, …, x1=0。由于我们要选择的位操作，保证了计数器的所有位在遇到0时都保持不变，所以直到我们遇到数组中第一个1，计数器将是0。当我们遇到第一个1的时候，我们得到：xm = 0, … , x2=0,  x1=1。让我们继续下去，直到打出第二个1，之后我们得到：xm=0, … , x2=1, x1=0。注意，x1从1变成了0。对于x1 = x1 | i，在第二次计数之后，x1仍然会是1。所以很明显，我们应该使用x1 = x1 ^ i，那么x2, …, xm呢？我们的想法是找到x2, … , xm将改变其值的条件。以x2为例。如果我们打了一个1，需要改变x2的值，那么在我们进行改变之前，x1的值一定是多少？答案是：x1必须是1，否则我们不应该改变x2，因为把x1从0改成1就可以了。因此，只有当x1和i都是1时，x2才会改变值，或者数学上说，x2 = x2 ^ (x1 &amp; i)。同理，xm只有在，xm-1, … , x1和i都是1的时候才会改变数值：xm = xm ^ (xm-1 &amp; … &amp; x1 &amp; i)。ok，我们找到了这个位运算。</p>
+<p>但是，你可能会注意到，上面发现的位运算将从0开始计数，直到2^m-1，而不是k。如果k &lt; 2^m - 1，我们需要一些”切割“机制，以在计数达到k时将计数器重新初始化为0。为此，我们对xm, … , x1应用位AND，并使用一些称为mask的变量，即xm = xm &amp; mask, … , x1 = x1 &amp; mask。如果我们能保证只有当计数达到k时，mask才为0，而在其他所有计数情况下为1，那么我们就完成了。我们如何实现这一点呢？试着想一想，计数为k的情况与其他所有情况的区别是什么？是的，是1的计数！对于每一个计数，我们对计数器的每一个位都有唯一的值，这可以看作是它的状态。如果我们把k写成二进制形式：km, … ,k1, 我们就可以构造mask如下。</p>
+<p>mask = ~(y1 &amp; y2 &amp; .. &amp; ym)，其中如果kj = 1, yj = xj， 如果kj = 0， yj = -xj ( j = 1 to m )  </p>
+<p>简单来讲，就是只有当x1..xm和k的所有位都相等的时候，mask才会为0</p>
+<p>我们来举一些例子：</p>
+<p>k = 3: k1  = 1, k2 = 1, mask = ~(x1 &amp; x2);</p>
+<p>k = 5: k1 = 1, k2 = 1, k3 = 1, mask = ~(x1 &amp; ~x2 &amp; x3);</p>
+<p>综上所述，我们的算法将是这样的（nums是输入数组）：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : nums) &#123;</span><br><span class="line">    xm ^= (xm<span class="number">-1</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    xm<span class="number">-1</span> ^= (xm<span class="number">-2</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    .....</span><br><span class="line">    x1 ^= i;</span><br><span class="line">    </span><br><span class="line">    mask = ~(y1 &amp; y2 &amp; ... &amp; ym) where yj = xj <span class="keyword">if</span> kj = <span class="number">1</span>, <span class="keyword">and</span> yj = ~xj <span class="keyword">if</span> kj = <span class="number">0</span> (j = <span class="number">1</span> to m).</span><br><span class="line"></span><br><span class="line">    xm &amp;= mask;</span><br><span class="line">    ......</span><br><span class="line">    x1 &amp;= mask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-32位数的一般情况"><a href="#3-32位数的一般情况" class="headerlink" title="3. 32位数的一般情况"></a>3. 32位数的一般情况</h2><p>现在是时候把我们的结果从1位数的情况推广到32位整数了。一个直接的方法是为整数中的每个位创建32个计数器。但是，如果我们利用位操作的优势，我们也许可以”集体“管理所有的32个计数器，其中m是满足m&gt;=logk的最小整数。原因是位操作只适用于每个位，所以对不同位的操作是相互独立的（有点明显，对吧？）。这使得我们可以将32个计数器的对应位归为一个32位整数。下面是一个示意图，展示了如何做到这一点。</p>
+<img data-src="/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/%E4%BD%8D%E8%BF%90%E7%AE%971.png" class>
+
+<p>最上面的一行是32位的整数，其中每一个位，我们都有一个对应的m位计数器（由向上箭头下面的那一列所示）。由于对32位中每一个位的操作都是相互独立的，所以我们可以将比如说所有计数器的第m位，归为一个32位数（由橙色框所示）。这个32位数中的所有位（表示为xm）将遵循相同的位操作。由于每个计数器有m个位，我们最终得到m个32位数，对应于第二部分中定义的x1, … , xm，但现在它们是32位数而不是1位数。因此，在上面开发的算法中，我们只需要将x1到xm视为32位整数而不是1位数。其他一切都将是相同的，我们就完成了。很简单，嗯？</p>
+<h2 id="4-返回什么"><a href="#4-返回什么" class="headerlink" title="4. 返回什么"></a>4. 返回什么</h2><p>最后就是我们应该返回什么值，或者等价于x1到xm中哪一个会等于单一元素。为了得到正确的答案，我们需要了解m个32位整数x1到xm代表什么。以x1为例，x1有32位，我们把它们标注为r（r=1到32)。当我们扫描完输入数组后，x1的r-th位的值将由数组中所有元素的r-th为决定（更具体的说，假设数组中所有元素的r-th位1的总计数为q，那么最终r-th位就是q’=q%k，其二进制形式为：q’m, … , q’1，那么根据定义，x1的r-th位将等于 q’1)。现在你可以问自己这个问题：如果x1的r-th位是1，这意味着什么？</p>
+<p>答案是要找到能对这个1做出贡献的东西，一个出现了k次的元素会有贡献吗？不会，为什么？因为一个元素要做出贡献，至少要同时满足两个条件：这个元素的r-th位是1，这个1的出现次数不是k的整数倍，第一个条件是微不足道的。第二个条件来自于每当1的命中次数为k时，计数器就会回零，也就是x1中的对应位会被重置为0，对于一个出现了k次的元素，不可能同时满足这两个条件（违反第二条），所以它不会有贡献。所以，只有出现p（p%k!=0）次的单个元素才会做出贡献。如果p&gt;k，那么前k*[p/k] ([p/k]表示p/k的整数部分)的元素也不会做出贡献。所以我们总是可以设置p’ = p % k，并说这个单元素有效地出现了p’次。</p>
+<p>我们把p‘写成二进制形式：p’m, … , p’1(注意p’ &lt; k, 所以它将适合m位)。这里提出一个声明，xj等于这个单个元素的条件是p’j = 1(j =1 到 m)，下面给出一个快速证明：</p>
+<p>如果xj的r-th位是1，我们可以放心的说这个单一元素的r-th位也是1（否则没有任何东西可以使xj的r-th位是1）。我们还要证明，如果xj的r-th位是0，那么单元素的r-th位只能是0，我们就假设在这种情况下，单元素的r-th位是1，我们看看会发生什么。在扫描结束时，这个1将被计算p’次。根据定义，xj的r-th位将等于p’j，也就是1，这与xj的r-th位为0的假设相矛盾，因此我们得出结论，只要p’j=1，xj的r-th位将始终与单一元素的r-th位相同。由于这对xj中的所有位都是真的（即对若r=1到32来说是真的），所以我们得出结论，只要p’j=1，xj将等于这个单一元素的值。</p>
+<p>所以现在我们应该返回什么就很清楚了。只要用其二进制形式表达p’=p%k，只要p’j = 1，就可以返回对应的xj中的任何一个。总的来说，该算法将在O(n*logk)时间和O(logk)的空间内运行。</p>
+<h2 id="快速例子几个"><a href="#快速例子几个" class="headerlink" title="快速例子几个"></a>快速例子几个</h2><p>Here is a list of few quick examples to show how the algorithm works (you can easily come up with other examples):</p>
+<ol>
+<li><code>k = 2, p = 1</code><br><code>k</code> is <code>2</code>, then <code>m = 1</code>, we need only one 32-bit integer (<code>x1</code>) as the counter. And <code>2^m = k</code> so we do not even need a mask! A complete java program will look like:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    return x1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><code>k = 3, p = 1</code><br><code>k</code> is <code>3</code>, then <code>m = 2</code>, we need two 32-bit integers(<code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we do need a mask. Write <code>k</code> in its binary form: <code>k = &#39;11&#39;</code>, then <code>k1 = 1</code>, <code>k2 = 1</code>, so we have <code>mask = ~(x1 &amp; x2)</code>. A complete java program will look like:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; x2);</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 1, in binary form p &#x3D; &#39;01&#39;, then p1 &#x3D; 1, so we should return x1. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 2, in binary form p &#x3D; &#39;10&#39;, then p2 &#x3D; 1, and we should return x2.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><code>k = 5, p = 3</code><br><code>k</code> is <code>5</code>, then <code>m = 3</code>, we need three 32-bit integers(<code>x3</code>, <code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we need a mask. Write <code>k</code> in its binary form: <code>k = &#39;101&#39;</code>, then <code>k1 = 1</code>, <code>k2 = 0</code>, <code>k3 = 1</code>, so we have <code>mask = ~(x1 &amp; ~x2 &amp; x3)</code>. A complete java program will look like:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, x3  &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">   </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x3 ^&#x3D; x2 &amp; x1 &amp; i;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; ~x2 &amp; x3);</span><br><span class="line">        x3 &amp;&#x3D; mask;</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 3, in binary form p &#x3D; &#39;011&#39;, then p1 &#x3D; p2 &#x3D; 1, so we can return either x1 or x2. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 4, in binary form p &#x3D; &#39;100&#39;, only p3 &#x3D; 1, which implies we can only return x3.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2 | x3).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-<p>当遇到坏字符的时候，我们就要把模式串往后滑动，在滑动的过程中，只要模式串和好前缀有上下重合，前面几个字符的比较，就相当于拿好前缀的后缀子串，跟模式串的前缀子串在比较。这个比较的过程能否更高效了呢？可以不用一个字符一个字符的比较了吗？</p>
 
-
-<p>KMP 算法就是在试图寻找一种规律：在模式串和主串匹配的过程中，当遇到坏字符后，对于已经比对过的好前缀，能否找到一种规律，将模式串一次性滑动很多位？</p>
-<p>我们只需要拿好前缀本身，在它的后缀子串中，查找最长的那个可以跟好前缀的前缀子串匹配的。假设最长的可匹配的那部分前缀子串是{v}，长度是k。我们把模式串一次性往后滑动 j - k 位，相当于，每次遇到坏字符，我们就把j更新为k，i不变，然后继续比较。</p>
-
-
-<p>为了表述起来方便，我把好前缀的所有后缀子串中，最长的可匹配前缀子串的那个后缀子串，叫做<strong>最长可匹配后缀子串</strong>；对应的前缀子串，叫做<strong>最长可匹配前缀子串</strong>。</p>
-
-
-<p>如何来求好前缀的最长可匹配前缀和后缀子串呢？我们发现，这个问题其实不涉及主串，只需要通过模式串本身就能求解。所以，能不能事先预处理计算好，在模式串和主串匹配的过程中，直接拿过来就用呢？</p>
-<p>其实和BM算法（后面会讲到）类似，KMP算法可以提前构建一个数组，用来存储模式串中每个前缀（这些前缀都有可能是好前缀）的最长可匹配前缀子串的结尾字符下标。我们把这个数组定义为<strong>next数组</strong>（或者叫longest prefix suffix，最长的前缀的后缀的下标，如果到了结尾就用-1表示不存在)，很多书中还给这个数组起了一个名字，叫<strong>失效函数</strong>（failure function）。</p>
-<p>数组的下标是每个前缀结尾字符下标，数组的值是这个前缀的最长可以匹配前缀子串的结尾字符下标。这句话有点拗口，举个例子就懂了。</p>
-
-
-<p>有个next数组，我们很容易就可以实现KMP算法了。我先假设next数组已经计算好了，先给出KMP算法的框架代码。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">p, s</span>):</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print(&quot;Found pattern at index &quot; + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="失效函数计算方法"><a href="#失效函数计算方法" class="headerlink" title="失效函数计算方法"></a>失效函数计算方法</h3><p>基本原理剪完了，现在来看最复杂的部分，也就是next数组是如何计算的。</p>
-<p>当然，我们可以用非常笨的方法，比如要计算下面这个模式串 b 的 next[4]，我们就把 b[0, 4]的所有后缀子串，从长到短找出来，依次看看，是否能跟模式串的前缀子串匹配。很显然，这个方法也可以计算得到 next 数组，但是效率非常低。有没有更加高效的方法呢？</p>
-
-
-<p>我们按照下标从小到大，依次计算 next 数组的值。当我们要计算 next[i]的时候，前面的 next[0]，next[1]，……，next[i-1]应该已经计算出来了。利用已经计算出来的 next 值，我们是否可以快速推导出 next[i]的值呢？如果 next[i-1]=k-1，也就是说，子串 b[0, k-1]是 b[0, i-1]的最长可匹配前缀子串。如果子串 b[0, k-1]的下一个字符 b[k]，与 b[0, i-1]的下一个字符 b[i]匹配，那子串 b[0, k]就是 b[0, i]的最长可匹配前缀子串。所以，next[i]等于 k。但是，如果 b[0, k-1]的下一字符 b[k]跟 b[0, i-1]的下一个字符 b[i]不相等呢？这个时候就不能简单地通过 next[i-1]得到 next[i]了。这个时候该怎么办呢？</p>
-<p>我们假设 b[0, i]的最长可匹配后缀子串是 b[r, i]。如果我们把最后一个字符去掉，那 b[r, i-1]肯定是 b[0, i-1]的可匹配后缀子串，但不一定是最长可匹配后缀子串。所以，既然 b[0, i-1]最长可匹配后缀子串对应的模式串的前缀子串的下一个字符并不等于 b[i]，那么我们就可以考察 b[0, i-1]的次长可匹配后缀子串 b[x, i-1]对应的可匹配前缀子串 b[0, i-1-x]的下一个字符 b[i-x]是否等于 b[i]。如果等于，那 b[x, i]就是 b[0, i]的最长可匹配后缀子串。</p>
-<p>可是，如何求得b[0, i-1]的次长可匹配后缀子串呢？次长可匹配后缀子串肯定被包含在最长可匹配后缀子串中，而最长可匹配后缀子串又对应最长可匹配前缀子串又对应最长可匹配前缀子串b[0, y]。于是，查找b[0, i-1]的次长可匹配后缀子串，这个问题就变成，查找b[0, y]的最长匹配后缀子串，其中y = next[i-1]</p>
-
-
-<p>按照这个思路，我们可以考察完所有的 b[0, i-1]的可匹配后缀子串 b[y, i-1]，直到找到一个可匹配的后缀子串，它对应的前缀子串的下一个字符等于 b[i]，那这个 b[y, i]就是 b[0, i]的最长可匹配后缀子串。</p>
-<p>前面已经给出 KMP 算法的框架代码了，现在把这部分的代码也写出来了。这两部分代码合在一起，就是整个 KMP 算法的代码实现。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">p, m</span>):</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br></pre></td></tr></table></figure>
-
-<h2 id="最后整体的实现"><a href="#最后整体的实现" class="headerlink" title="最后整体的实现"></a>最后整体的实现</h2><p>Python3版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">self, p, s</span>):</span></span><br><span class="line">        <span class="comment"># 特判</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> p:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        m, n = len(p), len(s)</span><br><span class="line">        lps = self.get_lps(p, m)</span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> j != <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">                j += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> j == m:</span><br><span class="line">                <span class="comment"># return i - m + 1</span></span><br><span class="line">                print(<span class="string">&quot;find at &#123;&#125;&quot;</span>.format(i - m + <span class="number">1</span>))</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">self, p, m</span>):</span></span><br><span class="line">        lps = [<span class="number">-1</span>] * m</span><br><span class="line">        k = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">            <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[i] != p[k + <span class="number">1</span>]:</span><br><span class="line">                k = lps[k]</span><br><span class="line">            <span class="keyword">if</span> p[i] == p[k + <span class="number">1</span>]:</span><br><span class="line">                k += <span class="number">1</span></span><br><span class="line">            lps[i] = k</span><br><span class="line">        <span class="keyword">return</span> lps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    s = <span class="string">&quot;abcruizheuhuruizheaasdasd&quot;</span></span><br><span class="line">    p = <span class="string">&quot;ruizhe&quot;</span></span><br><span class="line">    res = sol.KMPSearch(p, s)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-
+<p>Lastly I would like to thank those for providing feedbacks to make this post better. Hope it helps and happy coding!</p>
+<h2 id="相关力扣题目"><a href="#相关力扣题目" class="headerlink" title="相关力扣题目"></a>相关力扣题目</h2><p>136 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci8=">https://leetcode-cn.com/problems/single-number/<i class="fa fa-external-link-alt"></i></span></p>
+<p>137 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paS8=">https://leetcode-cn.com/problems/single-number-ii/<i class="fa fa-external-link-alt"></i></span></p>
+<p>260 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paWkv">https://leetcode-cn.com/problems/single-number-iii/<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
+    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
+    <content><![CDATA[]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1060,6 +1019,55 @@
       </tags>
   </entry>
   <entry>
+    <title>实现KMP算法</title>
+    <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83MTg0NQ==">https://time.geekbang.org/column/article/71845<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>字符串匹配算法，可以分为单模式串匹配算法，和多模式串匹配算法，单模式串匹配算法包括了BF（暴力匹配O(m*n)，但因为可以及早停止，实际感觉并没有很差）、RK（O(n)，n为主串长度，利用哈希加速，哈希函数要取好，不要超过int的最大值，遍历一遍主串就可以算出全部n-m+1个哈希值）、BM（Boyer-Moore，性能最好的算法，使用好后缀、坏字符，从最后一个字符开始匹配）、KMP（好前缀、坏字符）四种算法。</p>
+<p>这里介绍不是那么复杂的KMP算法。</p>
+<p>（PS. 其实个人觉得，要学好算法，语文非常地重要，不亚于数学，要严谨准确而清晰易懂）</p>
+<h2 id="思路与算法"><a href="#思路与算法" class="headerlink" title="思路与算法"></a>思路与算法</h2><h3 id="KMP-算法基本原理"><a href="#KMP-算法基本原理" class="headerlink" title="KMP 算法基本原理"></a>KMP 算法基本原理</h3><p>在模式串和主串匹配的过程中，把不能匹配的那个字符叫作<strong>坏字符</strong>，把已经匹配的那段字符串叫作<strong>好前缀</strong>。</p>
+
+
+<p>当遇到坏字符的时候，我们就要把模式串往后滑动，在滑动的过程中，只要模式串和好前缀有上下重合，前面几个字符的比较，就相当于拿好前缀的后缀子串，跟模式串的前缀子串在比较。这个比较的过程能否更高效了呢？可以不用一个字符一个字符的比较了吗？</p>
+
+
+<p>KMP 算法就是在试图寻找一种规律：在模式串和主串匹配的过程中，当遇到坏字符后，对于已经比对过的好前缀，能否找到一种规律，将模式串一次性滑动很多位？</p>
+<p>我们只需要拿好前缀本身，在它的后缀子串中，查找最长的那个可以跟好前缀的前缀子串匹配的。假设最长的可匹配的那部分前缀子串是{v}，长度是k。我们把模式串一次性往后滑动 j - k 位，相当于，每次遇到坏字符，我们就把j更新为k，i不变，然后继续比较。</p>
+
+
+<p>为了表述起来方便，我把好前缀的所有后缀子串中，最长的可匹配前缀子串的那个后缀子串，叫做<strong>最长可匹配后缀子串</strong>；对应的前缀子串，叫做<strong>最长可匹配前缀子串</strong>。</p>
+
+
+<p>如何来求好前缀的最长可匹配前缀和后缀子串呢？我们发现，这个问题其实不涉及主串，只需要通过模式串本身就能求解。所以，能不能事先预处理计算好，在模式串和主串匹配的过程中，直接拿过来就用呢？</p>
+<p>其实和BM算法（后面会讲到）类似，KMP算法可以提前构建一个数组，用来存储模式串中每个前缀（这些前缀都有可能是好前缀）的最长可匹配前缀子串的结尾字符下标。我们把这个数组定义为<strong>next数组</strong>（或者叫longest prefix suffix，最长的前缀的后缀的下标，如果到了结尾就用-1表示不存在)，很多书中还给这个数组起了一个名字，叫<strong>失效函数</strong>（failure function）。</p>
+<p>数组的下标是每个前缀结尾字符下标，数组的值是这个前缀的最长可以匹配前缀子串的结尾字符下标。这句话有点拗口，举个例子就懂了。</p>
+
+
+<p>有个next数组，我们很容易就可以实现KMP算法了。我先假设next数组已经计算好了，先给出KMP算法的框架代码。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">p, s</span>):</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print(&quot;Found pattern at index &quot; + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="失效函数计算方法"><a href="#失效函数计算方法" class="headerlink" title="失效函数计算方法"></a>失效函数计算方法</h3><p>基本原理剪完了，现在来看最复杂的部分，也就是next数组是如何计算的。</p>
+<p>当然，我们可以用非常笨的方法，比如要计算下面这个模式串 b 的 next[4]，我们就把 b[0, 4]的所有后缀子串，从长到短找出来，依次看看，是否能跟模式串的前缀子串匹配。很显然，这个方法也可以计算得到 next 数组，但是效率非常低。有没有更加高效的方法呢？</p>
+
+
+<p>我们按照下标从小到大，依次计算 next 数组的值。当我们要计算 next[i]的时候，前面的 next[0]，next[1]，……，next[i-1]应该已经计算出来了。利用已经计算出来的 next 值，我们是否可以快速推导出 next[i]的值呢？如果 next[i-1]=k-1，也就是说，子串 b[0, k-1]是 b[0, i-1]的最长可匹配前缀子串。如果子串 b[0, k-1]的下一个字符 b[k]，与 b[0, i-1]的下一个字符 b[i]匹配，那子串 b[0, k]就是 b[0, i]的最长可匹配前缀子串。所以，next[i]等于 k。但是，如果 b[0, k-1]的下一字符 b[k]跟 b[0, i-1]的下一个字符 b[i]不相等呢？这个时候就不能简单地通过 next[i-1]得到 next[i]了。这个时候该怎么办呢？</p>
+<p>我们假设 b[0, i]的最长可匹配后缀子串是 b[r, i]。如果我们把最后一个字符去掉，那 b[r, i-1]肯定是 b[0, i-1]的可匹配后缀子串，但不一定是最长可匹配后缀子串。所以，既然 b[0, i-1]最长可匹配后缀子串对应的模式串的前缀子串的下一个字符并不等于 b[i]，那么我们就可以考察 b[0, i-1]的次长可匹配后缀子串 b[x, i-1]对应的可匹配前缀子串 b[0, i-1-x]的下一个字符 b[i-x]是否等于 b[i]。如果等于，那 b[x, i]就是 b[0, i]的最长可匹配后缀子串。</p>
+<p>可是，如何求得b[0, i-1]的次长可匹配后缀子串呢？次长可匹配后缀子串肯定被包含在最长可匹配后缀子串中，而最长可匹配后缀子串又对应最长可匹配前缀子串又对应最长可匹配前缀子串b[0, y]。于是，查找b[0, i-1]的次长可匹配后缀子串，这个问题就变成，查找b[0, y]的最长匹配后缀子串，其中y = next[i-1]</p>
+
+
+<p>按照这个思路，我们可以考察完所有的 b[0, i-1]的可匹配后缀子串 b[y, i-1]，直到找到一个可匹配的后缀子串，它对应的前缀子串的下一个字符等于 b[i]，那这个 b[y, i]就是 b[0, i]的最长可匹配后缀子串。</p>
+<p>前面已经给出 KMP 算法的框架代码了，现在把这部分的代码也写出来了。这两部分代码合在一起，就是整个 KMP 算法的代码实现。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">p, m</span>):</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br></pre></td></tr></table></figure>
+
+<h2 id="最后整体的实现"><a href="#最后整体的实现" class="headerlink" title="最后整体的实现"></a>最后整体的实现</h2><p>Python3版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">self, p, s</span>):</span></span><br><span class="line">        <span class="comment"># 特判</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> p:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        m, n = len(p), len(s)</span><br><span class="line">        lps = self.get_lps(p, m)</span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> j != <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">                j += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> j == m:</span><br><span class="line">                <span class="comment"># return i - m + 1</span></span><br><span class="line">                print(<span class="string">&quot;find at &#123;&#125;&quot;</span>.format(i - m + <span class="number">1</span>))</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">self, p, m</span>):</span></span><br><span class="line">        lps = [<span class="number">-1</span>] * m</span><br><span class="line">        k = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">            <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[i] != p[k + <span class="number">1</span>]:</span><br><span class="line">                k = lps[k]</span><br><span class="line">            <span class="keyword">if</span> p[i] == p[k + <span class="number">1</span>]:</span><br><span class="line">                k += <span class="number">1</span></span><br><span class="line">            lps[i] = k</span><br><span class="line">        <span class="keyword">return</span> lps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    s = <span class="string">&quot;abcruizheuhuruizheaasdasd&quot;</span></span><br><span class="line">    p = <span class="string">&quot;ruizhe&quot;</span></span><br><span class="line">    res = sol.KMPSearch(p, s)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>快速排序的多种写法</title>
     <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
     <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
@@ -1074,6 +1082,17 @@
       </tags>
   </entry>
   <entry>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>拔智齿</title>
     <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
     <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
@@ -1083,25 +1102,6 @@
 <p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
 <p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
 <p>一切都是好兆头。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
-    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
-    <content><![CDATA[]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1149,18 +1149,18 @@
       </tags>
   </entry>
   <entry>
-    <title>拔智齿后记</title>
-    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
-    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
+    <title>文凭只是敲门砖--于谦</title>
+    <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
+    <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
       </tags>
   </entry>
   <entry>
-    <title>文凭只是敲门砖--于谦</title>
-    <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
-    <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
+    <title>拔智齿后记</title>
+    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
+    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1219,6 +1219,42 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>猫抓老鼠的简单讨论</title>
+    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
+    <content><![CDATA[<h2 id="两个问题以及其解答"><a href="#两个问题以及其解答" class="headerlink" title="两个问题以及其解答"></a>两个问题以及其解答</h2><ol>
+<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
+<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
+<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p>
+</li>
+<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
+<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
+<p>答案是不能。</p>
+<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
+<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
+</li>
+</ol>
+<p>   $$<br>   \frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}<br>   $$</p>
+<p>   老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
+<p>   根据猫的速度是老鼠的4倍，</p>
+<p>   $$<br>   x = \frac{4-\pi}{4}r \approx0.2146r<br>   $$</p>
+<p>   所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
+<p>   原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>科比--曼巴精神永不逝去</title>
+    <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
+    <content><![CDATA[<p>纪念老科 Tomorrow is not grante. Inspire yourself.</p>
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;"><iframe src="//player.bilibili.com/player.html?aid=668058137&bvid=BV1ua4y1i7ZK&cid=186683490&page=1" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;"> </iframe></div>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1302,39 +1338,51 @@
       </tags>
   </entry>
   <entry>
-    <title>猫抓老鼠的简单讨论</title>
-    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
-    <content><![CDATA[<h2 id="两个问题以及其解答"><a href="#两个问题以及其解答" class="headerlink" title="两个问题以及其解答"></a>两个问题以及其解答</h2><ol>
-<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
-<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
-<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p>
-</li>
-<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
-<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
-<p>答案是不能。</p>
-<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
-<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
-</li>
+    <title>背包问题泛型</title>
+    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>蓄水池算法</title>
+    <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="蓄水池采样算法（Reservoir-Sampling）"><a href="#蓄水池采样算法（Reservoir-Sampling）" class="headerlink" title="蓄水池采样算法（Reservoir Sampling）"></a>蓄水池采样算法（Reservoir Sampling）</h1><p>蓄水池采样算法是非常常用的一种<strong>流式数据处理算法</strong>。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="大致描述："><a href="#大致描述：" class="headerlink" title="大致描述："></a>大致描述：</h3><p>给出一个数据流，这个数据流的长度很大或未知，并且对该数据流中的数据只能访问一次。请写出一个随机选择算法，使得数据流中所有数据被选中的概率相等。</p>
+<h3 id="一些实际问题"><a href="#一些实际问题" class="headerlink" title="一些实际问题"></a>一些实际问题</h3><ol>
+<li>从 100,000 分调查报告中抽取1000份进行统计。</li>
+<li>从一本很厚的电话簿中抽取1000人进行姓氏统计。</li>
+<li>从google搜索”Ken Thompson”，从中抽取100个结果查看哪些是今年的。</li>
 </ol>
-<p>   $$<br>   \frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}<br>   $$</p>
-<p>   老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
-<p>   根据猫的速度是老鼠的4倍，</p>
-<p>   $$<br>   x = \frac{4-\pi}{4}r \approx0.2146r<br>   $$</p>
-<p>   所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
-<p>   原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p>
-]]></content>
+<p>这些都是很基本的采样问题。</p>
+<p>既然说的采样问题，最重要的就是做到公平，也就是保证每个元素被采样到的概率是相同的。</p>
+<p>对于第一个问题，我们已经知道数据的规模，通过算法生成[0, 100,000-1]间的随机数1000个，并且保证不重复即可。再取出对应的元素即可。</p>
+<p>但是对于第二和第三个问题，我们不知道数据的整体规模是多大。可能有人会想到，可以先对数据进行一次遍历，计算出数据的规模N，然后按照第一题的方法采样即可。这当然可以，但是并不好。因为这可能需要遍历两次，需要花两次的时间。也可以尝试估算数据的规模，但是这样得到的采样数据可能并不平均。</p>
+<h3 id="问题严格定义"><a href="#问题严格定义" class="headerlink" title="问题严格定义"></a>问题严格定义</h3><p>给你一个长度为N的链表。N很大，但你不知道N有多大。你的任务是从这N个元素中随机抽取k个元素。你只能遍历这个链表一次。你的算法必须保证取出的元素恰好有k个，且它们是完全随机的（出现概率相等的）。</p>
+<h2 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h2><h3 id="蓄水池算法："><a href="#蓄水池算法：" class="headerlink" title="蓄水池算法："></a>蓄水池算法：</h3><p>蓄水池算法是针对从一个序列中随机抽取不重复的K个数，保证每个数被抽取到的概率都为K/N这个问题构建的。</p>
+<h3 id="做法："><a href="#做法：" class="headerlink" title="做法："></a>做法：</h3><p>首先构造一个可以容纳k个元素的蓄水池（数组），将序列前k个元素直接放入蓄水池数组中。</p>
+<p>然后从第i = k+1个数据开始，以k/i（k&lt;i&lt;=n）的概率决定它是否进入到蓄水池中。蓄水池中的k个元素被替换出去的概率是相同的。</p>
+<p>当遍历完所有元素之后，数组中剩下的元素即为所需采取的样本。</p>
+<h2 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h2><p>对于第i个数（i &lt;= k）。在k步之前，被选中的概率为1。当走到第k+1步时，被k+1个元素替换的概率=第k+1个元素被选中的概率*i被替换的概率，即为 k/(k+1) * 1/k = 1/(k+1)。则不被第k+1个元素替换的概率为1 - 1/(k+1) = k/(k+1)。依次类推，不被K+2个元素替换的概率为1-k/(k+2) * 1/k = (k+1)/(k+2)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即：<br>$$<br>1 \times \frac {k}{k+1}\times \frac {k+1}{k+2}\times \frac {k+2}{k+3}\times …\times \frac {n-1}{n} = \frac {k}{n}<br>$$<br>对于第j个数（j&gt;k）。我们知道，在第j步被选中的概率为k/j。不被j+1个元素替换的概率为1 - k/(j+1) * 1/k = j/(j+1)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即：<br>$$<br>\frac {k}{j}\times \frac {j}{j+1}\times \frac {j+1}{j+2}\times \frac {j+2}{j+3}\times … \times \frac {n-1}{n} = \frac {k}{n}<br>$$<br>所以对于中每个元素，被保留的概率都为k/n。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>python3版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, node, k</span>):</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>(<span class="params">object</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span>(<span class="params">self</span>):</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="实战题目"><a href="#实战题目" class="headerlink" title="实战题目"></a>实战题目</h2><h4 id="382-链表随机节点"><a href="#382-链表随机节点" class="headerlink" title="382. 链表随机节点"></a><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbGlua2VkLWxpc3QtcmFuZG9tLW5vZGUv">382. 链表随机节点<i class="fa fa-external-link-alt"></i></span></h4>]]></content>
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
-    <title>科比--曼巴精神永不逝去</title>
-    <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
-    <content><![CDATA[<p>纪念老科 Tomorrow is not grante. Inspire yourself.</p>
-<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;"><iframe src="//player.bilibili.com/player.html?aid=668058137&bvid=BV1ua4y1i7ZK&cid=186683490&page=1" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;"> </iframe></div>
+    <title>解决博弈问题的动态规划通用思路</title>
+    <url>/2020/07/24/%E8%A7%A3%E5%86%B3%E5%8D%9A%E5%BC%88%E9%97%AE%E9%A2%98%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E9%80%9A%E7%94%A8%E6%80%9D%E8%B7%AF/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 解决博弈问题动态规划通用思路.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们把石头游戏改得更具有一般性</span></span><br><span class="line"><span class="comment"># 你和你的朋友面前有一排石头堆，用一个数组piles表示</span></span><br><span class="line"><span class="comment"># piles[i]表示第i堆石子有多少个。</span></span><br><span class="line"><span class="comment"># 你们轮流拿石头，一次拿一堆，但是只能拿走最左边或者最右边的石头堆。</span></span><br><span class="line"><span class="comment"># 所有石头被拿完后，谁拥有的石头多，谁获胜</span></span><br><span class="line"><span class="comment"># 假设两人都很聪明，请你设计一个算法，返回先手和后手最后得分（石头总数）之差</span></span><br><span class="line"><span class="comment"># 比如：</span></span><br><span class="line"><span class="comment"># piles = [1, 100, 3]</span></span><br><span class="line"><span class="comment"># 先手能得4分，后手能得100分，返回-96</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 思路</span></span><br><span class="line"><span class="comment"># 子问题</span></span><br><span class="line"><span class="comment"># 在第i到第j堆石头，先手能获得最大石头数是多少，后手是多少</span></span><br><span class="line"><span class="comment"># 定义状态数组</span></span><br><span class="line"><span class="comment"># f(i, j, 0) f(i, j, 1) 表示第i到第j个石头，包括第i和第j个，0表示先手，1表示后手</span></span><br><span class="line"><span class="comment"># 因为两人都极聪明，先手选完就变后手，来回交替的</span></span><br><span class="line"><span class="comment"># 递推方程</span></span><br><span class="line"><span class="comment"># f(i, j, 0) = max 拿左边 f(i+1, j, 1) + a[i]</span></span><br><span class="line"><span class="comment">#            =     拿右边 f(i, j-1, 1) + a[j]</span></span><br><span class="line"><span class="comment"># 知道了拿左边还是右边后</span></span><br><span class="line"><span class="comment"># f(i, j, 1) =     先手拿左边 f(i+1, j, 0)</span></span><br><span class="line"><span class="comment">#            =     先手拿右边 f(i, j-1, 0)</span></span><br><span class="line"><span class="comment"># 初始化</span></span><br><span class="line"><span class="comment"># f(i, i, 0) = a[i] 只有一堆石子的时候，先手为该堆石子个数，后手就为0</span></span><br><span class="line"><span class="comment"># f(i, i, 1) = 0</span></span><br><span class="line"><span class="comment"># 返回值</span></span><br><span class="line"><span class="comment"># f(0, n-1, 0) 先手最终石子数 - f(0, n-1, 1)后手最终石子数</span></span><br><span class="line"><span class="comment"># 优化空间复杂度</span></span><br><span class="line"><span class="comment"># 是对角线的递推，这种情况最好不要优化空间，还可以利用计算机的缓存</span></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">game</span>(<span class="params">self, piles: List[int]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    piles = [<span class="number">1</span>, <span class="number">100</span>, <span class="number">3</span>]</span><br><span class="line">    res = sol.game(piles)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<h6 id="代表题目："><a href="#代表题目：" class="headerlink" title="代表题目："></a>代表题目：</h6><h6 id="leetcode-877"><a href="#leetcode-877" class="headerlink" title="leetcode 877"></a>leetcode 877</h6><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 也可以使用第2种解法</span></span><br><span class="line"><span class="comment"># 数学规律</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 先拿者可以拿到序号为 1,3,5...n-1 的石子堆，</span></span><br><span class="line"><span class="comment"># 也可以拿到序号为 2,4,6...n 的石子堆。</span></span><br><span class="line"><span class="comment"># 因为总石子数为奇数，所以这两种方式中，其中一种拿到的石子数大于另一种。</span></span><br><span class="line"><span class="comment"># 所以不按照拿尽量多的石子数，按照这种纯奇数序号或者纯偶数序号的方式拿，先拿者总可以赢。</span></span><br></pre></td></tr></table></figure>
+
+<p>dp解法</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">lass Solution:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">stoneGame</span>(<span class="params">self, piles: List[int]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> bool(dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <tags>
-        <tag>生活</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1431,51 +1479,14 @@
       </tags>
   </entry>
   <entry>
-    <title>背包问题泛型</title>
-    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>蓄水池算法</title>
-    <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="蓄水池采样算法（Reservoir-Sampling）"><a href="#蓄水池采样算法（Reservoir-Sampling）" class="headerlink" title="蓄水池采样算法（Reservoir Sampling）"></a>蓄水池采样算法（Reservoir Sampling）</h1><p>蓄水池采样算法是非常常用的一种<strong>流式数据处理算法</strong>。</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="大致描述："><a href="#大致描述：" class="headerlink" title="大致描述："></a>大致描述：</h3><p>给出一个数据流，这个数据流的长度很大或未知，并且对该数据流中的数据只能访问一次。请写出一个随机选择算法，使得数据流中所有数据被选中的概率相等。</p>
-<h3 id="一些实际问题"><a href="#一些实际问题" class="headerlink" title="一些实际问题"></a>一些实际问题</h3><ol>
-<li>从 100,000 分调查报告中抽取1000份进行统计。</li>
-<li>从一本很厚的电话簿中抽取1000人进行姓氏统计。</li>
-<li>从google搜索”Ken Thompson”，从中抽取100个结果查看哪些是今年的。</li>
-</ol>
-<p>这些都是很基本的采样问题。</p>
-<p>既然说的采样问题，最重要的就是做到公平，也就是保证每个元素被采样到的概率是相同的。</p>
-<p>对于第一个问题，我们已经知道数据的规模，通过算法生成[0, 100,000-1]间的随机数1000个，并且保证不重复即可。再取出对应的元素即可。</p>
-<p>但是对于第二和第三个问题，我们不知道数据的整体规模是多大。可能有人会想到，可以先对数据进行一次遍历，计算出数据的规模N，然后按照第一题的方法采样即可。这当然可以，但是并不好。因为这可能需要遍历两次，需要花两次的时间。也可以尝试估算数据的规模，但是这样得到的采样数据可能并不平均。</p>
-<h3 id="问题严格定义"><a href="#问题严格定义" class="headerlink" title="问题严格定义"></a>问题严格定义</h3><p>给你一个长度为N的链表。N很大，但你不知道N有多大。你的任务是从这N个元素中随机抽取k个元素。你只能遍历这个链表一次。你的算法必须保证取出的元素恰好有k个，且它们是完全随机的（出现概率相等的）。</p>
-<h2 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h2><h3 id="蓄水池算法："><a href="#蓄水池算法：" class="headerlink" title="蓄水池算法："></a>蓄水池算法：</h3><p>蓄水池算法是针对从一个序列中随机抽取不重复的K个数，保证每个数被抽取到的概率都为K/N这个问题构建的。</p>
-<h3 id="做法："><a href="#做法：" class="headerlink" title="做法："></a>做法：</h3><p>首先构造一个可以容纳k个元素的蓄水池（数组），将序列前k个元素直接放入蓄水池数组中。</p>
-<p>然后从第i = k+1个数据开始，以k/i（k&lt;i&lt;=n）的概率决定它是否进入到蓄水池中。蓄水池中的k个元素被替换出去的概率是相同的。</p>
-<p>当遍历完所有元素之后，数组中剩下的元素即为所需采取的样本。</p>
-<h2 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h2><p>对于第i个数（i &lt;= k）。在k步之前，被选中的概率为1。当走到第k+1步时，被k+1个元素替换的概率=第k+1个元素被选中的概率*i被替换的概率，即为 k/(k+1) * 1/k = 1/(k+1)。则不被第k+1个元素替换的概率为1 - 1/(k+1) = k/(k+1)。依次类推，不被K+2个元素替换的概率为1-k/(k+2) * 1/k = (k+1)/(k+2)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即：<br>$$<br>1 \times \frac {k}{k+1}\times \frac {k+1}{k+2}\times \frac {k+2}{k+3}\times …\times \frac {n-1}{n} = \frac {k}{n}<br>$$<br>对于第j个数（j&gt;k）。我们知道，在第j步被选中的概率为k/j。不被j+1个元素替换的概率为1 - k/(j+1) * 1/k = j/(j+1)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即：<br>$$<br>\frac {k}{j}\times \frac {j}{j+1}\times \frac {j+1}{j+2}\times \frac {j+2}{j+3}\times … \times \frac {n-1}{n} = \frac {k}{n}<br>$$<br>所以对于中每个元素，被保留的概率都为k/n。</p>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>python3版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, node, k</span>):</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>(<span class="params">object</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span>(<span class="params">self</span>):</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="实战题目"><a href="#实战题目" class="headerlink" title="实战题目"></a>实战题目</h2><h4 id="382-链表随机节点"><a href="#382-链表随机节点" class="headerlink" title="382. 链表随机节点"></a><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbGlua2VkLWxpc3QtcmFuZG9tLW5vZGUv">382. 链表随机节点<i class="fa fa-external-link-alt"></i></span></h4>]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>解决博弈问题的动态规划通用思路</title>
-    <url>/2020/07/24/%E8%A7%A3%E5%86%B3%E5%8D%9A%E5%BC%88%E9%97%AE%E9%A2%98%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E9%80%9A%E7%94%A8%E6%80%9D%E8%B7%AF/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 解决博弈问题动态规划通用思路.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们把石头游戏改得更具有一般性</span></span><br><span class="line"><span class="comment"># 你和你的朋友面前有一排石头堆，用一个数组piles表示</span></span><br><span class="line"><span class="comment"># piles[i]表示第i堆石子有多少个。</span></span><br><span class="line"><span class="comment"># 你们轮流拿石头，一次拿一堆，但是只能拿走最左边或者最右边的石头堆。</span></span><br><span class="line"><span class="comment"># 所有石头被拿完后，谁拥有的石头多，谁获胜</span></span><br><span class="line"><span class="comment"># 假设两人都很聪明，请你设计一个算法，返回先手和后手最后得分（石头总数）之差</span></span><br><span class="line"><span class="comment"># 比如：</span></span><br><span class="line"><span class="comment"># piles = [1, 100, 3]</span></span><br><span class="line"><span class="comment"># 先手能得4分，后手能得100分，返回-96</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 思路</span></span><br><span class="line"><span class="comment"># 子问题</span></span><br><span class="line"><span class="comment"># 在第i到第j堆石头，先手能获得最大石头数是多少，后手是多少</span></span><br><span class="line"><span class="comment"># 定义状态数组</span></span><br><span class="line"><span class="comment"># f(i, j, 0) f(i, j, 1) 表示第i到第j个石头，包括第i和第j个，0表示先手，1表示后手</span></span><br><span class="line"><span class="comment"># 因为两人都极聪明，先手选完就变后手，来回交替的</span></span><br><span class="line"><span class="comment"># 递推方程</span></span><br><span class="line"><span class="comment"># f(i, j, 0) = max 拿左边 f(i+1, j, 1) + a[i]</span></span><br><span class="line"><span class="comment">#            =     拿右边 f(i, j-1, 1) + a[j]</span></span><br><span class="line"><span class="comment"># 知道了拿左边还是右边后</span></span><br><span class="line"><span class="comment"># f(i, j, 1) =     先手拿左边 f(i+1, j, 0)</span></span><br><span class="line"><span class="comment">#            =     先手拿右边 f(i, j-1, 0)</span></span><br><span class="line"><span class="comment"># 初始化</span></span><br><span class="line"><span class="comment"># f(i, i, 0) = a[i] 只有一堆石子的时候，先手为该堆石子个数，后手就为0</span></span><br><span class="line"><span class="comment"># f(i, i, 1) = 0</span></span><br><span class="line"><span class="comment"># 返回值</span></span><br><span class="line"><span class="comment"># f(0, n-1, 0) 先手最终石子数 - f(0, n-1, 1)后手最终石子数</span></span><br><span class="line"><span class="comment"># 优化空间复杂度</span></span><br><span class="line"><span class="comment"># 是对角线的递推，这种情况最好不要优化空间，还可以利用计算机的缓存</span></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">game</span>(<span class="params">self, piles: List[int]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    piles = [<span class="number">1</span>, <span class="number">100</span>, <span class="number">3</span>]</span><br><span class="line">    res = sol.game(piles)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-
-<h6 id="代表题目："><a href="#代表题目：" class="headerlink" title="代表题目："></a>代表题目：</h6><h6 id="leetcode-877"><a href="#leetcode-877" class="headerlink" title="leetcode 877"></a>leetcode 877</h6><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 也可以使用第2种解法</span></span><br><span class="line"><span class="comment"># 数学规律</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 先拿者可以拿到序号为 1,3,5...n-1 的石子堆，</span></span><br><span class="line"><span class="comment"># 也可以拿到序号为 2,4,6...n 的石子堆。</span></span><br><span class="line"><span class="comment"># 因为总石子数为奇数，所以这两种方式中，其中一种拿到的石子数大于另一种。</span></span><br><span class="line"><span class="comment"># 所以不按照拿尽量多的石子数，按照这种纯奇数序号或者纯偶数序号的方式拿，先拿者总可以赢。</span></span><br></pre></td></tr></table></figure>
-
-<p>dp解法</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">lass Solution:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">stoneGame</span>(<span class="params">self, piles: List[int]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> bool(dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
-
+    <title>钢铁是怎样炼成的</title>
+    <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
+    <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
+<p>人的一生应该这样度过：当他回忆往事的时候，他不会因为虚度年华而悔恨；也不会因为碌碌无为而羞愧，当他临死的时候，他能够说：我的整个生命和全部精力，都献给了世界上最壮丽的事业——为人类的解放而斗争。</p>
+<p>人应当赶紧的充分的生活，因为意外的疾病和悲惨的事故随时都可能结束他的生命。</p>
 ]]></content>
       <tags>
-        <tag>数据结构与算法</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1488,17 +1499,6 @@
 <p>一个人刚出道，不狂是没有出息的。但如果一直狂，是肯定没出息的。你眼中的你，和别人眼中的你，不是一回事。无限赞美自己，只是一种胆怯。我一直认为，恐惧到头就是愤怒。发挥无敌想象，给自己描绘了一个童话世界，白衣如雪来去如风。剑影刀光闪过后，你满脸冷酷地立于珠峰顶端，傲视苍生无比英武。此时我要问的是：孩子，你怎么下去？不让古人，是谓有志；不让今人，是谓无良。记住了，小俗便雅，大雅则俗。有人夸你，别信。有人骂你，别听。周围人随意捧骂，不可与之交，因其无志兴也。记住，言语多反复，当防欺诈。忘恩思小过，定会反戈。开口说大义，临大难必变节。逢人称兄弟，即深交也平常。</p>
 <p>另外，凡事要慎重。江湖子弟，拿得起来放得下。身边人很重要。一根稻草，扔街上就是垃圾，捆上白菜就是白菜价，捆上大闸蟹就是大闸蟹价。包括脚下的平台，也极重要。同样是一个人，步行一小时能走多远？骑车呢？开车呢？坐飞机呢？平台会决定你的速度，且记且记。</p>
 <p>此外，钱财要珍惜，但不可看得太重。财乃天地至公之物，假手于人罢了，雨打残花风卷流云，轮番更转而已。穷转富，富转穷，哪有百世富家翁？至于交友，吃点亏也无妨。人每所谓穷通寿夭为命所系，岂不知造物之报施，全视人之自取。芸芸众生富贵贫寒，不是谁都可以傲视乾坤。其中有命有运，要知因果懂善恶，我儿且记，但行好事，莫问前程。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>钢铁是怎样炼成的</title>
-    <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
-    <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
-<p>人的一生应该这样度过：当他回忆往事的时候，他不会因为虚度年华而悔恨；也不会因为碌碌无为而羞愧，当他临死的时候，他能够说：我的整个生命和全部精力，都献给了世界上最壮丽的事业——为人类的解放而斗争。</p>
-<p>人应当赶紧的充分的生活，因为意外的疾病和悲惨的事故随时都可能结束他的生命。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
