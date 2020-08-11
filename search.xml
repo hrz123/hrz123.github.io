@@ -474,28 +474,6 @@
       </tags>
   </entry>
   <entry>
-    <title>python实现Trie(字典树、前缀树)</title>
-    <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
-    <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
-<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
-<h2 id="应用">应用：</h2>
-<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
-<h2 id="要实现的方法">要实现的方法</h2>
-<p>一般来讲trie要实现这么几个方法</p>
-<ul>
-<li>插入一个单词insert(word: str) -&gt; None</li>
-<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
-<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
-</ul>
-<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>python实现并查集</title>
     <url>/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
     <content><![CDATA[<h1 id="python实现并查集">python实现并查集</h1>
@@ -551,6 +529,28 @@
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现Trie(字典树、前缀树)</title>
+    <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
+<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
+<h2 id="应用">应用：</h2>
+<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
+<h2 id="要实现的方法">要实现的方法</h2>
+<p>一般来讲trie要实现这么几个方法</p>
+<ul>
+<li>插入一个单词insert(word: str) -&gt; None</li>
+<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
+<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
+</ul>
+<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -714,6 +714,38 @@
       </tags>
   </entry>
   <entry>
+    <title>区间树</title>
+    <url>/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="参考">参考：</h2>
+<p>https://www.geeksforgeeks.org/interval-tree/</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">https://stackoverflow.com/questions/17466218/what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text=Segment%20tree%20stores%20intervals%2C%20and,with%20a%20given%20interval%22%20queries.<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="实际问题简单记类似于点的添加和删除和查找都要快速点的解决办法是平衡bst使得这几种操作都变成ologn区间的添加删除类似查找的是overlap这时就需要用到区间树">实际问题（简单记，类似于点的添加和删除和查找，都要快速，点的解决办法是平衡BST，使得这几种操作都变成O(logn)，区间的添加删除类似，查找的是overlap，这时就需要用到区间树）</h2>
+<p>Consider a situation where we have a set of intervals and we need following operations to be implemented efficiently. <strong>1)</strong> Add an interval <strong>2)</strong> Remove an interval <strong>3)</strong> Given an interval x, find if x overlaps with any of the existing intervals.</p>
+<p>考虑我们有一个集合的区间，并且我们需要以下操作能够有效率的实现：</p>
+<ol type="1">
+<li>添加一个区间</li>
+<li>删除一个区间</li>
+<li>对于一个给定的区间x，找出x是否有和任意一个已经存在的区间有重合。</li>
+</ol>
+<p><strong><em>Interval Tree:</em></strong> The idea is to augment a self-balancing Binary Search Tree (BST) like <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcmVkLWJsYWNrLXRyZWUtc2V0LTEtaW50cm9kdWN0aW9uLTIv">Red Black Tree<i class="fa fa-external-link-alt"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYXZsLXRyZWUtc2V0LTEtaW5zZXJ0aW9uLw==">AVL Tree<i class="fa fa-external-link-alt"></i></span>, etc to maintain set of intervals so that all operations can be done in O(Logn) time.</p>
+<p>Every node of Interval Tree stores following information. a) <strong>i</strong>: An interval which is represented as a pair <em>[low, high]</em> b) <strong>max</strong>: Maximum <em>high</em> value in subtree rooted with this node.</p>
+<p>区间的最小值用作BST的键值来保持BST的顺序。那么插入和删除就和自平衡BST的插入删除一样。</p>
+<img data-src="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png" class>
+<p>那么我们就来看找重合区间的操作。</p>
+<p>Following is algorithm for searching an overlapping interval <em>x</em> in an Interval tree rooted with <em>root</em>.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Interval overlappingIntervalSearch(root, x)</span><br><span class="line">1) If x overlaps with root&#39;s interval, return the root&#39;s interval.</span><br><span class="line"></span><br><span class="line">2) If left child of root is not empty and the max  in left child </span><br><span class="line">is greater than x&#39;s low value, recur for left child</span><br><span class="line"></span><br><span class="line">3) Else recur for right child.</span><br></pre></td></tr></table></figure>
+<p><strong><em>How does the above algorithm work?</em></strong> Let the interval to be searched be x. We need to prove this in for following two cases.</p>
+<p><strong><em>Case 1:</em></strong> <em>When we go to right subtree, one of the following must be true.</em> a) There is an overlap in right subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: We go to right subtree only when either left is NULL or maximum value in left is smaller than <em>x.low</em>. So the interval cannot be present in left subtree.</p>
+<p><strong><em>Case 2:</em></strong> <em>When we go to left subtree, one of the following must be true.</em> a) There is an overlap in left subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: This is the most important part. We need to consider following facts. … We went to left subtree because <em>x.low &lt;= max</em> in left subtree …. max in left subtree is a high of one of the intervals let us say <em>[a, max]</em> in left subtree. …. Since <em>x</em> doesn’t overlap with any node in left subtree <em>x.low</em> must be smaller than ‘<em>a</em>‘. …. All nodes in BST are ordered by low value, so all nodes in right subtree must have low value greater than ‘<em>a</em>‘. …. From above two facts, we can say all intervals in right subtree have low value greater than <em>x.low</em>. So <em>x</em> cannot overlap with any interval in right subtree.</p>
+<p><strong>Applications of Interval Tree:</strong> Interval tree is mainly a geometric data structure and often used for windowing queries, for instance, to find all roads on a computerized map inside a rectangular viewport, or to find all visible elements inside a three-dimensional scene (Source <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9JbnRlcnZhbF90cmVl">Wiki<i class="fa fa-external-link-alt"></i></span>).</p>
+<p><strong>Interval Tree vs <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span></strong> Both segment and interval trees store intervals. Segment tree is mainly optimized for queries for a given point, and interval trees are mainly optimized for overlapping queries for a given interval.</p>
+<p>区间树和线段树都是存储区间的，不同的是线段是针对给定点的查询进行优化，区间树针对给定区间的重叠查询进行优化。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用函数randa()来实现函数randb()</title>
     <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
     <content><![CDATA[<h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
@@ -749,38 +781,6 @@
 <p>从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure></li>
 </ol>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>区间树</title>
-    <url>/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/</url>
-    <content><![CDATA[<h2 id="参考">参考：</h2>
-<p>https://www.geeksforgeeks.org/interval-tree/</p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">https://stackoverflow.com/questions/17466218/what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text=Segment%20tree%20stores%20intervals%2C%20and,with%20a%20given%20interval%22%20queries.<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="实际问题简单记类似于点的添加和删除和查找都要快速点的解决办法是平衡bst使得这几种操作都变成ologn区间的添加删除类似查找的是overlap这时就需要用到区间树">实际问题（简单记，类似于点的添加和删除和查找，都要快速，点的解决办法是平衡BST，使得这几种操作都变成O(logn)，区间的添加删除类似，查找的是overlap，这时就需要用到区间树）</h2>
-<p>Consider a situation where we have a set of intervals and we need following operations to be implemented efficiently. <strong>1)</strong> Add an interval <strong>2)</strong> Remove an interval <strong>3)</strong> Given an interval x, find if x overlaps with any of the existing intervals.</p>
-<p>考虑我们有一个集合的区间，并且我们需要以下操作能够有效率的实现：</p>
-<ol type="1">
-<li>添加一个区间</li>
-<li>删除一个区间</li>
-<li>对于一个给定的区间x，找出x是否有和任意一个已经存在的区间有重合。</li>
-</ol>
-<p><strong><em>Interval Tree:</em></strong> The idea is to augment a self-balancing Binary Search Tree (BST) like <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcmVkLWJsYWNrLXRyZWUtc2V0LTEtaW50cm9kdWN0aW9uLTIv">Red Black Tree<i class="fa fa-external-link-alt"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYXZsLXRyZWUtc2V0LTEtaW5zZXJ0aW9uLw==">AVL Tree<i class="fa fa-external-link-alt"></i></span>, etc to maintain set of intervals so that all operations can be done in O(Logn) time.</p>
-<p>Every node of Interval Tree stores following information. a) <strong>i</strong>: An interval which is represented as a pair <em>[low, high]</em> b) <strong>max</strong>: Maximum <em>high</em> value in subtree rooted with this node.</p>
-<p>区间的最小值用作BST的键值来保持BST的顺序。那么插入和删除就和自平衡BST的插入删除一样。</p>
-<img data-src="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png" class>
-<p>那么我们就来看找重合区间的操作。</p>
-<p>Following is algorithm for searching an overlapping interval <em>x</em> in an Interval tree rooted with <em>root</em>.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Interval overlappingIntervalSearch(root, x)</span><br><span class="line">1) If x overlaps with root&#39;s interval, return the root&#39;s interval.</span><br><span class="line"></span><br><span class="line">2) If left child of root is not empty and the max  in left child </span><br><span class="line">is greater than x&#39;s low value, recur for left child</span><br><span class="line"></span><br><span class="line">3) Else recur for right child.</span><br></pre></td></tr></table></figure>
-<p><strong><em>How does the above algorithm work?</em></strong> Let the interval to be searched be x. We need to prove this in for following two cases.</p>
-<p><strong><em>Case 1:</em></strong> <em>When we go to right subtree, one of the following must be true.</em> a) There is an overlap in right subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: We go to right subtree only when either left is NULL or maximum value in left is smaller than <em>x.low</em>. So the interval cannot be present in left subtree.</p>
-<p><strong><em>Case 2:</em></strong> <em>When we go to left subtree, one of the following must be true.</em> a) There is an overlap in left subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: This is the most important part. We need to consider following facts. … We went to left subtree because <em>x.low &lt;= max</em> in left subtree …. max in left subtree is a high of one of the intervals let us say <em>[a, max]</em> in left subtree. …. Since <em>x</em> doesn’t overlap with any node in left subtree <em>x.low</em> must be smaller than ‘<em>a</em>‘. …. All nodes in BST are ordered by low value, so all nodes in right subtree must have low value greater than ‘<em>a</em>‘. …. From above two facts, we can say all intervals in right subtree have low value greater than <em>x.low</em>. So <em>x</em> cannot overlap with any interval in right subtree.</p>
-<p><strong>Applications of Interval Tree:</strong> Interval tree is mainly a geometric data structure and often used for windowing queries, for instance, to find all roads on a computerized map inside a rectangular viewport, or to find all visible elements inside a three-dimensional scene (Source <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9JbnRlcnZhbF90cmVl">Wiki<i class="fa fa-external-link-alt"></i></span>).</p>
-<p><strong>Interval Tree vs <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span></strong> Both segment and interval trees store intervals. Segment tree is mainly optimized for queries for a given point, and interval trees are mainly optimized for overlapping queries for a given interval.</p>
-<p>区间树和线段树都是存储区间的，不同的是线段是针对给定点的查询进行优化，区间树针对给定区间的重叠查询进行优化。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -881,50 +881,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>实现KMP算法</title>
-    <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下https://time.geekbang.org/column/article/71845</p>
-<h2 id="概述">概述</h2>
-<p>字符串匹配算法，可以分为单模式串匹配算法，和多模式串匹配算法，单模式串匹配算法包括了BF（暴力匹配O(m*n)，但因为可以及早停止，实际感觉并没有很差）、RK（O(n)，n为主串长度，利用哈希加速，哈希函数要取好，不要超过int的最大值，遍历一遍主串就可以算出全部n-m+1个哈希值）、BM（Boyer-Moore，性能最好的算法，使用好后缀、坏字符，从最后一个字符开始匹配）、KMP（好前缀、坏字符）四种算法。</p>
-<p>这里介绍不是那么复杂的KMP算法。</p>
-<p>（PS. 其实个人觉得，要学好算法，语文非常地重要，不亚于数学，要严谨准确而清晰易懂）</p>
-<h2 id="思路与算法">思路与算法</h2>
-<h3 id="kmp-算法基本原理">KMP 算法基本原理</h3>
-<p>在模式串和主串匹配的过程中，把不能匹配的那个字符叫作<strong>坏字符</strong>，把已经匹配的那段字符串叫作<strong>好前缀</strong>。</p>
-
-<p>当遇到坏字符的时候，我们就要把模式串往后滑动，在滑动的过程中，只要模式串和好前缀有上下重合，前面几个字符的比较，就相当于拿好前缀的后缀子串，跟模式串的前缀子串在比较。这个比较的过程能否更高效了呢？可以不用一个字符一个字符的比较了吗？</p>
-
-<p>KMP 算法就是在试图寻找一种规律：在模式串和主串匹配的过程中，当遇到坏字符后，对于已经比对过的好前缀，能否找到一种规律，将模式串一次性滑动很多位？</p>
-<p>我们只需要拿好前缀本身，在它的后缀子串中，查找最长的那个可以跟好前缀的前缀子串匹配的。假设最长的可匹配的那部分前缀子串是{v}，长度是k。我们把模式串一次性往后滑动 j - k 位，相当于，每次遇到坏字符，我们就把j更新为k，i不变，然后继续比较。</p>
-
-<p>为了表述起来方便，我把好前缀的所有后缀子串中，最长的可匹配前缀子串的那个后缀子串，叫做<strong>最长可匹配后缀子串</strong>；对应的前缀子串，叫做<strong>最长可匹配前缀子串</strong>。</p>
-
-<p>如何来求好前缀的最长可匹配前缀和后缀子串呢？我们发现，这个问题其实不涉及主串，只需要通过模式串本身就能求解。所以，能不能事先预处理计算好，在模式串和主串匹配的过程中，直接拿过来就用呢？</p>
-<p>其实和BM算法（后面会讲到）类似，KMP算法可以提前构建一个数组，用来存储模式串中每个前缀（这些前缀都有可能是好前缀）的最长可匹配前缀子串的结尾字符下标。我们把这个数组定义为<strong>next数组</strong>（或者叫longest prefix suffix，最长的前缀的后缀的下标，如果到了结尾就用-1表示不存在)，很多书中还给这个数组起了一个名字，叫<strong>失效函数</strong>（failure function）。</p>
-<p>数组的下标是每个前缀结尾字符下标，数组的值是这个前缀的最长可以匹配前缀子串的结尾字符下标。这句话有点拗口，举个例子就懂了。</p>
-
-<p>有个next数组，我们很容易就可以实现KMP算法了。我先假设next数组已经计算好了，先给出KMP算法的框架代码。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">p, s</span>):</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print(&quot;Found pattern at index &quot; + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
-<h3 id="失效函数计算方法">失效函数计算方法</h3>
-<p>基本原理剪完了，现在来看最复杂的部分，也就是next数组是如何计算的。</p>
-<p>当然，我们可以用非常笨的方法，比如要计算下面这个模式串 b 的 next[4]，我们就把 b[0, 4]的所有后缀子串，从长到短找出来，依次看看，是否能跟模式串的前缀子串匹配。很显然，这个方法也可以计算得到 next 数组，但是效率非常低。有没有更加高效的方法呢？</p>
-
-<p>我们按照下标从小到大，依次计算 next 数组的值。当我们要计算 next[i]的时候，前面的 next[0]，next[1]，……，next[i-1]应该已经计算出来了。利用已经计算出来的 next 值，我们是否可以快速推导出 next[i]的值呢？如果 next[i-1]=k-1，也就是说，子串 b[0, k-1]是 b[0, i-1]的最长可匹配前缀子串。如果子串 b[0, k-1]的下一个字符 b[k]，与 b[0, i-1]的下一个字符 b[i]匹配，那子串 b[0, k]就是 b[0, i]的最长可匹配前缀子串。所以，next[i]等于 k。但是，如果 b[0, k-1]的下一字符 b[k]跟 b[0, i-1]的下一个字符 b[i]不相等呢？这个时候就不能简单地通过 next[i-1]得到 next[i]了。这个时候该怎么办呢？</p>
-<p>我们假设 b[0, i]的最长可匹配后缀子串是 b[r, i]。如果我们把最后一个字符去掉，那 b[r, i-1]肯定是 b[0, i-1]的可匹配后缀子串，但不一定是最长可匹配后缀子串。所以，既然 b[0, i-1]最长可匹配后缀子串对应的模式串的前缀子串的下一个字符并不等于 b[i]，那么我们就可以考察 b[0, i-1]的次长可匹配后缀子串 b[x, i-1]对应的可匹配前缀子串 b[0, i-1-x]的下一个字符 b[i-x]是否等于 b[i]。如果等于，那 b[x, i]就是 b[0, i]的最长可匹配后缀子串。</p>
-<p>可是，如何求得b[0, i-1]的次长可匹配后缀子串呢？次长可匹配后缀子串肯定被包含在最长可匹配后缀子串中，而最长可匹配后缀子串又对应最长可匹配前缀子串又对应最长可匹配前缀子串b[0, y]。于是，查找b[0, i-1]的次长可匹配后缀子串，这个问题就变成，查找b[0, y]的最长匹配后缀子串，其中y = next[i-1]</p>
-
-<p>按照这个思路，我们可以考察完所有的 b[0, i-1]的可匹配后缀子串 b[y, i-1]，直到找到一个可匹配的后缀子串，它对应的前缀子串的下一个字符等于 b[i]，那这个 b[y, i]就是 b[0, i]的最长可匹配后缀子串。</p>
-<p>前面已经给出 KMP 算法的框架代码了，现在把这部分的代码也写出来了。这两部分代码合在一起，就是整个 KMP 算法的代码实现。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">p, m</span>):</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br></pre></td></tr></table></figure>
-<h2 id="最后整体的实现">最后整体的实现</h2>
-<p>Python3版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">self, p, s</span>):</span></span><br><span class="line">        m, n = len(p), len(s)</span><br><span class="line">        lps = self.get_lps(p, m)</span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> j != <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">                j += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> j == m:</span><br><span class="line">                <span class="comment"># return i - m + 1</span></span><br><span class="line">                print(<span class="string">&quot;find at &#123;&#125;&quot;</span>.format(i - m + <span class="number">1</span>))</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">self, p, m</span>):</span></span><br><span class="line">        lps = [<span class="number">-1</span>] * m</span><br><span class="line">        k = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">            <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[i] != p[k + <span class="number">1</span>]:</span><br><span class="line">                k = lps[k]</span><br><span class="line">            <span class="keyword">if</span> p[i] == p[k + <span class="number">1</span>]:</span><br><span class="line">                k += <span class="number">1</span></span><br><span class="line">            lps[i] = k</span><br><span class="line">        <span class="keyword">return</span> lps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    s = <span class="string">&quot;abcruizheuhuruizheaasdasd&quot;</span></span><br><span class="line">    p = <span class="string">&quot;ruizhe&quot;</span></span><br><span class="line">    res = sol.KMPSearch(p, s)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1031,6 +987,50 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>实现KMP算法</title>
+    <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下https://time.geekbang.org/column/article/71845</p>
+<h2 id="概述">概述</h2>
+<p>字符串匹配算法，可以分为单模式串匹配算法，和多模式串匹配算法，单模式串匹配算法包括了BF（暴力匹配O(m*n)，但因为可以及早停止，实际感觉并没有很差）、RK（O(n)，n为主串长度，利用哈希加速，哈希函数要取好，不要超过int的最大值，遍历一遍主串就可以算出全部n-m+1个哈希值）、BM（Boyer-Moore，性能最好的算法，使用好后缀、坏字符，从最后一个字符开始匹配）、KMP（好前缀、坏字符）四种算法。</p>
+<p>这里介绍不是那么复杂的KMP算法。</p>
+<p>（PS. 其实个人觉得，要学好算法，语文非常地重要，不亚于数学，要严谨准确而清晰易懂）</p>
+<h2 id="思路与算法">思路与算法</h2>
+<h3 id="kmp-算法基本原理">KMP 算法基本原理</h3>
+<p>在模式串和主串匹配的过程中，把不能匹配的那个字符叫作<strong>坏字符</strong>，把已经匹配的那段字符串叫作<strong>好前缀</strong>。</p>
+
+<p>当遇到坏字符的时候，我们就要把模式串往后滑动，在滑动的过程中，只要模式串和好前缀有上下重合，前面几个字符的比较，就相当于拿好前缀的后缀子串，跟模式串的前缀子串在比较。这个比较的过程能否更高效了呢？可以不用一个字符一个字符的比较了吗？</p>
+
+<p>KMP 算法就是在试图寻找一种规律：在模式串和主串匹配的过程中，当遇到坏字符后，对于已经比对过的好前缀，能否找到一种规律，将模式串一次性滑动很多位？</p>
+<p>我们只需要拿好前缀本身，在它的后缀子串中，查找最长的那个可以跟好前缀的前缀子串匹配的。假设最长的可匹配的那部分前缀子串是{v}，长度是k。我们把模式串一次性往后滑动 j - k 位，相当于，每次遇到坏字符，我们就把j更新为k，i不变，然后继续比较。</p>
+
+<p>为了表述起来方便，我把好前缀的所有后缀子串中，最长的可匹配前缀子串的那个后缀子串，叫做<strong>最长可匹配后缀子串</strong>；对应的前缀子串，叫做<strong>最长可匹配前缀子串</strong>。</p>
+
+<p>如何来求好前缀的最长可匹配前缀和后缀子串呢？我们发现，这个问题其实不涉及主串，只需要通过模式串本身就能求解。所以，能不能事先预处理计算好，在模式串和主串匹配的过程中，直接拿过来就用呢？</p>
+<p>其实和BM算法（后面会讲到）类似，KMP算法可以提前构建一个数组，用来存储模式串中每个前缀（这些前缀都有可能是好前缀）的最长可匹配前缀子串的结尾字符下标。我们把这个数组定义为<strong>next数组</strong>（或者叫longest prefix suffix，最长的前缀的后缀的下标，如果到了结尾就用-1表示不存在)，很多书中还给这个数组起了一个名字，叫<strong>失效函数</strong>（failure function）。</p>
+<p>数组的下标是每个前缀结尾字符下标，数组的值是这个前缀的最长可以匹配前缀子串的结尾字符下标。这句话有点拗口，举个例子就懂了。</p>
+
+<p>有个next数组，我们很容易就可以实现KMP算法了。我先假设next数组已经计算好了，先给出KMP算法的框架代码。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">p, s</span>):</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print(&quot;Found pattern at index &quot; + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="失效函数计算方法">失效函数计算方法</h3>
+<p>基本原理剪完了，现在来看最复杂的部分，也就是next数组是如何计算的。</p>
+<p>当然，我们可以用非常笨的方法，比如要计算下面这个模式串 b 的 next[4]，我们就把 b[0, 4]的所有后缀子串，从长到短找出来，依次看看，是否能跟模式串的前缀子串匹配。很显然，这个方法也可以计算得到 next 数组，但是效率非常低。有没有更加高效的方法呢？</p>
+
+<p>我们按照下标从小到大，依次计算 next 数组的值。当我们要计算 next[i]的时候，前面的 next[0]，next[1]，……，next[i-1]应该已经计算出来了。利用已经计算出来的 next 值，我们是否可以快速推导出 next[i]的值呢？如果 next[i-1]=k-1，也就是说，子串 b[0, k-1]是 b[0, i-1]的最长可匹配前缀子串。如果子串 b[0, k-1]的下一个字符 b[k]，与 b[0, i-1]的下一个字符 b[i]匹配，那子串 b[0, k]就是 b[0, i]的最长可匹配前缀子串。所以，next[i]等于 k。但是，如果 b[0, k-1]的下一字符 b[k]跟 b[0, i-1]的下一个字符 b[i]不相等呢？这个时候就不能简单地通过 next[i-1]得到 next[i]了。这个时候该怎么办呢？</p>
+<p>我们假设 b[0, i]的最长可匹配后缀子串是 b[r, i]。如果我们把最后一个字符去掉，那 b[r, i-1]肯定是 b[0, i-1]的可匹配后缀子串，但不一定是最长可匹配后缀子串。所以，既然 b[0, i-1]最长可匹配后缀子串对应的模式串的前缀子串的下一个字符并不等于 b[i]，那么我们就可以考察 b[0, i-1]的次长可匹配后缀子串 b[x, i-1]对应的可匹配前缀子串 b[0, i-1-x]的下一个字符 b[i-x]是否等于 b[i]。如果等于，那 b[x, i]就是 b[0, i]的最长可匹配后缀子串。</p>
+<p>可是，如何求得b[0, i-1]的次长可匹配后缀子串呢？次长可匹配后缀子串肯定被包含在最长可匹配后缀子串中，而最长可匹配后缀子串又对应最长可匹配前缀子串又对应最长可匹配前缀子串b[0, y]。于是，查找b[0, i-1]的次长可匹配后缀子串，这个问题就变成，查找b[0, y]的最长匹配后缀子串，其中y = next[i-1]</p>
+
+<p>按照这个思路，我们可以考察完所有的 b[0, i-1]的可匹配后缀子串 b[y, i-1]，直到找到一个可匹配的后缀子串，它对应的前缀子串的下一个字符等于 b[i]，那这个 b[y, i]就是 b[0, i]的最长可匹配后缀子串。</p>
+<p>前面已经给出 KMP 算法的框架代码了，现在把这部分的代码也写出来了。这两部分代码合在一起，就是整个 KMP 算法的代码实现。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">p, m</span>):</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br></pre></td></tr></table></figure>
+<h2 id="最后整体的实现">最后整体的实现</h2>
+<p>Python3版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">self, p, s</span>):</span></span><br><span class="line">        <span class="comment"># 特判</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> p:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        m, n = len(p), len(s)</span><br><span class="line">        lps = self.get_lps(p, m)</span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> j != <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">                j += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> j == m:</span><br><span class="line">                <span class="comment"># return i - m + 1</span></span><br><span class="line">                print(<span class="string">&quot;find at &#123;&#125;&quot;</span>.format(i - m + <span class="number">1</span>))</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">self, p, m</span>):</span></span><br><span class="line">        lps = [<span class="number">-1</span>] * m</span><br><span class="line">        k = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">            <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[i] != p[k + <span class="number">1</span>]:</span><br><span class="line">                k = lps[k]</span><br><span class="line">            <span class="keyword">if</span> p[i] == p[k + <span class="number">1</span>]:</span><br><span class="line">                k += <span class="number">1</span></span><br><span class="line">            lps[i] = k</span><br><span class="line">        <span class="keyword">return</span> lps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    s = <span class="string">&quot;abcruizheuhuruizheaasdasd&quot;</span></span><br><span class="line">    p = <span class="string">&quot;ruizhe&quot;</span></span><br><span class="line">    res = sol.KMPSearch(p, s)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
