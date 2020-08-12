@@ -185,6 +185,85 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/" class="post-title-link" itemprop="url">堆的实现(大顶堆、小顶堆)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-07 09:24:06" itemprop="dateCreated datePublished" datetime="2020-08-07T09:24:06+08:00">2020-08-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-12 00:06:09" itemprop="dateModified" datetime="2020-08-12T00:06:09+08:00">2020-08-12</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -995,167 +1074,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/" class="post-title-link" itemprop="url">线段树</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-07-30 11:54:36" itemprop="dateCreated datePublished" datetime="2020-07-30T11:54:36+08:00">2020-07-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-10 15:15:34" itemprop="dateModified" datetime="2020-08-10T15:15:34+08:00">2020-08-10</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="参考">参考：</h2>
-<p><span class="exturl" data-url="aHR0cHM6Ly96aC53aWtpcGVkaWEub3JnL3dpa2kv57ea5q615qi5">https://zh.wikipedia.org/wiki/%E7%B7%9A%E6%AE%B5%E6%A8%B9<i class="fa fa-external-link-alt"></i></span></p>
-<p>https://www.geeksforgeeks.org/segment-tree-set-1-sum-of-given-range/</p>
-<p>原文我觉得挺不错的，暂时觉得先不翻译。</p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">链接<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="实际问题简单记想快速知道数组的某一区间和同时数组的修改频繁使得这两种操作都变成ologn用线段树可利用思想解决最大子段和问题">实际问题（简单记，想快速知道数组的某一区间和，同时数组的修改频繁，使得这两种操作都变成O(logn)，用线段树，可利用思想解决最大子段和问题）</h2>
-<p>Let us consider the following problem to understand Segment Trees.</p>
-<p>We have an array arr[0 . . . n-1]. We should be able to <strong>1</strong> Find the sum of elements from index l to r where 0 &lt;= l &lt;= r &lt;= n-1</p>
-<p><strong>2</strong> Change value of a specified element of the array to a new value x. We need to do arr[i] = x where 0 &lt;= i &lt;= n-1.</p>
-<p>A <strong>simple solution</strong> is to run a loop from l to r and calculate the sum of elements in the given range. To update a value, simply do arr[i] = x. The first operation takes O(n) time and the second operation takes O(1) time.</p>
-<p><strong>Another solution</strong> is to create another array and store sum from start to i at the ith index in this array. The sum of a given range can now be calculated in O(1) time, but update operation takes O(n) time now. This works well if the number of query operations is large and very few updates.</p>
-<p>给定一个数组，我们既想快速的知道任意一段区间的总和是多少，也想经常改变其中任何一个元素的值。</p>
-<p>第一种解决办法就是，对每一个l和r，我们计算l和r之间的和，O(n)的复杂度，改变其中任何一个值，O(1)的时间复杂度。</p>
-<p>第二种解决办法就是，我们创建好另一个数组，存储从开始到这个索引的元素和是多少，（前缀和，通常前缀和在数组的前面加上一个0，这样所有lr之间的和等于这个_sum数组的 _sum[r] - _sum[l-1]）。这样求l到r之间的和就变成O(1)的时间复杂度了，但是每改变一个值就变成O(n)的了。</p>
-<p>What if the number of query and updates are equal? <strong>Can we perform both the operations in O(log n) time once given the array?</strong> We can use a Segment Tree to do both operations in O(Logn) time.</p>
-<p><strong>Representation of Segment trees</strong> <strong>1.</strong> Leaf Nodes are the elements of the input array. <strong>2.</strong> Each internal node represents some merging of the leaf nodes. The merging may be different for different problems. For this problem, merging is sum of leaves under a node.</p>
-<p>An array representation of tree is used to represent Segment Trees. For each node at index i, the left child is at index 2<em>i+1, right child at 2</em>i+2 and the parent is at <a target="_blank" rel="noopener" href="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st1.png"><img data-src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st1.png" alt="st1"></a>.</p>
-<img data-src="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/segment-tree1.png" class>
-<p><strong>How does above segment tree look in memory?</strong> Like Heap, the segment tree is also represented as an array. The difference here is, it is not a complete binary tree. It is rather a full binary tree (every node has 0 or 2 children) and all levels are filled except possibly the last level. Unlike Heap, the last level may have gaps between nodes. Below are the values in the segment tree array for the above diagram.</p>
-<blockquote>
-<p><em>Below is memory representation of segment tree for input array {1, 3, 5, 7, 9, 11}</em> <em>st[] = {36, 9, 27, 4, 5, 16, 11, 1, 3, DUMMY, DUMMY, 7, 9, DUMMY, DUMMY}</em></p>
-</blockquote>
-<p>The dummy values are never accessed and have no use. This is some wastage of space due to simple array representation. We may optimize this wastage using some clever implementations, but code for sum and update becomes more complex.</p>
-<p><strong>Construction of Segment Tree from given array</strong> We start with a segment arr[0 . . . n-1]. and every time we divide the current segment into two halves(if it has not yet become a segment of length 1), and then call the same procedure on both halves, and for each such segment, we store the sum in the corresponding node. All levels of the constructed segment tree will be completely filled except the last level. Also, the tree will be a <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYmluYXJ5LXRyZWUtc2V0LTMtdHlwZXMtb2YtYmluYXJ5LXRyZWUv">Full Binary Tree<i class="fa fa-external-link-alt"></i></span> because we always divide segments in two halves at every level. Since the constructed tree is always a full binary tree with n leaves, there will be n-1 internal nodes. So the total number of nodes will be 2*n – 1. Note that this does not include dummy nodes.</p>
-<p><strong>What is the total size of the array representing segment tree?</strong> If n is a power of 2, then there are no dummy nodes. So the size of the segment tree is 2n-1 (n leaf nodes and n-1) internal nodes. If n is not a power of 2, then the size of the tree will be 2*x – 1 where x is the smallest power of 2 greater than n. For example, when n = 10, then size of array representing segment tree is 2*16-1 = 31. An alternate explanation for size is based on heignt. Height of the segment tree will be <a target="_blank" rel="noopener" href="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st2.png"><img data-src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st2.png" alt="st2"></a>. Since the tree is represented using array and relation between parent and child indexes must be maintained, size of memory allocated for segment tree will be <a target="_blank" rel="noopener" href="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st3.png"><img data-src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st3.png" alt="st3"></a>.</p>
-<p><strong>Query for Sum of given range</strong> Once the tree is constructed, how to get the sum using the constructed segment tree. The following is the algorithm to get the sum of elements.</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getSum</span><span class="params">(node, l, r)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">if</span> the range of the node is within l <span class="keyword">and</span> r</span><br><span class="line">        <span class="keyword">return</span> value in the node</span><br><span class="line">   <span class="keyword">else</span> <span class="keyword">if</span> the range of the node is completely outside l <span class="keyword">and</span> r</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">    <span class="keyword">return</span> getSum(node<span class="number">&#x27;</span>s left child, l, r) + </span><br><span class="line">           getSum(node<span class="number">&#x27;</span>s right child, l, r)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>Update a value</strong> Like tree construction and query operations, the update can also be done recursively. We are given an index which needs to be updated. Let <em>diff</em> be the value to be added. We start from the root of the segment tree and add <em>diff</em> to all nodes which have given index in their range. If a node doesn’t have a given index in its range, we don’t make any changes to that node.</p>
-<p><strong>Implementation:</strong> Following is the implementation of segment tree. The program implements construction of segment tree for any given array. It also implements query and update operations.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Python3 program to show segment tree operations like </span></span><br><span class="line"><span class="comment"># construction, query and update </span></span><br><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> ceil, log2; </span><br><span class="line"></span><br><span class="line"><span class="comment"># A utility function to get the </span></span><br><span class="line"><span class="comment"># middle index from corner indexes. </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getMid</span>(<span class="params">s, e</span>) :</span> </span><br><span class="line">   <span class="keyword">return</span> s + (e -s) // <span class="number">2</span>; </span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot; A recursive function to get the sum of values </span></span><br><span class="line"><span class="string">   in the given range of the array. The following </span></span><br><span class="line"><span class="string">   are parameters for this function. </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  st --&gt; Pointer to segment tree </span></span><br><span class="line"><span class="string">    si --&gt; Index of current node in the segment tree. </span></span><br><span class="line"><span class="string">     Initially 0 is passed as root is always at index 0 </span></span><br><span class="line"><span class="string">   ss &amp; se --&gt; Starting and ending indexes of the segment </span></span><br><span class="line"><span class="string">                represented by current node, i.e., st[si] </span></span><br><span class="line"><span class="string">    qs &amp; qe --&gt; Starting and ending indexes of query range &quot;&quot;&quot;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getSumUtil</span>(<span class="params">st, ss, se, qs, qe, si</span>) :</span> </span><br><span class="line"></span><br><span class="line">    <span class="comment"># If segment of this node is a part of given range, </span></span><br><span class="line"> <span class="comment"># then return the sum of the segment </span></span><br><span class="line">    <span class="keyword">if</span> (qs &lt;= ss <span class="keyword">and</span> qe &gt;= se) : </span><br><span class="line">     <span class="keyword">return</span> st[si]; </span><br><span class="line"></span><br><span class="line">    <span class="comment"># If segment of this node is </span></span><br><span class="line">    <span class="comment"># outside the given range </span></span><br><span class="line">   <span class="keyword">if</span> (se &lt; qs <span class="keyword">or</span> ss &gt; qe) : </span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line"></span><br><span class="line"> <span class="comment"># If a part of this segment overlaps </span></span><br><span class="line">    <span class="comment"># with the given range </span></span><br><span class="line">  mid = getMid(ss, se); </span><br><span class="line">    </span><br><span class="line">  <span class="keyword">return</span> getSumUtil(st, ss, mid, qs, qe, <span class="number">2</span> * si + <span class="number">1</span>) + \ </span><br><span class="line">      getSumUtil(st, mid + <span class="number">1</span>, se, qs, qe, <span class="number">2</span> * si + <span class="number">2</span>); </span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot; A recursive function to update the nodes </span></span><br><span class="line"><span class="string">which have the given index in their range. </span></span><br><span class="line"><span class="string">The following are parameters st, si, ss and se </span></span><br><span class="line"><span class="string">are same as getSumUtil() </span></span><br><span class="line"><span class="string">i --&gt; index of the element to be updated. </span></span><br><span class="line"><span class="string">    This index is in the input array. </span></span><br><span class="line"><span class="string">diff --&gt; Value to be added to all nodes </span></span><br><span class="line"><span class="string">which have i in range &quot;&quot;&quot;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateValueUtil</span>(<span class="params">st, ss, se, i, diff, si</span>) :</span> </span><br><span class="line"></span><br><span class="line"> <span class="comment"># Base Case: If the input index lies </span></span><br><span class="line">    <span class="comment"># outside the range of this segment </span></span><br><span class="line"> <span class="keyword">if</span> (i &lt; ss <span class="keyword">or</span> i &gt; se) : </span><br><span class="line">      <span class="keyword">return</span>; </span><br><span class="line"></span><br><span class="line">   <span class="comment"># If the input index is in range of this node, </span></span><br><span class="line">  <span class="comment"># then update the value of the node and its children </span></span><br><span class="line">    st[si] = st[si] + diff; </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (se != ss) : </span><br><span class="line"> </span><br><span class="line">      mid = getMid(ss, se); </span><br><span class="line">        updateValueUtil(st, ss, mid, i, </span><br><span class="line">                      diff, <span class="number">2</span> * si + <span class="number">1</span>); </span><br><span class="line">       updateValueUtil(st, mid + <span class="number">1</span>, se, i, </span><br><span class="line">                      diff, <span class="number">2</span> * si + <span class="number">2</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment"># The function to update a value in input array </span></span><br><span class="line"><span class="comment"># and segment tree. It uses updateValueUtil() </span></span><br><span class="line"><span class="comment"># to update the value in segment tree </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateValue</span>(<span class="params">arr, st, n, i, new_val</span>) :</span> </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Check for erroneous input index </span></span><br><span class="line">   <span class="keyword">if</span> (i &lt; <span class="number">0</span> <span class="keyword">or</span> i &gt; n - <span class="number">1</span>) : </span><br><span class="line">        </span><br><span class="line">      print(<span class="string">&quot;Invalid Input&quot;</span>, end = <span class="string">&quot;&quot;</span>); </span><br><span class="line">        <span class="keyword">return</span>; </span><br><span class="line"></span><br><span class="line">   <span class="comment"># Get the difference between </span></span><br><span class="line">    <span class="comment"># new value and old value </span></span><br><span class="line">   diff = new_val - arr[i]; </span><br><span class="line"></span><br><span class="line">   <span class="comment"># Update the value in array </span></span><br><span class="line"> arr[i] = new_val; </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Update the values of nodes in segment tree </span></span><br><span class="line">    updateValueUtil(st, <span class="number">0</span>, n - <span class="number">1</span>, i, diff, <span class="number">0</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment"># Return sum of elements in range from </span></span><br><span class="line"><span class="comment"># index qs (quey start) to qe (query end). </span></span><br><span class="line"><span class="comment"># It mainly uses getSumUtil() </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">st, n, qs, qe</span>) :</span> </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Check for erroneous input values </span></span><br><span class="line">  <span class="keyword">if</span> (qs &lt; <span class="number">0</span> <span class="keyword">or</span> qe &gt; n - <span class="number">1</span> <span class="keyword">or</span> qs &gt; qe) : </span><br><span class="line"></span><br><span class="line">     print(<span class="string">&quot;Invalid Input&quot;</span>, end = <span class="string">&quot;&quot;</span>); </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>; </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> getSumUtil(st, <span class="number">0</span>, n - <span class="number">1</span>, qs, qe, <span class="number">0</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment"># A recursive function that constructs </span></span><br><span class="line"><span class="comment"># Segment Tree for array[ss..se]. </span></span><br><span class="line"><span class="comment"># si is index of current node in segment tree st </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">constructSTUtil</span>(<span class="params">arr, ss, se, st, si</span>) :</span> </span><br><span class="line"></span><br><span class="line">   <span class="comment"># If there is one element in array, </span></span><br><span class="line"> <span class="comment"># store it in current node of </span></span><br><span class="line">   <span class="comment"># segment tree and return </span></span><br><span class="line">   <span class="keyword">if</span> (ss == se) : </span><br><span class="line"> </span><br><span class="line">      st[si] = arr[ss]; </span><br><span class="line">        <span class="keyword">return</span> arr[ss]; </span><br><span class="line"> </span><br><span class="line">  <span class="comment"># If there are more than one elements, </span></span><br><span class="line">  <span class="comment"># then recur for left and right subtrees </span></span><br><span class="line">    <span class="comment"># and store the sum of values in this node </span></span><br><span class="line">  mid = getMid(ss, se); </span><br><span class="line">    </span><br><span class="line">  st[si] = constructSTUtil(arr, ss, mid, st, si * <span class="number">2</span> + <span class="number">1</span>) +\ </span><br><span class="line">            constructSTUtil(arr, mid + <span class="number">1</span>, se, st, si * <span class="number">2</span> + <span class="number">2</span>); </span><br><span class="line">   </span><br><span class="line">  <span class="keyword">return</span> st[si]; </span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot; Function to construct segment tree </span></span><br><span class="line"><span class="string">from given array. This function allocates memory </span></span><br><span class="line"><span class="string">for segment tree and calls constructSTUtil() to </span></span><br><span class="line"><span class="string">fill the allocated memory &quot;&quot;&quot;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">constructST</span>(<span class="params">arr, n</span>) :</span> </span><br><span class="line"></span><br><span class="line"> <span class="comment"># Allocate memory for the segment tree </span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Height of segment tree </span></span><br><span class="line">    x = (int)(ceil(log2(n))); </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Maximum size of segment tree </span></span><br><span class="line">  max_size = <span class="number">2</span> * (int)(<span class="number">2</span>**x) - <span class="number">1</span>; </span><br><span class="line">  </span><br><span class="line">  <span class="comment"># Allocate memory </span></span><br><span class="line">   st = [<span class="number">0</span>] * max_size; </span><br><span class="line"></span><br><span class="line">   <span class="comment"># Fill the allocated memory st </span></span><br><span class="line">  constructSTUtil(arr, <span class="number">0</span>, n - <span class="number">1</span>, st, <span class="number">0</span>); </span><br><span class="line"></span><br><span class="line"> <span class="comment"># Return the constructed segment tree </span></span><br><span class="line">   <span class="keyword">return</span> st; </span><br><span class="line"></span><br><span class="line"><span class="comment"># Driver Code </span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span> : </span><br><span class="line"></span><br><span class="line">    arr = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">11</span>]; </span><br><span class="line">   n = len(arr); </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Build segment tree from given array </span></span><br><span class="line">   st = constructST(arr, n); </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Print sum of values in array from index 1 to 3 </span></span><br><span class="line">    print(<span class="string">&quot;Sum of values in given range = &quot;</span>, </span><br><span class="line">                   getSum(st, n, <span class="number">1</span>, <span class="number">3</span>)); </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Update: set arr[1] = 10 and update </span></span><br><span class="line">    <span class="comment"># corresponding segment tree nodes </span></span><br><span class="line">  updateValue(arr, st, n, <span class="number">1</span>, <span class="number">10</span>); </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Find sum after the value is updated </span></span><br><span class="line">   print(<span class="string">&quot;Updated sum of values in given range = &quot;</span>, </span><br><span class="line">                   getSum(st, n, <span class="number">1</span>, <span class="number">3</span>), end = <span class="string">&quot;&quot;</span>); </span><br><span class="line">    </span><br></pre></td></tr></table></figure>
-<p><strong>Output:</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Sum of values in given range &#x3D; 15</span><br><span class="line">Updated sum of values in given range &#x3D; 22</span><br></pre></td></tr></table></figure>
-<p><strong>Time Complexity:</strong> Time Complexity for tree construction is O(n). There are total 2n-1 nodes, and value of every node is calculated only once in tree construction.</p>
-<p>Time complexity to query is O(Logn). To query a sum, we process at most four nodes at every level and number of levels is O(Logn).</p>
-<p>The time complexity of update is also O(Logn). To update a leaf value, we process one node at every level and number of levels is O(Logn).</p>
-<h2 id="示例题目">示例题目</h2>
-<ol type="1">
-<li><h3 id="spoj-gss1">SPOJ-GSS1</h3>
-<p>You are given a sequence A[1], A[2], ..., A[N] . ( |A[i]| ≤ 15007 , 1 ≤ N ≤ 50000 ). A query is defined as follows: Query(x,y) = Max { a[i]+a[i+1]+...+a[j] ; x ≤ i ≤ j ≤ y }. Given M queries, your program must output the results of these queries.</p>
-<h3 id="input">Input</h3>
-<ul>
-<li>The first line of the input file contains the integer N.</li>
-<li>In the second line, N numbers follow.</li>
-<li>The third line contains the integer M.</li>
-<li>M lines follow, where line i contains 2 numbers xi and yi.</li>
-</ul>
-<h3 id="output">Output</h3>
-<p>Your program should output the results of the M queries, one query per line.</p>
-<h3 id="example">Example</h3>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Input:</span><br><span class="line">3 </span><br><span class="line">-1 2 3</span><br><span class="line">1</span><br><span class="line">1 2</span><br><span class="line"></span><br><span class="line">Output:</span><br><span class="line">2</span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>大致翻译：给定一段长度为n的序列a1, a2, ..., an （a有正有负），每次询问[L, R] (即aL ~ aR)范围内的最大子段和，并涉及单点修改操作。</p>
-<p>线段树：维护区间最大子段和。</p>
-<p>这里不能用传统的线段树了，我们维护的值要更多。</p>
-<ol type="1">
-<li><p>定义：</p>
-<p>线段树一共要维护4个值，如下：（每个值的含义都是相对于该结点对应区间[l, r]而言）</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> sum;       <span class="comment">//[l,r]区间之和</span></span><br><span class="line">    <span class="keyword">int</span> max_sum;   <span class="comment">//[l,r]内的最大子段和</span></span><br><span class="line">    <span class="keyword">int</span> max_pre;   <span class="comment">//[l,r]内的最大前缀和</span></span><br><span class="line">    <span class="keyword">int</span> max_post;  <span class="comment">//[l,r]内的最大后缀和</span></span><br><span class="line">&#125;t[maxn&lt;&lt;<span class="number">2</span>];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<ol type="1">
-<li>向上传递</li>
-</ol>
-<p>我们采用分治归并的思路，我们知道在l=r时这四个值都是确定的，都等于al。那么通过左右两边的四个值如何求出合并后的值呢。这里我觉得这段话讲的很清楚。</p>
-<p>我们定义一个操作get(a, l, r)表示查询a序列[l, r]区间内的最大子段和。如何分治实现这个操作呢？对于一个区间l, r，我们取m = (l + r)/2， 对区间[l,m] 和 [m+1, r]分治求解。当递归逐层深入直到区间长度缩小为1的时候，递归「开始回升」。这个时候我们考虑如何通过[l, m]区间的信息和[m+1, r]区间的信息合并成区间[l, r]的信息。最关键的两个问题是：</p>
-<ul>
-<li>我们要维护区间的哪些信息呢？</li>
-<li>我们如何合并这些信息？</li>
-</ul>
-<p>对于一个区间[l, r]，我们可以维护四个量：</p>
-<ul>
-<li>lSum表示[l, r]内以l为左端点的最大子段和</li>
-<li>rSum表示[l, r]内以r为右端点的最大字段和</li>
-<li>mSum表示[l, r]内的最大子段和</li>
-<li>iSum表示[l, r]的区间和</li>
-</ul>
-<p>以下简称[l, m]为[l, r]的「左子区间」，[m+1, r]为[l, r]的右子区间。我们考虑如何维护这些量呢（如何通过左右子区间的信息合并得到[l,r]的信息）？对于长度为1的区间[i,i]，四个量的值都和ai相等。对于长度大于1的区间：</p>
-<p>首先最好维护的是iSum，区间[l, r]的iSum就等于「左子区间」的iSum加上「右子区间」的iSum。</p>
-<p>对于[l, r]的lSum，存在两种可能，它要么等于「左子区间」的lSum，要么等于「左子区间」的iSum加上「右子区间」的lSum，两者取大。</p>
-<p>对于[l, r]的rSum，同理，它要么等于「右子区间」的rSum，要么等于「右子区间」的iSum加上「左子区间」的rSum，两者取大。</p>
-<p>当计算好上面的三个量之后，就很好计算[l, r]的mSum了。我们可以考虑[l, r]的mSum对应的区间是否跨越m--它可能不跨越m，也就是说[l, r]的mSum可能是「左子区间」的mSum和「右子区间」的mSum中的一个；它可能跨越m，可能是「左子区间」的rSum和「右子区间」的lSum求和。三者取大。</p>
-<p>我们把这个过程叫做向上传递，英文叫做pushup。</p>
-<p>如果我们把 [0,n−1] 分治下去出现的所有子区间的信息都用堆式存储的方式记忆化下来，即建成一颗真正的树之后，我们就可以在 O(logn) 的时间内求到任意区间内的答案，我们甚至可以修改序列中的值，做一些简单的维护，之后仍然可以在 O(logn) 的时间内求到任意区间内的答案，对于大规模查询的情况下，这种方法的优势便体现了出来。这棵树就是线段树。</p></li>
-<li><p>leetcode，<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbWF4aW11bS1zdWJhcnJheS8=">53. 最大子序和<i class="fa fa-external-link-alt"></i></span>，可用dp也可用线段树求解。与上一题一样，只不过上一题有多个query，适合把线段树存下来。</p></li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1227,7 +1145,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -185,6 +185,275 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/" class="post-title-link" itemprop="url">搞定计算机网络面试</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-23 23:06:09" itemprop="dateCreated datePublished" datetime="2020-07-23T23:06:09+08:00">2020-07-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-06 16:19:01" itemprop="dateModified" datetime="2020-08-06T16:19:01+08:00">2020-08-06</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="一-osi与tcpip各层的结构与功能都有哪些协议">一 OSI与TCP/IP各层的结构与功能，都有哪些协议</h2>
+<h3 id="五层协议的体系结构">五层协议的体系结构</h3>
+<p>学习计算机网络时我们一般采取折中的办法，也就是中和OSI和TCP/IP的优点，采用一种只有五层协议的体系结构，这样既简洁又能将概念阐述清楚。</p>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C1" class>
+<p>结合互联网的情况，自上而下的，非常简要的介绍一下各层的作用。</p>
+<h4 id="应用层">1 应用层</h4>
+<p><strong>应用层（application layer）的任务是通过应用进程间的交互来完成特定网络应用。应用层协议定义的是应用进程（进程：主机中正在运行的程序）间的通信和交互的规则。对于不同的网络应用需要不同的应用层协议。在互联网中应用层协议很多，如域名系统DNS</strong>，支持万维网应用的<strong>HTTP协议</strong>，支持电子邮件的<strong>SMTP协议</strong>等等。我们把应用层交互的数据单元称为报文。</p>
+<h5 id="域名系统">域名系统</h5>
+<p>域名系统（Domain name System缩写DNS，Domain Name被译为域名）是因特网的一项核心服务，它作为可以将域名和IP地址相互映射的一个分布式数据库，能够使人更方便的访问互联网，而不用去记住能够被机器直接读取的IP数串。例如：一个公司的web网站可看做是它在网上的门户，而域名就相当于其门牌地址，通常域名都使用该公司的名称或简称。例如上面提到的微软公司的域名，类似的还有：IBM 公司的域名是 <span class="exturl" data-url="aHR0cDovL3d3dy5pYm0uY29tLw==">www.ibm.com<i class="fa fa-external-link-alt"></i></span>、Oracle 公司的域名是 <span class="exturl" data-url="aHR0cDovL3d3dy5vcmFjbGUuY29tLw==">www.oracle.com<i class="fa fa-external-link-alt"></i></span>、Cisco公司的域名是 <span class="exturl" data-url="aHR0cDovL3d3dy5jaXNjby5jb20v">www.cisco.com<i class="fa fa-external-link-alt"></i></span> 等。</p>
+<h5 id="http协议">HTTP协议</h5>
+<p>超文本传输协议（HTTP，Hypertext Transfer Protocol）是互联网上应用最广泛的一种网络协议。所有的WWW（万维网）文件都必须遵守这个标准。设计HTTP最初的目的是为了提供一种发布和接收HTML页面的方法。</p>
+<h4 id="运输层">2 运输层</h4>
+<p><strong>运输层（transport layer）的主要任务就是负责向两台主机进程之间的通信提供通用的数据传输服务。</strong>应用进程利用该服务传送应用层报文。“通用的”是指并不针对某一个特定的网络应用，而是多种应用可以使用同一个运输层服务。由于一台主机可同时运行多个线程，因此运输层有复用和分用的功能。所谓复用就是指多个应用层进程可同时使用下面运输层的服务，分用和复用相反，是运输层把收到的信息分别交付上面应用层中的相应进程。</p>
+<p><strong>运输层主要使用一下两种协议</strong></p>
+<ol type="1">
+<li><strong>传输控制协议TCP</strong>（Transmisson Control Protocol）--提供<strong>面向连接的，可靠的</strong>数据传输服务。</li>
+<li>用户数据报协议UDP（User Datagram Protocol）--提供<strong>无连接的</strong>，尽最大努力的数据传输服务（<strong>不保证数据传输的可靠性</strong>）</li>
+</ol>
+<p>UDP的主要特点</p>
+<ol type="1">
+<li>UDP是无连接的。</li>
+<li>UDP使用尽最大努力交付，即不保证可靠交付，因此主机不需要维持复杂的连接状态（这里面有许多参数）；</li>
+<li>UDP是面向报文的；</li>
+<li>UDP没有拥塞控制，因此网络出现拥塞不会使源主机的发送速率降低（对实时应用很有用，如直播，实时视频会议等）；</li>
+<li>UDP支持一对一、一对多、多对一和多对多的交互通信；</li>
+<li>UDP的首部开销小，只有8个字节，比TCP的20个字节的首部要短。</li>
+</ol>
+<p>TCP的主要特点</p>
+<ol type="1">
+<li>TCP是面向连接的。（就好像打电话一样，通话前需要先拨号建立连接，通话结束后要挂机释放连接）；</li>
+<li>每一条TCP连接只能有两个端点，每一条TCP连接只能是点对点的（一对一）；</li>
+<li>TCP提供可靠交付的服务。通过TCP连接传送的数据，无差错、不丢失、不重复、并且按序到达；</li>
+<li>TCP提供全双工通信。TCP允许通信双方的应用进程在任何时候都能发送数据。TCP连接的两端都设有发送缓存和接收缓存，用来临时存放双方通信的数据；</li>
+<li>面向字节流。TCP中的“流”（Stream）指的是流入进程或从进程流出的字节序列。“面向字节流”的含义是：虽然应用程序和TCP的交互是一次一个数据块（大小不等），但TCP把应用程序交下来的数据仅仅看成是一连串的无结构的字节流。</li>
+</ol>
+<h4 id="网络层">3 网络层</h4>
+<p><strong>网络层（network layer）负责为分组交换网上的不同主机提供服务</strong>。在发送数据时，网络层把运输层产生的报文段或用户数据封装成分组和包进行传送。在TCP/IP体系结构中，由于网络层使用<strong>IP协议</strong>，因此分组也叫<strong>IP数据报</strong>，简称<strong>数据报</strong>。</p>
+<p>这里要注意：<strong>不要把运输层的“用户数据报UDP”和网络层的“IP数据报”弄混</strong>。另外，无论是哪一层的数据单元，都可笼统地用“分组”来表示。</p>
+<p>网络层的另一个任务就是选择合适的路由，使源主机运输层所传下来的分组，能通过网络层中的路由器找到目的主机。</p>
+<p>这里强调指出，网络层中的“网络”二字已经不是我们通常谈到的具体网络，而是指计算机网络体系结构模型中第三层的名称。</p>
+<p>互联网是由大量的异构（heterogeneous）网络通过路由器（router）相互连接起来的。互联网使用的网络层协议是无连接的网际协议（Internet Protocol）和许多路由选择协议，因此互联网的网络层也叫做<strong>网际层</strong>或<strong>IP层</strong>。</p>
+<h4 id="数据链路层">4 数据链路层</h4>
+<p><strong>数据链路层（data link layer）通常简称为链路层。两台主机之间的数据传输，总是在一段一段的链路上传送的，这就需要使用专门的链路层的协议。</strong>在两个相邻节点之间传送数据时，<strong>数据链路层将网络层交下来的IP数据报组装成帧，</strong>在两个相邻节点间的链路上传送帧。每一帧包括数据和必要的控制信息（如同步信息，地址信息，差错控制等）。</p>
+<p>在接收数据时，控制信息使接收端能够知道一个帧从哪个比特开始和到哪个比特结束。这样，数据链路层在收到一个帧后，就可从中提取数据部分，上交给网络层。控制信息还使接收端能够检测到所收到的帧中有无差错。如果发现差错，数据链路层就简单的丢弃这个出了差错的帧，以避免继续在网络中传送下去白白浪费网络资源。如果需要改正数据在链路层传输时出现的差错（这就是说，数据链路层不仅要检错，而且还要纠错），那么就要采用可靠性传输协议来纠正出现的差错。这种方法会使链路层的协议复杂些。</p>
+<h4 id="物理层">5 物理层</h4>
+<p>在物理层所传送的数据单位是比特。<strong>物理层（physical layer）的作用是实现相邻计算机节点之间比特流的透明传送，尽可能屏蔽掉具体传输介质和物理设备的差异。</strong>使其上面的数据链路层不必考虑网络的具体传输介质是什么。“透明传送比特流”表示经实际电路传送后的比特流没有发生变化，对传送的比特流来说，这个电路好像是看不见的。</p>
+<p>在互联网使用的各种协议中最重要和最著名的就是TCP/IP两个协议。现在人们经常提到的TCP/IP并不一定单指TCP和IP这两个具体的协议，而往往表示互联网所使用的的整个TCP/IP协议簇。</p>
+<h4 id="总结一下">总结一下</h4>
+<p>上面我们对计算机网络的五层体系结构有了初步的了解，下面附送一张七层体系结构图总结一下。</p>
+<p>图片来源：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lhb3BlbmdfMjAwNS9hcnRpY2xlL2RldGFpbHMvNzA2NDg2OQ==">blog.csdn.net/yaopeng_200…<i class="fa fa-external-link-alt"></i></span></p>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C2.gif" class>
+<h2 id="二-tcp三次握手和四次挥手面试常客">二 TCP三次握手和四次挥手（面试常客）</h2>
+<p>为了准确无误地把数据送达目标处，TCP协议采用了三次握手策略。</p>
+<h3 id="漫画图解">漫画图解：</h3>
+<p>图片来源：《图解HTTP》</p>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C3" class>
+<h3 id="简单示意图">简单示意图：</h3>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C4" class>
+<ul>
+<li>客户端-发送带有SYN标志的数据-一次握手-服务端</li>
+<li>服务端-发送带有SYN/ACK标志的数据包-二次握手-客户端</li>
+<li>客户端-发送带有ACK标志的数据包-三次握手-服务端</li>
+</ul>
+<h3 id="为什么要三次握手">为什么要三次握手</h3>
+<p><strong>三次握手的目的是建立可靠的通信通道，说道通讯，简单来说就是数据的发送与接收，而三次握手最主要的目的就是双方确认自己与对方的发送与接收是正常的。</strong></p>
+<p>第一次握手：Client什么都不能确认；Server确认了对方发送正常</p>
+<p>第二次握手：Client确认了：自己发送、接收正常，对方发送、接收正常；Server确认了：自己接收正常，对方发送正常</p>
+<p>第三次握手：Client确认了：自己发送、接收正常，对方发送、接收正常；Server确认了：自己发送、接收正常，对方发送、接收正常</p>
+<p>所以三次握手就能确认双方收发功能都正常，缺一不可。</p>
+<h3 id="为什么要传回syn">为什么要传回SYN</h3>
+<p>接收端传回发送端所发送的SYN是为了告诉发送端，我接收到的信息确实就是你发送的信号。</p>
+<h3 id="传了syn为啥还要传ack">传了SYN，为啥还要传ACK</h3>
+<p>双方通信无误必须是两者互相发送信息都无误。传了SYN，证明发送方到接收方的通道没有问题，但是接收方到发送方的通道（即Server发送正常，Client接收正常）还需要ACK信号来进行验证。</p>
+<blockquote>
+<p>SYN是TCP/IP建立连接时使用的握手信号。在客户机和服务器之间建立正常的TCP网络连接时，客户机首先发出一个SYN消息，服务器使用SYN-ACK应答表示接收到了这个消息，最后客户机再以ACK（Acknowledge，确认字符，在数据通信传输中，接收站发送给发送站的一种传输控制字符。它表示确认发来的数据已经接收无误。）消息响应。这样在客户机和服务器之间才能建立起可靠的TCP连接，数据才可以在客户机和服务器之间传递。</p>
+</blockquote>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C5" class>
+<p>断开一个TCP连接则需要“四次挥手”：</p>
+<ul>
+<li>客户端-发送一个FIN，用来关闭客户端到服务器的数据传送</li>
+<li>服务器-收到这个FIN，它返回一个ACK，确认序号为收到的序号加1。和SYN一样，一个FIN将占用一个序号</li>
+<li>服务器-关闭与客户端的连接，发送一个FIN给客户端</li>
+<li>客户端-发回ACK报文确认，并将确认序号设置为收到序号加1</li>
+</ul>
+<h3 id="为什么要四次挥手">为什么要四次挥手</h3>
+<p>任何一方都可以在数据传送结束后发出连接释放的通知，待对方确认后进入半关闭状态。当另一方也没有数据再发送的时候，则发出连接释放通知，对方确认后就完全关闭了TCP连接。</p>
+<p>举个例子：A和B打电话，通话即将结束后，A说“我没啥要说的了”，B回答说“我知道了”，但是B可能还有要说的话，A不能要求B跟着自己的节奏结束通话，于是B可能又巴拉巴拉说了一通，最后B说”我说完了“，A回答”知道了“，这样通话才算结束。</p>
+<p>上面讲的比较概括，推荐一篇讲得比较细致的文章：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3F6Y3N1L2FydGljbGUvZGV0YWlscy83Mjg2MTg5MQ==">blog.csdn.net/qzcsu/artic…<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="三-tcpudp协议的区别">三 TCP、UDP协议的区别</h2>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C6" class>
+<p>UDP在传送数据之前不需要先建立连接，远地主机在收到UDP报文之后，不需要给出任何确认。虽然UDP不提供可靠交付，但在某些情况下UDP确是一种最有效的工作方式（一般用于即时通讯），比如：QQ语音、QQ视频、直播等等。</p>
+<p>TCP提供面向连接的服务。在传送数据之前必须先建立连接，数据传送结束后要释放连接。TCP不提供广播或多播服务。由于TCP要提供可靠的，面向连接的服务（TCP的可靠体现在TCP在传递数据之前，会有三次握手来建立连接，而且在数据传递时，有确认、窗口、重传、拥塞控制机制，在数据传完后，还会断开连接用来节约系统资源），这些难以避免增加了许多开销，如确认，流量控制，计时器以及连接管理等。这不仅使协议数据单元的首部增大很多，还要占用许多处理机资源。TCP一般用于文件传输、发送和接收邮件、远程登录等场景。</p>
+<h2 id="四-tcp协议如何保证可靠运输">四 TCP协议如何保证可靠运输</h2>
+<ol type="1">
+<li>应用数据被分割成TCP认为最合适发送的数据块。</li>
+<li>TCP给发送的每一个包进行编号，接收方对数据包进行排序，把有序数据传送给应用层。</li>
+<li><strong>校验和</strong>：TCP将保持它首部和数据的校验和。这是一个端到端的校验和，目的是检测数据在传输过程中的任何变化，如果收到段的检验和有差错，TCP将丢弃这个报文段和不确认收到此报文段。</li>
+<li>TCP的接收端会丢弃重复的数据。</li>
+<li><strong>流量控制</strong>：TCP连接的每一方都有固定大小的缓冲空间，TCP的接收端只允许发送端发送接收端缓冲区能接纳的数据。当接收方来不及处理发送方的数据，能提示发送方降低发送的速率，防止包丢失。TCP使用的流量控制协议是一个可变大小的滑动窗口协议。（TCP利用滑动窗口实现流量控制）</li>
+<li><strong>拥塞控制</strong>：当网络拥塞时，减少数据的发送。</li>
+<li><strong>停止等待协议</strong>：也是为了实现可靠传输的，它的基本原理就是每发完一个分组就停止发送，等待对方确认。在收到确认后再发下一个分组。<strong>超时重传</strong>：当TCP发出一个段后，它启动一个定时器，等待目的端确认收到这个报文段。如果不能及时收到一个确认，将重发这个报文段。</li>
+</ol>
+<h3 id="停止等待协议">停止等待协议</h3>
+<ul>
+<li>停止等待协议是为了实现可靠传输的，它的基本原理就是每发完一个分组就停止发送，等待对方确认。在收到确认后再发下一个分组；</li>
+<li>在停止等待协议中，若接收方收到重复分组，就丢弃该分组，但同时还要发送确认；</li>
+</ul>
+<ol type="1">
+<li><strong>无差错情况：</strong></li>
+</ol>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C7" class>
+<p>发送方发送分组，接收方在规定时间内收到，并且回复确认，发送方再次发送。</p>
+<ol start="2" type="1">
+<li><strong>出现差错情况（超时重传）</strong>：</li>
+</ol>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C8" class>
+<p>停止等待协议中超时重传是指只要超过一段时间仍然没有收到确认，就重传前面发送过的分组（认为刚才发送过的分组丢失了）。因此每发送完一个分组需要设置一个超时计时器，其重传时间应比数据在分组传输的平均往返时间更长一些。这种自动重传方式常称为<strong>自动重传请求 ARQ</strong>。另外在停止等待协议中若收到重复分组，就丢弃该分组，但同时还要发送确认。<strong>连续ARQ协议</strong>可提高信道利用率。发送维持一个发送窗口，凡位于发送窗口内的分组可连续发送出去，而不需要等待对方确认。接收方一般采用累积确认，对按序到达的最后一个分组发送确认，表明这个分组位置的所有分组都已经正确收到了。</p>
+<ol start="3" type="1">
+<li><p><strong>确认丢失和确认迟到</strong></p>
+<ul>
+<li><p><strong>确认丢失</strong>：确认消息在传输过程丢失</p>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C9" class>
+<p>当A发送M1消息时，B收到后，B向A发送了一个M1确认消息，但却在传输过程中丢失。而A并不知道，在超时计时过后，A重传M1消息，B再次收到该消息后采取以下两点措施：</p>
+<ol type="1">
+<li>丢弃这个重复的M1消息，不向上层交付。</li>
+<li>向A发送确认消息。（不会认为已经发送过了，就不再发送。A能重传，就证明B的确认消息丢失）。</li>
+</ol></li>
+<li><p><strong>确认迟到</strong>：确认消息在传输过程中迟到</p>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C10" class>
+<p>A发送M1消息，B收到并发送确认。在超时时间内没有收到确认消息，A重传M1消息，B仍然收到并继续发送确认消息（B收到了2份M1）。此时A收到了B第二次发送的确认消息。接着发送其他数据。过了一会，A收到了B第一次发送的对M1的确认消息（A也收到额2份确认消息）。处理如下：</p>
+<ol type="1">
+<li>A收到重复的确认后，直接丢弃。</li>
+<li>B收到重复的M1后，也直接丢弃重复的M1。</li>
+</ol></li>
+</ul></li>
+</ol>
+<h3 id="自动重传请求arq协议">自动重传请求ARQ协议</h3>
+<p>停止等待协议中超时重传是指只要过一段时间仍然没有收到确认，就重传前面发送过的分组（认为刚才发送过的分组丢失了）。因此没发送完一个分组需要设置一个超时计时器，其重传时间应比数据在分组传输的平均往返时间更长一些。这种自动重传方式常称为自动重传请求ARQ。</p>
+<p><strong>优点</strong>：简单</p>
+<p><strong>缺点</strong>：信道利用率低</p>
+<h3 id="连续arq协议">连续ARQ协议</h3>
+<p>连续ARQ协议可提高信道利用率。发送方维持一个发送窗口，凡位于发送窗口内的分组可以连续发送出去，而不需要等待对方确认，接收方一般采用累积确认，对按序到达的最后一个分组发送确认，表明这个分组为止的所有分组都已经正确收到了。</p>
+<p><strong>优点</strong>：信道利用率高，容易实现，即使确认丢失，也不必重传。</p>
+<p><strong>缺点</strong>：不能向发送方反映出接收方已经正确收到的所有分组的信息。比如：发送方发送了5条消息，中间第三条丢失（3号），这是接收方只能对前两个发送确认。发送方无法知道后三个分组的下落，而只好把后三个全部重传一次。这也叫Go-Back-N（回退N），表示需要退回来重传已经发送过的N个消息。</p>
+<h3 id="滑动窗口">滑动窗口</h3>
+<ul>
+<li>TCP利用滑动窗口实现流控的机制。</li>
+<li>滑动窗口（Sliding window）是一种流量控制技术。早期的网络通信中，通信双方不会考虑网络的拥挤情况直接发送数据。由于大家不知道网络拥塞情况，同时发送数据，导致中间节点阻塞掉包，谁也发不了数据，所以就有了滑动窗口机制来解决此问题。</li>
+<li>TCP 中采用滑动窗口来进行传输控制，滑动窗口的大小意味着接收方还有多大的缓冲区可以用于接收数据。发送方可以通过滑动窗口的大小来确定应该发送多少字节的数据。当滑动窗口为 0 时，发送方一般不能再发送数据报，但有两种情况除外，一种情况是可以发送紧急数据，例如，允许用户终止在远端机上的运行进程。另一种情况是发送方可以发送一个 1 字节的数据报来通知接收方重新声明它希望接收的下一字节及发送方的滑动窗口大小。</li>
+</ul>
+<h3 id="流量控制">流量控制</h3>
+<ul>
+<li>TCP 利用滑动窗口实现流量控制。</li>
+<li>流量控制是为了控制发送方发送速率，保证接收方来得及接收。</li>
+<li>接收方发送的确认报文中的窗口字段可以用来控制发送方窗口大小，从而影响发送方的发送速率。将窗口字段设置为 0，则发送方不能发送数据。</li>
+</ul>
+<h3 id="拥塞控制">拥塞控制</h3>
+<p>在某段时间，若对网络中某一资源的需求超过了该资源所能提供的可用部分，网络的性能就要变坏。这种情况就叫拥塞。拥塞控制就是为了防止过多的数据注入到网络中，这样就可以使网络中的路由器或链路不致过载。拥塞控制所要做的都有一个前提，就是网络能够承受现有的网络负荷。拥塞控制是一个全局性的过程，涉及到所有的主机，所有的路由器，以及与降低网络传输性能有关的所有因素。相反，流量控制往往是点对点通信量的控制，是个端到端的问题。流量控制所要做到的就是抑制发送端发送数据的速率，以便使接收端来得及接收。</p>
+<p>为了进行拥塞控制，TCP 发送方要维持一个 <strong>拥塞窗口(cwnd)</strong> 的状态变量。拥塞控制窗口的大小取决于网络的拥塞程度，并且动态变化。发送方让自己的发送窗口取为拥塞窗口和接收方的接受窗口中较小的一个。</p>
+<p>TCP的拥塞控制采用了四种算法，即 <strong>慢开始</strong> 、 <strong>拥塞避免</strong> 、<strong>快重传</strong> 和 <strong>快恢复</strong>。在网络层也可以使路由器采用适当的分组丢弃策略（如主动队列管理 AQM），以减少网络拥塞的发生。</p>
+<ul>
+<li><strong>慢开始：</strong> 慢开始算法的思路是当主机开始发送数据时，如果立即把大量数据字节注入到网络，那么可能会引起网络阻塞，因为现在还不知道网络的负荷情况。经验表明，较好的方法是先探测一下，即由小到大逐渐增大发送窗口，也就是由小到大逐渐增大拥塞窗口数值。cwnd初始值为1，每经过一个传播轮次，cwnd加倍。</li>
+</ul>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C11" class>
+<ul>
+<li><p><strong>拥塞避免：</strong> 拥塞避免算法的思路是让拥塞窗口cwnd缓慢增大，即每经过一个往返时间RTT就把发送方的cwnd加1.</p></li>
+<li><p><strong>快重传与快恢复：</strong> 在 TCP/IP 中，快速重传和恢复（fast retransmit and recovery，FRR）是一种拥塞控制算法，它能快速恢复丢失的数据包。没有 FRR，如果数据包丢失了，TCP 将会使用定时器来要求传输暂停。在暂停的这段时间内，没有新的或复制的数据包被发送。有了 FRR，如果接收机接收到一个不按顺序的数据段，它会立即给发送机发送一个重复确认。如果发送机接收到三个重复确认，它会假定确认件指出的数据段丢失了，并立即重传这些丢失的数据段。有了 FRR，就不会因为重传时要求的暂停被耽误。  当有单独的数据包丢失时，快速重传和恢复（FRR）能最有效地工作。当有多个数据信息包在某一段很短的时间内丢失时，它则不能很有效地工作。</p></li>
+</ul>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C12" class>
+<h2 id="五-在浏览器中输入url地址---显示主页的过程面试常客">五 在浏览器中输入url地址 -&gt;&gt; 显示主页的过程（面试常客）</h2>
+<p>百度好像最喜欢问这个问题。</p>
+<blockquote>
+<p>打开一个网页，整个过程会使用哪些协议</p>
+</blockquote>
+<p>图片来源：《图解HTTP》</p>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C13" class>
+<h2 id="六-状态码">六 状态码</h2>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C14" class>
+<h2 id="七-各种协议与http协议之间的关系">七 各种协议与HTTP协议之间的关系</h2>
+<p>一般面试官会通过这样的问题来考察你对计算机网络知识体系的理解。</p>
+<p>图片来源：《图解HTTP》</p>
+<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C15" class>
+<h2 id="八-http长连接短连接">八 HTTP长连接、短连接</h2>
+<p>在HTTP/1.0中默认使用短连接。也就是说，客户端和服务器每进行一次HTTP操作，就建立一次连接，任务结束就中断连接。当客户端浏览器访问的某个HTML或其他类型的Web页中包含有其他的Web资源时（如JavaScript文件、图像文件、CSS文件等），每遇到这样一个Web资源，浏览器就会重新建立一个HTTP会话。</p>
+<p>而从HTTP/1.1起，默认使用长连接，用以保持连接特性。使用长连接的HTTP协议，会在响应头加入这行代码：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Connection:keep-alive</span></span><br></pre></td></tr></table></figure>
+<p>在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，客户端再次访问这个服务器时，会继续使用这一条已经建立的连接。Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接需要客户端和服务端都支持长连接。</p>
+<p><strong>HTTP协议的长连接和短连接，实质上是TCP协议的长连接和短连接。</strong></p>
+<p>—— <span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vZ290b2RzcC9wLzYzNjYxNjMuaHRtbA==">《HTTP长连接、短连接究竟是什么？》<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="转载感谢原作者">转载（感谢原作者）：</h2>
+<p>https://juejin.im/post/5b7be0b2e51d4538db34a51e#heading-17</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/23/%E9%83%AD%E5%BE%B7%E7%BA%B2%E5%86%99%E7%BB%99%E5%84%BF%E5%AD%90%E9%83%AD%E9%BA%92%E9%BA%9F%E7%9A%84%E5%AE%B6%E4%B9%A6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1150,137 +1419,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/" class="post-title-link" itemprop="url">python实现并查集</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-07-15 22:18:28" itemprop="dateCreated datePublished" datetime="2020-07-15T22:18:28+08:00">2020-07-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-07-16 09:50:36" itemprop="dateModified" datetime="2020-07-16T09:50:36+08:00">2020-07-16</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="python实现并查集">python实现并查集</h1>
-<h2 id="并查集概念">并查集概念</h2>
-<p>并查集（UnionFind）也被称为不相交集数据结构。顾名思义，并查集主要操作是合并与查询，它是把初始不相交的集合经过多次合并操作后合并为一个大集合，然后可以通过查询判断两个元素是否已经在同一个集合中了。</p>
-<p>并查集的应用场景一般就是动态连通性的判断，例如判断网络中的两台电脑是否连通，在程序中判断两个变量名是否指向同一内存地址等。</p>
-<h2 id="并查集的实现">并查集的实现</h2>
-<h3 id="并查集的存储结构">并查集的存储结构</h3>
-<p>并查集逻辑上是森林，我们可以选出一个根结点作为代表，其他子结点指向根结点表示都在同一片森林中。在这里，并不关心结点的子结点是谁，只关心父结点是谁，所以物理上可以简单用python的列表来表示并查集，列表的下标表示结点，列表元素的值表示父结点。</p>
-<h3 id="并查集的api">并查集的API</h3>
-<p>根据并查集的特性，可以设计以下api</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>(<span class="params">object</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;并查集&quot;&quot;&quot;</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;查找p的根结点（祖先）&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;连通p,q 让q指向p&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;判断pq是否已经连通&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
-<h3 id="并查集的初始化">并查集的初始化</h3>
-<p>并查集的初始化有几种，无非就是用一种特殊的方式来表示初始的每一个元素都不相交，等待后续的合并操作。</p>
-<p>第一种初始化的方式是用列表的下标初始化对应位置的值，当一个并查集S[i] == i时则判断它自己就是根结点。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">  self.uf = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]      <span class="comment"># 列表为0位置空出</span></span><br><span class="line">  self.sets_count = n                                      <span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
-<p>第二种初始化方式将列表每一个结点初始化为-1，列表的节点值为负数表示它自己就是根结点，这样做还有一个好处可以用-n表示自己的子结点数量，下面的按规模优化中可以让结点数量小的树并到结点多的树上，提高find操作的效率。我们就选用这种方式来初始化。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">  self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)] <span class="comment"># 列表0位置空出</span></span><br><span class="line">  self.sets_count = n                                       <span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
-<h3 id="并查集的查询">并查集的查询</h3>
-<p>查询操作是查找某个结点所在的集合，返回该集合的根结点，即返回列表的下标。下面是一种简单的查询，代码如下。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt;= <span class="number">0</span>:</span><br><span class="line">    p = self.yf[p]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
-<p>可以很清楚的看出上面的方法很简单，找到结点元素值为负的表示找到了根结点并返回，但是该种方法在极端情况下（由树退化为链表）效率不高，查找的效率为O(n)，如左下图所示</p>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%861.png" class>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%862.png" class>
-<p>查询是并查集的核心操作之一，它的效率也决定了整个算法的效率，所以在规模很大的情况下，O(n)的时间的复杂度是不被接受的，那就需要改进，改进的方法就是路径压缩。路径压缩的思想也很简单，就是在查找根结点的过程中，顺便把子结点的父结点改成根结点，这样下次查询的效率只需要O(1)的时间复杂度就可以完成，大大提高了效率。改进后效果图如右上图所示。</p>
-<p>路径压缩的find操作可以通过递归来实现</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;尾递归&quot;&quot;&quot;</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">  self.uf[p] = self.find(self.uf[p])</span><br><span class="line">  <span class="keyword">return</span> self.uf[p]</span><br></pre></td></tr></table></figure>
-<p>可以发现这个递归是尾递归，可以改进成循环的方式</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;查找p的根节点（祖先）&quot;&quot;&quot;</span></span><br><span class="line">  r = p                                                           <span class="comment"># 初始p</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt; <span class="number">0</span>:</span><br><span class="line">    p = self.uf[p]</span><br><span class="line">  <span class="keyword">while</span> r != p:                                           <span class="comment"># 路径压缩，把压缩下来的结点祖先全指向根结点</span></span><br><span class="line">    self.uf[r], r = p, self.uf[r]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
-<h3 id="并查集的合并">并查集的合并</h3>
-<p>合并两棵树的操作可以简单的规定让右边的树的根结点指向左边树的根结点，示意图如左下图所示。</p>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%863.png" class>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%864.png" class>
-<p>直接右往左合并的缺点就是当右边的规模大于左边的规模时，在查找时，做路径压缩需要把右边所有的根结点更改为左边的根结点，如右上图所示，这明显有些划不来，所以合并的一种优化方式就是按规模合并，即吧规模小的树往规模大的树上合并。其实还有一种按秩合并（树高度小的往高度大的合并而不改变树的整体高度）。但是这种方法不与路径压缩兼容，因为路径压缩直接改变了数的高度，所以本人选择按规模合并和路径压缩结合的方式优化并查集。代码如下</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;连通p, q 让q指向p&quot;&quot;&quot;</span></span><br><span class="line">  proot = self.find(p)</span><br><span class="line">  qroot = self.find(q)</span><br><span class="line">  <span class="keyword">if</span> proot == qroot:</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[proot] &gt; self.uf[qroot]:     <span class="comment"># 负数比较，左边的规模更小</span></span><br><span class="line">    self.uf[qroot] += self.uf[proot]</span><br><span class="line">    self.uf[proot] = qroot</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    self.uf[proot] += self.uf[qroot]       <span class="comment"># 规模相加</span></span><br><span class="line">    self.uf[qroot] = proot</span><br><span class="line">  self.sets_count -= <span class="number">1</span>                  <span class="comment"># 连通后集合总数减一</span></span><br></pre></td></tr></table></figure>
-<h3 id="连通性的判断">连通性的判断</h3>
-<p>有了查找操作，判断两个结点是否连通就显得容易多了，一行代码就可以搞定，就是判断他们的根结点是否相同。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;判断pq是否已经连通&quot;&quot;&quot;</span></span><br><span class="line">  <span class="keyword">return</span> self.find(p) == self.find(q)   <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
-<h3 id="完整代码附录">完整代码附录</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;并查集类&quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">        self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]    <span class="comment"># 列表0位置空出</span></span><br><span class="line">        self.sets_count = n                     <span class="comment"># 判断并查集里共有几个集合, 初始化默认互相独立</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     &quot;&quot;&quot;查找p的根结点(祖先)&quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment">#     r = p                                   # 初始p</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt; 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     while r != p:                           # 路径压缩, 把搜索下来的结点祖先全指向根结点</span></span><br><span class="line">    <span class="comment">#         self.uf[r], r = p, self.uf[r]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt;= 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;尾递归&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;连通p,q 让q指向p&quot;&quot;&quot;</span></span><br><span class="line">        proot = self.find(p)</span><br><span class="line">        qroot = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> proot == qroot:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">elif</span> self.uf[proot] &gt; self.uf[qroot]:   <span class="comment"># 负数比较, 左边规模更小</span></span><br><span class="line">            self.uf[qroot] += self.uf[proot]</span><br><span class="line">            self.uf[proot] = qroot</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[proot] += self.uf[qroot]  <span class="comment"># 规模相加</span></span><br><span class="line">            self.uf[qroot] = proot</span><br><span class="line">        self.sets_count -= <span class="number">1</span>                    <span class="comment"># 连通后集合总数减一</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;判断pq是否已经连通&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)     <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
-<h2 id="转载">转载</h2>
-<p>出处：https://www.cnblogs.com/yscl/p/10185293.html</p>
-<p>作者：yscl</p>
-<h4 id="参考">参考</h4>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vaGFwamluL3AvNTQ3ODM1Mi5odG1s">数据结构--并查集的原理及实现<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2RtX3ZpbmNlbnQvYXJ0aWNsZS9kZXRhaWxzLzc2NTU3NjQ=">并查集(Union-Find)算法介绍<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-<h4 id="其他并查集">其他并查集</h4>
-<p>普通的并查集只是简单的记录了和集合的关系，即判断是否属于该集合，而带权并查集则是不仅记录了和集合的关系，还记录了集合内元素的关系，一般就是指代集合内元素和根结点的关系，实现起来也很简单，就是额外利用一个列表value[]，来记录每个节点与根结点的关系。然后在每次合并和路径压缩中更新权值。更新的规则遵循向量法则，处理环类关系的问题中，还可以取模更新。具体可以参考一下文章。</p>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lqcjM0MjY2MTkvYXJ0aWNsZS9kZXRhaWxzLzgyMzE1MTMz">https://blog.csdn.net/yjr3426619/article/details/82315133<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1352,7 +1490,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
