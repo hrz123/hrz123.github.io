@@ -550,6 +550,28 @@
       </tags>
   </entry>
   <entry>
+    <title>python实现Trie(字典树、前缀树)</title>
+    <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
+<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
+<h2 id="应用">应用：</h2>
+<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
+<h2 id="要实现的方法">要实现的方法</h2>
+<p>一般来讲trie要实现这么几个方法</p>
+<ul>
+<li>插入一个单词insert(word: str) -&gt; None</li>
+<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
+<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
+</ul>
+<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python实现并查集</title>
     <url>/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
     <content><![CDATA[<h1 id="python实现并查集">python实现并查集</h1>
@@ -605,28 +627,6 @@
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现Trie(字典树、前缀树)</title>
-    <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
-    <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
-<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
-<h2 id="应用">应用：</h2>
-<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
-<h2 id="要实现的方法">要实现的方法</h2>
-<p>一般来讲trie要实现这么几个方法</p>
-<ul>
-<li>插入一个单词insert(word: str) -&gt; None</li>
-<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
-<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
-</ul>
-<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1154,20 +1154,20 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>拔智齿后记</title>
-    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
-    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
       </tags>
   </entry>
   <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
+    <title>拔智齿后记</title>
+    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
+    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1280,35 +1280,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>猫抓老鼠的简单讨论</title>
-    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
-    <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
-<ol type="1">
-<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
-<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
-<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
-<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
-<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
-<p>答案是不能。</p>
-<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
-<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
-<p><span class="math display">\[
-\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
-\]</span></p>
-<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
-<p>根据猫的速度是老鼠的4倍，</p>
-<p><span class="math display">\[
-x = \frac{4-\pi}{4}r \approx0.2146r
-\]</span></p>
-<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
-<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>深入理解MySQL索引底层实现原理丨技术干货</title>
     <url>/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/</url>
     <content><![CDATA[<h3 id="转载">转载：</h3>
@@ -1390,6 +1361,35 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>猫抓老鼠的简单讨论</title>
+    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
+    <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
+<ol type="1">
+<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
+<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
+<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
+<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
+<p>答案是不能。</p>
+<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
+<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
+<p><span class="math display">\[
+\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
+\]</span></p>
+<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
+<p>根据猫的速度是老鼠的4倍，</p>
+<p><span class="math display">\[
+x = \frac{4-\pi}{4}r \approx0.2146r
+\]</span></p>
+<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
+<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>科比--曼巴精神永不逝去</title>
     <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
     <content><![CDATA[纪念老科 Tomorrow is not grante. Inspire yourself.
@@ -1407,20 +1407,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
     <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
     <content><![CDATA[
 ]]></content>
-  </entry>
-  <entry>
-    <title>解决博弈问题的动态规划通用思路</title>
-    <url>/2020/07/24/%E8%A7%A3%E5%86%B3%E5%8D%9A%E5%BC%88%E9%97%AE%E9%A2%98%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E9%80%9A%E7%94%A8%E6%80%9D%E8%B7%AF/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 解决博弈问题动态规划通用思路.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们把石头游戏改得更具有一般性</span></span><br><span class="line"><span class="comment"># 你和你的朋友面前有一排石头堆，用一个数组piles表示</span></span><br><span class="line"><span class="comment"># piles[i]表示第i堆石子有多少个。</span></span><br><span class="line"><span class="comment"># 你们轮流拿石头，一次拿一堆，但是只能拿走最左边或者最右边的石头堆。</span></span><br><span class="line"><span class="comment"># 所有石头被拿完后，谁拥有的石头多，谁获胜</span></span><br><span class="line"><span class="comment"># 假设两人都很聪明，请你设计一个算法，返回先手和后手最后得分（石头总数）之差</span></span><br><span class="line"><span class="comment"># 比如：</span></span><br><span class="line"><span class="comment"># piles = [1, 100, 3]</span></span><br><span class="line"><span class="comment"># 先手能得4分，后手能得100分，返回-96</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 思路</span></span><br><span class="line"><span class="comment"># 子问题</span></span><br><span class="line"><span class="comment"># 在第i到第j堆石头，先手能获得最大石头数是多少，后手是多少</span></span><br><span class="line"><span class="comment"># 定义状态数组</span></span><br><span class="line"><span class="comment"># f(i, j, 0) f(i, j, 1) 表示第i到第j个石头，包括第i和第j个，0表示先手，1表示后手</span></span><br><span class="line"><span class="comment"># 因为两人都极聪明，先手选完就变后手，来回交替的</span></span><br><span class="line"><span class="comment"># 递推方程</span></span><br><span class="line"><span class="comment"># f(i, j, 0) = max 拿左边 f(i+1, j, 1) + a[i]</span></span><br><span class="line"><span class="comment">#            =     拿右边 f(i, j-1, 1) + a[j]</span></span><br><span class="line"><span class="comment"># 知道了拿左边还是右边后</span></span><br><span class="line"><span class="comment"># f(i, j, 1) =     先手拿左边 f(i+1, j, 0)</span></span><br><span class="line"><span class="comment">#            =     先手拿右边 f(i, j-1, 0)</span></span><br><span class="line"><span class="comment"># 初始化</span></span><br><span class="line"><span class="comment"># f(i, i, 0) = a[i] 只有一堆石子的时候，先手为该堆石子个数，后手就为0</span></span><br><span class="line"><span class="comment"># f(i, i, 1) = 0</span></span><br><span class="line"><span class="comment"># 返回值</span></span><br><span class="line"><span class="comment"># f(0, n-1, 0) 先手最终石子数 - f(0, n-1, 1)后手最终石子数</span></span><br><span class="line"><span class="comment"># 优化空间复杂度</span></span><br><span class="line"><span class="comment"># 是对角线的递推，这种情况最好不要优化空间，还可以利用计算机的缓存</span></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">game</span>(<span class="params">self, piles: List[int]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    piles = [<span class="number">1</span>, <span class="number">100</span>, <span class="number">3</span>]</span><br><span class="line">    res = sol.game(piles)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-<h6 id="代表题目">代表题目：</h6>
-<h6 id="leetcode-877">leetcode 877</h6>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 也可以使用第2种解法</span></span><br><span class="line"><span class="comment"># 数学规律</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 先拿者可以拿到序号为 1,3,5...n-1 的石子堆，</span></span><br><span class="line"><span class="comment"># 也可以拿到序号为 2,4,6...n 的石子堆。</span></span><br><span class="line"><span class="comment"># 因为总石子数为奇数，所以这两种方式中，其中一种拿到的石子数大于另一种。</span></span><br><span class="line"><span class="comment"># 所以不按照拿尽量多的石子数，按照这种纯奇数序号或者纯偶数序号的方式拿，先拿者总可以赢。</span></span><br></pre></td></tr></table></figure>
-<p>dp解法</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">lass Solution:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">stoneGame</span>(<span class="params">self, piles: List[int]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> bool(dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
   </entry>
   <entry>
     <title>蓄水池算法</title>
@@ -1460,6 +1446,20 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, node, k</span>):</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>(<span class="params">object</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span>(<span class="params">self</span>):</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="实战题目">实战题目</h2>
 <h4 id="链表随机节点"><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbGlua2VkLWxpc3QtcmFuZG9tLW5vZGUv">382. 链表随机节点<i class="fa fa-external-link-alt"></i></span></h4>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>解决博弈问题的动态规划通用思路</title>
+    <url>/2020/07/24/%E8%A7%A3%E5%86%B3%E5%8D%9A%E5%BC%88%E9%97%AE%E9%A2%98%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E9%80%9A%E7%94%A8%E6%80%9D%E8%B7%AF/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 解决博弈问题动态规划通用思路.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们把石头游戏改得更具有一般性</span></span><br><span class="line"><span class="comment"># 你和你的朋友面前有一排石头堆，用一个数组piles表示</span></span><br><span class="line"><span class="comment"># piles[i]表示第i堆石子有多少个。</span></span><br><span class="line"><span class="comment"># 你们轮流拿石头，一次拿一堆，但是只能拿走最左边或者最右边的石头堆。</span></span><br><span class="line"><span class="comment"># 所有石头被拿完后，谁拥有的石头多，谁获胜</span></span><br><span class="line"><span class="comment"># 假设两人都很聪明，请你设计一个算法，返回先手和后手最后得分（石头总数）之差</span></span><br><span class="line"><span class="comment"># 比如：</span></span><br><span class="line"><span class="comment"># piles = [1, 100, 3]</span></span><br><span class="line"><span class="comment"># 先手能得4分，后手能得100分，返回-96</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 思路</span></span><br><span class="line"><span class="comment"># 子问题</span></span><br><span class="line"><span class="comment"># 在第i到第j堆石头，先手能获得最大石头数是多少，后手是多少</span></span><br><span class="line"><span class="comment"># 定义状态数组</span></span><br><span class="line"><span class="comment"># f(i, j, 0) f(i, j, 1) 表示第i到第j个石头，包括第i和第j个，0表示先手，1表示后手</span></span><br><span class="line"><span class="comment"># 因为两人都极聪明，先手选完就变后手，来回交替的</span></span><br><span class="line"><span class="comment"># 递推方程</span></span><br><span class="line"><span class="comment"># f(i, j, 0) = max 拿左边 f(i+1, j, 1) + a[i]</span></span><br><span class="line"><span class="comment">#            =     拿右边 f(i, j-1, 1) + a[j]</span></span><br><span class="line"><span class="comment"># 知道了拿左边还是右边后</span></span><br><span class="line"><span class="comment"># f(i, j, 1) =     先手拿左边 f(i+1, j, 0)</span></span><br><span class="line"><span class="comment">#            =     先手拿右边 f(i, j-1, 0)</span></span><br><span class="line"><span class="comment"># 初始化</span></span><br><span class="line"><span class="comment"># f(i, i, 0) = a[i] 只有一堆石子的时候，先手为该堆石子个数，后手就为0</span></span><br><span class="line"><span class="comment"># f(i, i, 1) = 0</span></span><br><span class="line"><span class="comment"># 返回值</span></span><br><span class="line"><span class="comment"># f(0, n-1, 0) 先手最终石子数 - f(0, n-1, 1)后手最终石子数</span></span><br><span class="line"><span class="comment"># 优化空间复杂度</span></span><br><span class="line"><span class="comment"># 是对角线的递推，这种情况最好不要优化空间，还可以利用计算机的缓存</span></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">game</span>(<span class="params">self, piles: List[int]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    piles = [<span class="number">1</span>, <span class="number">100</span>, <span class="number">3</span>]</span><br><span class="line">    res = sol.game(piles)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<h6 id="代表题目">代表题目：</h6>
+<h6 id="leetcode-877">leetcode 877</h6>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 也可以使用第2种解法</span></span><br><span class="line"><span class="comment"># 数学规律</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 先拿者可以拿到序号为 1,3,5...n-1 的石子堆，</span></span><br><span class="line"><span class="comment"># 也可以拿到序号为 2,4,6...n 的石子堆。</span></span><br><span class="line"><span class="comment"># 因为总石子数为奇数，所以这两种方式中，其中一种拿到的石子数大于另一种。</span></span><br><span class="line"><span class="comment"># 所以不按照拿尽量多的石子数，按照这种纯奇数序号或者纯偶数序号的方式拿，先拿者总可以赢。</span></span><br></pre></td></tr></table></figure>
+<p>dp解法</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">lass Solution:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">stoneGame</span>(<span class="params">self, piles: List[int]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> bool(dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1544,6 +1544,26 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <p>Cp - 进程p当前被分配的资源</p>
 <p>A - 当前可用的资源</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (P !&#x3D; ∅) &#123;</span><br><span class="line">    found &#x3D; FALSE;</span><br><span class="line">    foreach (p ∈ P) &#123;</span><br><span class="line">            &#x2F;&#x2F; Mp - Cp就是Need</span><br><span class="line">        if (Mp − Cp ≤ A) &#123;</span><br><span class="line">             &#x2F;* p可以获得他所需的资源。假设他得到资源后执行；执行终止，并释放所拥有的资源。*&#x2F;</span><br><span class="line">             A &#x3D; A + Cp ;</span><br><span class="line">             P &#x3D; P − &#123;p&#125;;</span><br><span class="line">             found &#x3D; TRUE;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (! found) return FAIL;</span><br><span class="line">&#125;</span><br><span class="line">return OK;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>青蛙跳荷叶问题</title>
+    <url>/2020/08/14/%E9%9D%92%E8%9B%99%E8%B7%B3%E8%8D%B7%E5%8F%B6%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h2 id="问题">问题：</h2>
+<p>有一只青蛙，向右跳x步可以到达右边中点，向左边跳n-x步可以到达左边中点，问到达左边中点的概率。</p>
+<h2 id="求解方法">求解方法</h2>
+<p>我们定义f(x)为到达左边中点的概率。</p>
+<p>那么f(0) = 0，因为我们已经到达右边终点，f(n) = 1，因为我们已经到达左边终点。</p>
+<p>我们知道，f(x) 接下来有两种走法，f(x-1)和f(x+1)，所以有</p>
+<p>f(x) = 0.5 * f(x-1) + 0.5 * f(x+1)</p>
+<p>我们由此可得f(x+1) - f(x) = f(x) - f(x-1)。</p>
+<p>所以我们知道f(x)构成的序列是一个等差数列。</p>
+<p>因为f(0) = 0, f(n) = 1，所以f(1) = 1/n，f(2) = 2/n， f(x) = x/n，f(n-1) = (n-1)/n，f(n) = n/n</p>
+<p>所以，综上可得f(x) = x/n。</p>
+<p>也就是说，当向右走x步到达右边终点，向左n-x步到达左边终点时，我们最后到达左边终点的概率为x/n。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
