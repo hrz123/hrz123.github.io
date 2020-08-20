@@ -713,16 +713,6 @@
       </tags>
   </entry>
   <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>今年值得纪念的事情</title>
     <url>/2020/08/12/%E4%BB%8A%E5%B9%B4%E5%80%BC%E5%BE%97%E7%BA%AA%E5%BF%B5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
     <content><![CDATA[<h2 id="数据结构与算法">数据结构与算法</h2>
@@ -734,6 +724,16 @@
 <li>拔掉了最后两颗智齿，所有的智齿都没啦！</li>
 <li>看完了《七武士》</li>
 </ul>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -977,50 +977,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>实现KMP算法</title>
-    <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下https://time.geekbang.org/column/article/71845</p>
-<h2 id="概述">概述</h2>
-<p>字符串匹配算法，可以分为单模式串匹配算法，和多模式串匹配算法，单模式串匹配算法包括了BF（暴力匹配O(m*n)，但因为可以及早停止，实际感觉并没有很差）、RK（O(n)，n为主串长度，利用哈希加速，哈希函数要取好，不要超过int的最大值，遍历一遍主串就可以算出全部n-m+1个哈希值）、BM（Boyer-Moore，性能最好的算法，使用好后缀、坏字符，从最后一个字符开始匹配）、KMP（好前缀、坏字符）四种算法。</p>
-<p>这里介绍不是那么复杂的KMP算法。</p>
-<p>（PS. 其实个人觉得，要学好算法，语文非常地重要，不亚于数学，要严谨准确而清晰易懂）</p>
-<h2 id="思路与算法">思路与算法</h2>
-<h3 id="kmp-算法基本原理">KMP 算法基本原理</h3>
-<p>在模式串和主串匹配的过程中，把不能匹配的那个字符叫作<strong>坏字符</strong>，把已经匹配的那段字符串叫作<strong>好前缀</strong>。</p>
-
-<p>当遇到坏字符的时候，我们就要把模式串往后滑动，在滑动的过程中，只要模式串和好前缀有上下重合，前面几个字符的比较，就相当于拿好前缀的后缀子串，跟模式串的前缀子串在比较。这个比较的过程能否更高效了呢？可以不用一个字符一个字符的比较了吗？</p>
-
-<p>KMP 算法就是在试图寻找一种规律：在模式串和主串匹配的过程中，当遇到坏字符后，对于已经比对过的好前缀，能否找到一种规律，将模式串一次性滑动很多位？</p>
-<p>我们只需要拿好前缀本身，在它的后缀子串中，查找最长的那个可以跟好前缀的前缀子串匹配的。假设最长的可匹配的那部分前缀子串是{v}，长度是k。我们把模式串一次性往后滑动 j - k 位，相当于，每次遇到坏字符，我们就把j更新为k，i不变，然后继续比较。</p>
-
-<p>为了表述起来方便，我把好前缀的所有后缀子串中，最长的可匹配前缀子串的那个后缀子串，叫做<strong>最长可匹配后缀子串</strong>；对应的前缀子串，叫做<strong>最长可匹配前缀子串</strong>。</p>
-
-<p>如何来求好前缀的最长可匹配前缀和后缀子串呢？我们发现，这个问题其实不涉及主串，只需要通过模式串本身就能求解。所以，能不能事先预处理计算好，在模式串和主串匹配的过程中，直接拿过来就用呢？</p>
-<p>其实和BM算法（后面会讲到）类似，KMP算法可以提前构建一个数组，用来存储模式串中每个前缀（这些前缀都有可能是好前缀）的最长可匹配前缀子串的结尾字符下标。我们把这个数组定义为<strong>next数组</strong>（或者叫longest prefix suffix，最长的前缀的后缀的下标，如果到了结尾就用-1表示不存在)，很多书中还给这个数组起了一个名字，叫<strong>失效函数</strong>（failure function）。</p>
-<p>数组的下标是每个前缀结尾字符下标，数组的值是这个前缀的最长可以匹配前缀子串的结尾字符下标。这句话有点拗口，举个例子就懂了。</p>
-
-<p>有个next数组，我们很容易就可以实现KMP算法了。我先假设next数组已经计算好了，先给出KMP算法的框架代码。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">p, s</span>):</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print(&quot;Found pattern at index &quot; + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
-<h3 id="失效函数计算方法">失效函数计算方法</h3>
-<p>基本原理剪完了，现在来看最复杂的部分，也就是next数组是如何计算的。</p>
-<p>当然，我们可以用非常笨的方法，比如要计算下面这个模式串 b 的 next[4]，我们就把 b[0, 4]的所有后缀子串，从长到短找出来，依次看看，是否能跟模式串的前缀子串匹配。很显然，这个方法也可以计算得到 next 数组，但是效率非常低。有没有更加高效的方法呢？</p>
-
-<p>我们按照下标从小到大，依次计算 next 数组的值。当我们要计算 next[i]的时候，前面的 next[0]，next[1]，……，next[i-1]应该已经计算出来了。利用已经计算出来的 next 值，我们是否可以快速推导出 next[i]的值呢？如果 next[i-1]=k-1，也就是说，子串 b[0, k-1]是 b[0, i-1]的最长可匹配前缀子串。如果子串 b[0, k-1]的下一个字符 b[k]，与 b[0, i-1]的下一个字符 b[i]匹配，那子串 b[0, k]就是 b[0, i]的最长可匹配前缀子串。所以，next[i]等于 k。但是，如果 b[0, k-1]的下一字符 b[k]跟 b[0, i-1]的下一个字符 b[i]不相等呢？这个时候就不能简单地通过 next[i-1]得到 next[i]了。这个时候该怎么办呢？</p>
-<p>我们假设 b[0, i]的最长可匹配后缀子串是 b[r, i]。如果我们把最后一个字符去掉，那 b[r, i-1]肯定是 b[0, i-1]的可匹配后缀子串，但不一定是最长可匹配后缀子串。所以，既然 b[0, i-1]最长可匹配后缀子串对应的模式串的前缀子串的下一个字符并不等于 b[i]，那么我们就可以考察 b[0, i-1]的次长可匹配后缀子串 b[x, i-1]对应的可匹配前缀子串 b[0, i-1-x]的下一个字符 b[i-x]是否等于 b[i]。如果等于，那 b[x, i]就是 b[0, i]的最长可匹配后缀子串。</p>
-<p>可是，如何求得b[0, i-1]的次长可匹配后缀子串呢？次长可匹配后缀子串肯定被包含在最长可匹配后缀子串中，而最长可匹配后缀子串又对应最长可匹配前缀子串又对应最长可匹配前缀子串b[0, y]。于是，查找b[0, i-1]的次长可匹配后缀子串，这个问题就变成，查找b[0, y]的最长匹配后缀子串，其中y = next[i-1]</p>
-
-<p>按照这个思路，我们可以考察完所有的 b[0, i-1]的可匹配后缀子串 b[y, i-1]，直到找到一个可匹配的后缀子串，它对应的前缀子串的下一个字符等于 b[i]，那这个 b[y, i]就是 b[0, i]的最长可匹配后缀子串。</p>
-<p>前面已经给出 KMP 算法的框架代码了，现在把这部分的代码也写出来了。这两部分代码合在一起，就是整个 KMP 算法的代码实现。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">p, m</span>):</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br></pre></td></tr></table></figure>
-<h2 id="最后整体的实现">最后整体的实现</h2>
-<p>Python3版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">self, p, s</span>):</span></span><br><span class="line">        <span class="comment"># 特判</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> p:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        m, n = len(p), len(s)</span><br><span class="line">        lps = self.get_lps(p, m)</span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> j != <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">                j += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> j == m:</span><br><span class="line">                <span class="comment"># return i - m + 1</span></span><br><span class="line">                print(<span class="string">&quot;find at &#123;&#125;&quot;</span>.format(i - m + <span class="number">1</span>))</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">self, p, m</span>):</span></span><br><span class="line">        lps = [<span class="number">-1</span>] * m</span><br><span class="line">        k = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">            <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[i] != p[k + <span class="number">1</span>]:</span><br><span class="line">                k = lps[k]</span><br><span class="line">            <span class="keyword">if</span> p[i] == p[k + <span class="number">1</span>]:</span><br><span class="line">                k += <span class="number">1</span></span><br><span class="line">            lps[i] = k</span><br><span class="line">        <span class="keyword">return</span> lps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    s = <span class="string">&quot;abcruizheuhuruizheaasdasd&quot;</span></span><br><span class="line">    p = <span class="string">&quot;ruizhe&quot;</span></span><br><span class="line">    res = sol.KMPSearch(p, s)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>平衡二叉搜索树、B树、B+树、B*树理解</title>
     <url>/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="平衡二叉搜索树">平衡二叉搜索树</h2>
@@ -1115,6 +1071,50 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>实现KMP算法</title>
+    <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下https://time.geekbang.org/column/article/71845</p>
+<h2 id="概述">概述</h2>
+<p>字符串匹配算法，可以分为单模式串匹配算法，和多模式串匹配算法，单模式串匹配算法包括了BF（暴力匹配O(m*n)，但因为可以及早停止，实际感觉并没有很差）、RK（O(n)，n为主串长度，利用哈希加速，哈希函数要取好，不要超过int的最大值，遍历一遍主串就可以算出全部n-m+1个哈希值）、BM（Boyer-Moore，性能最好的算法，使用好后缀、坏字符，从最后一个字符开始匹配）、KMP（好前缀、坏字符）四种算法。</p>
+<p>这里介绍不是那么复杂的KMP算法。</p>
+<p>（PS. 其实个人觉得，要学好算法，语文非常地重要，不亚于数学，要严谨准确而清晰易懂）</p>
+<h2 id="思路与算法">思路与算法</h2>
+<h3 id="kmp-算法基本原理">KMP 算法基本原理</h3>
+<p>在模式串和主串匹配的过程中，把不能匹配的那个字符叫作<strong>坏字符</strong>，把已经匹配的那段字符串叫作<strong>好前缀</strong>。</p>
+
+<p>当遇到坏字符的时候，我们就要把模式串往后滑动，在滑动的过程中，只要模式串和好前缀有上下重合，前面几个字符的比较，就相当于拿好前缀的后缀子串，跟模式串的前缀子串在比较。这个比较的过程能否更高效了呢？可以不用一个字符一个字符的比较了吗？</p>
+
+<p>KMP 算法就是在试图寻找一种规律：在模式串和主串匹配的过程中，当遇到坏字符后，对于已经比对过的好前缀，能否找到一种规律，将模式串一次性滑动很多位？</p>
+<p>我们只需要拿好前缀本身，在它的后缀子串中，查找最长的那个可以跟好前缀的前缀子串匹配的。假设最长的可匹配的那部分前缀子串是{v}，长度是k。我们把模式串一次性往后滑动 j - k 位，相当于，每次遇到坏字符，我们就把j更新为k，i不变，然后继续比较。</p>
+
+<p>为了表述起来方便，我把好前缀的所有后缀子串中，最长的可匹配前缀子串的那个后缀子串，叫做<strong>最长可匹配后缀子串</strong>；对应的前缀子串，叫做<strong>最长可匹配前缀子串</strong>。</p>
+
+<p>如何来求好前缀的最长可匹配前缀和后缀子串呢？我们发现，这个问题其实不涉及主串，只需要通过模式串本身就能求解。所以，能不能事先预处理计算好，在模式串和主串匹配的过程中，直接拿过来就用呢？</p>
+<p>其实和BM算法（后面会讲到）类似，KMP算法可以提前构建一个数组，用来存储模式串中每个前缀（这些前缀都有可能是好前缀）的最长可匹配前缀子串的结尾字符下标。我们把这个数组定义为<strong>next数组</strong>（或者叫longest prefix suffix，最长的前缀的后缀的下标，如果到了结尾就用-1表示不存在)，很多书中还给这个数组起了一个名字，叫<strong>失效函数</strong>（failure function）。</p>
+<p>数组的下标是每个前缀结尾字符下标，数组的值是这个前缀的最长可以匹配前缀子串的结尾字符下标。这句话有点拗口，举个例子就懂了。</p>
+
+<p>有个next数组，我们很容易就可以实现KMP算法了。我先假设next数组已经计算好了，先给出KMP算法的框架代码。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">p, s</span>):</span></span><br><span class="line">    m = len(p)</span><br><span class="line">    n = len(s)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># create lps[] that will hold the longest prefix suffix</span></span><br><span class="line">    <span class="comment"># values for pattern</span></span><br><span class="line">    lps = get_lps(p, m)</span><br><span class="line"></span><br><span class="line">    j = <span class="number">0</span>  <span class="comment"># index for p[]</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">while</span> j &gt; <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">            j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> j == m:</span><br><span class="line">            <span class="comment"># print(&quot;Found pattern at index &quot; + str(i - j + 1))</span></span><br><span class="line">            <span class="comment"># j = lps[j - 1] + 1</span></span><br><span class="line">            <span class="keyword">return</span> i - m + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<h3 id="失效函数计算方法">失效函数计算方法</h3>
+<p>基本原理剪完了，现在来看最复杂的部分，也就是next数组是如何计算的。</p>
+<p>当然，我们可以用非常笨的方法，比如要计算下面这个模式串 b 的 next[4]，我们就把 b[0, 4]的所有后缀子串，从长到短找出来，依次看看，是否能跟模式串的前缀子串匹配。很显然，这个方法也可以计算得到 next 数组，但是效率非常低。有没有更加高效的方法呢？</p>
+
+<p>我们按照下标从小到大，依次计算 next 数组的值。当我们要计算 next[i]的时候，前面的 next[0]，next[1]，……，next[i-1]应该已经计算出来了。利用已经计算出来的 next 值，我们是否可以快速推导出 next[i]的值呢？如果 next[i-1]=k-1，也就是说，子串 b[0, k-1]是 b[0, i-1]的最长可匹配前缀子串。如果子串 b[0, k-1]的下一个字符 b[k]，与 b[0, i-1]的下一个字符 b[i]匹配，那子串 b[0, k]就是 b[0, i]的最长可匹配前缀子串。所以，next[i]等于 k。但是，如果 b[0, k-1]的下一字符 b[k]跟 b[0, i-1]的下一个字符 b[i]不相等呢？这个时候就不能简单地通过 next[i-1]得到 next[i]了。这个时候该怎么办呢？</p>
+<p>我们假设 b[0, i]的最长可匹配后缀子串是 b[r, i]。如果我们把最后一个字符去掉，那 b[r, i-1]肯定是 b[0, i-1]的可匹配后缀子串，但不一定是最长可匹配后缀子串。所以，既然 b[0, i-1]最长可匹配后缀子串对应的模式串的前缀子串的下一个字符并不等于 b[i]，那么我们就可以考察 b[0, i-1]的次长可匹配后缀子串 b[x, i-1]对应的可匹配前缀子串 b[0, i-1-x]的下一个字符 b[i-x]是否等于 b[i]。如果等于，那 b[x, i]就是 b[0, i]的最长可匹配后缀子串。</p>
+<p>可是，如何求得b[0, i-1]的次长可匹配后缀子串呢？次长可匹配后缀子串肯定被包含在最长可匹配后缀子串中，而最长可匹配后缀子串又对应最长可匹配前缀子串又对应最长可匹配前缀子串b[0, y]。于是，查找b[0, i-1]的次长可匹配后缀子串，这个问题就变成，查找b[0, y]的最长匹配后缀子串，其中y = next[i-1]</p>
+
+<p>按照这个思路，我们可以考察完所有的 b[0, i-1]的可匹配后缀子串 b[y, i-1]，直到找到一个可匹配的后缀子串，它对应的前缀子串的下一个字符等于 b[i]，那这个 b[y, i]就是 b[0, i]的最长可匹配后缀子串。</p>
+<p>前面已经给出 KMP 算法的框架代码了，现在把这部分的代码也写出来了。这两部分代码合在一起，就是整个 KMP 算法的代码实现。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">p, m</span>):</span></span><br><span class="line">    lps = [<span class="number">-1</span>] * m</span><br><span class="line">    k = <span class="number">-1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">        <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[k + <span class="number">1</span>] != p[i]:</span><br><span class="line">            k = lps[k]</span><br><span class="line">        <span class="keyword">if</span> p[k + <span class="number">1</span>] == p[i]:</span><br><span class="line">            k += <span class="number">1</span></span><br><span class="line">        lps[i] = k</span><br><span class="line">    <span class="keyword">return</span> lps</span><br></pre></td></tr></table></figure>
+<h2 id="最后整体的实现">最后整体的实现</h2>
+<p>Python3版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">self, p, s</span>):</span></span><br><span class="line">        <span class="comment"># 特判</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> p:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        m, n = len(p), len(s)</span><br><span class="line">        lps = self.get_lps(p, m)</span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> j != <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">                j += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> j == m:</span><br><span class="line">                <span class="comment"># return i - m + 1</span></span><br><span class="line">                print(<span class="string">&quot;find at &#123;&#125;&quot;</span>.format(i - m + <span class="number">1</span>))</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">self, p, m</span>):</span></span><br><span class="line">        lps = [<span class="number">-1</span>] * m</span><br><span class="line">        k = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">            <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[i] != p[k + <span class="number">1</span>]:</span><br><span class="line">                k = lps[k]</span><br><span class="line">            <span class="keyword">if</span> p[i] == p[k + <span class="number">1</span>]:</span><br><span class="line">                k += <span class="number">1</span></span><br><span class="line">            lps[i] = k</span><br><span class="line">        <span class="keyword">return</span> lps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    s = <span class="string">&quot;abcruizheuhuruizheaasdasd&quot;</span></span><br><span class="line">    p = <span class="string">&quot;ruizhe&quot;</span></span><br><span class="line">    res = sol.KMPSearch(p, s)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1315,57 +1315,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>树状数组Binary Indexed Tree</title>
-    <url>/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/</url>
-    <content><![CDATA[<h2 id="参考">参考</h2>
-<p>https://www.geeksforgeeks.org/binary-indexed-tree-or-fenwick-tree-2/</p>
-<h2 id="实际问题简单记想快速知道数组的前缀和同时数组的修改频繁用树状数组使得这两种操作都变成ologn两边查询的树状数组可以相当于线段树的功能">实际问题（简单记，想快速知道数组的前缀和，同时数组的修改频繁，用树状数组，使得这两种操作都变成O(logn)，两边查询的树状数组可以相当于线段树的功能）</h2>
-<p>We have an array arr[0 . . . n-1]. We would like to <strong>1</strong> Compute the sum of the first i elements. <strong>2</strong> Modify the value of a specified element of the array arr[i] = x where 0 &lt;= i &lt;= n-1.</p>
-<p>A <strong>simple solution</strong> is to run a loop from 0 to i-1 and calculate the sum of the elements. To update a value, simply do arr[i] = x. The first operation takes O(n) time and the second operation takes O(1) time.</p>
-<p>Another simple solution is to create an extra array and store the sum of the first i-th elements at the i-th index in this new array. The sum of a given range can now be calculated in O(1) time, but the update operation takes O(n) time now. This works well if there are a large number of query operations but a very few number of update operations.</p>
-<p><strong>Could we perform both the query and update operations in O(log n) time?</strong> One efficient solution is to use <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span> that performs both operations in O(Logn) time.</p>
-<p><em>An alternative solution is Binary Indexed Tree, which also achieves O(Logn) time complexity for both operations. Compared with Segment Tree, Binary Indexed Tree requires less space and is easier to implement.</em>.</p>
-<p>给定一个数组[0, .., n-1]，我们想：</p>
-<ol type="1">
-<li>计算出前i个元素的和</li>
-<li>将任何一个元素改为x，arr[i] = x where 0&lt;=i&lt;=n-1</li>
-</ol>
-<p>和线段树的实际问题的区别在于，线段树是从l到r任何一段，树状数组只是前i个。</p>
-<p>同样第一个简单的解法就是循环求和O(n)，改变为O(1)。</p>
-<p>或者创建一个新数组的每个元素存的前i个数的和，这样求和就是O(1)，但是改变后数组就要调整O(n)的时间复杂度。</p>
-<p><strong>Representation</strong> Binary Indexed Tree is represented as an array. Let the array be BITree[]. Each node of the Binary Indexed Tree stores the sum of some elements of the input array. The size of the Binary Indexed Tree is equal to the size of the input array, denoted as n. In the code below, we use a size of n+1 for ease of implementation.</p>
-<p><strong>Construction</strong> We initialize all the values in BITree[] as 0. Then we call update() for all the indexes, the update() operation is discussed below.</p>
-<p><strong>Operations</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">getSum(x): Returns the sum of the sub-array arr[0,...,x]</span><br><span class="line">&#x2F;&#x2F; Returns the sum of the sub-array arr[0,...,x] using BITree[0..n], which is constructed from arr[0..n-1]</span><br><span class="line">1) Initialize the output sum as 0, the current index as x+1.</span><br><span class="line">2) Do following while the current index is greater than 0.</span><br><span class="line">...a) Add BITree[index] to sum</span><br><span class="line">...b) Go to the parent of BITree[index].  The parent can be obtained by removing</span><br><span class="line">     the last set bit from the current index, i.e., index &#x3D; index - (index &amp; (-index))【index&amp;(index-1) 也可以】</span><br><span class="line">3) Return sum.</span><br></pre></td></tr></table></figure>
-<img data-src="/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%841.png" class>
-<p>The diagram above provides an example of how getSum() is working. Here are some important observations.</p>
-<p>BITree[0] is a dummy node.</p>
-<p>BITree[y] is the parent of BITree[x], if and only if y can be obtained by removing the last set bit from the binary representation of x, that is y = x – (x &amp; (-x)).【index&amp;(index-1) 也可以】</p>
-<p>The child node BITree[x] of the node BITree[y] stores the sum of the elements between y(inclusive) and x(exclusive): arr[y,…,x).</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">update(x, val): Updates the Binary Indexed Tree (BIT) by performing arr[index] +&#x3D; val</span><br><span class="line">&#x2F;&#x2F; Note that the update(x, val) operation will not change arr[].  It only makes changes to BITree[]</span><br><span class="line">1) Initialize the current index as x+1.</span><br><span class="line">2) Do the following while the current index is smaller than or equal to n.</span><br><span class="line">...a) Add the val to BITree[index]</span><br><span class="line">...b) Go to parent of BITree[index].  The parent can be obtained by incrementing</span><br><span class="line">     the last set bit of the current index, i.e., index &#x3D; index + (index &amp; (-index))</span><br></pre></td></tr></table></figure>
-<img data-src="/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%842.png" class>
-<p>The update function needs to make sure that all the BITree nodes which contain arr[i] within their ranges being updated. We loop over such nodes in the BITree by repeatedly adding the decimal number corresponding to the last set bit of the current index.</p>
-<p><strong>How does Binary Indexed Tree work?</strong> The idea is based on the fact that all positive integers can be represented as the sum of powers of 2. For example 19 can be represented as 16 + 2 + 1. Every node of the BITree stores the sum of n elements where n is a power of 2. For example, in the first diagram above (the diagram for getSum()), the sum of the first 12 elements can be obtained by the sum of the last 4 elements (from 9 to 12) plus the sum of 8 elements (from 1 to 8). The number of set bits in the binary representation of a number n is O(Logn). Therefore, we traverse at-most O(Logn) nodes in both getSum() and update() operations. The time complexity of the construction is O(nLogn) as it calls update() for all n elements.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 树状数组binary-indexed-tree.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BITree</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, nums</span>):</span></span><br><span class="line">        self.n = len(nums)</span><br><span class="line">        self.tree = [<span class="number">0</span>] * (self.n + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span> i, num <span class="keyword">in</span> enumerate(nums):</span><br><span class="line">            self.update(i + <span class="number">1</span>, num)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">self, i, k</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            i: 指的是更新数组中的第几个数，对应索引是i-1</span></span><br><span class="line"><span class="string">            k: 更新的数值</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= self.n:</span><br><span class="line">            self.tree[i] += k</span><br><span class="line">            i += (i &amp; -i)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">self, i</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            i: 返回前几个数的前缀和</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns: 前i个数的前缀和</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        s = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i:</span><br><span class="line">            s += self.tree[i]</span><br><span class="line">            i -= (i &amp; -i)</span><br><span class="line">        <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line">    tree = BITree(nums)</span><br><span class="line">    <span class="comment"># 打印前1,2,3,4个数的前缀和</span></span><br><span class="line">    print(tree.getSum(<span class="number">1</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">2</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">3</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">4</span>))</span><br><span class="line">    <span class="comment"># 更新第2个数的值，增加3</span></span><br><span class="line">    tree.update(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">    <span class="comment"># 再次打印前1,2,3,4个数的前缀和</span></span><br><span class="line">    print(tree.getSum(<span class="number">1</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">2</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">3</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">4</span>))</span><br><span class="line">    <span class="comment"># 更新第2个数的值，减少3</span></span><br><span class="line">    tree.update(<span class="number">2</span>, <span class="number">-3</span>)</span><br><span class="line">    print(tree.getSum(<span class="number">1</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">2</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">3</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>Output:</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Sum of elements in arr[0..5] is 12</span><br><span class="line">Sum of elements in arr[0..5] after update is 18</span><br></pre></td></tr></table></figure>
-<p><strong>Can we extend the Binary Indexed Tree to computing the sum of a range in O(Logn) time?</strong> Yes. rangeSum(l, r) = getSum(r) – getSum(l-1).</p>
-<p><strong>Applications:</strong> The implementation of the arithmetic coding algorithm.</p>
-<h2 id="典型题目">典型题目</h2>
-<p>leetcode 315 计算右侧小于当前元素的个数</p>
-<p>给定一个整数数组 nums，按要求返回一个新数组 counts。数组 counts 有该性质： counts[i] 的值是 nums[i] 右侧小于 nums[i] 的元素的数量。</p>
-<p>示例：</p>
-<p>输入：[5,2,6,1] 输出：[2,1,1,0] 解释： 5 的右侧有 2 个更小的元素 (2 和 1) 2 的右侧仅有 1 个更小的元素 (1) 6 的右侧有 1 个更小的元素 (1) 1 的右侧有 0 个更小的元素</p>
-<p>链接：https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self</p>
-<p>树状数组解法，用每个数的rank来离散化，反序插入树状数组中，前一位的前缀和就是右侧小于当前元素的个数。</p>
-<p>示例代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSmaller</span>(<span class="params">self, nums: List[int]</span>) -&gt; List[int]:</span></span><br><span class="line">        rank = &#123;val: i + <span class="number">1</span> <span class="keyword">for</span> i, val <span class="keyword">in</span> enumerate(sorted(nums))&#125;</span><br><span class="line">        n = len(nums)</span><br><span class="line">        res = []</span><br><span class="line"></span><br><span class="line">        BITree = [<span class="number">0</span>] * (n + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">i, k=<span class="number">1</span></span>):</span></span><br><span class="line">            <span class="keyword">while</span> i &lt;= n:</span><br><span class="line">                BITree[i] += k</span><br><span class="line">                i += i &amp; -i</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">i</span>):</span></span><br><span class="line">            s = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> i:</span><br><span class="line">                s += BITree[i]</span><br><span class="line">                i -= i &amp; -i</span><br><span class="line">            <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> reversed(nums):</span><br><span class="line">            res.append(getSum(rank[num] - <span class="number">1</span>))</span><br><span class="line">            update(rank[num])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res[::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>深入理解MySQL索引底层实现原理丨技术干货</title>
     <url>/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/</url>
     <content><![CDATA[<h3 id="转载">转载：</h3>
@@ -1447,6 +1396,57 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>树状数组Binary Indexed Tree</title>
+    <url>/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/</url>
+    <content><![CDATA[<h2 id="参考">参考</h2>
+<p>https://www.geeksforgeeks.org/binary-indexed-tree-or-fenwick-tree-2/</p>
+<h2 id="实际问题简单记想快速知道数组的前缀和同时数组的修改频繁用树状数组使得这两种操作都变成ologn两边查询的树状数组可以相当于线段树的功能">实际问题（简单记，想快速知道数组的前缀和，同时数组的修改频繁，用树状数组，使得这两种操作都变成O(logn)，两边查询的树状数组可以相当于线段树的功能）</h2>
+<p>We have an array arr[0 . . . n-1]. We would like to <strong>1</strong> Compute the sum of the first i elements. <strong>2</strong> Modify the value of a specified element of the array arr[i] = x where 0 &lt;= i &lt;= n-1.</p>
+<p>A <strong>simple solution</strong> is to run a loop from 0 to i-1 and calculate the sum of the elements. To update a value, simply do arr[i] = x. The first operation takes O(n) time and the second operation takes O(1) time.</p>
+<p>Another simple solution is to create an extra array and store the sum of the first i-th elements at the i-th index in this new array. The sum of a given range can now be calculated in O(1) time, but the update operation takes O(n) time now. This works well if there are a large number of query operations but a very few number of update operations.</p>
+<p><strong>Could we perform both the query and update operations in O(log n) time?</strong> One efficient solution is to use <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span> that performs both operations in O(Logn) time.</p>
+<p><em>An alternative solution is Binary Indexed Tree, which also achieves O(Logn) time complexity for both operations. Compared with Segment Tree, Binary Indexed Tree requires less space and is easier to implement.</em>.</p>
+<p>给定一个数组[0, .., n-1]，我们想：</p>
+<ol type="1">
+<li>计算出前i个元素的和</li>
+<li>将任何一个元素改为x，arr[i] = x where 0&lt;=i&lt;=n-1</li>
+</ol>
+<p>和线段树的实际问题的区别在于，线段树是从l到r任何一段，树状数组只是前i个。</p>
+<p>同样第一个简单的解法就是循环求和O(n)，改变为O(1)。</p>
+<p>或者创建一个新数组的每个元素存的前i个数的和，这样求和就是O(1)，但是改变后数组就要调整O(n)的时间复杂度。</p>
+<p><strong>Representation</strong> Binary Indexed Tree is represented as an array. Let the array be BITree[]. Each node of the Binary Indexed Tree stores the sum of some elements of the input array. The size of the Binary Indexed Tree is equal to the size of the input array, denoted as n. In the code below, we use a size of n+1 for ease of implementation.</p>
+<p><strong>Construction</strong> We initialize all the values in BITree[] as 0. Then we call update() for all the indexes, the update() operation is discussed below.</p>
+<p><strong>Operations</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">getSum(x): Returns the sum of the sub-array arr[0,...,x]</span><br><span class="line">&#x2F;&#x2F; Returns the sum of the sub-array arr[0,...,x] using BITree[0..n], which is constructed from arr[0..n-1]</span><br><span class="line">1) Initialize the output sum as 0, the current index as x+1.</span><br><span class="line">2) Do following while the current index is greater than 0.</span><br><span class="line">...a) Add BITree[index] to sum</span><br><span class="line">...b) Go to the parent of BITree[index].  The parent can be obtained by removing</span><br><span class="line">     the last set bit from the current index, i.e., index &#x3D; index - (index &amp; (-index))【index&amp;(index-1) 也可以】</span><br><span class="line">3) Return sum.</span><br></pre></td></tr></table></figure>
+<img data-src="/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%841.png" class>
+<p>The diagram above provides an example of how getSum() is working. Here are some important observations.</p>
+<p>BITree[0] is a dummy node.</p>
+<p>BITree[y] is the parent of BITree[x], if and only if y can be obtained by removing the last set bit from the binary representation of x, that is y = x – (x &amp; (-x)).【index&amp;(index-1) 也可以】</p>
+<p>The child node BITree[x] of the node BITree[y] stores the sum of the elements between y(inclusive) and x(exclusive): arr[y,…,x).</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">update(x, val): Updates the Binary Indexed Tree (BIT) by performing arr[index] +&#x3D; val</span><br><span class="line">&#x2F;&#x2F; Note that the update(x, val) operation will not change arr[].  It only makes changes to BITree[]</span><br><span class="line">1) Initialize the current index as x+1.</span><br><span class="line">2) Do the following while the current index is smaller than or equal to n.</span><br><span class="line">...a) Add the val to BITree[index]</span><br><span class="line">...b) Go to parent of BITree[index].  The parent can be obtained by incrementing</span><br><span class="line">     the last set bit of the current index, i.e., index &#x3D; index + (index &amp; (-index))</span><br></pre></td></tr></table></figure>
+<img data-src="/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%842.png" class>
+<p>The update function needs to make sure that all the BITree nodes which contain arr[i] within their ranges being updated. We loop over such nodes in the BITree by repeatedly adding the decimal number corresponding to the last set bit of the current index.</p>
+<p><strong>How does Binary Indexed Tree work?</strong> The idea is based on the fact that all positive integers can be represented as the sum of powers of 2. For example 19 can be represented as 16 + 2 + 1. Every node of the BITree stores the sum of n elements where n is a power of 2. For example, in the first diagram above (the diagram for getSum()), the sum of the first 12 elements can be obtained by the sum of the last 4 elements (from 9 to 12) plus the sum of 8 elements (from 1 to 8). The number of set bits in the binary representation of a number n is O(Logn). Therefore, we traverse at-most O(Logn) nodes in both getSum() and update() operations. The time complexity of the construction is O(nLogn) as it calls update() for all n elements.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 树状数组binary-indexed-tree.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BITree</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, nums</span>):</span></span><br><span class="line">        self.n = len(nums)</span><br><span class="line">        self.tree = [<span class="number">0</span>] * (self.n + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span> i, num <span class="keyword">in</span> enumerate(nums):</span><br><span class="line">            self.update(i + <span class="number">1</span>, num)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">self, i, k</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            i: 指的是更新数组中的第几个数，对应索引是i-1</span></span><br><span class="line"><span class="string">            k: 更新的数值</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= self.n:</span><br><span class="line">            self.tree[i] += k</span><br><span class="line">            i += (i &amp; -i)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">self, i</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            i: 返回前几个数的前缀和</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns: 前i个数的前缀和</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        s = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i:</span><br><span class="line">            s += self.tree[i]</span><br><span class="line">            i -= (i &amp; -i)</span><br><span class="line">        <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line">    tree = BITree(nums)</span><br><span class="line">    <span class="comment"># 打印前1,2,3,4个数的前缀和</span></span><br><span class="line">    print(tree.getSum(<span class="number">1</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">2</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">3</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">4</span>))</span><br><span class="line">    <span class="comment"># 更新第2个数的值，增加3</span></span><br><span class="line">    tree.update(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">    <span class="comment"># 再次打印前1,2,3,4个数的前缀和</span></span><br><span class="line">    print(tree.getSum(<span class="number">1</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">2</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">3</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">4</span>))</span><br><span class="line">    <span class="comment"># 更新第2个数的值，减少3</span></span><br><span class="line">    tree.update(<span class="number">2</span>, <span class="number">-3</span>)</span><br><span class="line">    print(tree.getSum(<span class="number">1</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">2</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">3</span>))</span><br><span class="line">    print(tree.getSum(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>Output:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Sum of elements in arr[0..5] is 12</span><br><span class="line">Sum of elements in arr[0..5] after update is 18</span><br></pre></td></tr></table></figure>
+<p><strong>Can we extend the Binary Indexed Tree to computing the sum of a range in O(Logn) time?</strong> Yes. rangeSum(l, r) = getSum(r) – getSum(l-1).</p>
+<p><strong>Applications:</strong> The implementation of the arithmetic coding algorithm.</p>
+<h2 id="典型题目">典型题目</h2>
+<p>leetcode 315 计算右侧小于当前元素的个数</p>
+<p>给定一个整数数组 nums，按要求返回一个新数组 counts。数组 counts 有该性质： counts[i] 的值是 nums[i] 右侧小于 nums[i] 的元素的数量。</p>
+<p>示例：</p>
+<p>输入：[5,2,6,1] 输出：[2,1,1,0] 解释： 5 的右侧有 2 个更小的元素 (2 和 1) 2 的右侧仅有 1 个更小的元素 (1) 6 的右侧有 1 个更小的元素 (1) 1 的右侧有 0 个更小的元素</p>
+<p>链接：https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self</p>
+<p>树状数组解法，用每个数的rank来离散化，反序插入树状数组中，前一位的前缀和就是右侧小于当前元素的个数。</p>
+<p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSmaller</span>(<span class="params">self, nums: List[int]</span>) -&gt; List[int]:</span></span><br><span class="line">        rank = &#123;val: i + <span class="number">1</span> <span class="keyword">for</span> i, val <span class="keyword">in</span> enumerate(sorted(nums))&#125;</span><br><span class="line">        n = len(nums)</span><br><span class="line">        res = []</span><br><span class="line"></span><br><span class="line">        BITree = [<span class="number">0</span>] * (n + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">i, k=<span class="number">1</span></span>):</span></span><br><span class="line">            <span class="keyword">while</span> i &lt;= n:</span><br><span class="line">                BITree[i] += k</span><br><span class="line">                i += i &amp; -i</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">i</span>):</span></span><br><span class="line">            s = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> i:</span><br><span class="line">                s += BITree[i]</span><br><span class="line">                i -= i &amp; -i</span><br><span class="line">            <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> reversed(nums):</span><br><span class="line">            res.append(getSum(rank[num] - <span class="number">1</span>))</span><br><span class="line">            update(rank[num])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res[::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>猫抓老鼠的简单讨论</title>
     <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
     <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
@@ -1486,6 +1486,29 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>经典同步问题</title>
+    <url>/2020/08/20/%E7%BB%8F%E5%85%B8%E5%90%8C%E6%AD%A5%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h2 id="哲学家进餐问题">1.哲学家进餐问题</h2>
+
+<p>五个哲学家围着一张圆桌，每个哲学家免签放着食物。哲学家的生活有两种交替活动：吃饭以及思考。当一个哲学家吃法时，需要先拿起自己左右两边的两根筷子，并且一次只能拿起一根筷子。</p>
+<p>下面是一种错误的解法，如果所有哲学家同时拿起左手边的筷子，那么所有哲学家都在等到其他哲学家吃完并释放自己手中的筷子，导致死锁。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 5</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">philosopher</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        think();</span><br><span class="line">        take(i);       <span class="comment">// 拿起左边的筷子</span></span><br><span class="line">        take((i+<span class="number">1</span>)%N); <span class="comment">// 拿起右边的筷子</span></span><br><span class="line">        eat();</span><br><span class="line">        put(i);</span><br><span class="line">        put((i+<span class="number">1</span>)%N);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了防止死锁的发生，可以设置两个条件：</p>
+<ul>
+<li>必须同时拿起左右两根筷子；</li>
+<li>只有在两个邻居都没有进餐的情况下才允许进餐。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 5</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LEFT (i + N - 1) % N <span class="comment">// 左邻居</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RIGHT (i + 1) % N    <span class="comment">// 右邻居</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> THINKING 0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HUNGRY   1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EATING   2</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> semaphore;</span><br><span class="line"><span class="keyword">int</span> state[N];                <span class="comment">// 跟踪每个哲学家的状态</span></span><br><span class="line">semaphore mutex = <span class="number">1</span>;         <span class="comment">// 临界区的互斥，临界区是 state 数组，对其修改需要互斥</span></span><br><span class="line">semaphore s[N];              <span class="comment">// 每个哲学家一个信号量</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">philosopher</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        think(i);</span><br><span class="line">        take_two(i);</span><br><span class="line">        eat(i);</span><br><span class="line">        put_two(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">take_two</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    down(&amp;mutex);</span><br><span class="line">    state[i] = HUNGRY;</span><br><span class="line">    check(i);</span><br><span class="line">    up(&amp;mutex);</span><br><span class="line">    down(&amp;s[i]); <span class="comment">// 只有收到通知之后才可以开始吃，否则会一直等下去</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">put_two</span><span class="params">(i)</span> </span>&#123;</span><br><span class="line">    down(&amp;mutex);</span><br><span class="line">    state[i] = THINKING;</span><br><span class="line">    check(LEFT); <span class="comment">// 尝试通知左右邻居，自己吃完了，你们可以开始吃了</span></span><br><span class="line">    check(RIGHT);</span><br><span class="line">    up(&amp;mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">eat</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    down(&amp;mutex);</span><br><span class="line">    state[i] = EATING;</span><br><span class="line">    up(&amp;mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 检查两个邻居是否都没有用餐，如果是的话，就 up(&amp;s[i])，使得 down(&amp;s[i]) 能够得到通知并继续执行</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">check</span><span class="params">(i)</span> </span>&#123;         </span><br><span class="line">    <span class="keyword">if</span>(state[i] == HUNGRY &amp;&amp; state[LEFT] != EATING &amp;&amp; state[RIGHT] !=EATING) &#123;</span><br><span class="line">        state[i] = EATING;</span><br><span class="line">        up(&amp;s[i]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="读者-写者问题">2.读者-写者问题</h2>
+<p>允许多个进程同时对数据进行读操作，但是不允许读和写以及写和写操作同时发生。</p>
+<p>一个整型变量count记录在对数据进行读操作的进程数量，一个互斥量count_mutex用于对count加锁，一个互斥量data_mutex用于对读写的数据加锁。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> semaphore;</span><br><span class="line">semaphore count_mutex = <span class="number">1</span>;</span><br><span class="line">semaphore data_mutex = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        down(&amp;count_mutex);</span><br><span class="line">        count++;</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">1</span>) down(&amp;data_mutex); <span class="comment">// 第一个读者需要对数据进行加锁，防止写进程访问</span></span><br><span class="line">        up(&amp;count_mutex);</span><br><span class="line">        read();</span><br><span class="line">        down(&amp;count_mutex);</span><br><span class="line">        count--;</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>) up(&amp;data_mutex);</span><br><span class="line">        up(&amp;count_mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        down(&amp;data_mutex);</span><br><span class="line">        write();</span><br><span class="line">        up(&amp;data_mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>操作系统</tag>
       </tags>
   </entry>
   <entry>
@@ -1586,17 +1609,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>钢铁是怎样炼成的</title>
-    <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
-    <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
-<p>人的一生应该这样度过：当他回忆往事的时候，他不会因为虚度年华而悔恨；也不会因为碌碌无为而羞愧，当他临死的时候，他能够说：我的整个生命和全部精力，都献给了世界上最壮丽的事业——为人类的解放而斗争。</p>
-<p>人应当赶紧的充分的生活，因为意外的疾病和悲惨的事故随时都可能结束他的生命。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>银行家算法</title>
     <url>/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h2 id="一句话">一句话</h2>
@@ -1651,6 +1663,17 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>钢铁是怎样炼成的</title>
+    <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
+    <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
+<p>人的一生应该这样度过：当他回忆往事的时候，他不会因为虚度年华而悔恨；也不会因为碌碌无为而羞愧，当他临死的时候，他能够说：我的整个生命和全部精力，都献给了世界上最壮丽的事业——为人类的解放而斗争。</p>
+<p>人应当赶紧的充分的生活，因为意外的疾病和悲惨的事故随时都可能结束他的生命。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
