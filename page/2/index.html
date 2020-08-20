@@ -185,6 +185,122 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/" class="post-title-link" itemprop="url">leetcode 363.矩形区域不超过K的最大数值和，通过此题好好了解前缀和的各种应用和变化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-10 15:13:12" itemprop="dateCreated datePublished" datetime="2020-08-10T15:13:12+08:00">2020-08-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-12 18:40:29" itemprop="dateModified" datetime="2020-08-12T18:40:29+08:00">2020-08-12</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="题目描述">题目描述</h2>
+<p>给定一个非空二维矩阵 matrix 和一个整数 k，找到这个矩阵内部不大于 k 的最大矩形和。</p>
+<p>示例:</p>
+<p>输入: matrix = [[1,0,1],[0,-2,3]], k = 2 输出: 2 解释: 矩形区域 [[0, 1], [-2, 3]] 的数值和是 2，且 2 是不超过 k 的最大数字（k = 2）。 说明：</p>
+<p>矩阵内的矩形区域面积必须大于 0。 如果行数远大于列数，你将如何解答呢？</p>
+<h2 id="思路">思路</h2>
+<p>这道题目的思路是固定左右边界，对行进行前缀和和二分查找。</p>
+<p>我们知道，前缀和可以让我们O(1)的时间复杂度知道任何区间和。</p>
+<p>前缀和的典型构建方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pre = [<span class="number">0</span>]</span><br><span class="line">p = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">    p += n</span><br><span class="line">    pre.append(p)</span><br></pre></td></tr></table></figure>
+<p>比如我们想知道i,j之间的区间和，包括i，j索引的话，我们的方法是pre[j+1] - pre[i]。</p>
+<p>通过前缀和的变种，我们可以解决一些新的问题。</p>
+<p>我们将前缀和变成hash set，就可以快速判断是否有一个区间和等于target。</p>
+<p>我们可以插入排序的方法替换掉单纯的append，使前缀和有序，这样就可以用二分查找找到最接近某个target的区间和。</p>
+<p>这道题目就利用了第二种想法。</p>
+<p>我们固定左右边界，left和right，先将left到right之间的每一行的所有数值累加。这样我们就有了一列数。通过固定所有这样的left和right我们也就枚举了矩形所有的左边界和右边界。接着我们用第二种方法，边构建前缀和，编计算最接近target的矩形面积。</p>
+<p>其大致代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pre = [<span class="number">0</span>]</span><br><span class="line">p = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> r <span class="keyword">in</span> total:</span><br><span class="line">    p += r</span><br><span class="line">    loc = bisect.bisect_left(pre, p - k)</span><br><span class="line">    <span class="keyword">if</span> loc != len(pre):</span><br><span class="line">        res = max(res, p - pre[loc])</span><br><span class="line">    bisect.insort(pre, p)</span><br></pre></td></tr></table></figure>
+<p>有了这段代码，再加上我们固定左右边界的代码，我们就可以解决这个问题。计算一下复杂度。</p>
+<p>固定左右边界需要O(n^2)的时间复杂度，n为矩形的列数。生成前缀和遍历需要O(m)，m为矩阵的行数，搜索是O(logm)的，但是插入是O(m)的。所以总体上还是O(n^2m^2)的。但是常数项比较低。</p>
+<h2 id="总体代码如下">总体代码如下</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxSumSubmatrix</span>(<span class="params">self, matrix: List[List[int]], k: int</span>) -&gt; int:</span></span><br><span class="line">        m, n = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        total = [<span class="number">0</span>] * m</span><br><span class="line">        res = float(<span class="string">&#x27;-inf&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> left <span class="keyword">in</span> range(n):</span><br><span class="line">            total[:] = [<span class="number">0</span>] * m</span><br><span class="line">            <span class="keyword">for</span> right <span class="keyword">in</span> range(left, n):</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">                    total[i] += matrix[i][right]</span><br><span class="line">                pre = [<span class="number">0</span>]</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">                <span class="keyword">for</span> r <span class="keyword">in</span> total:</span><br><span class="line">                    p += r</span><br><span class="line">                    loc = bisect.bisect_left(pre, p - k)</span><br><span class="line">                    <span class="keyword">if</span> loc != len(pre):</span><br><span class="line">                        res = max(res, p - pre[loc])</span><br><span class="line">                    bisect.insort(pre, p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h2 id="另一道相似题目">另一道相似题目</h2>
+<ol start="1546" type="1">
+<li>和为目标值的最大数目不重叠非空子数组数目</li>
+</ol>
+<p>给你一个数组 nums 和一个整数 target 。</p>
+<p>请你返回 非空不重叠 子数组的最大数目，且每个子数组中数字和都为 target 。</p>
+<p>示例 1：</p>
+<p>输入：nums = [1,1,1,1,1], target = 2 输出：2 解释：总共有 2 个不重叠子数组（加粗数字表示） [1,1,1,1,1] ，它们的和为目标值 2 。 示例 2：</p>
+<p>输入：nums = [-1,3,5,1,4,2,-9], target = 6 输出：2 解释：总共有 3 个子数组和为 6 。 ([5,1], [4,2], [3,5,1,4,2,-9]) 但只有前 2 个是不重叠的。 示例 3：</p>
+<p>输入：nums = [-2,6,6,3,5,4,1,2,8], target = 10 输出：3 示例 4：</p>
+<p>输入：nums = [0,0,0], target = 0 输出：3</p>
+<p>提示：</p>
+<p>1 &lt;= nums.length &lt;= 10^5 -10^4 &lt;= nums[i] &lt;= 10^4 0 &lt;= target &lt;= 10^6</p>
+<p>这道题目就是使用了第一种前缀和的变化，并应用了贪心的思想。</p>
+<p>一旦发现target在区间和中，我们就重新统计前缀和。示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxNonOverlapping</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; int:</span></span><br><span class="line">        pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">        p = <span class="number">0</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">            p += n</span><br><span class="line">            <span class="keyword">if</span> p - target <span class="keyword">in</span> pre:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">                pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                pre.add(p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/08/Splay-Tree/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1016,97 +1132,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">Dijkstra's Shortest Path Algorithm|Dijkstra最短路径算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-08-03 16:58:38 / 修改时间：17:29:01" itemprop="dateCreated datePublished" datetime="2020-08-03T16:58:38+08:00">2020-08-03</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="问题描述">问题描述</h2>
-<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
-<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
-<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
-<h2 id="算法">算法</h2>
-<ol type="1">
-<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
-<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
-<li>while sptSet不包含所有的顶点：
-<ul>
-<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
-<li>将u加入到sptSet中。</li>
-<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
-</ul></li>
-</ol>
-<h2 id="代码示例">代码示例</h2>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="参考">参考</h2>
-<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1178,7 +1203,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
