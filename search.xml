@@ -139,6 +139,84 @@
       </tags>
   </entry>
   <entry>
+    <title>MySQL事务隔离</title>
+    <url>/2020/08/20/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/</url>
+    <content><![CDATA[<h2 id="事务">事务</h2>
+<p>和数据库打交道的时候，我们总是会用到事务，最经典的例子就是转账，你要给朋友小王转100块钱，而此时你的银行卡只有100块钱。</p>
+<p>转账过程具体到程序里会有一系列的操作，比如查询余额、做加减法、更新余额等，这些操作必须保证是一体的，不然等程序查完之后，还没做减法之前，你这100块钱完全可以借着这个时间差再查一次，然后再给另外一个朋友转账，如果银行这么整，不就乱了么？这时就要用到”事务“这个概念了。</p>
+<p>简单来说，事务就是要保证一组数据库操作，要么全部成功，要么全部失败。在MySQL中，事务支持是在引擎层实现的。你现在知道，MySQL是一个支持多引擎的系统，但并不是所有的引擎都支持事务。比如MySQL原生的MyISAM引擎就不支持事务，这也是MyISAM被InnoDB取代的重要原因之一。</p>
+<h2 id="隔离性与隔离级别">隔离性与隔离级别</h2>
+<p>提到事务，你肯定会想到ACID（Atomicity、Consistency、Isolation、Durability，即原子性、一致性、隔离性、持久性），今天我们就来说说其中I，也就是”隔离性“。下面是ACID的简单定义。</p>
+<ol type="1">
+<li><p>原子性</p>
+<p>事务被视为不可分割的最小单元，事务的所有操作要么全部提交成功，要么全部失败回滚。</p>
+<p>回滚可以用回滚日志（Undo Log）来实现，回滚日志记录着事务所执行的修改操作，在回滚时反向执行这些修改操作即可。</p></li>
+<li><p>一致性</p>
+<p>数据库在事务执行前后都保持一致性的状态。在一致性状态下，所有事务对同一个数据的读取结果都是相同的。</p></li>
+<li><p>隔离性</p>
+<p>一个事务所做的修改在最终提交以前，对其他事务是不可见的。</p></li>
+<li><p>持久性</p>
+<p>一旦事务提交，则其所做的修改将会永远保存到数据库中。即使系统发生崩溃，事务执行的结果也不能丢失。</p></li>
+</ol>
+<p>当数据库上有多个事务同时执行的时候，就可能出现脏读（dirty read）、不可重复度（non-repeatable read）、幻读（phantom read）的问题，为了解决这些问题，就有了”隔离级别“的概念。</p>
+<p>在谈隔离级别之前，你首先要知道，你隔离的越严实，效率就会越低。因此很多时候，我们都要在二者之间巡展一个平衡点。SQL标准的事务隔离级别：读未提交（read uncommitted）、读提交（read committed）、可重复度（repeatable read）和串行化（serializable）。下面我逐一解释：</p>
+<ul>
+<li>读未提交是指，一个事务还没提交时，它做的变更就能被别的事务看到。</li>
+<li>读提交是指，一个事务提交之后，它做的变更才会被其他事务看到。</li>
+<li>可重复读是指，一个事务执行过程中看到的数据，总是跟这个事务在启动时看到的数据是一致的。当然在可重复度隔离级别下，未提交变更对其他事务也是不可见的。</li>
+<li>串行化，顾名思义是对于同一行记录，”写“会加”写锁“，读会加”读锁“。当出现读写锁冲突的时候，后访问的事务必须等前一个事务执行完成，才能继续执行。</li>
+</ul>
+<p>其中”读提交“和”可重复读“比较难理解，所以我用一个例子说明这几种隔离级别。假设数据表T中只有一列，其中一行的值为1，下面是按照时间顺序执行两个事务的行为。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql&gt; create table T(c int) engine=InnoDB;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> T(c) <span class="keyword">values</span>(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>我们来看看在不同的隔离级别下，事务A会有哪些不同的返回结果，也就是图里面V1、V2、V3的返回值分别是什么。</p>
+<ul>
+<li>若隔离级别是”读未提交“，则 V1 的值就是 2。这时候事务 B 虽然还没有提交，但是结果已经被 A 看到了。因此，V2、V3 也都是 2。</li>
+<li>若隔离级别是”读提交“，则V1是1，V2 的值是 2。事务 B 的更新在提交后才能被 A 看到。所以， V3 的值也是 2。</li>
+<li>若隔离级别是”可重复读“，则V1、V2是1，V3是2、之所以V2还是1，遵循的就是这个要求：事务在执行期间看到的数据前后必须是一致的。</li>
+<li>若隔离级别是”串行化“，则在事务B执行”将1改成2“的时候，会被锁住。直到事务A提交后，事务B才可以继续执行。所以从A的角度看，V1、V2值是1，V3的值是2。</li>
+</ul>
+<p>在实现上，数据库里面会创建一个视图，访问的时候以视图的逻辑结果为准。在”可重复读“隔离级别下，这个视图是在事务启动时创建的，整个事务存在期间都用这个视图。在”读提交“隔离级别下，这个视图是在每个SQL语句开始执行的时候创建的。这里需要注意的是，”读未提交“隔离级别下直接返回记录上的最新值，没有试图概念；而”串行化“隔离级别下直接用加锁的方式来避免并行访问。</p>
+<p>我们可以看到在不同的隔离级别下，数据库行为是有所不同的。Oracle数据库的默认隔离级别其实就是”读提交“，因此对于一些从Oracle迁移到MySQL的应用，为保证数据库隔离级别的已知，一定要记得将MySQL的给级别设置为”读提交“。</p>
+<p>配置的方式是，将启动参数transaction-isolation的值设置成READ-COMMITTED。你可以使用show variables</p>
+<p>来查看当前的值。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> show variables like <span class="string">&#x27;transaction_isolation&#x27;</span>;</span></span><br><span class="line"></span><br><span class="line">+-----------------------+----------------+</span><br><span class="line"></span><br><span class="line">| Variable_name | Value |</span><br><span class="line"></span><br><span class="line">+-----------------------+----------------+</span><br><span class="line"></span><br><span class="line">| transaction_isolation | READ-COMMITTED |</span><br><span class="line"></span><br><span class="line">+-----------------------+----------------+</span><br></pre></td></tr></table></figure>
+<p>总结来说，存在即合理，每种隔离级别都有自己的使用场景，你要根据自己的业务情况来定。我想<strong>你可能会问那什么时候需要”可重复读“的场景呢</strong>？我们来看一个数据校对逻辑的案例。</p>
+<p>假设你在管理一个个人银行账户表。一个表存了账户余额，一个表存了账单明细。到了月底你要做数据校对，也就是判断上个月的余额和当前余额的差额，是否与本月的账单明细一致。你一定希望在校对过程中，即使有用户发生了一笔新的交易，也不影响你的校对结果。</p>
+<p>这时候使用“可重复读”隔离级别就很方便。事务启动时的视图可以认为是静态的，不受其他事务更新的影响。</p>
+<h2 id="事务隔离的实现">事务隔离的实现</h2>
+<p>理解了事务的隔离级别，我们再来看看事务隔离具体是怎么实现的。这里我们展开说明“可重复读”。</p>
+<p>在MySQL中，实际上每条记录在更新的时候都会同时记录一条回滚操作（前者记录在redo log，后者记录在undo log）。记录上的最新值，通过回滚操作，都可以得到前一个状态的值。</p>
+<p>假设一个值从1被按顺序改成了2、3、4，在回滚日志里面就会有类似下面的记录。shi</p>
+
+<p>当前值是4，但是在查询这条记录的时候，不同时刻启动的事务会有不同的read-view。如图中看到的，在视图A、B、C里面，这一个记录的值分别是1、2、4，同一条记录在系统中可以存在多个版本，就是数据库的多版本并发控制（MVCC）。对于read-view A，要得到1，就必须将当前值一次执行图中所有的回滚操作得到。</p>
+<p>同时你会发现，即使现在有另外一个事务正在将4改成5，这个事务跟read-view A、B、C对应的事务是不会冲突的。</p>
+<p>你一定会问，回滚日志总不能一直保留吧，什么时候删除呢？答案是，在不需要的时候才删除。也就是说，系统会判断，当没有事务再需要用到这些回滚日志时，回滚日志会被删除。</p>
+<p>什么时候才不需要了呢？就是当系统里没有比这个回滚日志更早的read-view的时候。</p>
+<p>基于上面的说明，我们来讨论一下为什么建议你尽量不要使用长事务。</p>
+<p>长事务意味着系统里面会存在很老的事务视图。由于这些事务随时可能访问诗句哭里面的任何数据，所以这个事务提交之前，数据库里面它可能用到的回滚记录都必须保留，这就会导致大量占用存储空间。</p>
+<p>在MySQL 5.5及以前的版本，回滚日志是跟数据字典一起放在ibdata文件里的，即使长事务最终提交，回滚段被清理，文件也不会变小。我见过数据只有20GB，而回滚段有200GB的库。最终只好为了清理回滚段，重建整个库。</p>
+<p>除了对回滚段的影响，长事务还占用锁资源，也可能拖垮整个库，这个我们会在后面讲锁的时候展开。</p>
+<h2 id="事务的启动方式">事务的启动方式</h2>
+<p>如上面所述，长事务有这些潜在风险，我当然是建议你尽量避免。其实很多时候业务开发同学并不是有意使用长事务，通常是由于误用所致。MySQL的事务启动方式有以下几种：</p>
+<ol type="1">
+<li>显式启动事务语句，begin或start transaction。配套的提交语句是commit，回滚语句是rollback。</li>
+<li>set autocommit=0，这个命令会将这个线程的自动提交关掉。意味着如果你只执行一个select语句，这个事务就启动了，而且不不会自动提交。这个事务持续存在知道你主动执行commit或rollback语句，或者断开连接。</li>
+</ol>
+<p>有些客户端连接框架会默认连接成功后先执行一个et autocommit=0的命令。这就导致接下来的查询都在事务中，如果是长连接，就导致了意外的长事务。</p>
+<p>因此，我会交易你总是使用set autocommit=1，通过显式语句的方式来启动事务。</p>
+<p>但是有的开发同学会纠结“多一次交互”的问题。对于一个需要频繁使用事务的业务，第二中凡是每个事务在开始时都不需要主动执行一次“begin”，减少额语句的交互次数。如果你也有这个顾虑，我建议你使用commit work and chain语法。</p>
+<p>在autocommit为1的情况下，用begin显式启动的事务，如果执行commit则提交事务。如果执行commit work and chaini，则是提交事务并自动启动下一个事务，这样也省去了再次执行begin语句的开销。同时带来的好处是从程序开发的角度明确地知道每个语句是否处于事务中。</p>
+<p>你可以在information_schema库中的innodb_trx这个表中查询长事务，比如下面这个语句，用于查找持续时间超过60s的事务。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> information_schema.innodb_trx <span class="keyword">where</span> TIME_TO_SEC(<span class="keyword">timediff</span>(<span class="keyword">now</span>(),trx_started))&gt;<span class="number">60</span></span><br></pre></td></tr></table></figure>
+<h2 id="小结">小结</h2>
+<p>这篇文章，主要介绍了MySQL的事务隔离级别的现象和实现，根据实现原理分析了长事务存在的风险，以及如何用正确的方式避免长事务，希望举的例子能够帮助你理解事务，并更好的使用MySQL的事务特性。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Nobody exists on purpose</title>
     <url>/2019/12/11/Nobody-exists-on-purpose/</url>
     <content><![CDATA[<p>Nobody exists on purpose.</p>
@@ -471,28 +549,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 41.缺失的第一个正数</title>
-    <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
-    <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数">leetcode 41 缺失的第一个正数</h3>
-<h3 id="问题描述">问题描述</h3>
-<p>给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。</p>
-<p>示例 1:</p>
-<p>输入: [1,2,0] 输出: 3 示例 2:</p>
-<p>输入: [3,4,-1,1] 输出: 2 示例 3:</p>
-<p>输入: [7,8,9,11,12] 输出: 1</p>
-<p>提示：</p>
-<p>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。</p>
-<h3 id="思路">思路</h3>
-<p>这道题目和不使用任何额外空间的计数排序很像，因为都对时空复杂度做了严格的限制，我们都不得不改变原数组，设法将其改为我们能够利用的数据结构。否则这两道题目都无法有「真正」的解。不使用额外空间计数排序的那道题目规定数组的元素有一定的范围，我们可以利用32位整数的前16位计数，最终输出计数排序的结果。</p>
-<p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
-<h3 id="算法">算法</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 363.矩形区域不超过K的最大数值和，通过此题好好了解前缀和的各种应用和变化</title>
     <url>/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/</url>
     <content><![CDATA[<h2 id="题目描述">题目描述</h2>
@@ -539,6 +595,28 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 41.缺失的第一个正数</title>
+    <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
+    <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数">leetcode 41 缺失的第一个正数</h3>
+<h3 id="问题描述">问题描述</h3>
+<p>给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。</p>
+<p>示例 1:</p>
+<p>输入: [1,2,0] 输出: 3 示例 2:</p>
+<p>输入: [3,4,-1,1] 输出: 2 示例 3:</p>
+<p>输入: [7,8,9,11,12] 输出: 1</p>
+<p>提示：</p>
+<p>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。</p>
+<h3 id="思路">思路</h3>
+<p>这道题目和不使用任何额外空间的计数排序很像，因为都对时空复杂度做了严格的限制，我们都不得不改变原数组，设法将其改为我们能够利用的数据结构。否则这两道题目都无法有「真正」的解。不使用额外空间计数排序的那道题目规定数组的元素有一定的范围，我们可以利用32位整数的前16位计数，最终输出计数排序的结果。</p>
+<p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
+<h3 id="算法">算法</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>leetcode 818.赛车</title>
     <url>/2020/08/12/leetcode-818-%E8%B5%9B%E8%BD%A6/</url>
     <content><![CDATA[<h2 id="示例解法">示例解法</h2>
@@ -566,38 +644,6 @@
 <h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
 <p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现简单布隆过滤器</title>
-    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
-<p>布隆过滤器vshash table</p>
-<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
-<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
-<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
-<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
-<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
-<h2 id="案例">案例</h2>
-<ol type="1">
-<li>比特币网络</li>
-<li>分布式系统（Map-Reduce) - Hadoop、search engine
-<ol type="1">
-<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
-</ol></li>
-<li>Redis缓存</li>
-<li>垃圾邮件、评论等的过滤</li>
-</ol>
-<h2 id="简单实现示例">简单实现示例</h2>
-<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
-<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
-<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
-<p>search是search(s:str) -&gt;bool</p>
-<p>示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -665,6 +711,38 @@
       </tags>
   </entry>
   <entry>
+    <title>python实现简单布隆过滤器</title>
+    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
+<p>布隆过滤器vshash table</p>
+<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
+<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
+<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
+<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
+<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
+<h2 id="案例">案例</h2>
+<ol type="1">
+<li>比特币网络</li>
+<li>分布式系统（Map-Reduce) - Hadoop、search engine
+<ol type="1">
+<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
+</ol></li>
+<li>Redis缓存</li>
+<li>垃圾邮件、评论等的过滤</li>
+</ol>
+<h2 id="简单实现示例">简单实现示例</h2>
+<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
+<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
+<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
+<p>search是search(s:str) -&gt;bool</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《相信未来》——食指</title>
     <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
     <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
@@ -713,12 +791,22 @@
       </tags>
   </entry>
   <entry>
-    <title>事务隔离</title>
-    <url>/2020/08/20/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/</url>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
     <content><![CDATA[
 ]]></content>
       <tags>
-        <tag>数据库</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -733,25 +821,6 @@
 <li>拔掉了最后两颗智齿，所有的智齿都没啦！</li>
 <li>看完了《七武士》</li>
 </ul>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -889,15 +958,6 @@
       </tags>
   </entry>
   <entry>
-    <title>堆的实现(大顶堆、小顶堆)</title>
-    <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>双蛋问题以及更主要的其更通用化且有用的问题的解</title>
     <url>/2020/07/26/%E5%8F%8C%E8%9B%8B%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E6%9B%B4%E4%B8%BB%E8%A6%81%E7%9A%84%E5%85%B6%E6%9B%B4%E9%80%9A%E7%94%A8%E5%8C%96%E4%B8%94%E6%9C%89%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="题目leetcode-887.-鸡蛋掉落">题目：LeetCode <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc3VwZXItZWdnLWRyb3Av">887. 鸡蛋掉落<i class="fa fa-external-link-alt"></i></span></h2>
@@ -971,6 +1031,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <h2 id="转载感谢">转载感谢</h2>
 <p>感谢优秀题解</p>
 <p>https://leetcode.com/problems/super-egg-drop/discuss/159079/Python-DP-from-kn2-to-knlogn-to-kn</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>堆的实现(大顶堆、小顶堆)</title>
+    <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1136,6 +1205,19 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>快速排序的多种写法</title>
+    <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
+    <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
+<p>以下给出python版本的实现代码。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSort</span>(<span class="params">self, nums: List[int]</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.quickSortHelper(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSortHelper</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        pivot = self.partition(nums, l, r)</span><br><span class="line">        self.quickSortHelper(nums, l, pivot - <span class="number">1</span>)</span><br><span class="line">        self.quickSortHelper(nums, pivot + <span class="number">1</span>, r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># def partition(self, nums, l, r):</span></span><br><span class="line">    <span class="comment">#     ran = random.randint(l, r)</span></span><br><span class="line">    <span class="comment">#     nums[r], nums[ran] = nums[ran], nums[r]</span></span><br><span class="line">    <span class="comment">#     pivot = r</span></span><br><span class="line">    <span class="comment">#     right = l</span></span><br><span class="line">    <span class="comment">#     for i in range(l, r):</span></span><br><span class="line">    <span class="comment">#         if nums[i] &lt;= nums[pivot]:</span></span><br><span class="line">    <span class="comment">#             nums[i], nums[right] = nums[right], nums[i]</span></span><br><span class="line">    <span class="comment">#             right += 1</span></span><br><span class="line">    <span class="comment">#     nums[right], nums[pivot] = nums[pivot], nums[right]</span></span><br><span class="line">    <span class="comment">#     return right</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        ran = random.randint(l, r)</span><br><span class="line">        nums[l], nums[ran] = nums[ran], nums[l]</span><br><span class="line">        pivot = l</span><br><span class="line">        left = r</span><br><span class="line">        i = l + <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= left:</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt;= nums[pivot]:</span><br><span class="line">                nums[i], nums[left] = nums[left], nums[i]</span><br><span class="line">                left -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">        nums[left], nums[pivot] = nums[pivot], nums[left]</span><br><span class="line">        <span class="keyword">return</span> left</span><br></pre></td></tr></table></figure>
+<p>两个partition的效果是一样的。</p>
+<p>注意，我们使用一种随机方法，保证了我们的快排在遇到严格递增序列或者严格递减序列的时候，期望也是O(nlogn)时间复杂度的。这是一种随机方法，还有其他随机算法的实现。这种比较简单。而这个随机的步骤，也使得我们的快排不是稳定。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>拔智齿</title>
     <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
     <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
@@ -1148,19 +1230,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>快速排序的多种写法</title>
-    <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
-    <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
-<p>以下给出python版本的实现代码。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSort</span>(<span class="params">self, nums: List[int]</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.quickSortHelper(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSortHelper</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        pivot = self.partition(nums, l, r)</span><br><span class="line">        self.quickSortHelper(nums, l, pivot - <span class="number">1</span>)</span><br><span class="line">        self.quickSortHelper(nums, pivot + <span class="number">1</span>, r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># def partition(self, nums, l, r):</span></span><br><span class="line">    <span class="comment">#     ran = random.randint(l, r)</span></span><br><span class="line">    <span class="comment">#     nums[r], nums[ran] = nums[ran], nums[r]</span></span><br><span class="line">    <span class="comment">#     pivot = r</span></span><br><span class="line">    <span class="comment">#     right = l</span></span><br><span class="line">    <span class="comment">#     for i in range(l, r):</span></span><br><span class="line">    <span class="comment">#         if nums[i] &lt;= nums[pivot]:</span></span><br><span class="line">    <span class="comment">#             nums[i], nums[right] = nums[right], nums[i]</span></span><br><span class="line">    <span class="comment">#             right += 1</span></span><br><span class="line">    <span class="comment">#     nums[right], nums[pivot] = nums[pivot], nums[right]</span></span><br><span class="line">    <span class="comment">#     return right</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        ran = random.randint(l, r)</span><br><span class="line">        nums[l], nums[ran] = nums[ran], nums[l]</span><br><span class="line">        pivot = l</span><br><span class="line">        left = r</span><br><span class="line">        i = l + <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= left:</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt;= nums[pivot]:</span><br><span class="line">                nums[i], nums[left] = nums[left], nums[i]</span><br><span class="line">                left -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">        nums[left], nums[pivot] = nums[pivot], nums[left]</span><br><span class="line">        <span class="keyword">return</span> left</span><br></pre></td></tr></table></figure>
-<p>两个partition的效果是一样的。</p>
-<p>注意，我们使用一种随机方法，保证了我们的快排在遇到严格递增序列或者严格递减序列的时候，期望也是O(nlogn)时间复杂度的。这是一种随机方法，还有其他随机算法的实现。这种比较简单。而这个随机的步骤，也使得我们的快排不是稳定。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1293,6 +1362,37 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>旅行商问题（朴素和dp方法）</title>
+    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
+    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
+<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
+<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
+<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
+<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
+<p>以下是旅行商问题的不同解法。</p>
+<p><strong>朴素的解法：</strong></p>
+<ol type="1">
+<li>将城市1作为起点和终点</li>
+<li>生成所有（n-1）！城市的排列组合</li>
+<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
+<li>返回成本最小的排列组合</li>
+</ol>
+<p>时间复杂度：O(n!)</p>
+<p><strong>DP 动态递推</strong></p>
+<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
+<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
+<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
+<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
+<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
+<p><strong>参考：</strong></p>
+<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>树状数组Binary Indexed Tree</title>
     <url>/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/</url>
     <content><![CDATA[<h2 id="参考">参考</h2>
@@ -1338,37 +1438,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>树状数组解法，用每个数的rank来离散化，反序插入树状数组中，前一位的前缀和就是右侧小于当前元素的个数。</p>
 <p>示例代码如下：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSmaller</span>(<span class="params">self, nums: List[int]</span>) -&gt; List[int]:</span></span><br><span class="line">        rank = &#123;val: i + <span class="number">1</span> <span class="keyword">for</span> i, val <span class="keyword">in</span> enumerate(sorted(nums))&#125;</span><br><span class="line">        n = len(nums)</span><br><span class="line">        res = []</span><br><span class="line"></span><br><span class="line">        BITree = [<span class="number">0</span>] * (n + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">i, k=<span class="number">1</span></span>):</span></span><br><span class="line">            <span class="keyword">while</span> i &lt;= n:</span><br><span class="line">                BITree[i] += k</span><br><span class="line">                i += i &amp; -i</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">i</span>):</span></span><br><span class="line">            s = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> i:</span><br><span class="line">                s += BITree[i]</span><br><span class="line">                i -= i &amp; -i</span><br><span class="line">            <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> reversed(nums):</span><br><span class="line">            res.append(getSum(rank[num] - <span class="number">1</span>))</span><br><span class="line">            update(rank[num])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res[::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>旅行商问题（朴素和dp方法）</title>
-    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
-    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
-<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
-<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
-<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
-<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
-<p>以下是旅行商问题的不同解法。</p>
-<p><strong>朴素的解法：</strong></p>
-<ol type="1">
-<li>将城市1作为起点和终点</li>
-<li>生成所有（n-1）！城市的排列组合</li>
-<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
-<li>返回成本最小的排列组合</li>
-</ol>
-<p>时间复杂度：O(n!)</p>
-<p><strong>DP 动态递推</strong></p>
-<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
-<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
-<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
-<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
-<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
-<p><strong>参考：</strong></p>
-<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1584,22 +1653,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>郭德纲写给儿子郭麒麟的家书</title>
-    <url>/2020/07/23/%E9%83%AD%E5%BE%B7%E7%BA%B2%E5%86%99%E7%BB%99%E5%84%BF%E5%AD%90%E9%83%AD%E9%BA%92%E9%BA%9F%E7%9A%84%E5%AE%B6%E4%B9%A6/</url>
-    <content><![CDATA[<h3 id="人生的真谛要用自己一辈子去理解">人生的真谛要用自己一辈子去理解</h3>
-<p>甲午年，正月初九。我儿子十八了，正所谓成人长大。学名奇临，取奇妙降临之意。后下海，艺名麒麟，乃仿周大师之遗韵。</p>
-<p>人生一世，极不容易。登天难，求人更难。黄连苦，无钱更苦。江湖险，人心更险。春冰薄，人情更薄。过去有句话：既落江湖内，便是薄命人。我本不愿儿从艺，奈何人自有志无法横栏。但有几句话要说清楚。</p>
-<p>艺人分几类，相隔种种。一是普通艺人，有一技之长，凭能耐吃饭。一是名演员，知名度高，但不代表艺术高，此类要两说。一是角儿，何为角儿？舞台上的顶梁柱、剧团班社的灵魂。贴出你的名字要保证卖得出票，全团老少指着你吃饭。角儿是有责任的艺人。</p>
-<p>郭麒麟刚十八，我不希望儿子大红。人红麻烦多，一大三大，名气大后，开销大压力大是非大。红起来容易，难的是接住自己。年三十吃顿饺子容易，之后呢？得天天吃饺子才行啊，可你有那么多的面和馅儿吗？所以，要多下功夫，并且要保持一个好心态。很多人不成功的原因，主要是太尊重自己了。</p>
-<p>一个人刚出道，不狂是没有出息的。但如果一直狂，是肯定没出息的。你眼中的你，和别人眼中的你，不是一回事。无限赞美自己，只是一种胆怯。我一直认为，恐惧到头就是愤怒。发挥无敌想象，给自己描绘了一个童话世界，白衣如雪来去如风。剑影刀光闪过后，你满脸冷酷地立于珠峰顶端，傲视苍生无比英武。此时我要问的是：孩子，你怎么下去？不让古人，是谓有志；不让今人，是谓无良。记住了，小俗便雅，大雅则俗。有人夸你，别信。有人骂你，别听。周围人随意捧骂，不可与之交，因其无志兴也。记住，言语多反复，当防欺诈。忘恩思小过，定会反戈。开口说大义，临大难必变节。逢人称兄弟，即深交也平常。</p>
-<p>另外，凡事要慎重。江湖子弟，拿得起来放得下。身边人很重要。一根稻草，扔街上就是垃圾，捆上白菜就是白菜价，捆上大闸蟹就是大闸蟹价。包括脚下的平台，也极重要。同样是一个人，步行一小时能走多远？骑车呢？开车呢？坐飞机呢？平台会决定你的速度，且记且记。</p>
-<p>此外，钱财要珍惜，但不可看得太重。财乃天地至公之物，假手于人罢了，雨打残花风卷流云，轮番更转而已。穷转富，富转穷，哪有百世富家翁？至于交友，吃点亏也无妨。人每所谓穷通寿夭为命所系，岂不知造物之报施，全视人之自取。芸芸众生富贵贫寒，不是谁都可以傲视乾坤。其中有命有运，要知因果懂善恶，我儿且记，但行好事，莫问前程。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>软件=算法+数据结构+文档+数据？</title>
     <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
     <content><![CDATA[<p>软件的开始到后来...</p>
@@ -1615,6 +1668,22 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>郭德纲写给儿子郭麒麟的家书</title>
+    <url>/2020/07/23/%E9%83%AD%E5%BE%B7%E7%BA%B2%E5%86%99%E7%BB%99%E5%84%BF%E5%AD%90%E9%83%AD%E9%BA%92%E9%BA%9F%E7%9A%84%E5%AE%B6%E4%B9%A6/</url>
+    <content><![CDATA[<h3 id="人生的真谛要用自己一辈子去理解">人生的真谛要用自己一辈子去理解</h3>
+<p>甲午年，正月初九。我儿子十八了，正所谓成人长大。学名奇临，取奇妙降临之意。后下海，艺名麒麟，乃仿周大师之遗韵。</p>
+<p>人生一世，极不容易。登天难，求人更难。黄连苦，无钱更苦。江湖险，人心更险。春冰薄，人情更薄。过去有句话：既落江湖内，便是薄命人。我本不愿儿从艺，奈何人自有志无法横栏。但有几句话要说清楚。</p>
+<p>艺人分几类，相隔种种。一是普通艺人，有一技之长，凭能耐吃饭。一是名演员，知名度高，但不代表艺术高，此类要两说。一是角儿，何为角儿？舞台上的顶梁柱、剧团班社的灵魂。贴出你的名字要保证卖得出票，全团老少指着你吃饭。角儿是有责任的艺人。</p>
+<p>郭麒麟刚十八，我不希望儿子大红。人红麻烦多，一大三大，名气大后，开销大压力大是非大。红起来容易，难的是接住自己。年三十吃顿饺子容易，之后呢？得天天吃饺子才行啊，可你有那么多的面和馅儿吗？所以，要多下功夫，并且要保持一个好心态。很多人不成功的原因，主要是太尊重自己了。</p>
+<p>一个人刚出道，不狂是没有出息的。但如果一直狂，是肯定没出息的。你眼中的你，和别人眼中的你，不是一回事。无限赞美自己，只是一种胆怯。我一直认为，恐惧到头就是愤怒。发挥无敌想象，给自己描绘了一个童话世界，白衣如雪来去如风。剑影刀光闪过后，你满脸冷酷地立于珠峰顶端，傲视苍生无比英武。此时我要问的是：孩子，你怎么下去？不让古人，是谓有志；不让今人，是谓无良。记住了，小俗便雅，大雅则俗。有人夸你，别信。有人骂你，别听。周围人随意捧骂，不可与之交，因其无志兴也。记住，言语多反复，当防欺诈。忘恩思小过，定会反戈。开口说大义，临大难必变节。逢人称兄弟，即深交也平常。</p>
+<p>另外，凡事要慎重。江湖子弟，拿得起来放得下。身边人很重要。一根稻草，扔街上就是垃圾，捆上白菜就是白菜价，捆上大闸蟹就是大闸蟹价。包括脚下的平台，也极重要。同样是一个人，步行一小时能走多远？骑车呢？开车呢？坐飞机呢？平台会决定你的速度，且记且记。</p>
+<p>此外，钱财要珍惜，但不可看得太重。财乃天地至公之物，假手于人罢了，雨打残花风卷流云，轮番更转而已。穷转富，富转穷，哪有百世富家翁？至于交友，吃点亏也无妨。人每所谓穷通寿夭为命所系，岂不知造物之报施，全视人之自取。芸芸众生富贵贫寒，不是谁都可以傲视乾坤。其中有命有运，要知因果懂善恶，我儿且记，但行好事，莫问前程。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
