@@ -24,18 +24,23 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="记录我的工作与生活，分享一些想法">
-<meta property="og:type" content="website">
-<meta property="og:title" content="侯瑞哲的博客">
-<meta property="og:url" content="https://hrz123.github.io/archives/page/3/index.html">
+  <meta name="description" content="上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。 三角形不等式：从顶点i到顶点j的最短路径总是直接从i到达j，而不是通过其他顶点k，即dist(i, j)总是小于等于dist(i, k) +">
+<meta property="og:type" content="article">
+<meta property="og:title" content="旅行商问题（使用MST的近似算法）">
+<meta property="og:url" content="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="记录我的工作与生活，分享一些想法">
+<meta property="og:description" content="上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。 三角形不等式：从顶点i到顶点j的最短路径总是直接从i到达j，而不是通过其他顶点k，即dist(i, j)总是小于等于dist(i, k) +">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST1.png">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST2.png">
+<meta property="article:published_time" content="2020-08-21T07:56:53.000Z">
+<meta property="article:modified_time" content="2020-08-21T08:23:54.615Z">
 <meta property="article:author" content="侯瑞哲">
-<meta property="article:tag" content="技术博客">
+<meta property="article:tag" content="数据结构与算法">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST1.png">
 
-<link rel="canonical" href="https://hrz123.github.io/archives/page/3/">
+<link rel="canonical" href="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/">
 
 
 <script id="page-configurations">
@@ -43,12 +48,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | 侯瑞哲的博客</title>
+  <title>旅行商问题（使用MST的近似算法） | 侯瑞哲的博客</title>
   
 
 
@@ -179,240 +184,128 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          旅行商问题（使用MST的近似算法）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-21 15:56:53 / 修改时间：16:23:54" itemprop="dateCreated datePublished" datetime="2020-08-21T15:56:53+08:00">2020-08-21</time>
+            </span>
+
+          
   
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        
-        <span class="collection-header">不错! 目前共计 58 篇日志。 继续努力。</span>
-      </div>
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+        <p>上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。</p>
+<p><strong>三角形不等式</strong>：从顶点i到顶点j的最短路径总是直接从i到达j，而不是通过其他顶点k，即dist(i, j)总是小于等于dist(i, k) + dist(k, j)。三角形不等式在很多情况下都是成立的。当成本函数满足三角形不等式时，我们可以为TSP设计一个近似算法，该算法返回的旅游成本永远不会超过最优旅游成本的两倍。其思想是使用最小生成树（Minimum Spanning Tree, MST)。以下是基于MST的算法。</p>
+<h2 id="算法">算法</h2>
+<ol type="1">
+<li>让1成为销售员的起点和终点。</li>
+<li>用Prim's Algorithm以1为根构建MST。</li>
+<li>列出构造的MST的前序遍历中所访问的顶点，并在最后添加1.</li>
+</ol>
+<p>让我们考虑下面的例子。第一张图是给定的图，第二张图是以1为根构建的MST。MST的前序遍历是1-2-4-3。在末尾加1，得到1-2-4-3-1，这就是这个算法的输出。</p>
+<img data-src="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST1.png" class>
+<img data-src="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST2.png" class>
+<p>这种情况下，近似算法会产生最优线路，但未必在所有情况下都能产生最优路径。</p>
+<p><strong>这个算法是如何2倍近似的？</strong>上述算法产生的输出成本永远不会超过最佳可能输出成本的两倍。我们来看看上述算法是如何保证这一点的。</p>
+<p>让我们定义一个术语"full walk"来理解这个问题。一个full walk是当一个顶点被前序遍历访问访问时列出它们，并且当某个顶点的子树被返回时也列出这些顶点。上面树的full walk将是1-2-1-4-1-3-1。下面是证明2-近似性的一些重要事实。</p>
+<ol type="1">
+<li>最好的旅行商路线的成本绝不小于MST的成本。（MST的定义说，它是连接所有顶点的最小成本树。）</li>
+<li>full walk的总成本最多是MST成本的两倍（MST的每条边最多被访问两次）。</li>
+<li>上述算法的输出小于full walk的成本。在上面的算法中，我们打印出preorder walk作为输出。在前序遍历中，full walk的两条或多条边被一条边所取代。例如，2-1和1-4被一条边2-4所取代。所以，如果图形遵循三角形不等式，那么这条结论总是对的。</li>
+</ol>
+<p>从以上三句陈述中，我们可以得出结论，近似算法产生的输出成本永远不会超过最佳可能解成本的两倍。</p>
+<p>我们讨论了一个非常简单的旅行商问题的2-近似算法。对于这个问题还有其他更好的近似算法。例如Christofides算法是1.5近似算法。我们将很快把这些算法作为单独的文章来讨论。</p>
+<h2 id="参考">参考</h2>
+<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-2-approximate-using-mst/?ref=lbp</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-08-05T11:06:35+08:00"
-              content="2020-08-05">
-          08-05
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" rel="tag"># 数据结构与算法</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" itemprop="url">
-            <span itemprop="name">python实现简单布隆过滤器</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-08-04T17:21:29+08:00"
-              content="2020-08-04">
-          08-04
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/" itemprop="url">
-            <span itemprop="name">背包问题泛型</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-08-04T10:00:03+08:00"
-              content="2020-08-04">
-          08-04
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/08/04/leetcode-207-%E8%AF%BE%E7%A8%8B%E8%A1%A8/" itemprop="url">
-            <span itemprop="name">leetcode 207.课程表</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-08-03T16:58:38+08:00"
-              content="2020-08-03">
-          08-03
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/" itemprop="url">
-            <span itemprop="name">Dijkstra's Shortest Path Algorithm|Dijkstra最短路径算法</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-08-01T22:42:15+08:00"
-              content="2020-08-01">
-          08-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/" itemprop="url">
-            <span itemprop="name">leetcode 1519. 子树中标签相同的节点数</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-08-01T11:59:34+08:00"
-              content="2020-08-01">
-          08-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/" itemprop="url">
-            <span itemprop="name">leetcode 329.矩阵中的最长递增路径</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-30T16:35:20+08:00"
-              content="2020-07-30">
-          07-30
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/" itemprop="url">
-            <span itemprop="name">树状数组Binary Indexed Tree</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-30T15:03:10+08:00"
-              content="2020-07-30">
-          07-30
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/" itemprop="url">
-            <span itemprop="name">区间树</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-30T11:54:36+08:00"
-              content="2020-07-30">
-          07-30
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/" itemprop="url">
-            <span itemprop="name">线段树</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-28T14:49:39+08:00"
-              content="2020-07-28">
-          07-28
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/" itemprop="url">
-            <span itemprop="name">The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
     </div>
   </div>
-  
-  
-  
 
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/20/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/" rel="prev" title="MySQL事务隔离">
+      <i class="fa fa-chevron-left"></i> MySQL事务隔离
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
   
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/archives/">1</a><a class="page-number" href="/archives/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/archives/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/6/">6</a><a class="extend next" rel="next" href="/archives/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
+  
+  
 
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -459,6 +352,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -721,7 +615,7 @@ if (document.querySelectorAll('pre.mermaid').length) {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/archives/page/3/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/',]
       });
       });
   </script>
