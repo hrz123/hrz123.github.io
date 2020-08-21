@@ -1255,6 +1255,7 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>为什么0的子集和和2相同？</p>
 <p>0-&gt;1-&gt;2 // 1是0的父结点2是1的父结点。</p>
 <p>根据以上解释，下面是实现。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># undirected_graph.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, k</span>):</span></span><br><span class="line">        self.uf = [<span class="number">-1</span>] * (k + <span class="number">1</span>)</span><br><span class="line">        self.sets_count = k</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        p_root = self.find(p)</span><br><span class="line">        q_root = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> p_root == q_root:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p_root] &gt; self.uf[q_root]:</span><br><span class="line">            self.uf[q_root] += self.uf[p_root]</span><br><span class="line">            self.uf[p_root] = q_root</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[p_root] += self.uf[q_root]</span><br><span class="line">            self.uf[q_root] = p_root</span><br><span class="line">        self.sets_count -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.uf = UnionFind(vertices)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isCyclic</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.graph:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> self.graph[i]:</span><br><span class="line">                <span class="keyword">if</span> self.uf.is_connected(i, j):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">                self.uf.union(i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">3</span>)</span><br><span class="line">    g.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    print(g.isCyclic())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1621,19 +1622,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>科比--曼巴精神永不逝去</title>
-    <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
-    <content><![CDATA[纪念老科 Tomorrow is not grante. Inspire yourself.
-<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
-<iframe src="//player.bilibili.com/player.html?aid=668058137&amp;bvid=BV1ua4y1i7ZK&amp;cid=186683490&amp;page=1" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;">
-</iframe>
-</div>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>猫抓老鼠的简单讨论</title>
     <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
     <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
@@ -1660,6 +1648,19 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>科比--曼巴精神永不逝去</title>
+    <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
+    <content><![CDATA[纪念老科 Tomorrow is not grante. Inspire yourself.
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+<iframe src="//player.bilibili.com/player.html?aid=668058137&amp;bvid=BV1ua4y1i7ZK&amp;cid=186683490&amp;page=1" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;">
+</iframe>
+</div>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
