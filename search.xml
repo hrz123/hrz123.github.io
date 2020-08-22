@@ -176,7 +176,7 @@
 <li>若隔离级别是”可重复读“，则V1、V2是1，V3是2、之所以V2还是1，遵循的就是这个要求：事务在执行期间看到的数据前后必须是一致的。</li>
 <li>若隔离级别是”串行化“，则在事务B执行”将1改成2“的时候，会被锁住。直到事务A提交后，事务B才可以继续执行。所以从A的角度看，V1、V2值是1，V3的值是2。</li>
 </ul>
-<p>在实现上，数据库里面会创建一个视图，访问的时候以视图的逻辑结果为准。在”可重复读“隔离级别下，这个视图是在事务启动时创建的，整个事务存在期间都用这个视图。在”读提交“隔离级别下，这个视图是在每个SQL语句开始执行的时候创建的。这里需要注意的是，”读未提交“隔离级别下直接返回记录上的最新值，没有试图概念；而”串行化“隔离级别下直接用加锁的方式来避免并行访问。</p>
+<p>在实现上，数据库里面会创建一个视图，访问的时候以视图的逻辑结果为准。在”可重复读“隔离级别下，这个视图是在事务启动时创建的，整个事务存在期间都用这个视图。在”读提交“隔离级别下，这个视图是在每个SQL语句开始执行的时候创建的。这里需要注意的是，”读未提交“隔离级别下直接返回记录上的最新值，没有视图概念；而”串行化“隔离级别下直接用加锁的方式来避免并行访问。</p>
 <p>我们可以看到在不同的隔离级别下，数据库行为是有所不同的。Oracle数据库的默认隔离级别其实就是”读提交“，因此对于一些从Oracle迁移到MySQL的应用，为保证数据库隔离级别的已知，一定要记得将MySQL的给级别设置为”读提交“。</p>
 <p>配置的方式是，将启动参数transaction-isolation的值设置成READ-COMMITTED。你可以使用show variables</p>
 <p>来查看当前的值。</p>
@@ -338,21 +338,6 @@
       </tags>
   </entry>
   <entry>
-    <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
-    <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
-    <content><![CDATA[<h2 id="原文">原文</h2>
-<p>https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html</p>
-<p>原文很长，这里摘录总结的内容。</p>
-<h2 id="摘录">摘录</h2>
-<p>让我结束发言。自动计算机已经陪伴我们四分之一个世纪。它们作为工具的能力对我们的社会产生了巨大的影响，但就这种能力而言，它们的影响只是我们文化表面上的一个涟漪，而与之相比，它们在人类文化史上前所未有的智力挑战能力方面将产生更深远的影响。层次系统似乎具有这样的特性：在一个层次上被视为无法分隔的东西，在下一个层次上被视为更详细的复合对象；因此，当我们把注意力从一个层次转移到下一个更低层次上时，适用于每个层次的自然空间或时间的颗粒就会减少一个数量级。我们用砖头来理解墙壁，用晶体来理解砖头，用分子来理解晶体等等。在一个层次系统中，可以有意义的区分的层次数量，有点正比于最大和最小的晶粒之间的比例的对数，因此，除非这个比例非常大，否则我们不能期望有很多次的层次。在计算机编程中，我们的基本构建的相关时间最小度量不到一微秒，但我们的程序可能需要几个小时的计算时间。我不知道有其他任何技术覆盖了10的10次方或更高的比例：计算机，凭借其神奇的速度，似乎是第一个为我们提供了一个高度层次化的既可能又必要的环境。这种挑战，即，面对编程任务，是如此的独特，以至于这种新奇的经验可以给我们很多关于自己的启示。<strong>它应该加深我们对设计和创造过程的理解，它应该让我们更好的控制组织思想的任务。</strong>如果它没有做到这一点，以我的品味，我们应该根本不配拥有电脑！</p>
-<p><strong>它已经给了我们一些教训，我选择在这次演讲中强调的是以下几点。只要我们在处理任务时充分认识到它的巨大困难，只要我们坚持使用适度而优雅的编程语言，只要我们尊重人类思维的内在局限性，并以非常谦逊的程序员的身份处理任务，我们就会把编程工作做得更好。</strong></p>
-<p>ACM Turing Lecture 1972</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 1519. 子树中标签相同的节点数</title>
     <url>/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/</url>
     <content><![CDATA[<h3 id="原题链接">原题链接</h3>
@@ -370,6 +355,21 @@
 ]]></content>
       <tags>
         <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
+    <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
+    <content><![CDATA[<h2 id="原文">原文</h2>
+<p>https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html</p>
+<p>原文很长，这里摘录总结的内容。</p>
+<h2 id="摘录">摘录</h2>
+<p>让我结束发言。自动计算机已经陪伴我们四分之一个世纪。它们作为工具的能力对我们的社会产生了巨大的影响，但就这种能力而言，它们的影响只是我们文化表面上的一个涟漪，而与之相比，它们在人类文化史上前所未有的智力挑战能力方面将产生更深远的影响。层次系统似乎具有这样的特性：在一个层次上被视为无法分隔的东西，在下一个层次上被视为更详细的复合对象；因此，当我们把注意力从一个层次转移到下一个更低层次上时，适用于每个层次的自然空间或时间的颗粒就会减少一个数量级。我们用砖头来理解墙壁，用晶体来理解砖头，用分子来理解晶体等等。在一个层次系统中，可以有意义的区分的层次数量，有点正比于最大和最小的晶粒之间的比例的对数，因此，除非这个比例非常大，否则我们不能期望有很多次的层次。在计算机编程中，我们的基本构建的相关时间最小度量不到一微秒，但我们的程序可能需要几个小时的计算时间。我不知道有其他任何技术覆盖了10的10次方或更高的比例：计算机，凭借其神奇的速度，似乎是第一个为我们提供了一个高度层次化的既可能又必要的环境。这种挑战，即，面对编程任务，是如此的独特，以至于这种新奇的经验可以给我们很多关于自己的启示。<strong>它应该加深我们对设计和创造过程的理解，它应该让我们更好的控制组织思想的任务。</strong>如果它没有做到这一点，以我的品味，我们应该根本不配拥有电脑！</p>
+<p><strong>它已经给了我们一些教训，我选择在这次演讲中强调的是以下几点。只要我们在处理任务时充分认识到它的巨大困难，只要我们坚持使用适度而优雅的编程语言，只要我们尊重人类思维的内在局限性，并以非常谦逊的程序员的身份处理任务，我们就会把编程工作做得更好。</strong></p>
+<p>ACM Turing Lecture 1972</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -748,6 +748,38 @@
       </tags>
   </entry>
   <entry>
+    <title>python实现简单布隆过滤器</title>
+    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
+<p>布隆过滤器vshash table</p>
+<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
+<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
+<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
+<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
+<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
+<h2 id="案例">案例</h2>
+<ol type="1">
+<li>比特币网络</li>
+<li>分布式系统（Map-Reduce) - Hadoop、search engine
+<ol type="1">
+<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
+</ol></li>
+<li>Redis缓存</li>
+<li>垃圾邮件、评论等的过滤</li>
+</ol>
+<h2 id="简单实现示例">简单实现示例</h2>
+<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
+<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
+<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
+<p>search是search(s:str) -&gt;bool</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《相信未来》——食指</title>
     <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
     <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
@@ -784,38 +816,6 @@
 ]]></content>
       <tags>
         <tag>青春</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现简单布隆过滤器</title>
-    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
-<p>布隆过滤器vshash table</p>
-<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
-<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
-<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
-<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
-<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
-<h2 id="案例">案例</h2>
-<ol type="1">
-<li>比特币网络</li>
-<li>分布式系统（Map-Reduce) - Hadoop、search engine
-<ol type="1">
-<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
-</ol></li>
-<li>Redis缓存</li>
-<li>垃圾邮件、评论等的过滤</li>
-</ol>
-<h2 id="简单实现示例">简单实现示例</h2>
-<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
-<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
-<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
-<p>search是search(s:str) -&gt;bool</p>
-<p>示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1262,15 +1262,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
-    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>快速排序的多种写法</title>
     <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
     <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
@@ -1281,6 +1272,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
+    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
