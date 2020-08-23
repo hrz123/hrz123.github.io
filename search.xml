@@ -223,18 +223,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Prim&#39;s最小生成树算法</title>
     <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
@@ -272,6 +260,18 @@
       </tags>
   </entry>
   <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Splay Tree-II</title>
     <url>/2020/08/13/Splay-Tree-II/</url>
     <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
@@ -294,6 +294,21 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
+    <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
+    <content><![CDATA[<h2 id="原文">原文</h2>
+<p>https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html</p>
+<p>原文很长，这里摘录总结的内容。</p>
+<h2 id="摘录">摘录</h2>
+<p>让我结束发言。自动计算机已经陪伴我们四分之一个世纪。它们作为工具的能力对我们的社会产生了巨大的影响，但就这种能力而言，它们的影响只是我们文化表面上的一个涟漪，而与之相比，它们在人类文化史上前所未有的智力挑战能力方面将产生更深远的影响。层次系统似乎具有这样的特性：在一个层次上被视为无法分隔的东西，在下一个层次上被视为更详细的复合对象；因此，当我们把注意力从一个层次转移到下一个更低层次上时，适用于每个层次的自然空间或时间的颗粒就会减少一个数量级。我们用砖头来理解墙壁，用晶体来理解砖头，用分子来理解晶体等等。在一个层次系统中，可以有意义的区分的层次数量，有点正比于最大和最小的晶粒之间的比例的对数，因此，除非这个比例非常大，否则我们不能期望有很多次的层次。在计算机编程中，我们的基本构建的相关时间最小度量不到一微秒，但我们的程序可能需要几个小时的计算时间。我不知道有其他任何技术覆盖了10的10次方或更高的比例：计算机，凭借其神奇的速度，似乎是第一个为我们提供了一个高度层次化的既可能又必要的环境。这种挑战，即，面对编程任务，是如此的独特，以至于这种新奇的经验可以给我们很多关于自己的启示。<strong>它应该加深我们对设计和创造过程的理解，它应该让我们更好的控制组织思想的任务。</strong>如果它没有做到这一点，以我的品味，我们应该根本不配拥有电脑！</p>
+<p><strong>它已经给了我们一些教训，我选择在这次演讲中强调的是以下几点。只要我们在处理任务时充分认识到它的巨大困难，只要我们坚持使用适度而优雅的编程语言，只要我们尊重人类思维的内在局限性，并以非常谦逊的程序员的身份处理任务，我们就会把编程工作做得更好。</strong></p>
+<p>ACM Turing Lecture 1972</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -341,21 +356,6 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
-    <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
-    <content><![CDATA[<h2 id="原文">原文</h2>
-<p>https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html</p>
-<p>原文很长，这里摘录总结的内容。</p>
-<h2 id="摘录">摘录</h2>
-<p>让我结束发言。自动计算机已经陪伴我们四分之一个世纪。它们作为工具的能力对我们的社会产生了巨大的影响，但就这种能力而言，它们的影响只是我们文化表面上的一个涟漪，而与之相比，它们在人类文化史上前所未有的智力挑战能力方面将产生更深远的影响。层次系统似乎具有这样的特性：在一个层次上被视为无法分隔的东西，在下一个层次上被视为更详细的复合对象；因此，当我们把注意力从一个层次转移到下一个更低层次上时，适用于每个层次的自然空间或时间的颗粒就会减少一个数量级。我们用砖头来理解墙壁，用晶体来理解砖头，用分子来理解晶体等等。在一个层次系统中，可以有意义的区分的层次数量，有点正比于最大和最小的晶粒之间的比例的对数，因此，除非这个比例非常大，否则我们不能期望有很多次的层次。在计算机编程中，我们的基本构建的相关时间最小度量不到一微秒，但我们的程序可能需要几个小时的计算时间。我不知道有其他任何技术覆盖了10的10次方或更高的比例：计算机，凭借其神奇的速度，似乎是第一个为我们提供了一个高度层次化的既可能又必要的环境。这种挑战，即，面对编程任务，是如此的独特，以至于这种新奇的经验可以给我们很多关于自己的启示。<strong>它应该加深我们对设计和创造过程的理解，它应该让我们更好的控制组织思想的任务。</strong>如果它没有做到这一点，以我的品味，我们应该根本不配拥有电脑！</p>
-<p><strong>它已经给了我们一些教训，我选择在这次演讲中强调的是以下几点。只要我们在处理任务时充分认识到它的巨大困难，只要我们坚持使用适度而优雅的编程语言，只要我们尊重人类思维的内在局限性，并以非常谦逊的程序员的身份处理任务，我们就会把编程工作做得更好。</strong></p>
-<p>ACM Turing Lecture 1972</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
