@@ -223,6 +223,18 @@
       </tags>
   </entry>
   <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Prim&#39;s最小生成树算法</title>
     <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
@@ -260,18 +272,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Splay Tree-II</title>
     <url>/2020/08/13/Splay-Tree-II/</url>
     <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
@@ -294,21 +294,6 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
-    <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
-    <content><![CDATA[<h2 id="原文">原文</h2>
-<p>https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html</p>
-<p>原文很长，这里摘录总结的内容。</p>
-<h2 id="摘录">摘录</h2>
-<p>让我结束发言。自动计算机已经陪伴我们四分之一个世纪。它们作为工具的能力对我们的社会产生了巨大的影响，但就这种能力而言，它们的影响只是我们文化表面上的一个涟漪，而与之相比，它们在人类文化史上前所未有的智力挑战能力方面将产生更深远的影响。层次系统似乎具有这样的特性：在一个层次上被视为无法分隔的东西，在下一个层次上被视为更详细的复合对象；因此，当我们把注意力从一个层次转移到下一个更低层次上时，适用于每个层次的自然空间或时间的颗粒就会减少一个数量级。我们用砖头来理解墙壁，用晶体来理解砖头，用分子来理解晶体等等。在一个层次系统中，可以有意义的区分的层次数量，有点正比于最大和最小的晶粒之间的比例的对数，因此，除非这个比例非常大，否则我们不能期望有很多次的层次。在计算机编程中，我们的基本构建的相关时间最小度量不到一微秒，但我们的程序可能需要几个小时的计算时间。我不知道有其他任何技术覆盖了10的10次方或更高的比例：计算机，凭借其神奇的速度，似乎是第一个为我们提供了一个高度层次化的既可能又必要的环境。这种挑战，即，面对编程任务，是如此的独特，以至于这种新奇的经验可以给我们很多关于自己的启示。<strong>它应该加深我们对设计和创造过程的理解，它应该让我们更好的控制组织思想的任务。</strong>如果它没有做到这一点，以我的品味，我们应该根本不配拥有电脑！</p>
-<p><strong>它已经给了我们一些教训，我选择在这次演讲中强调的是以下几点。只要我们在处理任务时充分认识到它的巨大困难，只要我们坚持使用适度而优雅的编程语言，只要我们尊重人类思维的内在局限性，并以非常谦逊的程序员的身份处理任务，我们就会把编程工作做得更好。</strong></p>
-<p>ACM Turing Lecture 1972</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -356,6 +341,21 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
+    <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
+    <content><![CDATA[<h2 id="原文">原文</h2>
+<p>https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html</p>
+<p>原文很长，这里摘录总结的内容。</p>
+<h2 id="摘录">摘录</h2>
+<p>让我结束发言。自动计算机已经陪伴我们四分之一个世纪。它们作为工具的能力对我们的社会产生了巨大的影响，但就这种能力而言，它们的影响只是我们文化表面上的一个涟漪，而与之相比，它们在人类文化史上前所未有的智力挑战能力方面将产生更深远的影响。层次系统似乎具有这样的特性：在一个层次上被视为无法分隔的东西，在下一个层次上被视为更详细的复合对象；因此，当我们把注意力从一个层次转移到下一个更低层次上时，适用于每个层次的自然空间或时间的颗粒就会减少一个数量级。我们用砖头来理解墙壁，用晶体来理解砖头，用分子来理解晶体等等。在一个层次系统中，可以有意义的区分的层次数量，有点正比于最大和最小的晶粒之间的比例的对数，因此，除非这个比例非常大，否则我们不能期望有很多次的层次。在计算机编程中，我们的基本构建的相关时间最小度量不到一微秒，但我们的程序可能需要几个小时的计算时间。我不知道有其他任何技术覆盖了10的10次方或更高的比例：计算机，凭借其神奇的速度，似乎是第一个为我们提供了一个高度层次化的既可能又必要的环境。这种挑战，即，面对编程任务，是如此的独特，以至于这种新奇的经验可以给我们很多关于自己的启示。<strong>它应该加深我们对设计和创造过程的理解，它应该让我们更好的控制组织思想的任务。</strong>如果它没有做到这一点，以我的品味，我们应该根本不配拥有电脑！</p>
+<p><strong>它已经给了我们一些教训，我选择在这次演讲中强调的是以下几点。只要我们在处理任务时充分认识到它的巨大困难，只要我们坚持使用适度而优雅的编程语言，只要我们尊重人类思维的内在局限性，并以非常谦逊的程序员的身份处理任务，我们就会把编程工作做得更好。</strong></p>
+<p>ACM Turing Lecture 1972</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -754,38 +754,6 @@
       </tags>
   </entry>
   <entry>
-    <title>python实现简单布隆过滤器</title>
-    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
-<p>布隆过滤器vshash table</p>
-<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
-<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
-<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
-<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
-<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
-<h2 id="案例">案例</h2>
-<ol type="1">
-<li>比特币网络</li>
-<li>分布式系统（Map-Reduce) - Hadoop、search engine
-<ol type="1">
-<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
-</ol></li>
-<li>Redis缓存</li>
-<li>垃圾邮件、评论等的过滤</li>
-</ol>
-<h2 id="简单实现示例">简单实现示例</h2>
-<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
-<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
-<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
-<p>search是search(s:str) -&gt;bool</p>
-<p>示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>《相信未来》——食指</title>
     <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
     <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
@@ -822,6 +790,38 @@
 ]]></content>
       <tags>
         <tag>青春</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现简单布隆过滤器</title>
+    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
+<p>布隆过滤器vshash table</p>
+<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
+<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
+<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
+<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
+<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
+<h2 id="案例">案例</h2>
+<ol type="1">
+<li>比特币网络</li>
+<li>分布式系统（Map-Reduce) - Hadoop、search engine
+<ol type="1">
+<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
+</ol></li>
+<li>Redis缓存</li>
+<li>垃圾邮件、评论等的过滤</li>
+</ol>
+<h2 id="简单实现示例">简单实现示例</h2>
+<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
+<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
+<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
+<p>search是search(s:str) -&gt;bool</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1003,6 +1003,15 @@
       </tags>
   </entry>
   <entry>
+    <title>堆的实现(大顶堆、小顶堆)</title>
+    <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>双蛋问题以及更主要的其更通用化且有用的问题的解</title>
     <url>/2020/07/26/%E5%8F%8C%E8%9B%8B%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E6%9B%B4%E4%B8%BB%E8%A6%81%E7%9A%84%E5%85%B6%E6%9B%B4%E9%80%9A%E7%94%A8%E5%8C%96%E4%B8%94%E6%9C%89%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="题目leetcode-887.-鸡蛋掉落">题目：LeetCode <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc3VwZXItZWdnLWRyb3Av">887. 鸡蛋掉落<i class="fa fa-external-link-alt"></i></span></h2>
@@ -1076,15 +1085,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <h2 id="转载感谢">转载感谢</h2>
 <p>感谢优秀题解</p>
 <p>https://leetcode.com/problems/super-egg-drop/discuss/159079/Python-DP-from-kn2-to-knlogn-to-kn</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>堆的实现(大顶堆、小顶堆)</title>
-    <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1467,37 +1467,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>旅行商问题（朴素和dp方法）</title>
-    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
-    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
-<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
-<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
-<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
-<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
-<p>以下是旅行商问题的不同解法。</p>
-<p><strong>朴素的解法：</strong></p>
-<ol type="1">
-<li>将城市1作为起点和终点</li>
-<li>生成所有（n-1）！城市的排列组合</li>
-<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
-<li>返回成本最小的排列组合</li>
-</ol>
-<p>时间复杂度：O(n!)</p>
-<p><strong>DP 动态递推</strong></p>
-<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
-<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
-<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
-<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
-<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
-<p><strong>参考：</strong></p>
-<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>树状数组Binary Indexed Tree</title>
     <url>/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/</url>
     <content><![CDATA[<h2 id="参考">参考</h2>
@@ -1543,6 +1512,37 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>树状数组解法，用每个数的rank来离散化，反序插入树状数组中，前一位的前缀和就是右侧小于当前元素的个数。</p>
 <p>示例代码如下：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSmaller</span>(<span class="params">self, nums: List[int]</span>) -&gt; List[int]:</span></span><br><span class="line">        rank = &#123;val: i + <span class="number">1</span> <span class="keyword">for</span> i, val <span class="keyword">in</span> enumerate(sorted(nums))&#125;</span><br><span class="line">        n = len(nums)</span><br><span class="line">        res = []</span><br><span class="line"></span><br><span class="line">        BITree = [<span class="number">0</span>] * (n + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">i, k=<span class="number">1</span></span>):</span></span><br><span class="line">            <span class="keyword">while</span> i &lt;= n:</span><br><span class="line">                BITree[i] += k</span><br><span class="line">                i += i &amp; -i</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">i</span>):</span></span><br><span class="line">            s = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> i:</span><br><span class="line">                s += BITree[i]</span><br><span class="line">                i -= i &amp; -i</span><br><span class="line">            <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> reversed(nums):</span><br><span class="line">            res.append(getSum(rank[num] - <span class="number">1</span>))</span><br><span class="line">            update(rank[num])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res[::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>旅行商问题（朴素和dp方法）</title>
+    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
+    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
+<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
+<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
+<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
+<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
+<p>以下是旅行商问题的不同解法。</p>
+<p><strong>朴素的解法：</strong></p>
+<ol type="1">
+<li>将城市1作为起点和终点</li>
+<li>生成所有（n-1）！城市的排列组合</li>
+<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
+<li>返回成本最小的排列组合</li>
+</ol>
+<p>时间复杂度：O(n!)</p>
+<p><strong>DP 动态递推</strong></p>
+<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
+<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
+<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
+<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
+<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
+<p><strong>参考：</strong></p>
+<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1715,6 +1715,38 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
   </entry>
   <entry>
+    <title>解决博弈问题的动态规划通用思路</title>
+    <url>/2020/07/24/%E8%A7%A3%E5%86%B3%E5%8D%9A%E5%BC%88%E9%97%AE%E9%A2%98%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E9%80%9A%E7%94%A8%E6%80%9D%E8%B7%AF/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 解决博弈问题动态规划通用思路.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们把石头游戏改得更具有一般性</span></span><br><span class="line"><span class="comment"># 你和你的朋友面前有一排石头堆，用一个数组piles表示</span></span><br><span class="line"><span class="comment"># piles[i]表示第i堆石子有多少个。</span></span><br><span class="line"><span class="comment"># 你们轮流拿石头，一次拿一堆，但是只能拿走最左边或者最右边的石头堆。</span></span><br><span class="line"><span class="comment"># 所有石头被拿完后，谁拥有的石头多，谁获胜</span></span><br><span class="line"><span class="comment"># 假设两人都很聪明，请你设计一个算法，返回先手和后手最后得分（石头总数）之差</span></span><br><span class="line"><span class="comment"># 比如：</span></span><br><span class="line"><span class="comment"># piles = [1, 100, 3]</span></span><br><span class="line"><span class="comment"># 先手能得4分，后手能得100分，返回-96</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 思路</span></span><br><span class="line"><span class="comment"># 子问题</span></span><br><span class="line"><span class="comment"># 在第i到第j堆石头，先手能获得最大石头数是多少，后手是多少</span></span><br><span class="line"><span class="comment"># 定义状态数组</span></span><br><span class="line"><span class="comment"># f(i, j, 0) f(i, j, 1) 表示第i到第j个石头，包括第i和第j个，0表示先手，1表示后手</span></span><br><span class="line"><span class="comment"># 因为两人都极聪明，先手选完就变后手，来回交替的</span></span><br><span class="line"><span class="comment"># 递推方程</span></span><br><span class="line"><span class="comment"># f(i, j, 0) = max 拿左边 f(i+1, j, 1) + a[i]</span></span><br><span class="line"><span class="comment">#            =     拿右边 f(i, j-1, 1) + a[j]</span></span><br><span class="line"><span class="comment"># 知道了拿左边还是右边后</span></span><br><span class="line"><span class="comment"># f(i, j, 1) =     先手拿左边 f(i+1, j, 0)</span></span><br><span class="line"><span class="comment">#            =     先手拿右边 f(i, j-1, 0)</span></span><br><span class="line"><span class="comment"># 初始化</span></span><br><span class="line"><span class="comment"># f(i, i, 0) = a[i] 只有一堆石子的时候，先手为该堆石子个数，后手就为0</span></span><br><span class="line"><span class="comment"># f(i, i, 1) = 0</span></span><br><span class="line"><span class="comment"># 返回值</span></span><br><span class="line"><span class="comment"># f(0, n-1, 0) 先手最终石子数 - f(0, n-1, 1)后手最终石子数</span></span><br><span class="line"><span class="comment"># 优化空间复杂度</span></span><br><span class="line"><span class="comment"># 是对角线的递推，这种情况最好不要优化空间，还可以利用计算机的缓存</span></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">game</span>(<span class="params">self, piles: List[int]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    piles = [<span class="number">1</span>, <span class="number">100</span>, <span class="number">3</span>]</span><br><span class="line">    res = sol.game(piles)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<h6 id="代表题目">代表题目：</h6>
+<h6 id="leetcode-877">leetcode 877</h6>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 也可以使用第2种解法</span></span><br><span class="line"><span class="comment"># 数学规律</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 先拿者可以拿到序号为 1,3,5...n-1 的石子堆，</span></span><br><span class="line"><span class="comment"># 也可以拿到序号为 2,4,6...n 的石子堆。</span></span><br><span class="line"><span class="comment"># 因为总石子数为奇数，所以这两种方式中，其中一种拿到的石子数大于另一种。</span></span><br><span class="line"><span class="comment"># 所以不按照拿尽量多的石子数，按照这种纯奇数序号或者纯偶数序号的方式拿，先拿者总可以赢。</span></span><br></pre></td></tr></table></figure>
+<p>dp解法</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">lass Solution:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">stoneGame</span>(<span class="params">self, piles: List[int]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> bool(dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>软件=算法+数据结构+文档+数据？</title>
+    <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
+    <content><![CDATA[<p>软件的开始到后来...</p>
+<p>开始：</p>
+<p>软件=代码？</p>
+<p>软件=算法+数据结构？</p>
+<p>软件=算法+数据结构+文档？</p>
+<p>软件=算法+数据结构+文档+数据？</p>
+<p>后来：</p>
+<p>软件=算法+数据结构+文档+数据 + 单元测试 + workflow ？</p>
+<p>对自己的要求，至少要做到</p>
+<p>软件=算法+数据结构+文档。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>蓄水池算法</title>
     <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h1 id="蓄水池采样算法reservoir-sampling">蓄水池采样算法（Reservoir Sampling）</h1>
@@ -1752,38 +1784,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, node, k</span>):</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>(<span class="params">object</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span>(<span class="params">self</span>):</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="实战题目">实战题目</h2>
 <h4 id="链表随机节点"><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbGlua2VkLWxpc3QtcmFuZG9tLW5vZGUv">382. 链表随机节点<i class="fa fa-external-link-alt"></i></span></h4>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>解决博弈问题的动态规划通用思路</title>
-    <url>/2020/07/24/%E8%A7%A3%E5%86%B3%E5%8D%9A%E5%BC%88%E9%97%AE%E9%A2%98%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E9%80%9A%E7%94%A8%E6%80%9D%E8%B7%AF/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 解决博弈问题动态规划通用思路.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们把石头游戏改得更具有一般性</span></span><br><span class="line"><span class="comment"># 你和你的朋友面前有一排石头堆，用一个数组piles表示</span></span><br><span class="line"><span class="comment"># piles[i]表示第i堆石子有多少个。</span></span><br><span class="line"><span class="comment"># 你们轮流拿石头，一次拿一堆，但是只能拿走最左边或者最右边的石头堆。</span></span><br><span class="line"><span class="comment"># 所有石头被拿完后，谁拥有的石头多，谁获胜</span></span><br><span class="line"><span class="comment"># 假设两人都很聪明，请你设计一个算法，返回先手和后手最后得分（石头总数）之差</span></span><br><span class="line"><span class="comment"># 比如：</span></span><br><span class="line"><span class="comment"># piles = [1, 100, 3]</span></span><br><span class="line"><span class="comment"># 先手能得4分，后手能得100分，返回-96</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 思路</span></span><br><span class="line"><span class="comment"># 子问题</span></span><br><span class="line"><span class="comment"># 在第i到第j堆石头，先手能获得最大石头数是多少，后手是多少</span></span><br><span class="line"><span class="comment"># 定义状态数组</span></span><br><span class="line"><span class="comment"># f(i, j, 0) f(i, j, 1) 表示第i到第j个石头，包括第i和第j个，0表示先手，1表示后手</span></span><br><span class="line"><span class="comment"># 因为两人都极聪明，先手选完就变后手，来回交替的</span></span><br><span class="line"><span class="comment"># 递推方程</span></span><br><span class="line"><span class="comment"># f(i, j, 0) = max 拿左边 f(i+1, j, 1) + a[i]</span></span><br><span class="line"><span class="comment">#            =     拿右边 f(i, j-1, 1) + a[j]</span></span><br><span class="line"><span class="comment"># 知道了拿左边还是右边后</span></span><br><span class="line"><span class="comment"># f(i, j, 1) =     先手拿左边 f(i+1, j, 0)</span></span><br><span class="line"><span class="comment">#            =     先手拿右边 f(i, j-1, 0)</span></span><br><span class="line"><span class="comment"># 初始化</span></span><br><span class="line"><span class="comment"># f(i, i, 0) = a[i] 只有一堆石子的时候，先手为该堆石子个数，后手就为0</span></span><br><span class="line"><span class="comment"># f(i, i, 1) = 0</span></span><br><span class="line"><span class="comment"># 返回值</span></span><br><span class="line"><span class="comment"># f(0, n-1, 0) 先手最终石子数 - f(0, n-1, 1)后手最终石子数</span></span><br><span class="line"><span class="comment"># 优化空间复杂度</span></span><br><span class="line"><span class="comment"># 是对角线的递推，这种情况最好不要优化空间，还可以利用计算机的缓存</span></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">game</span>(<span class="params">self, piles: List[int]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    piles = [<span class="number">1</span>, <span class="number">100</span>, <span class="number">3</span>]</span><br><span class="line">    res = sol.game(piles)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-<h6 id="代表题目">代表题目：</h6>
-<h6 id="leetcode-877">leetcode 877</h6>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 也可以使用第2种解法</span></span><br><span class="line"><span class="comment"># 数学规律</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 先拿者可以拿到序号为 1,3,5...n-1 的石子堆，</span></span><br><span class="line"><span class="comment"># 也可以拿到序号为 2,4,6...n 的石子堆。</span></span><br><span class="line"><span class="comment"># 因为总石子数为奇数，所以这两种方式中，其中一种拿到的石子数大于另一种。</span></span><br><span class="line"><span class="comment"># 所以不按照拿尽量多的石子数，按照这种纯奇数序号或者纯偶数序号的方式拿，先拿者总可以赢。</span></span><br></pre></td></tr></table></figure>
-<p>dp解法</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">lass Solution:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">stoneGame</span>(<span class="params">self, piles: List[int]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> bool(dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>软件=算法+数据结构+文档+数据？</title>
-    <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
-    <content><![CDATA[<p>软件的开始到后来...</p>
-<p>开始：</p>
-<p>软件=代码？</p>
-<p>软件=算法+数据结构？</p>
-<p>软件=算法+数据结构+文档？</p>
-<p>软件=算法+数据结构+文档+数据？</p>
-<p>后来：</p>
-<p>软件=算法+数据结构+文档+数据 + 单元测试 + workflow ？</p>
-<p>对自己的要求，至少要做到</p>
-<p>软件=算法+数据结构+文档。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
