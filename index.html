@@ -208,10 +208,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-08-22 20:25:16 / 修改时间：20:49:05" itemprop="dateCreated datePublished" datetime="2020-08-22T20:25:16+08:00">2020-08-22</time>
+              <time title="创建时间：2020-08-22 20:25:16" itemprop="dateCreated datePublished" datetime="2020-08-22T20:25:16+08:00">2020-08-22</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-24 20:20:10" itemprop="dateModified" datetime="2020-08-24T20:20:10+08:00">2020-08-24</time>
+              </span>
 
           
   
@@ -239,7 +245,7 @@
 
       
           <p>在现代社会，公众对艾滋病人的接纳，其实也是一个非常奢侈的话题。虽然每一年，我们都有一个专门的日子，我们来表达对艾滋病人的关心。但是，仅仅有这个日子是不够的。</p>
-<p>人们对于疾病总是有一种本能的恐惧。不要说艾滋病了，甚至乙肝病毒携带者，甚至白血病，等等都在社会中备受歧视。新闻就曾经报道过，有些白血病的孩子如学，被拒绝。所以在这样一种背景下，各位可以想象，艾滋病患呢，也很难走出歧视，并因为这个歧视，可能他们滋生对社会的仇恨和苦毒。</p>
+<p>人们对于疾病总是有一种本能的恐惧。不要说艾滋病了，甚至乙肝病毒携带者，甚至白血病，等等都在社会中备受歧视。新闻就曾经报道过，有些白血病的孩子入学，被拒绝。所以在这样一种背景下，各位可以想象，艾滋病患呢，也很难走出歧视，并因为这个歧视，可能他们滋生对社会的仇恨和苦毒。</p>
 <p>社会文明程度很大程度上它体现为对弱者的尊重。即便你跌入谷底，社会也应该为你提供基本的保障。当然话虽如此，同理心，始终是人们最匮乏的一种品质。</p>
 <p>对于每个个体，如果我们无法真正的接纳弱者，这不也是我们道德上的免疫缺陷吗？</p>
 <iframe src="//player.bilibili.com/player.html?aid=754134170&amp;bvid=BV1dk4y1m7oJ&amp;cid=224031902&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
@@ -294,7 +300,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-24 14:24:50" itemprop="dateModified" datetime="2020-08-24T14:24:50+08:00">2020-08-24</time>
+                <time title="修改时间：2020-08-24 17:27:15" itemprop="dateModified" datetime="2020-08-24T17:27:15+08:00">2020-08-24</time>
               </span>
 
           
@@ -368,7 +374,7 @@
 <p>因为间隙锁在可重复读隔离级别下才有效，所以本篇文章接下来的描述，若没有特殊说明，默认是可重复读隔离级别。</p>
 <p><strong>我总结的加锁规则里面，包含了两个“原则”、两个“优化”和一个“bug”。</strong></p>
 <ol type="1">
-<li>原则 1：加锁的基本单位是 next-key lock。next-key lock 是前开后闭区间。</li>
+<li>原则 1：加锁的基本单位是 next-key lock。 next-key lock 是前开后闭区间。</li>
 <li>原则 2：查找过程中访问到的对象才会加锁。</li>
 <li>优化 1：索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。</li>
 <li>优化 2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</li>
