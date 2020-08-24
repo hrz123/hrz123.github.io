@@ -294,7 +294,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-24 11:18:17" itemprop="dateModified" datetime="2020-08-24T11:18:17+08:00">2020-08-24</time>
+                <time title="修改时间：2020-08-24 11:22:01" itemprop="dateModified" datetime="2020-08-24T11:22:01+08:00">2020-08-24</time>
               </span>
 
           
@@ -328,6 +328,12 @@
 <img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/MySQL%E4%B8%AD%E7%9A%84%E9%94%81.png" class>
 <p>也就是说，跟行锁有冲突关系的是“另外一个行锁”。</p>
 <p>但是间隙锁不一样，<strong>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作</strong>。间隙锁之间都不存在冲突关系。</p>
+<p>间隙锁和行锁合称 next-key lock，每个 next-key lock 是前开后闭区间。也就是说，我们的表 t 初始化以后，如果用 select * from t for update 要把整个表所有记录锁起来，就形成了 7 个 next-key lock，分别是 (-∞,0]、(0,5]、(5,10]、(10,15]、(15,20]、(20, 25]、(25, +supremum]。</p>
+<blockquote>
+<p>备注：这篇文章中，如果没有特别说明，我们把间隙锁记为开区间，把 next-key lock 记为前开后闭区间。</p>
+</blockquote>
+<p>你可能会问说，这个 supremum 从哪儿来的呢？</p>
+<p>这是因为 +∞是开区间。实现上，InnoDB 给每个索引加了一个不存在的最大值 supremum，这样才符合我们前面说的“都是前开后闭区间”。</p>
 
       
     </div>
