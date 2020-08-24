@@ -294,7 +294,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-24 11:16:37" itemprop="dateModified" datetime="2020-08-24T11:16:37+08:00">2020-08-24</time>
+                <time title="修改时间：2020-08-24 11:18:17" itemprop="dateModified" datetime="2020-08-24T11:18:17+08:00">2020-08-24</time>
               </span>
 
           
@@ -322,9 +322,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>全局锁、表锁、行锁、间隙锁</p>
-<p>两种行锁间的冲突关系</p>
+          <p>全局锁、表锁、行锁、间隙锁。</p>
+<p>间隙锁为了解决幻读，比较不同。</p>
+<p>比如行锁，分成读锁和写锁。下图就是这两种类型行锁的冲突关系。</p>
 <img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/MySQL%E4%B8%AD%E7%9A%84%E9%94%81.png" class>
+<p>也就是说，跟行锁有冲突关系的是“另外一个行锁”。</p>
+<p>但是间隙锁不一样，<strong>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作</strong>。间隙锁之间都不存在冲突关系。</p>
 
       
     </div>
