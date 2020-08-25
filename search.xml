@@ -444,6 +444,44 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 23.合并K个排序链表</title>
+    <url>/2020/08/11/leetcode-23-%E5%90%88%E5%B9%B6K%E4%B8%AA%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p>合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。</p>
+<p>示例:</p>
+<p>输入: [ 1-&gt;4-&gt;5, 1-&gt;3-&gt;4, 2-&gt;6] 输出: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6</p>
+<p>是工业界很常见的一种操作，比如分布式系统中、数据库中，我们有多个索引是有序的，且在多个小文件中存储，我们要合并成一个新的有序链表。我们可以有哪些想法呢。</p>
+<p>最暴力的解法是，每次遍历所有链表，找到最小的链表头，将结果链表的下一个指针指向该链表头，然后链表头指向其下一个节点。</p>
+<ul>
+<li>时间复杂度：找最小的链表头O(k)，假设链表平均长度n，要找O(nk)次，总体是O(k^2n)的。</li>
+<li>空间复杂度：O(1)，不使用额外空间</li>
+</ul>
+<p>对于我来说最直接的想法是，建一个dummy哨兵链表节点，用cur指针指向dummy，同时观察所有链表的头部元素，选出最小的一个，将cur.next指向这个链表头，这个链表如果next不为Null，就加入这个链表头的集合中，否则就不加入，然后令cur=cur.next。这样加入我们共有K个链表，那么我们的集合就是K这么大，这样插入一个元素，每次删除其中最小元素都很高效的数据结构是堆。</p>
+<ul>
+<li>总的时间复杂度就是O(k*n*logk)。因为我们一共要插入和删除K次。</li>
+<li>空间复杂度：O(K)，我们要使用一个K大小的堆。</li>
+</ul>
+<p>另一种想法用分治的方法进行合并。我们</p>
+<ul>
+<li>将k个链表配对，将一对中的链表合并。</li>
+<li>第一轮合并以后，k个链表被合并成了k/2个链表，平均长度为2n/k，然后是k/4个链表，k/8个链表等等。</li>
+<li>重复这一过程，直到我们得到了最终的有序链表。</li>
+</ul>
+<p>我们来分析一下复杂度：</p>
+<ul>
+<li>时间复杂度：我们知道合并两个有序链表，等于两个链表长度的和，所以是O(2n)，要合并k/2个，之后合并k/4个链表，合并时间复杂度是O(4n)，所以最终的时间复杂度还是O(n k log(k)) 。</li>
+<li>空间复杂度：我们归并要使用递归，递归的深度为logk，所以我们要使用O(logk)的栈空间。</li>
+</ul>
+<h2 id="示例代码">示例代码</h2>
+<p>使用堆合并</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        cur = dummy</span><br><span class="line">        <span class="comment"># 这里的i为了排序</span></span><br><span class="line">        heap = [(l.val, i, l) <span class="keyword">for</span> i, l <span class="keyword">in</span> enumerate(lists) <span class="keyword">if</span> l]</span><br><span class="line">        heapq.heapify(heap)</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            val, ind, l = heapq.heappop(heap)</span><br><span class="line">            cur.next = l</span><br><span class="line">            <span class="keyword">if</span> l.next:</span><br><span class="line">                l = l.next</span><br><span class="line">                heapq.heappush(heap, (l.val, ind, l))</span><br><span class="line">            cur = cur.next</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
+<p>分支合并</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        n = len(lists)</span><br><span class="line">        <span class="keyword">return</span> self.merge(lists, <span class="number">0</span>, n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">merge</span>(<span class="params">self, lists, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span> lists[l]</span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        l1 = self.merge(lists, l, mid)</span><br><span class="line">        l2 = self.merge(lists, mid + <span class="number">1</span>, r)</span><br><span class="line">        <span class="keyword">return</span> self.mergeTwoLists(l1, l2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1, l2</span>):</span></span><br><span class="line">        dummy = cur = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val &lt;= l2.val:</span><br><span class="line">                cur.next = l1</span><br><span class="line">                l1 = l1.next</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur.next = l2</span><br><span class="line">                l2 = l2.next</span><br><span class="line">            cur = cur.next</span><br><span class="line">        cur.next = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>leetcode 215. 数组中的第K个最大元素 </title>
     <url>/2020/08/07/leetcode-215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/</url>
     <content><![CDATA[<h2 id="借助本题深入了解快速排序中的随机选择和堆的堆化插入删除操作">借助本题深入了解快速排序中的随机选择，和堆的堆化、插入、删除操作</h2>
@@ -532,44 +570,6 @@
 <p>堆的解法考查了堆化、插入、和删除的代码写法，是非常好的面试题目。</p>
 <h2 id="参考">参考</h2>
 <p>https://leetcode-cn.com/problems/kth-largest-element-in-an-array/solution/partitionfen-er-zhi-zhi-you-xian-dui-lie-java-dai-/</p>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 23.合并K个排序链表</title>
-    <url>/2020/08/11/leetcode-23-%E5%90%88%E5%B9%B6K%E4%B8%AA%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/</url>
-    <content><![CDATA[<p>合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。</p>
-<p>示例:</p>
-<p>输入: [ 1-&gt;4-&gt;5, 1-&gt;3-&gt;4, 2-&gt;6] 输出: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6</p>
-<p>是工业界很常见的一种操作，比如分布式系统中、数据库中，我们有多个索引是有序的，且在多个小文件中存储，我们要合并成一个新的有序链表。我们可以有哪些想法呢。</p>
-<p>最暴力的解法是，每次遍历所有链表，找到最小的链表头，将结果链表的下一个指针指向该链表头，然后链表头指向其下一个节点。</p>
-<ul>
-<li>时间复杂度：找最小的链表头O(k)，假设链表平均长度n，要找O(nk)次，总体是O(k^2n)的。</li>
-<li>空间复杂度：O(1)，不使用额外空间</li>
-</ul>
-<p>对于我来说最直接的想法是，建一个dummy哨兵链表节点，用cur指针指向dummy，同时观察所有链表的头部元素，选出最小的一个，将cur.next指向这个链表头，这个链表如果next不为Null，就加入这个链表头的集合中，否则就不加入，然后令cur=cur.next。这样加入我们共有K个链表，那么我们的集合就是K这么大，这样插入一个元素，每次删除其中最小元素都很高效的数据结构是堆。</p>
-<ul>
-<li>总的时间复杂度就是O(k*n*logk)。因为我们一共要插入和删除K次。</li>
-<li>空间复杂度：O(K)，我们要使用一个K大小的堆。</li>
-</ul>
-<p>另一种想法用分治的方法进行合并。我们</p>
-<ul>
-<li>将k个链表配对，将一对中的链表合并。</li>
-<li>第一轮合并以后，k个链表被合并成了k/2个链表，平均长度为2n/k，然后是k/4个链表，k/8个链表等等。</li>
-<li>重复这一过程，直到我们得到了最终的有序链表。</li>
-</ul>
-<p>我们来分析一下复杂度：</p>
-<ul>
-<li>时间复杂度：我们知道合并两个有序链表，等于两个链表长度的和，所以是O(2n)，要合并k/2个，之后合并k/4个链表，合并时间复杂度是O(4n)，所以最终的时间复杂度还是O(n k log(k)) 。</li>
-<li>空间复杂度：我们归并要使用递归，递归的深度为logk，所以我们要使用O(logk)的栈空间。</li>
-</ul>
-<h2 id="示例代码">示例代码</h2>
-<p>使用堆合并</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        cur = dummy</span><br><span class="line">        <span class="comment"># 这里的i为了排序</span></span><br><span class="line">        heap = [(l.val, i, l) <span class="keyword">for</span> i, l <span class="keyword">in</span> enumerate(lists) <span class="keyword">if</span> l]</span><br><span class="line">        heapq.heapify(heap)</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            val, ind, l = heapq.heappop(heap)</span><br><span class="line">            cur.next = l</span><br><span class="line">            <span class="keyword">if</span> l.next:</span><br><span class="line">                l = l.next</span><br><span class="line">                heapq.heappush(heap, (l.val, ind, l))</span><br><span class="line">            cur = cur.next</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
-<p>分支合并</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        n = len(lists)</span><br><span class="line">        <span class="keyword">return</span> self.merge(lists, <span class="number">0</span>, n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">merge</span>(<span class="params">self, lists, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span> lists[l]</span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        l1 = self.merge(lists, l, mid)</span><br><span class="line">        l2 = self.merge(lists, mid + <span class="number">1</span>, r)</span><br><span class="line">        <span class="keyword">return</span> self.mergeTwoLists(l1, l2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1, l2</span>):</span></span><br><span class="line">        dummy = cur = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val &lt;= l2.val:</span><br><span class="line">                cur.next = l1</span><br><span class="line">                l1 = l1.next</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur.next = l2</span><br><span class="line">                l2 = l2.next</span><br><span class="line">            cur = cur.next</span><br><span class="line">        cur.next = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -694,6 +694,17 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 818.赛车</title>
+    <url>/2020/08/12/leetcode-818-%E8%B5%9B%E8%BD%A6/</url>
+    <content><![CDATA[<h2 id="示例解法">示例解法</h2>
+<p>这道题目的dp要仔细分析。分析过程写在了注释中（个人习惯…）。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 我们来分析这个问题</span></span><br><span class="line"><span class="comment"># 我们定义f(i)为距离终点为i时所需的指令大小</span></span><br><span class="line"><span class="comment"># 如果i == 2 ** n - 1，指令的长度就为n</span></span><br><span class="line"><span class="comment"># 如果i != 2 ** n - 1，我们有两种走法</span></span><br><span class="line"><span class="comment"># 假设 2**(n-1) -1 &lt; i &lt; 2 **n - 1</span></span><br><span class="line"><span class="comment"># 这样n就等于i的bit_length</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** n - 1</span></span><br><span class="line"><span class="comment"># 我们的指令是A^nR，指令长度为n+1，我们到终点的距离是 j-i，一定小于i</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** (n-1) - 1, j &lt; i</span></span><br><span class="line"><span class="comment"># 然后我们又往回走了 p = 2 ** k - 1, 现在我们的位置是 2 ** (n-1) - 2 ** k</span></span><br><span class="line"><span class="comment"># 指令长度是 A^(n-1)RA^kR n+k+1，我们现在距离终点 i - 2 **(n-1) + 2 ** k ,是小于i的</span></span><br><span class="line"><span class="comment"># 这样我们就得出了我们的递推公式</span></span><br><span class="line"><span class="comment"># f(i) = n if i == 2 ** n - 1</span></span><br><span class="line"><span class="comment"># f(i) = min(f(2**n -1 - i)+n+1, f(i-2**(n-1)+2**k)+n+k+1 k &lt; n-1)</span></span><br><span class="line"><span class="comment"># 初始化和边界条件f(0) = 0，注意向会回走的k不会大于等于n-1，因为等于n-1时就走到0了</span></span><br><span class="line"><span class="comment"># 返回值f(target)</span></span><br><span class="line"><span class="comment"># 优化复杂度</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">racecar</span>(<span class="params">self, target: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [<span class="number">0</span>] + [float(<span class="string">&#x27;inf&#x27;</span>)] * target</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, target + <span class="number">1</span>):</span><br><span class="line">            n = i.bit_length()</span><br><span class="line">            <span class="keyword">if</span> i == (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>:</span><br><span class="line">                dp[i] = n</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dp[i] = dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span> - i] + n + <span class="number">1</span></span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> range(n - <span class="number">1</span>):</span><br><span class="line">                    dp[i] = min(dp[i],</span><br><span class="line">                                dp[i - (<span class="number">1</span> &lt;&lt; (n - <span class="number">1</span>)) + (<span class="number">1</span> &lt;&lt; k)] + n + k + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> dp[target]</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>leetcode 41.缺失的第一个正数</title>
     <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
     <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数">leetcode 41 缺失的第一个正数</h3>
@@ -716,17 +727,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 818.赛车</title>
-    <url>/2020/08/12/leetcode-818-%E8%B5%9B%E8%BD%A6/</url>
-    <content><![CDATA[<h2 id="示例解法">示例解法</h2>
-<p>这道题目的dp要仔细分析。分析过程写在了注释中（个人习惯…）。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 我们来分析这个问题</span></span><br><span class="line"><span class="comment"># 我们定义f(i)为距离终点为i时所需的指令大小</span></span><br><span class="line"><span class="comment"># 如果i == 2 ** n - 1，指令的长度就为n</span></span><br><span class="line"><span class="comment"># 如果i != 2 ** n - 1，我们有两种走法</span></span><br><span class="line"><span class="comment"># 假设 2**(n-1) -1 &lt; i &lt; 2 **n - 1</span></span><br><span class="line"><span class="comment"># 这样n就等于i的bit_length</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** n - 1</span></span><br><span class="line"><span class="comment"># 我们的指令是A^nR，指令长度为n+1，我们到终点的距离是 j-i，一定小于i</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** (n-1) - 1, j &lt; i</span></span><br><span class="line"><span class="comment"># 然后我们又往回走了 p = 2 ** k - 1, 现在我们的位置是 2 ** (n-1) - 2 ** k</span></span><br><span class="line"><span class="comment"># 指令长度是 A^(n-1)RA^kR n+k+1，我们现在距离终点 i - 2 **(n-1) + 2 ** k ,是小于i的</span></span><br><span class="line"><span class="comment"># 这样我们就得出了我们的递推公式</span></span><br><span class="line"><span class="comment"># f(i) = n if i == 2 ** n - 1</span></span><br><span class="line"><span class="comment"># f(i) = min(f(2**n -1 - i)+n+1, f(i-2**(n-1)+2**k)+n+k+1 k &lt; n-1)</span></span><br><span class="line"><span class="comment"># 初始化和边界条件f(0) = 0，注意向会回走的k不会大于等于n-1，因为等于n-1时就走到0了</span></span><br><span class="line"><span class="comment"># 返回值f(target)</span></span><br><span class="line"><span class="comment"># 优化复杂度</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">racecar</span>(<span class="params">self, target: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [<span class="number">0</span>] + [float(<span class="string">&#x27;inf&#x27;</span>)] * target</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, target + <span class="number">1</span>):</span><br><span class="line">            n = i.bit_length()</span><br><span class="line">            <span class="keyword">if</span> i == (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>:</span><br><span class="line">                dp[i] = n</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dp[i] = dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span> - i] + n + <span class="number">1</span></span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> range(n - <span class="number">1</span>):</span><br><span class="line">                    dp[i] = min(dp[i],</span><br><span class="line">                                dp[i - (<span class="number">1</span> &lt;&lt; (n - <span class="number">1</span>)) + (<span class="number">1</span> &lt;&lt; k)] + n + k + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> dp[target]</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>python实现Trie(字典树、前缀树)</title>
     <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
     <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
@@ -743,6 +743,38 @@
 <h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
 <p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现简单布隆过滤器</title>
+    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
+<p>布隆过滤器vshash table</p>
+<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
+<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
+<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
+<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
+<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
+<h2 id="案例">案例</h2>
+<ol type="1">
+<li>比特币网络</li>
+<li>分布式系统（Map-Reduce) - Hadoop、search engine
+<ol type="1">
+<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
+</ol></li>
+<li>Redis缓存</li>
+<li>垃圾邮件、评论等的过滤</li>
+</ol>
+<h2 id="简单实现示例">简单实现示例</h2>
+<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
+<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
+<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
+<p>search是search(s:str) -&gt;bool</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -804,38 +836,6 @@
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现简单布隆过滤器</title>
-    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
-<p>布隆过滤器vshash table</p>
-<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
-<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
-<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
-<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
-<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
-<h2 id="案例">案例</h2>
-<ol type="1">
-<li>比特币网络</li>
-<li>分布式系统（Map-Reduce) - Hadoop、search engine
-<ol type="1">
-<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
-</ol></li>
-<li>Redis缓存</li>
-<li>垃圾邮件、评论等的过滤</li>
-</ol>
-<h2 id="简单实现示例">简单实现示例</h2>
-<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
-<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
-<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
-<p>search是search(s:str) -&gt;bool</p>
-<p>示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -919,15 +919,6 @@
       </tags>
   </entry>
   <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
     <url>/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/</url>
     <content><![CDATA[<h2 id="问题描述">1. 问题描述</h2>
@@ -983,6 +974,15 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1854,6 +1854,7 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <li><p>是的，我们并不缺乏能力，只是缺乏“勇气”。一切都是“勇气”的问题。</p></li>
 <li><p><strong>在相信他人的时候不附加任何条件。</strong>即使没有足以构成信用的客观依据也依然相信，不考虑抵押之类的事情，无条件的相信。这就是信赖。</p></li>
 <li><p>你现在认为“无条件地信赖别人只会遭到背叛”。但是，决定背不背判的不是你，那是他人的课题。<strong>你只需要考虑“我该怎么做”。</strong></p></li>
+<li><p>你现在一味地担心“被背叛”，也只关注因此受到的伤痛。但是，<strong>如果不敢去信赖别人，那最终就会与任何人都建立不了深厚的关系。</strong></p></li>
 </ol>
 ]]></content>
       <tags>
