@@ -890,6 +890,16 @@
       </tags>
   </entry>
   <entry>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>今年值得纪念的事情</title>
     <url>/2020/08/12/%E4%BB%8A%E5%B9%B4%E5%80%BC%E5%BE%97%E7%BA%AA%E5%BF%B5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
     <content><![CDATA[<h2 id="数据结构与算法">数据结构与算法</h2>
@@ -903,16 +913,6 @@
 <li>拔掉了最后两颗智齿，所有的智齿都没啦！</li>
 <li>看完了《七武士》</li>
 </ul>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1335,6 +1335,19 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>快速排序的多种写法</title>
+    <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
+    <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
+<p>以下给出python版本的实现代码。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSort</span>(<span class="params">self, nums: List[int]</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.quickSortHelper(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSortHelper</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        pivot = self.partition(nums, l, r)</span><br><span class="line">        self.quickSortHelper(nums, l, pivot - <span class="number">1</span>)</span><br><span class="line">        self.quickSortHelper(nums, pivot + <span class="number">1</span>, r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># def partition(self, nums, l, r):</span></span><br><span class="line">    <span class="comment">#     ran = random.randint(l, r)</span></span><br><span class="line">    <span class="comment">#     nums[r], nums[ran] = nums[ran], nums[r]</span></span><br><span class="line">    <span class="comment">#     pivot = r</span></span><br><span class="line">    <span class="comment">#     right = l</span></span><br><span class="line">    <span class="comment">#     for i in range(l, r):</span></span><br><span class="line">    <span class="comment">#         if nums[i] &lt;= nums[pivot]:</span></span><br><span class="line">    <span class="comment">#             nums[i], nums[right] = nums[right], nums[i]</span></span><br><span class="line">    <span class="comment">#             right += 1</span></span><br><span class="line">    <span class="comment">#     nums[right], nums[pivot] = nums[pivot], nums[right]</span></span><br><span class="line">    <span class="comment">#     return right</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        ran = random.randint(l, r)</span><br><span class="line">        nums[l], nums[ran] = nums[ran], nums[l]</span><br><span class="line">        pivot = l</span><br><span class="line">        left = r</span><br><span class="line">        i = l + <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= left:</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt;= nums[pivot]:</span><br><span class="line">                nums[i], nums[left] = nums[left], nums[i]</span><br><span class="line">                left -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">        nums[left], nums[pivot] = nums[pivot], nums[left]</span><br><span class="line">        <span class="keyword">return</span> left</span><br></pre></td></tr></table></figure>
+<p>两个partition的效果是一样的。</p>
+<p>注意，我们使用一种随机方法，保证了我们的快排在遇到严格递增序列或者严格递减序列的时候，期望也是O(nlogn)时间复杂度的。这是一种随机方法，还有其他随机算法的实现。这种比较简单。而这个随机的步骤，也使得我们的快排不是稳定。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>拔智齿</title>
     <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
     <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
@@ -1347,19 +1360,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>快速排序的多种写法</title>
-    <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
-    <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
-<p>以下给出python版本的实现代码。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSort</span>(<span class="params">self, nums: List[int]</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.quickSortHelper(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSortHelper</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        pivot = self.partition(nums, l, r)</span><br><span class="line">        self.quickSortHelper(nums, l, pivot - <span class="number">1</span>)</span><br><span class="line">        self.quickSortHelper(nums, pivot + <span class="number">1</span>, r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># def partition(self, nums, l, r):</span></span><br><span class="line">    <span class="comment">#     ran = random.randint(l, r)</span></span><br><span class="line">    <span class="comment">#     nums[r], nums[ran] = nums[ran], nums[r]</span></span><br><span class="line">    <span class="comment">#     pivot = r</span></span><br><span class="line">    <span class="comment">#     right = l</span></span><br><span class="line">    <span class="comment">#     for i in range(l, r):</span></span><br><span class="line">    <span class="comment">#         if nums[i] &lt;= nums[pivot]:</span></span><br><span class="line">    <span class="comment">#             nums[i], nums[right] = nums[right], nums[i]</span></span><br><span class="line">    <span class="comment">#             right += 1</span></span><br><span class="line">    <span class="comment">#     nums[right], nums[pivot] = nums[pivot], nums[right]</span></span><br><span class="line">    <span class="comment">#     return right</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        ran = random.randint(l, r)</span><br><span class="line">        nums[l], nums[ran] = nums[ran], nums[l]</span><br><span class="line">        pivot = l</span><br><span class="line">        left = r</span><br><span class="line">        i = l + <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= left:</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt;= nums[pivot]:</span><br><span class="line">                nums[i], nums[left] = nums[left], nums[i]</span><br><span class="line">                left -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">        nums[left], nums[pivot] = nums[pivot], nums[left]</span><br><span class="line">        <span class="keyword">return</span> left</span><br></pre></td></tr></table></figure>
-<p>两个partition的效果是一样的。</p>
-<p>注意，我们使用一种随机方法，保证了我们的快排在遇到严格递增序列或者严格递减序列的时候，期望也是O(nlogn)时间复杂度的。这是一种随机方法，还有其他随机算法的实现。这种比较简单。而这个随机的步骤，也使得我们的快排不是稳定。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1523,6 +1523,37 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>旅行商问题（朴素和dp方法）</title>
+    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
+    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
+<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
+<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
+<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
+<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
+<p>以下是旅行商问题的不同解法。</p>
+<p><strong>朴素的解法：</strong></p>
+<ol type="1">
+<li>将城市1作为起点和终点</li>
+<li>生成所有（n-1）！城市的排列组合</li>
+<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
+<li>返回成本最小的排列组合</li>
+</ol>
+<p>时间复杂度：O(n!)</p>
+<p><strong>DP 动态递推</strong></p>
+<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
+<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
+<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
+<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
+<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
+<p><strong>参考：</strong></p>
+<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>树状数组Binary Indexed Tree</title>
     <url>/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/</url>
     <content><![CDATA[<h2 id="参考">参考</h2>
@@ -1568,37 +1599,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>树状数组解法，用每个数的rank来离散化，反序插入树状数组中，前一位的前缀和就是右侧小于当前元素的个数。</p>
 <p>示例代码如下：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSmaller</span>(<span class="params">self, nums: List[int]</span>) -&gt; List[int]:</span></span><br><span class="line">        rank = &#123;val: i + <span class="number">1</span> <span class="keyword">for</span> i, val <span class="keyword">in</span> enumerate(sorted(nums))&#125;</span><br><span class="line">        n = len(nums)</span><br><span class="line">        res = []</span><br><span class="line"></span><br><span class="line">        BITree = [<span class="number">0</span>] * (n + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">i, k=<span class="number">1</span></span>):</span></span><br><span class="line">            <span class="keyword">while</span> i &lt;= n:</span><br><span class="line">                BITree[i] += k</span><br><span class="line">                i += i &amp; -i</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">i</span>):</span></span><br><span class="line">            s = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> i:</span><br><span class="line">                s += BITree[i]</span><br><span class="line">                i -= i &amp; -i</span><br><span class="line">            <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> reversed(nums):</span><br><span class="line">            res.append(getSum(rank[num] - <span class="number">1</span>))</span><br><span class="line">            update(rank[num])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res[::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>旅行商问题（朴素和dp方法）</title>
-    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
-    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
-<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
-<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
-<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
-<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
-<p>以下是旅行商问题的不同解法。</p>
-<p><strong>朴素的解法：</strong></p>
-<ol type="1">
-<li>将城市1作为起点和终点</li>
-<li>生成所有（n-1）！城市的排列组合</li>
-<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
-<li>返回成本最小的排列组合</li>
-</ol>
-<p>时间复杂度：O(n!)</p>
-<p><strong>DP 动态递推</strong></p>
-<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
-<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
-<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
-<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
-<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
-<p><strong>参考：</strong></p>
-<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1742,12 +1742,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>背包问题泛型</title>
-    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
-    <content><![CDATA[
-]]></content>
-  </entry>
-  <entry>
     <title>经典同步问题</title>
     <url>/2020/08/20/%E7%BB%8F%E5%85%B8%E5%90%8C%E6%AD%A5%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<h2 id="哲学家进餐问题">1.哲学家进餐问题</h2>
@@ -1771,18 +1765,10 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>被讨厌的勇气</title>
-    <url>/2020/08/24/%E8%A2%AB%E8%AE%A8%E5%8E%8C%E7%9A%84%E5%8B%87%E6%B0%94/</url>
-    <content><![CDATA[<p>《被讨厌的勇气》真是一本好书。</p>
-<p>这里开始简单记录书中一些我认为很有意义的话。</p>
-<ol type="1">
-<li>阿德勒心理学就是勇气心理学，人不能缺乏”<strong>获得幸福的勇气</strong>“。</li>
-<li>人之所以不幸正是因为自己亲手选择了”不幸“，而不是因为生来就不幸。是因为你认为”不幸“对你自身而言是一种”善“。是因为你在不断地下着不改变自己生活方式的决心。即使人们有各种不满，但还是认为保持现状更加轻松、更能安心。</li>
-</ol>
+    <title>背包问题泛型</title>
+    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
+    <content><![CDATA[
 ]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
   </entry>
   <entry>
     <title>蓄水池算法</title>
@@ -1825,6 +1811,21 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>被讨厌的勇气</title>
+    <url>/2020/08/24/%E8%A2%AB%E8%AE%A8%E5%8E%8C%E7%9A%84%E5%8B%87%E6%B0%94/</url>
+    <content><![CDATA[<p>《被讨厌的勇气》真是一本好书。</p>
+<p>这里开始简单记录书中一些我认为很有意义的话。</p>
+<ol type="1">
+<li>阿德勒心理学就是勇气心理学，人不能缺乏”<strong>获得幸福的勇气</strong>“。</li>
+<li>人之所以不幸正是因为自己亲手选择了”不幸“，而不是因为生来就不幸。是因为你认为”不幸“对你自身而言是一种”善“。是因为你在不断地下着不改变自己生活方式的决心。即使人们有各种不满，但还是认为保持现状更加轻松、更能安心。</li>
+<li>是的。<strong>以自己的不幸为武器支配对方</strong>。通过诉说自己如何不幸、如何痛苦来让周围的人——比如家人或朋友——担心或束缚支配其言行。刚开始提到的那些闭门不出者就常常沉浸在以不幸为武器的优越感中。阿德勒甚至指出：”在我们的文化中，弱势其实非常强大而且具有特权。”</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
