@@ -210,7 +210,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-26 11:05:38 / 修改时间：11:15:12" itemprop="dateCreated datePublished" datetime="2020-08-26T11:05:38+08:00">2020-08-26</time>
+              <time title="创建时间：2020-08-26 11:05:38 / 修改时间：14:23:55" itemprop="dateCreated datePublished" datetime="2020-08-26T11:05:38+08:00">2020-08-26</time>
             </span>
 
           
@@ -256,6 +256,7 @@
 </ol></li>
 <li><p>什么叫做小表？</p>
 <p><strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是”小表“，应该作为驱动表。</strong></p></li>
+<li><p>总体来看，不论是在原表上加索引，还是用有索引的临时表，我们的思路都是让 join 语句能够用上被驱动表上的索引，来触发 BKA 算法，提升查询性能。</p></li>
 </ol>
 
       
