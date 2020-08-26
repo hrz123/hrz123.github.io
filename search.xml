@@ -900,15 +900,6 @@
       </tags>
   </entry>
   <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>今年值得纪念的事情</title>
     <url>/2020/08/12/%E4%BB%8A%E5%B9%B4%E5%80%BC%E5%BE%97%E7%BA%AA%E5%BF%B5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
     <content><![CDATA[<h2 id="数据结构与算法">数据结构与算法</h2>
@@ -923,6 +914,15 @@
 <li>看完了《七武士》</li>
 <li>读完了《被讨厌的勇气》 2020.8.26</li>
 </ul>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1136,6 +1136,33 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>可不可以使用join</title>
+    <url>/2020/08/26/%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8join/</url>
+    <content><![CDATA[<ol type="1">
+<li><p>能不能使用join语句？</p>
+<ol type="1">
+<li>如果可以使用Index Nested-Loop Join算法，也就是说可以用上被驱动表上的索引，是没问题的。</li>
+<li>如果使用Block Nested_Loop Join算法，扫描行数就会过多。尤其是在大表上的join操作，这样可能要扫描被驱动表很多次，会占用大量的系统资源。所以这种join尽量不要用。</li>
+</ol></li>
+<li><p>如果要使用join，应该选择大表做驱动表还是选择小表做驱动表？</p>
+<ol type="1">
+<li>如果是Index Nested-Loop Join算法，应该选择小表做驱动表；</li>
+<li>如果是Block Nested-Loop Join算法：
+<ul>
+<li>在oin_buffer_size足够大的时候，是一样的；</li>
+<li>在join_buffer_size不够大的时候（这种情况更常见），应该选择小表做驱动表。</li>
+</ul></li>
+<li>所以总是选择小表做驱动表。</li>
+</ol></li>
+<li><p>什么叫做小表？</p>
+<p><strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是”小表“，应该作为驱动表。</strong></p></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
