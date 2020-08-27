@@ -1,33 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
-    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
-<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
-<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
-<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
-<h2 id="算法">算法</h2>
-<ol type="1">
-<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
-<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
-<li>while sptSet不包含所有的顶点：
-<ul>
-<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
-<li>将u加入到sptSet中。</li>
-<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
-</ul></li>
-</ol>
-<h2 id="代码示例">代码示例</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="参考">参考</h2>
-<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>GC的三种基本实现方式和优缺点</title>
     <url>/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/</url>
     <content><![CDATA[<h3 id="参考">参考：</h3>
@@ -291,6 +264,31 @@
       </tags>
   </entry>
   <entry>
+    <title>Splay Tree-II</title>
+    <url>/2020/08/13/Splay-Tree-II/</url>
+    <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
+<p>正如前篇博文所讲的，Splay树是一种自平衡的数据结构，最后一个访问的键总是根。插入操作和二叉搜索树的插入类似，额外多了一些步骤来保证新插入的键称为新的根节点。</p>
+<p>以下是插入键值k到一个Splay Tree的不同情况</p>
+<ol type="1">
+<li>root是空：我们简单的分配一个新的节点，并将它作为root返回</li>
+<li>splay（伸展）给定的键值k。如果k已经存在，那么它称为新的根节点。如果不存在，那么最后访问的叶子节点称为新的根节点。</li>
+<li>如果新的根节点和k相同，什么都不做因为k已经存在了。</li>
+<li>否则，分配内存产生新的节点，并且将k和根的键值比较。
+<ol type="1">
+<li>如果k比根的键值小，将root作为新节点的右孩子，复制root的左孩子作为新节点的左孩子，并且使root的左孩子置为NULL。</li>
+<li>如果k比跟的键值大，将root作为新节点的左孩子，复制root的右孩子作为新节点的右孩子，并且使root的右孩子置为NULL。</li>
+</ol></li>
+<li>将新节点返回，作为整棵树的根。</li>
+</ol>
+<p>感觉Splay很大程度上是可以基于AVL树进行修改的，其中左旋、右旋、左右旋、右左旋操作是相同的，只是splay有splay操作。具体实现有时间会仔细看看，在下面参考的链接中有。</p>
+<h2 id="参考">参考</h2>
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMi1pbnNlcnQtZGVsZXRlLz9yZWY9bGJw">https://www.geeksforgeeks.org/splay-tree-set-2-insert-delete/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Prim&#39;s最小生成树算法</title>
     <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
@@ -322,31 +320,6 @@
 <p><strong>如何实现上面的算法？</strong></p>
 <p>我们用一个布尔数组mstSet[]表示MST中包含的顶点集合。如果一个值mstSet[v]为true，那么顶点v就在MST中，否则就不是。数组key[]用来存储所有顶点的键值。另一个数组parent[]用来存储MST中父节点的索引。parent数组是输出数组，用来显示构建的MST。</p>
 <p>上面算法的时间复杂度为O(V^2)。如果使用邻接表表示输入图，那么在二叉堆的帮助下，Prim算法的时间复杂度可以降低到O（ElogV）。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Splay Tree-II</title>
-    <url>/2020/08/13/Splay-Tree-II/</url>
-    <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
-<p>正如前篇博文所讲的，Splay树是一种自平衡的数据结构，最后一个访问的键总是根。插入操作和二叉搜索树的插入类似，额外多了一些步骤来保证新插入的键称为新的根节点。</p>
-<p>以下是插入键值k到一个Splay Tree的不同情况</p>
-<ol type="1">
-<li>root是空：我们简单的分配一个新的节点，并将它作为root返回</li>
-<li>splay（伸展）给定的键值k。如果k已经存在，那么它称为新的根节点。如果不存在，那么最后访问的叶子节点称为新的根节点。</li>
-<li>如果新的根节点和k相同，什么都不做因为k已经存在了。</li>
-<li>否则，分配内存产生新的节点，并且将k和根的键值比较。
-<ol type="1">
-<li>如果k比根的键值小，将root作为新节点的右孩子，复制root的左孩子作为新节点的左孩子，并且使root的左孩子置为NULL。</li>
-<li>如果k比跟的键值大，将root作为新节点的左孩子，复制root的右孩子作为新节点的右孩子，并且使root的右孩子置为NULL。</li>
-</ol></li>
-<li>将新节点返回，作为整棵树的根。</li>
-</ol>
-<p>感觉Splay很大程度上是可以基于AVL树进行修改的，其中左旋、右旋、左右旋、右左旋操作是相同的，只是splay有splay操作。具体实现有时间会仔细看看，在下面参考的链接中有。</p>
-<h2 id="参考">参考</h2>
-<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMi1pbnNlcnQtZGVsZXRlLz9yZWY9bGJw">https://www.geeksforgeeks.org/splay-tree-set-2-insert-delete/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -731,32 +704,13 @@
     <url>/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
     <content><![CDATA[<p>先上代码</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span></span><br><span class="line">        print(<span class="string">&#x27;class.__new__ called&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> super(Student, cls).__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, name, height</span>):</span></span><br><span class="line">        print(<span class="string">&#x27;class.__init__ called&#x27;</span>)</span><br><span class="line">        self.name = name</span><br><span class="line">        self.height = height</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;The height of Student %s if %s&quot;</span> % (self.name, self.height)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    xiaoming = Student(<span class="string">&#x27;xiaoming&#x27;</span>, <span class="number">175</span>)</span><br><span class="line">    print(xiaoming)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">其中，__new__()不是一定要有，只有继承自object的类才有，该方法可以return父类（通过super(当前类名, cls).__new__())出来的实例，或者直接是object的__new__出来的实例。值得注意的是，在定义子类时没有重新定义__new__()时，Python默认调用该类父类的__new__()方法来构造该类实例，如果该类父类也没有重写__new__()，那么将一直追溯至object的__new__()方法，因为object是所有新式类的基类。如果子类中重写了__new__()方法，那么可以自由选择任意一个其他的新式类。</span><br><span class="line">可见，当类中同时出现__new__()和__init__()时，先调用__new__，再调用__init__()，具体的执行过程为：</span><br><span class="line">1. 调用实例对象代码xiaoming &#x3D; Student(&#39;xiaoming&#39;, 175);</span><br><span class="line">2. 传入name和height的参数，执行Student类的__new__()方法，该方法返回一个类的实例，通常会用父类super(Student, cls).__new__(cls)，__new__()产生的实例即__init__()的self；</span><br><span class="line">3 用实例来调用__init__()方法，进行初始化实例对象的操作。</span><br><span class="line">可以看到，python中__new__()与__init__()的区别，</span><br><span class="line">1. 首先用法不同，__new__()用于创建实例，所以该方法是在实例创建之前被调用，它是类级别的方法，是个静态方法；</span><br><span class="line">   而__init__()用于初始化实例，所以该方法是在实例对象创建后被调用，它是实例级别的方法，用于设置对象属性的一些初始值。</span><br><span class="line">   由此可知，__new__()在__init__()之前被调用。如果__new__()创建的是当前类的实例，会自动调用__init__()，通过return调用的__new__()的参数cls来保证是当前类实例，如果是其他类的类名，那么创建返回的是其他类实例，就不会调用当前类的__init__()函数。</span><br><span class="line">2. 其次传入参数不同</span><br><span class="line">   __new__()至少用一个参数cls，代表当前类，此参数在实例化时由Python解释器</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">其中，__new__()不是一定要有，只有继承自object的类才有，该方法可以return父类（通过super(当前类名, cls).__new__())出来的实例，或者直接是object的__new__出来的实例。值得注意的是，在定义子类时没有重新定义__new__()时，Python默认调用该类父类的__new__()方法来构造该类实例，如果该类父类也没有重写__new__()，那么将一直追溯至object的__new__()方法，因为object是所有新式类的基类。如果子类中重写了__new__()方法，那么可以自由选择任意一个其他的新式类。</span><br><span class="line">可见，当类中同时出现__new__()和__init__()时，先调用__new__，再调用__init__()，具体的执行过程为：</span><br><span class="line">1. 调用实例对象代码xiaoming &#x3D; Student(&#39;xiaoming&#39;, 175);</span><br><span class="line">2. 传入name和height的参数，执行Student类的__new__()方法，该方法返回一个类的实例，通常会用父类super(Student, cls).__new__(cls)，__new__()产生的实例即__init__()的self；</span><br><span class="line">3 用实例来调用__init__()方法，进行初始化实例对象的操作。</span><br><span class="line">可以看到，python中__new__()与__init__()的区别，</span><br><span class="line">1. 首先用法不同，__new__()用于创建实例，所以该方法是在实例创建之前被调用，它是类级别的方法，是个静态方法；</span><br><span class="line">   而__init__()用于初始化实例，所以该方法是在实例对象创建后被调用，它是实例级别的方法，用于设置对象属性的一些初始值。</span><br><span class="line">   由此可知，__new__()在__init__()之前被调用。如果__new__()创建的是当前类的实例，会自动调用__init__()，通过return调用的__new__()的参数cls来保证是当前类实例，如果是其他类的类名，那么创建返回的是其他类实例，就不会调用当前类的__init__()函数。</span><br><span class="line">2. 其次传入参数不同</span><br><span class="line">   __new__()至少有一个参数cls，代表当前类，此参数在实例化时由Python解释器自动识别；</span><br><span class="line">   __init__()至少有一个参数self，就是这个__new__返回的实例，__init__()在__new__()的基础上完成一些初始化的操作。</span><br><span class="line">3. 返回值不同</span><br><span class="line">   __new__()必须有返回值，返回实例对象；</span><br><span class="line">   __init__()不需要有返回值。</span><br><span class="line">   另外谈谈__new__()的作用，__new__()方法主要用于继承一些不可变的class，比如int，str, tuple，提供一个自定义这些类的实例化过程的途径，一般通过重载__new__()的方法来实现。代码如下：</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PositiveInteger</span>(<span class="params">int</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, value</span>):</span></span><br><span class="line">        <span class="keyword">return</span> super(PositiveInteger, cls).__new__(cls, abs(value))</span><br><span class="line"></span><br><span class="line">a = PositiveInteger(<span class="number">-10</span>)</span><br><span class="line">print(a)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">另外，__new__()方法还可以用来实现单例模式，也就是使每次实例化时只返回同一个实例对象。代码如下：</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 利用__new__实现python单例模式.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span>(<span class="params">object</span>):</span></span><br><span class="line">    _instance_lock = threading.Lock()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> hasattr(Singleton, <span class="string">&quot;_instance&quot;</span>):</span><br><span class="line">            <span class="keyword">with</span> Singleton._instance_lock:</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> hasattr(Singleton, <span class="string">&quot;_instance&quot;</span>):</span><br><span class="line">                    Singleton._instance = object.__new__(cls)</span><br><span class="line">        <span class="keyword">return</span> Singleton._instance</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    obj1 = Singleton()</span><br><span class="line">    obj2 = Singleton()</span><br><span class="line">    obj1.attr = <span class="string">&#x27;value1&#x27;</span></span><br><span class="line">    print(obj1.attr, obj2.attr)</span><br><span class="line">    print(obj1 <span class="keyword">is</span> obj2)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现Trie(字典树、前缀树)</title>
-    <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
-    <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
-<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
-<h2 id="应用">应用：</h2>
-<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
-<h2 id="要实现的方法">要实现的方法</h2>
-<p>一般来讲trie要实现这么几个方法</p>
-<ul>
-<li>插入一个单词insert(word: str) -&gt; None</li>
-<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
-<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
-</ul>
-<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -815,6 +769,28 @@
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现Trie(字典树、前缀树)</title>
+    <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
+<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
+<h2 id="应用">应用：</h2>
+<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
+<h2 id="要实现的方法">要实现的方法</h2>
+<p>一般来讲trie要实现这么几个方法</p>
+<ul>
+<li>插入一个单词insert(word: str) -&gt; None</li>
+<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
+<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
+</ul>
+<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -916,6 +892,25 @@
       </tags>
   </entry>
   <entry>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>今年值得纪念的事情</title>
     <url>/2020/08/12/%E4%BB%8A%E5%B9%B4%E5%80%BC%E5%BE%97%E7%BA%AA%E5%BF%B5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
     <content><![CDATA[<h2 id="数据结构与算法">数据结构与算法</h2>
@@ -930,25 +925,6 @@
 <li>看完了《七武士》</li>
 <li>读完了《被讨厌的勇气》 2020.8.26</li>
 </ul>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1165,34 +1141,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>可不可以使用join</title>
-    <url>/2020/08/26/%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8join/</url>
-    <content><![CDATA[<ol type="1">
-<li><p>能不能使用join语句？</p>
-<ol type="1">
-<li>如果可以使用Index Nested-Loop Join算法，也就是说可以用上被驱动表上的索引，是没问题的。</li>
-<li>如果使用Block Nested_Loop Join算法，扫描行数就会过多。尤其是在大表上的join操作，这样可能要扫描被驱动表很多次，会占用大量的系统资源。所以这种join尽量不要用。</li>
-</ol></li>
-<li><p>如果要使用join，应该选择大表做驱动表还是选择小表做驱动表？</p>
-<ol type="1">
-<li>如果是Index Nested-Loop Join算法，应该选择小表做驱动表；</li>
-<li>如果是Block Nested-Loop Join算法：
-<ul>
-<li>在oin_buffer_size足够大的时候，是一样的；</li>
-<li>在join_buffer_size不够大的时候（这种情况更常见），应该选择小表做驱动表。</li>
-</ul></li>
-<li>所以总是选择小表做驱动表。</li>
-</ol></li>
-<li><p>什么叫做小表？</p>
-<p><strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是”小表“，应该作为驱动表。</strong></p></li>
-<li><p>总体来看，不论是在原表上加索引，还是用有索引的临时表，我们的思路都是让 join 语句能够用上被驱动表上的索引，来触发 BKA 算法，提升查询性能。</p></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>堆的实现(大顶堆、小顶堆)</title>
     <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
     <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -1403,6 +1351,20 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>接收自己的有限，去迎接未知的无限</title>
+    <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
+    <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
+<p>第一还是阅读，跟人类伟大的灵魂对话，因为你的困惑在两千多年前人类就已经有过这样的困惑。人类所有伟大的思想家都试图对抗这种困惑。</p>
+<p>但第二的话更重要的是去做，做一些事情，从身边的小事开始做起。每天都只是一个礼物，昨天的已经成为过去，明天还没有到来，我们唯一能够拥有的就是今天。所以今天是一个礼物，是一个gift，是一个present。所以我们做好每天该做的事情。<strong>今生就是我们的哨岗，站好哨就可以了。</strong></p>
+<p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
+<p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
+<p>感谢罗翔罗老师。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>拔智齿</title>
     <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
     <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
@@ -1418,14 +1380,37 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>接收自己的有限，去迎接未知的无限</title>
-    <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
-    <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
-<p>第一还是阅读，跟人类伟大的灵魂对话，因为你的困惑在两千多年前人类就已经有过这样的困惑。人类所有伟大的思想家都试图对抗这种困惑。</p>
-<p>但第二的话更重要的是去做，做一些事情，从身边的小事开始做起。每天都只是一个礼物，昨天的已经成为过去，明天还没有到来，我们唯一能够拥有的就是今天。所以今天是一个礼物，是一个gift，是一个present。所以我们做好每天该做的事情。<strong>今生就是我们的哨岗，站好哨就可以了。</strong></p>
-<p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
-<p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
-<p>感谢罗翔罗老师。</p>
+    <title>可不可以使用join</title>
+    <url>/2020/08/26/%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8join/</url>
+    <content><![CDATA[<ol type="1">
+<li><p>能不能使用join语句？</p>
+<ol type="1">
+<li>如果可以使用Index Nested-Loop Join算法，也就是说可以用上被驱动表上的索引，是没问题的。</li>
+<li>如果使用Block Nested_Loop Join算法，扫描行数就会过多。尤其是在大表上的join操作，这样可能要扫描被驱动表很多次，会占用大量的系统资源。所以这种join尽量不要用。</li>
+</ol></li>
+<li><p>如果要使用join，应该选择大表做驱动表还是选择小表做驱动表？</p>
+<ol type="1">
+<li>如果是Index Nested-Loop Join算法，应该选择小表做驱动表；</li>
+<li>如果是Block Nested-Loop Join算法：
+<ul>
+<li>在oin_buffer_size足够大的时候，是一样的；</li>
+<li>在join_buffer_size不够大的时候（这种情况更常见），应该选择小表做驱动表。</li>
+</ul></li>
+<li>所以总是选择小表做驱动表。</li>
+</ol></li>
+<li><p>什么叫做小表？</p>
+<p><strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是”小表“，应该作为驱动表。</strong></p></li>
+<li><p>总体来看，不论是在原表上加索引，还是用有索引的临时表，我们的思路都是让 join 语句能够用上被驱动表上的索引，来触发 BKA 算法，提升查询性能。</p></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>拔智齿后记</title>
+    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
+    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1437,15 +1422,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
     <content><![CDATA[<p>上午11：30</p>
 <p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
 <p>现在敷着冰袋。没什么痛感。挺好的。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>拔智齿后记</title>
-    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
-    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1674,87 +1650,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>深入理解MySQL索引底层实现原理丨技术干货</title>
-    <url>/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/</url>
-    <content><![CDATA[<h3 id="转载">转载：</h3>
-<p>https://zhuanlan.zhihu.com/p/77383599</p>
-<h2 id="一索引的本质">一、索引的本质</h2>
-<p><strong>MySQL官方对索引的定义为</strong>：索引（Index）是帮助MySQL高效获取数据的数据结构。提取句子主干，就可以得到索引的本质：索引是数据结构。</p>
-<p>我们知道，数据库查询是数据库的最主要功能之一。我们都希望查询数据的速度能尽可能的快，因此数据库系统的设计者会从查询算法的角度进行优化。最基本的查询算法当然是顺序查找（linear search），这种复杂度为O(n)的算法在数据量很大时显然是糟糕的，好在计算机科学的发展提供了很多更优秀的查找算法，例如二分查找（binary search）、二叉树查找（binary tree search）等。如果稍微分析一下会发现，每种查找算法都只能应用于特定的数据结构之上，例如二分查找要求被检索数据有序，而二叉树查找只能应用于二叉查找树上，但是数据本身的组织结构不可能完全满足各种数据结构（例如，理论上不可能同时将两列都按顺序进行组织），所以，在数据之外，数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法。这种数据结构，就是索引。</p>
-<p>看一个例子：</p>
-<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%861.jpg" class>
-<p>上图展示了一种可能的索引方式。左边是数据表，一共有两列七条记录，最左边的是数据记录的物理地址（注意逻辑上相邻的记录在磁盘上也并不是一定物理相邻的）。为了加快Col2的查找，可以维护一个右边所示的二叉查找树，每个节点分别包含索引键值和一个指向对应数据记录物理地址的指针，这样就可以运用二叉查找在O(log2n)的复杂度内获取到相应数据。</p>
-<p>虽然这是一个货真价实的索引，但是实际的数据库系统几乎没有使用二叉查找树或其进化品种红黑树（red-black tree）实现的，原因会在下文介绍。</p>
-<h2 id="二二叉排序树">二、二叉排序树</h2>
-<p>在介绍B树之前，先来看另一颗神奇的树——二叉排序树（Binary Sort Tree）。关于这棵树大家已经很熟悉了，我不多说了，看原文吧。</p>
-<ul>
-<li>若左子树不空，则左子树上所有节点的值均小于它的根节点的值</li>
-<li>若右子树不空，则右字数上所有节点的值均大于它的根节点的值</li>
-<li>它的左、右子树也分别为二叉排序数（递归定义）</li>
-</ul>
-<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%862.jpg" class>
-<p>从图中可以看出，二叉排序树组织数据时，用于查找是比较方便的，因为每次经过一次节点时，最多可以减少一半的可能，不过极端情况会出现所有节点都位于同一侧，直观上看就是一条直线，那么这种查询的效率就比较低了，因此需要对二叉树左右子树的高度进行平衡化处理，于是就有了平衡二叉树（Balenced Binary Tree）。</p>
-<p>所谓“平衡”，说的是这棵树的各个分支的高度是均匀的，它的左子树和右子树的高度之差绝对值小于1，这样就不会出现一条支路特别长的情况。于是，在这样的平衡树中进行查找时，总共比较节点的次数不超过树的高度，这就确保了查询的效率（时间复杂度为O(logn)）</p>
-<h2 id="三b树">三、B树</h2>
-<p>还是直接看图比较清楚，图中所示，B树事实上是一种平衡的多叉查找树，也就是说最多可以开m个叉（m&gt;=2)，我们称之为m阶B树，为了体现本博客的良心之处，不同于其他地方都能看到2阶B树，这里特意画了一棵5阶B树 。博主棒。</p>
-<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%863.jpg" class>
-<p>总的来说，m阶B树满足以下条件：</p>
-<ul>
-<li>每个节点至多可以拥有m棵子树</li>
-<li>根节点，至少有2个节点（要么极端情况，就是一棵树就一个根节点，单细胞生物，既是根，也是叶，也是树）。</li>
-<li>非根非叶的节点至少有Ceil(m/2)个子树（Ceil表示向上取整，图中5阶B树，每个节点至少有3个子树，也就是至少有3个叉）。</li>
-<li>非叶子节点中的信息包括[n, A0, K1, A1, K2, A2, ..., Kn, An]，其中n表示该节点中保存的关键字个数，K为关键字且Ki&lt;Ki+1，A为指向子树根节点的指针。</li>
-<li>从根到叶子的每一条路径都有相同的长度，也就是说，叶子节点在相同的层，并且这些节点不带信息，实际上这些节点就表示找不到指定的值，也就是指向这些节点的指针为空。</li>
-<li>B树的查询过程和二查排序树比较类似，从根节点依次比较每个节点，因为每个节点中的关键字和左右子树都是有序的，所以只要比较节点中的关键字，或者沿着指针就能很快的找到指定的关键字，如果查找失败，则会返回叶子节点，即空指针。</li>
-</ul>
-<p><strong>例如查询图中字母表中的K</strong>：</p>
-<ul>
-<li>从根节点P开始，K的位置在P之前，进入左侧指针</li>
-<li>左子树中，依次比较C、F、J、M，发现K在J和M之间。</li>
-<li>沿着J和M之间的指针，继续访问子树，并依次进行比较，发现第一个关键字K即为指定查找的值。</li>
-</ul>
-<p>B树搜索的简单伪代码如下：</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">BTree_Search(node, key) &#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">foreach</span>(node.key)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(node.key[i] == key) <span class="keyword">return</span> node.data[i];</span><br><span class="line">        <span class="keyword">if</span>(node.key[i] &gt; key) <span class="keyword">return</span> BTree_Search(point[i]-&gt;node, key);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> BTree_Search(point[i+<span class="number">1</span>]-&gt;node, key);</span><br><span class="line">&#125;</span><br><span class="line">data = BTree_Search(root, my_key);</span><br></pre></td></tr></table></figure>
-<p><strong>B树的特点可以总结为如下：</strong></p>
-<ul>
-<li>关键字集合分布在整颗树中</li>
-<li>任何一个关键字出现且只出现在一个节点中</li>
-<li>搜索有可能在非叶子节点结束</li>
-<li>其搜索性能等价于在关键字集合内做一次二分查找</li>
-<li>B树的插入删除新的数据记录会破坏B-Tree的性质，因为在插入删除时，需要对树进行分裂、合并、转移等操作以保持B-Tree的性质。</li>
-</ul>
-<h2 id="四plus版-b树">四、Plus版-B+树</h2>
-<p>作为B树的加强版，B+树与B树的差异在于</p>
-<p>有n棵子树的节点含有n个关键字（也有人认为是n-1个关键字）。</p>
-<p>所有的关键字全部存储在叶子节点上，且叶子节点本身根据关键字自小而大顺序连接。</p>
-<p>非叶子节点可以看成索引部分，节点中仅包含有其子树（根节点）中的最大（最小）关键字。</p>
-<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%864.jpg" class>
-<p>B+树的查找过程，与B树类似，只不过查找时，如果在非叶子节点上的关键字等于给定值，并不终止，而是继续沿着指针直到叶子节点位置。因此在B+树中，不管查找成功与否，每次查找都是走了一条从根到叶子节点的路径。</p>
-<p><strong>B+树的特性如下：</strong></p>
-<ul>
-<li>所有关键字都存储在叶子节点上，且链表中的关键字恰好是有序的</li>
-<li>不可能非叶子节点命中返回</li>
-<li>非叶子节点相当于叶子节点的索引，叶子节点相当于是存储（关键字）数据的数据层。</li>
-<li>更适合文件索引系统</li>
-</ul>
-<h2 id="五带有顺序访问指针的btree">五、带有顺序访问指针的B+Tree</h2>
-<p>一般在数据库系统或文件系统中使用的B+Tree结构都在进店B+Tree的基础上进行了优化，增加了顺序访问指针，</p>
-<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%865.jpg" class>
-<p>如上图所示，在B+Tree的每个叶子节点增加一个指向相邻子节点的指针，就形成了带有顺序访问指针的B+Tree。做这个优化的目的是为了提高区间访问的性能，例如图4中如果要查询key为从18到49的所有数据记录，当找到18后，只需顺着节点和指针顺序遍历就可以一次性访问到所有数据节点，极大提高了取件查找效率。</p>
-<h2 id="六mysql为什么使用b树b树">六、MySQL为什么使用B树（B+树）</h2>
-<p>红黑树等数据结构也可以用来实现索引，但是文件系统以及数据库系统普遍采用B树或者B+树，这一节将结合计算机组成原理相关知识讨论B-/+Tree作为索引的理论基础。</p>
-<p>一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储在磁盘上。这样的话，索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，所以评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。下面先介绍内存和磁盘存取原理，然后再结合这些原理分析B-/+Tree作为索引的效率。</p>
-<p>太长了，后面我总结一下</p>
-<ol type="1">
-<li>预读的长度一般为页（page）的整倍数。页是计算机管理存储器的逻辑块，硬件及操作系统往往将主存和磁盘存储区分割为连续的大小相等的块，每个存储块称为一页（在许多操作系统中，页得大小通常为4k），主存和磁盘以页为单位交换数据。当程序要读取的数据不在主存中时，会触发一个缺页异常，此时系统会向磁盘发出读盘信号，磁盘会找到数据的起始位置并向后连续读取一页或几页载入内存中，然后异常返回，程序继续运行。</li>
-<li>B-Tree巧妙地利用磁盘预读原理，将一个节点的大小设为等于一个页。每次新建节点时，直接申请一个页的空间，这样就保证一个节点物理上也存储在一个页里，加之计算机存储分配都是按页对齐的，就实现了一个node只需一次I/O。</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>猫抓老鼠的简单讨论</title>
     <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
     <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
@@ -1883,66 +1778,84 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>被讨厌的勇气</title>
-    <url>/2020/08/24/%E8%A2%AB%E8%AE%A8%E5%8E%8C%E7%9A%84%E5%8B%87%E6%B0%94/</url>
-    <content><![CDATA[<p>「被讨厌的勇气」真是一本好书，希望大家都能看一看。</p>
-<p>这里开始简单记录书中一些我认为很有意义的话。</p>
+    <title>深入理解MySQL索引底层实现原理丨技术干货</title>
+    <url>/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/</url>
+    <content><![CDATA[<h3 id="转载">转载：</h3>
+<p>https://zhuanlan.zhihu.com/p/77383599</p>
+<h2 id="一索引的本质">一、索引的本质</h2>
+<p><strong>MySQL官方对索引的定义为</strong>：索引（Index）是帮助MySQL高效获取数据的数据结构。提取句子主干，就可以得到索引的本质：索引是数据结构。</p>
+<p>我们知道，数据库查询是数据库的最主要功能之一。我们都希望查询数据的速度能尽可能的快，因此数据库系统的设计者会从查询算法的角度进行优化。最基本的查询算法当然是顺序查找（linear search），这种复杂度为O(n)的算法在数据量很大时显然是糟糕的，好在计算机科学的发展提供了很多更优秀的查找算法，例如二分查找（binary search）、二叉树查找（binary tree search）等。如果稍微分析一下会发现，每种查找算法都只能应用于特定的数据结构之上，例如二分查找要求被检索数据有序，而二叉树查找只能应用于二叉查找树上，但是数据本身的组织结构不可能完全满足各种数据结构（例如，理论上不可能同时将两列都按顺序进行组织），所以，在数据之外，数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法。这种数据结构，就是索引。</p>
+<p>看一个例子：</p>
+<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%861.jpg" class>
+<p>上图展示了一种可能的索引方式。左边是数据表，一共有两列七条记录，最左边的是数据记录的物理地址（注意逻辑上相邻的记录在磁盘上也并不是一定物理相邻的）。为了加快Col2的查找，可以维护一个右边所示的二叉查找树，每个节点分别包含索引键值和一个指向对应数据记录物理地址的指针，这样就可以运用二叉查找在O(log2n)的复杂度内获取到相应数据。</p>
+<p>虽然这是一个货真价实的索引，但是实际的数据库系统几乎没有使用二叉查找树或其进化品种红黑树（red-black tree）实现的，原因会在下文介绍。</p>
+<h2 id="二二叉排序树">二、二叉排序树</h2>
+<p>在介绍B树之前，先来看另一颗神奇的树——二叉排序树（Binary Sort Tree）。关于这棵树大家已经很熟悉了，我不多说了，看原文吧。</p>
+<ul>
+<li>若左子树不空，则左子树上所有节点的值均小于它的根节点的值</li>
+<li>若右子树不空，则右字数上所有节点的值均大于它的根节点的值</li>
+<li>它的左、右子树也分别为二叉排序数（递归定义）</li>
+</ul>
+<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%862.jpg" class>
+<p>从图中可以看出，二叉排序树组织数据时，用于查找是比较方便的，因为每次经过一次节点时，最多可以减少一半的可能，不过极端情况会出现所有节点都位于同一侧，直观上看就是一条直线，那么这种查询的效率就比较低了，因此需要对二叉树左右子树的高度进行平衡化处理，于是就有了平衡二叉树（Balenced Binary Tree）。</p>
+<p>所谓“平衡”，说的是这棵树的各个分支的高度是均匀的，它的左子树和右子树的高度之差绝对值小于1，这样就不会出现一条支路特别长的情况。于是，在这样的平衡树中进行查找时，总共比较节点的次数不超过树的高度，这就确保了查询的效率（时间复杂度为O(logn)）</p>
+<h2 id="三b树">三、B树</h2>
+<p>还是直接看图比较清楚，图中所示，B树事实上是一种平衡的多叉查找树，也就是说最多可以开m个叉（m&gt;=2)，我们称之为m阶B树，为了体现本博客的良心之处，不同于其他地方都能看到2阶B树，这里特意画了一棵5阶B树 。博主棒。</p>
+<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%863.jpg" class>
+<p>总的来说，m阶B树满足以下条件：</p>
+<ul>
+<li>每个节点至多可以拥有m棵子树</li>
+<li>根节点，至少有2个节点（要么极端情况，就是一棵树就一个根节点，单细胞生物，既是根，也是叶，也是树）。</li>
+<li>非根非叶的节点至少有Ceil(m/2)个子树（Ceil表示向上取整，图中5阶B树，每个节点至少有3个子树，也就是至少有3个叉）。</li>
+<li>非叶子节点中的信息包括[n, A0, K1, A1, K2, A2, ..., Kn, An]，其中n表示该节点中保存的关键字个数，K为关键字且Ki&lt;Ki+1，A为指向子树根节点的指针。</li>
+<li>从根到叶子的每一条路径都有相同的长度，也就是说，叶子节点在相同的层，并且这些节点不带信息，实际上这些节点就表示找不到指定的值，也就是指向这些节点的指针为空。</li>
+<li>B树的查询过程和二查排序树比较类似，从根节点依次比较每个节点，因为每个节点中的关键字和左右子树都是有序的，所以只要比较节点中的关键字，或者沿着指针就能很快的找到指定的关键字，如果查找失败，则会返回叶子节点，即空指针。</li>
+</ul>
+<p><strong>例如查询图中字母表中的K</strong>：</p>
+<ul>
+<li>从根节点P开始，K的位置在P之前，进入左侧指针</li>
+<li>左子树中，依次比较C、F、J、M，发现K在J和M之间。</li>
+<li>沿着J和M之间的指针，继续访问子树，并依次进行比较，发现第一个关键字K即为指定查找的值。</li>
+</ul>
+<p>B树搜索的简单伪代码如下：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">BTree_Search(node, key) &#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">foreach</span>(node.key)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(node.key[i] == key) <span class="keyword">return</span> node.data[i];</span><br><span class="line">        <span class="keyword">if</span>(node.key[i] &gt; key) <span class="keyword">return</span> BTree_Search(point[i]-&gt;node, key);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> BTree_Search(point[i+<span class="number">1</span>]-&gt;node, key);</span><br><span class="line">&#125;</span><br><span class="line">data = BTree_Search(root, my_key);</span><br></pre></td></tr></table></figure>
+<p><strong>B树的特点可以总结为如下：</strong></p>
+<ul>
+<li>关键字集合分布在整颗树中</li>
+<li>任何一个关键字出现且只出现在一个节点中</li>
+<li>搜索有可能在非叶子节点结束</li>
+<li>其搜索性能等价于在关键字集合内做一次二分查找</li>
+<li>B树的插入删除新的数据记录会破坏B-Tree的性质，因为在插入删除时，需要对树进行分裂、合并、转移等操作以保持B-Tree的性质。</li>
+</ul>
+<h2 id="四plus版-b树">四、Plus版-B+树</h2>
+<p>作为B树的加强版，B+树与B树的差异在于</p>
+<p>有n棵子树的节点含有n个关键字（也有人认为是n-1个关键字）。</p>
+<p>所有的关键字全部存储在叶子节点上，且叶子节点本身根据关键字自小而大顺序连接。</p>
+<p>非叶子节点可以看成索引部分，节点中仅包含有其子树（根节点）中的最大（最小）关键字。</p>
+<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%864.jpg" class>
+<p>B+树的查找过程，与B树类似，只不过查找时，如果在非叶子节点上的关键字等于给定值，并不终止，而是继续沿着指针直到叶子节点位置。因此在B+树中，不管查找成功与否，每次查找都是走了一条从根到叶子节点的路径。</p>
+<p><strong>B+树的特性如下：</strong></p>
+<ul>
+<li>所有关键字都存储在叶子节点上，且链表中的关键字恰好是有序的</li>
+<li>不可能非叶子节点命中返回</li>
+<li>非叶子节点相当于叶子节点的索引，叶子节点相当于是存储（关键字）数据的数据层。</li>
+<li>更适合文件索引系统</li>
+</ul>
+<h2 id="五带有顺序访问指针的btree">五、带有顺序访问指针的B+Tree</h2>
+<p>一般在数据库系统或文件系统中使用的B+Tree结构都在进店B+Tree的基础上进行了优化，增加了顺序访问指针，</p>
+<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%865.jpg" class>
+<p>如上图所示，在B+Tree的每个叶子节点增加一个指向相邻子节点的指针，就形成了带有顺序访问指针的B+Tree。做这个优化的目的是为了提高区间访问的性能，例如图4中如果要查询key为从18到49的所有数据记录，当找到18后，只需顺着节点和指针顺序遍历就可以一次性访问到所有数据节点，极大提高了取件查找效率。</p>
+<h2 id="六mysql为什么使用b树b树">六、MySQL为什么使用B树（B+树）</h2>
+<p>红黑树等数据结构也可以用来实现索引，但是文件系统以及数据库系统普遍采用B树或者B+树，这一节将结合计算机组成原理相关知识讨论B-/+Tree作为索引的理论基础。</p>
+<p>一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储在磁盘上。这样的话，索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，所以评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。下面先介绍内存和磁盘存取原理，然后再结合这些原理分析B-/+Tree作为索引的效率。</p>
+<p>太长了，后面我总结一下</p>
 <ol type="1">
-<li><p>阿德勒心理学就是勇气心理学，人不能缺乏”<strong>获得幸福的勇气</strong>“。</p></li>
-<li><p>人之所以不幸正是因为自己亲手选择了”不幸“，而不是因为生来就不幸。是因为你认为”不幸“对你自身而言是一种”善“。是因为你在不断地下着不改变自己生活方式的决心。即使人们有各种不满，但还是认为保持现状更加轻松、更能安心。</p></li>
-<li><p>哲人：是的。<strong>以自己的不幸为武器支配对方</strong>。通过诉说自己如何不幸、如何痛苦来让周围的人——比如家人或朋友——担心或束缚支配其言行。刚开始提到的那些闭门不出者就常常沉浸在以不幸为武器的优越感中。阿德勒甚至指出：”在我们的文化中，弱势其实非常强大而且具有特权。”</p>
-<p>青年：什么叫“弱势具有特权”？</p>
-<p>哲人：阿德勒说：“在我们的文化中，如果要问谁最强大，那答案也许是婴儿。婴儿其实总是处于支配而非被支配的地位。”婴儿就是通过其弱势的特点来支配大人。并且，婴儿因为弱势所以不受任何人的支配。</p>
-<p>青年：……根本没有这种观点。</p>
-<p>哲人：当然，负伤之人所说的“你无法体会我的心情”之类的话中也包含着一定的事实。谁都无法完全理解痛苦的当事人的心情。但是，只要把自己的不幸当作保持“特别”的武器来用，<strong>那人就会永远需要不幸</strong>。</p></li>
-<li><p>哲人：<strong>健全的自卑感不是来自与别人的比较，而是来自与“理想的自己”的比较。</strong></p>
-<p>青年：但是……</p>
-<p>哲人：好吧，我们都不一样。性别、年龄、知识、经验、外貌，没有完全一样的人，我们应该积极地看待自己与别人的差异。但是，我们“<strong>虽然不同但是平等</strong>”。</p></li>
-<li><p><strong>可以把马带到水边，但不能强迫其喝水。基本上，一切人际关系矛盾都起因于对别人的课题妄加干涉或者自己的课题被别人妄加干涉。能够改变自己的只有自己。</strong>别人不是为了满足你的期待而活。即使是自己的孩子也不是为了满足父母的期待而活。</p></li>
-<li><p>关于自己的人生你能够做的就只有“<strong>选择自己认为最好的道路</strong>”。另一方面，<strong>别人如何评价你的选择，那是别人的课题，你根本无法左右</strong>。</p></li>
-<li><p><strong>不去干涉别人的课题也不让别人干涉自己的课题。</strong>这就是阿德勒心理学给出的具体而且可能彻底改变人际关系烦恼的具有划时代意义的观点。</p></li>
-<li><p><strong>毫不在意别人的评价、不害怕被别人讨厌、不追求被他人认可，如果不付出以上这些代价，那就无法贯彻自己的生活方式</strong>，也就是不能获得自由。</p></li>
-<li><p><strong>活在害怕关系破裂的恐惧之中，那是为他人而活的一种不自由的生活方式。</strong></p></li>
-<li><p><strong>不可以表扬也不可以批评</strong>，这就是阿德勒心理学的立场。</p></li>
-<li><p><strong>表扬这种行为含有“有能力者对没能力者所做的评价”这方面的特点。</strong></p></li>
-<li><p><strong>阿德勒心理学反对一切”纵向关系“，提倡把所有的人际关系都看作”横向关系“。</strong>在某种意义上，这可以说是阿德勒心理学的基本原理。</p></li>
-<li><p><strong>自卑感原本就是从纵向关系中产生的一种意识</strong>。只要能够对所有人都建立起”虽不同但平等“的横向关系，那就根本不会产生自卑情结。</p></li>
-<li><p>那么，人为什么会去干涉别人呢？其背后实际上也是一种纵向关系。<strong>正因为把人际关系看成纵向关系、把对方看得比自己低，所以才会去干涉。</strong>希望通过干涉行为把对方导向成自己希望的方向。这是坚信自己正确而对方错误。</p>
-<p>当然，这里的干涉就是操纵。命令孩子”好好学习“的父母就是个典型例子。也许本人是出于善意，但结果却是妄加干涉，因为这是想按照自己的意思去操纵对方。</p></li>
-<li><p><strong>阿德勒心理学把这种基于横向关系的援助称为”鼓励“。</strong></p></li>
-<li><p><strong>因为人会因为被表扬而形成”自己没能力“的信念。</strong></p></li>
-<li><p><strong>最重要的是不"评价"他人</strong>，评价性的语言是基于纵向关系的语言。如果是基于横向关系，那自然就会说出一些更加真诚地表示感谢、尊敬或者喜悦的话。</p></li>
-<li><p><strong>人在听到感谢之词的时候，就会知道自己能够对别人有所贡献。</strong></p></li>
-<li><p>例如，人样才能够获得“勇气”？阿德勒的简洁是：<strong>人只有在能够感觉到自己有价值的时候才可以获得勇气。</strong></p></li>
-<li><p><strong>人只有在可以体会到“我对共同体有用”的时候才能够感觉到自己的价值。</strong></p></li>
-<li><p>请不要用“行为”标准而是用“存在”标准去看待他人；不要用他人“做了什么”去判断，而应对其存在本身表示喜悦和感谢。</p></li>
-<li><p>关于共同体感觉问题，也有人向阿德勒本人提出过同样的疑问。当时，阿德勒的回答是这样的：<strong>“必须得有人开始。即使其他人不合作，那也跟你没关系。我的意见就是这样：应该由你来开始。不必去考虑他人是否合作。”</strong></p></li>
-<li><p><strong>如果你与某人建立起了纵向关系，那你就会不自觉地从“纵向”去把握所有的人际关系。</strong></p></li>
-<li><p>并不是说将任何人都变成朋友或者像对待朋友一样去对待每一个人，不是这样的，<strong>重要的是意识上的平等以及坚持自己应有的主张。</strong></p></li>
-<li><p><strong>上帝，请赐予我平静，去接受我无法改变的；给予我勇气，去改变我能改变的；赐我智慧，分辨这两者的区别。</strong></p></li>
-<li><p>是的，我们并不缺乏能力，只是缺乏“勇气”。一切都是“勇气”的问题。</p></li>
-<li><p><strong>在相信他人的时候不附加任何条件。</strong>即使没有足以构成信用的客观依据也依然相信，不考虑抵押之类的事情，无条件的相信。这就是信赖。</p></li>
-<li><p>你现在认为“无条件地信赖别人只会遭到背叛”。但是，决定背不背判的不是你，那是他人的课题。<strong>你只需要考虑“我该怎么做”。</strong></p></li>
-<li><p>你现在一味地担心“被背叛”，也只关注因此受到的伤痛。但是，<strong>如果不敢去信赖别人，那最终就会与任何人都建立不了深厚的关系。</strong></p></li>
-<li><p><strong>他者贡献并不是舍弃“我”而为他人效劳，它反而是为了能够体会到“我”的价值而采取的一种手段。</strong></p></li>
-<li><p><strong>任何情况下都只是攻击我的“那个人”有问题，而绝不是“大家”的错。</strong></p></li>
-<li><p><strong>只不过是以工作为借口来逃避其他责任。</strong>本来家务、育儿、交友或兴趣应该全都给予关心，阿德勒不认可任何一方面突出的生活方式。</p></li>
-<li><p><strong>对人而言，最大的不幸就是不喜欢自己。</strong>对于这种现实，阿德勒准备了极其简单的回答——“我对共同体有益”或者“我对他人有用”这种想法就足以让人体会到自己的价值。</p></li>
-<li><p>青年：您是说，只要有了共同体感觉认可欲求就会消失吗？</p>
-<p>哲人：会消失。<strong>不再需要他人的认可。</strong></p></li>
-<li><p>如果人生是一条线，那么人生规划就有可能。但是，我们的人生只是点的连续。<strong>计划式的人生不是有没有必要，而是根本不可能。</strong></p></li>
-<li><p>请你这样想。<strong>人生就像是在每一个瞬间不同旋转起舞的连续的刹那。</strong>并且，蓦然四顾时常常会惊觉：”已经来到这里了吗？“</p></li>
-<li><p>在舞蹈中，跳舞本身就是目的，最终会跳到哪里谁都不知道。当然，作为跳的结果最终会到达某个地方。因为一直在跳动所以不会停在原地。但是，<strong>并不存在目的地</strong>。</p></li>
-<li><p><strong>如果把强烈的聚光灯对准”此时此刻“，那就会既看不到过去也看不到未来。</strong></p></li>
-<li><p>过去发生了什么与你的”此时此刻“没有任何关系，未来会如何也不是”此时此刻“要考虑的问题。</p></li>
-<li><p>人生中最大的黄痰就是不活在”此时此刻“。</p></li>
-<li><p>所以阿德勒再说了”并不存在普遍性的人生意义“之后还说：”<strong>人生意义是自己赋予自己的。</strong>“</p></li>
-<li><p>无论你过着怎么的刹那，即使有人讨厌你，<strong>只要没有迷失”他者贡献“这颗引导之星，那么你就不会迷失马尔切做什么都可以</strong>。即使被讨厌自己的人讨厌着也可以自由的生活。</p></li>
-<li><p><strong>世界不是靠他人改变而只能靠”我“来改变。</strong></p></li>
+<li>预读的长度一般为页（page）的整倍数。页是计算机管理存储器的逻辑块，硬件及操作系统往往将主存和磁盘存储区分割为连续的大小相等的块，每个存储块称为一页（在许多操作系统中，页得大小通常为4k），主存和磁盘以页为单位交换数据。当程序要读取的数据不在主存中时，会触发一个缺页异常，此时系统会向磁盘发出读盘信号，磁盘会找到数据的起始位置并向后连续读取一页或几页载入内存中，然后异常返回，程序继续运行。</li>
+<li>B-Tree巧妙地利用磁盘预读原理，将一个节点的大小设为等于一个页。每次新建节点时，直接申请一个页的空间，这样就保证一个节点物理上也存储在一个页里，加之计算机存储分配都是按页对齐的，就实现了一个node只需一次I/O。</li>
 </ol>
 ]]></content>
       <tags>
-        <tag>生活</tag>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -2076,6 +1989,33 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <p>因为f(0) = 0, f(n) = 1，所以f(1) = 1/n，f(2) = 2/n， f(x) = x/n，f(n-1) = (n-1)/n，f(n) = n/n</p>
 <p>所以，综上可得f(x) = x/n。</p>
 <p>也就是说，当向右走x步到达右边终点，向左n-x步到达左边终点时，我们最后到达左边终点的概率为x/n</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
+    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
+<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
+<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
+<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
+<h2 id="算法">算法</h2>
+<ol type="1">
+<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
+<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
+<li>while sptSet不包含所有的顶点：
+<ul>
+<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
+<li>将u加入到sptSet中。</li>
+<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
+</ul></li>
+</ol>
+<h2 id="代码示例">代码示例</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="参考">参考</h2>
+<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -2273,6 +2213,69 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>被讨厌的勇气</title>
+    <url>/2020/08/24/%E8%A2%AB%E8%AE%A8%E5%8E%8C%E7%9A%84%E5%8B%87%E6%B0%94/</url>
+    <content><![CDATA[<p>「被讨厌的勇气」真是一本好书，希望大家都能看一看。</p>
+<p>这里开始简单记录书中一些我认为很有意义的话。</p>
+<ol type="1">
+<li><p>阿德勒心理学就是勇气心理学，人不能缺乏”<strong>获得幸福的勇气</strong>“。</p></li>
+<li><p>人之所以不幸正是因为自己亲手选择了”不幸“，而不是因为生来就不幸。是因为你认为”不幸“对你自身而言是一种”善“。是因为你在不断地下着不改变自己生活方式的决心。即使人们有各种不满，但还是认为保持现状更加轻松、更能安心。</p></li>
+<li><p>哲人：是的。<strong>以自己的不幸为武器支配对方</strong>。通过诉说自己如何不幸、如何痛苦来让周围的人——比如家人或朋友——担心或束缚支配其言行。刚开始提到的那些闭门不出者就常常沉浸在以不幸为武器的优越感中。阿德勒甚至指出：”在我们的文化中，弱势其实非常强大而且具有特权。”</p>
+<p>青年：什么叫“弱势具有特权”？</p>
+<p>哲人：阿德勒说：“在我们的文化中，如果要问谁最强大，那答案也许是婴儿。婴儿其实总是处于支配而非被支配的地位。”婴儿就是通过其弱势的特点来支配大人。并且，婴儿因为弱势所以不受任何人的支配。</p>
+<p>青年：……根本没有这种观点。</p>
+<p>哲人：当然，负伤之人所说的“你无法体会我的心情”之类的话中也包含着一定的事实。谁都无法完全理解痛苦的当事人的心情。但是，只要把自己的不幸当作保持“特别”的武器来用，<strong>那人就会永远需要不幸</strong>。</p></li>
+<li><p>哲人：<strong>健全的自卑感不是来自与别人的比较，而是来自与“理想的自己”的比较。</strong></p>
+<p>青年：但是……</p>
+<p>哲人：好吧，我们都不一样。性别、年龄、知识、经验、外貌，没有完全一样的人，我们应该积极地看待自己与别人的差异。但是，我们“<strong>虽然不同但是平等</strong>”。</p></li>
+<li><p><strong>可以把马带到水边，但不能强迫其喝水。基本上，一切人际关系矛盾都起因于对别人的课题妄加干涉或者自己的课题被别人妄加干涉。能够改变自己的只有自己。</strong>别人不是为了满足你的期待而活。即使是自己的孩子也不是为了满足父母的期待而活。</p></li>
+<li><p>关于自己的人生你能够做的就只有“<strong>选择自己认为最好的道路</strong>”。另一方面，<strong>别人如何评价你的选择，那是别人的课题，你根本无法左右</strong>。</p></li>
+<li><p><strong>不去干涉别人的课题也不让别人干涉自己的课题。</strong>这就是阿德勒心理学给出的具体而且可能彻底改变人际关系烦恼的具有划时代意义的观点。</p></li>
+<li><p><strong>毫不在意别人的评价、不害怕被别人讨厌、不追求被他人认可，如果不付出以上这些代价，那就无法贯彻自己的生活方式</strong>，也就是不能获得自由。</p></li>
+<li><p><strong>活在害怕关系破裂的恐惧之中，那是为他人而活的一种不自由的生活方式。</strong></p></li>
+<li><p><strong>不可以表扬也不可以批评</strong>，这就是阿德勒心理学的立场。</p></li>
+<li><p><strong>表扬这种行为含有“有能力者对没能力者所做的评价”这方面的特点。</strong></p></li>
+<li><p><strong>阿德勒心理学反对一切”纵向关系“，提倡把所有的人际关系都看作”横向关系“。</strong>在某种意义上，这可以说是阿德勒心理学的基本原理。</p></li>
+<li><p><strong>自卑感原本就是从纵向关系中产生的一种意识</strong>。只要能够对所有人都建立起”虽不同但平等“的横向关系，那就根本不会产生自卑情结。</p></li>
+<li><p>那么，人为什么会去干涉别人呢？其背后实际上也是一种纵向关系。<strong>正因为把人际关系看成纵向关系、把对方看得比自己低，所以才会去干涉。</strong>希望通过干涉行为把对方导向成自己希望的方向。这是坚信自己正确而对方错误。</p>
+<p>当然，这里的干涉就是操纵。命令孩子”好好学习“的父母就是个典型例子。也许本人是出于善意，但结果却是妄加干涉，因为这是想按照自己的意思去操纵对方。</p></li>
+<li><p><strong>阿德勒心理学把这种基于横向关系的援助称为”鼓励“。</strong></p></li>
+<li><p><strong>因为人会因为被表扬而形成”自己没能力“的信念。</strong></p></li>
+<li><p><strong>最重要的是不"评价"他人</strong>，评价性的语言是基于纵向关系的语言。如果是基于横向关系，那自然就会说出一些更加真诚地表示感谢、尊敬或者喜悦的话。</p></li>
+<li><p><strong>人在听到感谢之词的时候，就会知道自己能够对别人有所贡献。</strong></p></li>
+<li><p>例如，人样才能够获得“勇气”？阿德勒的简洁是：<strong>人只有在能够感觉到自己有价值的时候才可以获得勇气。</strong></p></li>
+<li><p><strong>人只有在可以体会到“我对共同体有用”的时候才能够感觉到自己的价值。</strong></p></li>
+<li><p>请不要用“行为”标准而是用“存在”标准去看待他人；不要用他人“做了什么”去判断，而应对其存在本身表示喜悦和感谢。</p></li>
+<li><p>关于共同体感觉问题，也有人向阿德勒本人提出过同样的疑问。当时，阿德勒的回答是这样的：<strong>“必须得有人开始。即使其他人不合作，那也跟你没关系。我的意见就是这样：应该由你来开始。不必去考虑他人是否合作。”</strong></p></li>
+<li><p><strong>如果你与某人建立起了纵向关系，那你就会不自觉地从“纵向”去把握所有的人际关系。</strong></p></li>
+<li><p>并不是说将任何人都变成朋友或者像对待朋友一样去对待每一个人，不是这样的，<strong>重要的是意识上的平等以及坚持自己应有的主张。</strong></p></li>
+<li><p><strong>上帝，请赐予我平静，去接受我无法改变的；给予我勇气，去改变我能改变的；赐我智慧，分辨这两者的区别。</strong></p></li>
+<li><p>是的，我们并不缺乏能力，只是缺乏“勇气”。一切都是“勇气”的问题。</p></li>
+<li><p><strong>在相信他人的时候不附加任何条件。</strong>即使没有足以构成信用的客观依据也依然相信，不考虑抵押之类的事情，无条件的相信。这就是信赖。</p></li>
+<li><p>你现在认为“无条件地信赖别人只会遭到背叛”。但是，决定背不背判的不是你，那是他人的课题。<strong>你只需要考虑“我该怎么做”。</strong></p></li>
+<li><p>你现在一味地担心“被背叛”，也只关注因此受到的伤痛。但是，<strong>如果不敢去信赖别人，那最终就会与任何人都建立不了深厚的关系。</strong></p></li>
+<li><p><strong>他者贡献并不是舍弃“我”而为他人效劳，它反而是为了能够体会到“我”的价值而采取的一种手段。</strong></p></li>
+<li><p><strong>任何情况下都只是攻击我的“那个人”有问题，而绝不是“大家”的错。</strong></p></li>
+<li><p><strong>只不过是以工作为借口来逃避其他责任。</strong>本来家务、育儿、交友或兴趣应该全都给予关心，阿德勒不认可任何一方面突出的生活方式。</p></li>
+<li><p><strong>对人而言，最大的不幸就是不喜欢自己。</strong>对于这种现实，阿德勒准备了极其简单的回答——“我对共同体有益”或者“我对他人有用”这种想法就足以让人体会到自己的价值。</p></li>
+<li><p>青年：您是说，只要有了共同体感觉认可欲求就会消失吗？</p>
+<p>哲人：会消失。<strong>不再需要他人的认可。</strong></p></li>
+<li><p>如果人生是一条线，那么人生规划就有可能。但是，我们的人生只是点的连续。<strong>计划式的人生不是有没有必要，而是根本不可能。</strong></p></li>
+<li><p>请你这样想。<strong>人生就像是在每一个瞬间不同旋转起舞的连续的刹那。</strong>并且，蓦然四顾时常常会惊觉：”已经来到这里了吗？“</p></li>
+<li><p>在舞蹈中，跳舞本身就是目的，最终会跳到哪里谁都不知道。当然，作为跳的结果最终会到达某个地方。因为一直在跳动所以不会停在原地。但是，<strong>并不存在目的地</strong>。</p></li>
+<li><p><strong>如果把强烈的聚光灯对准”此时此刻“，那就会既看不到过去也看不到未来。</strong></p></li>
+<li><p>过去发生了什么与你的”此时此刻“没有任何关系，未来会如何也不是”此时此刻“要考虑的问题。</p></li>
+<li><p>人生中最大的黄痰就是不活在”此时此刻“。</p></li>
+<li><p>所以阿德勒再说了”并不存在普遍性的人生意义“之后还说：”<strong>人生意义是自己赋予自己的。</strong>“</p></li>
+<li><p>无论你过着怎么的刹那，即使有人讨厌你，<strong>只要没有迷失”他者贡献“这颗引导之星，那么你就不会迷失马尔切做什么都可以</strong>。即使被讨厌自己的人讨厌着也可以自由的生活。</p></li>
+<li><p><strong>世界不是靠他人改变而只能靠”我“来改变。</strong></p></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
