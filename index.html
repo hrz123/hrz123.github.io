@@ -185,6 +185,81 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/" class="post-title-link" itemprop="url">__new__和__init__的区别</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-27 19:46:27 / 修改时间：20:05:50" itemprop="dateCreated datePublished" datetime="2020-08-27T19:46:27+08:00">2020-08-27</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>先上代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span></span><br><span class="line">        print(<span class="string">&#x27;class.__new__ called&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> super(Student, cls).__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, name, height</span>):</span></span><br><span class="line">        print(<span class="string">&#x27;class.__init__ called&#x27;</span>)</span><br><span class="line">        self.name = name</span><br><span class="line">        self.height = height</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;The height of Student %s if %s&quot;</span> % (self.name, self.height)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    xiaoming = Student(<span class="string">&#x27;xiaoming&#x27;</span>, <span class="number">175</span>)</span><br><span class="line">    print(xiaoming)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">其中，__new__()不是一定要有，只有继承自object的类才有，该方法可以return父类（通过super(当前类名, cls).__new__())出来的实例，或者直接是object的__new__出来的实例。值得注意的是，在定义子类时没有重新定义__new__()时，Python默认调用该类父类的__new__()方法来构造该类实例，如果该类父类也没有重写__new__()，那么将一直追溯至object的__new__()方法，因为object是所有新式类的基类。如果子类中重写了__new__()方法，那么可以自由选择任意一个其他的新式类。</span><br><span class="line">可见，当类中同时出现__new__()和__init__()时，先调用__new__，再调用__init__()，具体的执行过程为：</span><br><span class="line">1. 调用实例对象代码xiaoming &#x3D; Student(&#39;xiaoming&#39;, 175);</span><br><span class="line">2. 传入name和height的参数，执行Student类的__new__()方法，该方法返回一个类的实例，通常会用父类super(Student, cls).__new__(cls)，__new__()产生的实例即__init__()的self；</span><br><span class="line">3 用实例来调用__init__()方法，进行初始化实例对象的操作。</span><br><span class="line">可以看到，python中__new__()与__init__()的区别，</span><br><span class="line">1. 首先用法不同，__new__()用于创建实例，所以该方法是在实例创建之前被调用，它是类级别的方法，是个静态方法；</span><br><span class="line">   而__init__()用于初始化实例，所以该方法是在实例对象创建后被调用，它是实例级别的方法，用于设置对象属性的一些初始值。</span><br><span class="line">   由此可知，__new__()在__init__()之前被调用。如果__new__()创建的是当前类的实例，会自动调用__init__()，通过return调用的__new__()的参数cls来保证是当前类实例，如果是其他类的类名，那么创建返回的是其他类实例，就不会调用当前类的__init__()函数。</span><br><span class="line">2. 其次传入参数不同</span><br><span class="line">   __new__()至少用一个参数cls，代表当前类，此参数在实例化时由Python解释器</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1237,101 +1312,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/" class="post-title-link" itemprop="url">旅行商问题（使用MST的近似算法）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-08-21 15:56:53 / 修改时间：16:23:54" itemprop="dateCreated datePublished" datetime="2020-08-21T15:56:53+08:00">2020-08-21</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。</p>
-<p><strong>三角形不等式</strong>：从顶点i到顶点j的最短路径总是直接从i到达j，而不是通过其他顶点k，即dist(i, j)总是小于等于dist(i, k) + dist(k, j)。三角形不等式在很多情况下都是成立的。当成本函数满足三角形不等式时，我们可以为TSP设计一个近似算法，该算法返回的旅游成本永远不会超过最优旅游成本的两倍。其思想是使用最小生成树（Minimum Spanning Tree, MST)。以下是基于MST的算法。</p>
-<h2 id="算法">算法</h2>
-<ol type="1">
-<li>让1成为销售员的起点和终点。</li>
-<li>用Prim's Algorithm以1为根构建MST。</li>
-<li>列出构造的MST的前序遍历中所访问的顶点，并在最后添加1.</li>
-</ol>
-<p>让我们考虑下面的例子。第一张图是给定的图，第二张图是以1为根构建的MST。MST的前序遍历是1-2-4-3。在末尾加1，得到1-2-4-3-1，这就是这个算法的输出。</p>
-<img data-src="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST1.png" class>
-<img data-src="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST2.png" class>
-<p>这种情况下，近似算法会产生最优线路，但未必在所有情况下都能产生最优路径。</p>
-<p><strong>这个算法是如何2倍近似的？</strong>上述算法产生的输出成本永远不会超过最佳可能输出成本的两倍。我们来看看上述算法是如何保证这一点的。</p>
-<p>让我们定义一个术语"full walk"来理解这个问题。一个full walk是当一个顶点被前序遍历访问访问时列出它们，并且当某个顶点的子树被返回时也列出这些顶点。上面树的full walk将是1-2-1-4-1-3-1。下面是证明2-近似性的一些重要事实。</p>
-<ol type="1">
-<li>最好的旅行商路线的成本绝不小于MST的成本。（MST的定义说，它是连接所有顶点的最小成本树。）</li>
-<li>full walk的总成本最多是MST成本的两倍（MST的每条边最多被访问两次）。</li>
-<li>上述算法的输出小于full walk的成本。在上面的算法中，我们打印出preorder walk作为输出。在前序遍历中，full walk的两条或多条边被一条边所取代。例如，2-1和1-4被一条边2-4所取代。所以，如果图形遵循三角形不等式，那么这条结论总是对的。</li>
-</ol>
-<p>从以上三句陈述中，我们可以得出结论，近似算法产生的输出成本永远不会超过最佳可能解成本的两倍。</p>
-<p>我们讨论了一个非常简单的旅行商问题的2-近似算法。对于这个问题还有其他更好的近似算法。例如Christofides算法是1.5近似算法。我们将很快把这些算法作为单独的文章来讨论。</p>
-<h2 id="参考">参考</h2>
-<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-2-approximate-using-mst/?ref=lbp</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1403,13 +1383,13 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">68</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

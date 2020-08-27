@@ -727,6 +727,17 @@
       </tags>
   </entry>
   <entry>
+    <title>__new__和__init__的区别</title>
+    <url>/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<p>先上代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span></span><br><span class="line">        print(<span class="string">&#x27;class.__new__ called&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> super(Student, cls).__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, name, height</span>):</span></span><br><span class="line">        print(<span class="string">&#x27;class.__init__ called&#x27;</span>)</span><br><span class="line">        self.name = name</span><br><span class="line">        self.height = height</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;The height of Student %s if %s&quot;</span> % (self.name, self.height)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    xiaoming = Student(<span class="string">&#x27;xiaoming&#x27;</span>, <span class="number">175</span>)</span><br><span class="line">    print(xiaoming)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">其中，__new__()不是一定要有，只有继承自object的类才有，该方法可以return父类（通过super(当前类名, cls).__new__())出来的实例，或者直接是object的__new__出来的实例。值得注意的是，在定义子类时没有重新定义__new__()时，Python默认调用该类父类的__new__()方法来构造该类实例，如果该类父类也没有重写__new__()，那么将一直追溯至object的__new__()方法，因为object是所有新式类的基类。如果子类中重写了__new__()方法，那么可以自由选择任意一个其他的新式类。</span><br><span class="line">可见，当类中同时出现__new__()和__init__()时，先调用__new__，再调用__init__()，具体的执行过程为：</span><br><span class="line">1. 调用实例对象代码xiaoming &#x3D; Student(&#39;xiaoming&#39;, 175);</span><br><span class="line">2. 传入name和height的参数，执行Student类的__new__()方法，该方法返回一个类的实例，通常会用父类super(Student, cls).__new__(cls)，__new__()产生的实例即__init__()的self；</span><br><span class="line">3 用实例来调用__init__()方法，进行初始化实例对象的操作。</span><br><span class="line">可以看到，python中__new__()与__init__()的区别，</span><br><span class="line">1. 首先用法不同，__new__()用于创建实例，所以该方法是在实例创建之前被调用，它是类级别的方法，是个静态方法；</span><br><span class="line">   而__init__()用于初始化实例，所以该方法是在实例对象创建后被调用，它是实例级别的方法，用于设置对象属性的一些初始值。</span><br><span class="line">   由此可知，__new__()在__init__()之前被调用。如果__new__()创建的是当前类的实例，会自动调用__init__()，通过return调用的__new__()的参数cls来保证是当前类实例，如果是其他类的类名，那么创建返回的是其他类实例，就不会调用当前类的__init__()函数。</span><br><span class="line">2. 其次传入参数不同</span><br><span class="line">   __new__()至少用一个参数cls，代表当前类，此参数在实例化时由Python解释器</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python实现Trie(字典树、前缀树)</title>
     <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
     <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
@@ -743,38 +754,6 @@
 <h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
 <p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现简单布隆过滤器</title>
-    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
-<p>布隆过滤器vshash table</p>
-<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
-<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
-<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
-<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
-<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
-<h2 id="案例">案例</h2>
-<ol type="1">
-<li>比特币网络</li>
-<li>分布式系统（Map-Reduce) - Hadoop、search engine
-<ol type="1">
-<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
-</ol></li>
-<li>Redis缓存</li>
-<li>垃圾邮件、评论等的过滤</li>
-</ol>
-<h2 id="简单实现示例">简单实现示例</h2>
-<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
-<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
-<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
-<p>search是search(s:str) -&gt;bool</p>
-<p>示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -836,6 +815,38 @@
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现简单布隆过滤器</title>
+    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
+<p>布隆过滤器vshash table</p>
+<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
+<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
+<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
+<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
+<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
+<h2 id="案例">案例</h2>
+<ol type="1">
+<li>比特币网络</li>
+<li>分布式系统（Map-Reduce) - Hadoop、search engine
+<ol type="1">
+<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
+</ol></li>
+<li>Redis缓存</li>
+<li>垃圾邮件、评论等的过滤</li>
+</ol>
+<h2 id="简单实现示例">简单实现示例</h2>
+<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
+<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
+<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
+<p>search是search(s:str) -&gt;bool</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -905,16 +916,6 @@
       </tags>
   </entry>
   <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>今年值得纪念的事情</title>
     <url>/2020/08/12/%E4%BB%8A%E5%B9%B4%E5%80%BC%E5%BE%97%E7%BA%AA%E5%BF%B5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
     <content><![CDATA[<h2 id="数据结构与算法">数据结构与算法</h2>
@@ -929,6 +930,16 @@
 <li>看完了《七武士》</li>
 <li>读完了《被讨厌的勇气》 2020.8.26</li>
 </ul>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1244,35 +1255,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>并查集侦查无向图中的环</title>
-    <url>/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/</url>
-    <content><![CDATA[<p>并查集是一种数据结构，它跟踪一个集合的元素被分割成若干不相干（不重叠）的子集。union-find算法是一种对这种数据结构执行两种有用操作的算法：</p>
-<p>Find：确定一个特定的元素在哪个子集里。这可以用来确定两个元素是否在同一个子集中。</p>
-<p>Union：将两个子集连接成一个单一的子集。</p>
-<p>在这篇文章中，我们将讨论并查集的应用。这个应用就是检查一个给定的图是否有环。</p>
-<p>UnionFInd算法可以检查一个无向图是否有环。注意到我们已经讨论过一种检查环的<span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvZGV0ZWN0LWN5Y2xlLXVuZGlyZWN0ZWQtZ3JhcGgvP3JlZj1sYnA=">方法<i class="fa fa-external-link-alt"></i></span>。这是另一种使用并查集的防范。这个方法假设图中没有自环。</p>
-<p>我们可以在一个1D数组中跟踪子集，我们称它为parent[]。</p>
-<p>我们考虑如下图：</p>
-<img data-src="/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF.png" class>
-<p>对于每条边，用边的两个顶点做子集。如果两个顶点都已经在同一个子集中，就发现了一个环。</p>
-<p>初始化时，parent的所有槽位都初始化为-1（意味着每个子集中只有一个项目）。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2</span><br><span class="line">-1 -1  -1 </span><br></pre></td></tr></table></figure>
-<p>现在逐一处理所有的边。</p>
-<p>边0-1：找到顶点0和1所在的子集。由于它们在不同的子集中，我们对它们进行union操作。为了取union，可以让结点0作为节点1的父结点，或者反之。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 1 is made parent of 0 (1 is now representative of subset &#123;0, 1&#125;)</span><br><span class="line">1  -1  -1</span><br></pre></td></tr></table></figure>
-<p>边1-2：1已经在subset 1中，2在subset 2中，所以取union</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 2 is made parent of 1 (2 is now representative of subset &#123;0, 1, 2&#125;)</span><br><span class="line">1   2  -1</span><br></pre></td></tr></table></figure>
-<p>边0-2：0在subset 2中，2也在subset 2中。因此，包括这条边形成了一个环。</p>
-<p>为什么0的子集和和2相同？</p>
-<p>0-&gt;1-&gt;2 // 1是0的父结点2是1的父结点。</p>
-<p>根据以上解释，下面是实现。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># undirected_graph.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, k</span>):</span></span><br><span class="line">        self.uf = [<span class="number">-1</span>] * (k + <span class="number">1</span>)</span><br><span class="line">        self.sets_count = k</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        p_root = self.find(p)</span><br><span class="line">        q_root = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> p_root == q_root:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p_root] &gt; self.uf[q_root]:</span><br><span class="line">            self.uf[q_root] += self.uf[p_root]</span><br><span class="line">            self.uf[p_root] = q_root</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[p_root] += self.uf[q_root]</span><br><span class="line">            self.uf[q_root] = p_root</span><br><span class="line">        self.sets_count -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.uf = UnionFind(vertices)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isCyclic</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.graph:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> self.graph[i]:</span><br><span class="line">                <span class="keyword">if</span> self.uf.is_connected(i, j):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">                self.uf.union(i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">3</span>)</span><br><span class="line">    g.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    print(g.isCyclic())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>平衡二叉搜索树、B树、B+树、B*树理解</title>
     <url>/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="平衡二叉搜索树">平衡二叉搜索树</h2>
@@ -1370,6 +1352,35 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>并查集侦查无向图中的环</title>
+    <url>/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/</url>
+    <content><![CDATA[<p>并查集是一种数据结构，它跟踪一个集合的元素被分割成若干不相干（不重叠）的子集。union-find算法是一种对这种数据结构执行两种有用操作的算法：</p>
+<p>Find：确定一个特定的元素在哪个子集里。这可以用来确定两个元素是否在同一个子集中。</p>
+<p>Union：将两个子集连接成一个单一的子集。</p>
+<p>在这篇文章中，我们将讨论并查集的应用。这个应用就是检查一个给定的图是否有环。</p>
+<p>UnionFInd算法可以检查一个无向图是否有环。注意到我们已经讨论过一种检查环的<span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvZGV0ZWN0LWN5Y2xlLXVuZGlyZWN0ZWQtZ3JhcGgvP3JlZj1sYnA=">方法<i class="fa fa-external-link-alt"></i></span>。这是另一种使用并查集的防范。这个方法假设图中没有自环。</p>
+<p>我们可以在一个1D数组中跟踪子集，我们称它为parent[]。</p>
+<p>我们考虑如下图：</p>
+<img data-src="/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF.png" class>
+<p>对于每条边，用边的两个顶点做子集。如果两个顶点都已经在同一个子集中，就发现了一个环。</p>
+<p>初始化时，parent的所有槽位都初始化为-1（意味着每个子集中只有一个项目）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2</span><br><span class="line">-1 -1  -1 </span><br></pre></td></tr></table></figure>
+<p>现在逐一处理所有的边。</p>
+<p>边0-1：找到顶点0和1所在的子集。由于它们在不同的子集中，我们对它们进行union操作。为了取union，可以让结点0作为节点1的父结点，或者反之。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 1 is made parent of 0 (1 is now representative of subset &#123;0, 1&#125;)</span><br><span class="line">1  -1  -1</span><br></pre></td></tr></table></figure>
+<p>边1-2：1已经在subset 1中，2在subset 2中，所以取union</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 2 is made parent of 1 (2 is now representative of subset &#123;0, 1, 2&#125;)</span><br><span class="line">1   2  -1</span><br></pre></td></tr></table></figure>
+<p>边0-2：0在subset 2中，2也在subset 2中。因此，包括这条边形成了一个环。</p>
+<p>为什么0的子集和和2相同？</p>
+<p>0-&gt;1-&gt;2 // 1是0的父结点2是1的父结点。</p>
+<p>根据以上解释，下面是实现。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># undirected_graph.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, k</span>):</span></span><br><span class="line">        self.uf = [<span class="number">-1</span>] * (k + <span class="number">1</span>)</span><br><span class="line">        self.sets_count = k</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        p_root = self.find(p)</span><br><span class="line">        q_root = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> p_root == q_root:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p_root] &gt; self.uf[q_root]:</span><br><span class="line">            self.uf[q_root] += self.uf[p_root]</span><br><span class="line">            self.uf[p_root] = q_root</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[p_root] += self.uf[q_root]</span><br><span class="line">            self.uf[q_root] = p_root</span><br><span class="line">        self.sets_count -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.uf = UnionFind(vertices)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isCyclic</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.graph:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> self.graph[i]:</span><br><span class="line">                <span class="keyword">if</span> self.uf.is_connected(i, j):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">                self.uf.union(i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">3</span>)</span><br><span class="line">    g.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    print(g.isCyclic())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
     <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
     <content><![CDATA[
@@ -1392,20 +1403,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>接收自己的有限，去迎接未知的无限</title>
-    <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
-    <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
-<p>第一还是阅读，跟人类伟大的灵魂对话，因为你的困惑在两千多年前人类就已经有过这样的困惑。人类所有伟大的思想家都试图对抗这种困惑。</p>
-<p>但第二的话更重要的是去做，做一些事情，从身边的小事开始做起。每天都只是一个礼物，昨天的已经成为过去，明天还没有到来，我们唯一能够拥有的就是今天。所以今天是一个礼物，是一个gift，是一个present。所以我们做好每天该做的事情。<strong>今生就是我们的哨岗，站好哨就可以了。</strong></p>
-<p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
-<p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
-<p>感谢罗翔罗老师。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>拔智齿</title>
     <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
     <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
@@ -1415,6 +1412,20 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
 <p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
 <p>一切都是好兆头。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>接收自己的有限，去迎接未知的无限</title>
+    <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
+    <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
+<p>第一还是阅读，跟人类伟大的灵魂对话，因为你的困惑在两千多年前人类就已经有过这样的困惑。人类所有伟大的思想家都试图对抗这种困惑。</p>
+<p>但第二的话更重要的是去做，做一些事情，从身边的小事开始做起。每天都只是一个礼物，昨天的已经成为过去，明天还没有到来，我们唯一能够拥有的就是今天。所以今天是一个礼物，是一个gift，是一个present。所以我们做好每天该做的事情。<strong>今生就是我们的哨岗，站好哨就可以了。</strong></p>
+<p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
+<p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
+<p>感谢罗翔罗老师。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1744,20 +1755,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>社会文明程度很大程度上体现为对弱者的尊重</title>
-    <url>/2020/08/22/%E7%A4%BE%E4%BC%9A%E6%96%87%E6%98%8E%E7%A8%8B%E5%BA%A6%E5%BE%88%E5%A4%A7%E7%A8%8B%E5%BA%A6%E4%B8%8A%E4%BD%93%E7%8E%B0%E4%B8%BA%E5%AF%B9%E5%BC%B1%E8%80%85%E7%9A%84%E5%B0%8A%E9%87%8D/</url>
-    <content><![CDATA[<p>在现代社会，公众对艾滋病人的接纳，其实也是一个非常奢侈的话题。虽然每一年，我们都有一个专门的日子，我们来表达对艾滋病人的关心。但是，仅仅有这个日子是不够的。</p>
-<p>人们对于疾病总是有一种本能的恐惧。不要说艾滋病了，甚至乙肝病毒携带者，甚至白血病，等等都在社会中备受歧视。新闻就曾经报道过，有些白血病的孩子入学，被拒绝。所以在这样一种背景下，各位可以想象，艾滋病患呢，也很难走出歧视，并因为这个歧视，可能他们滋生对社会的仇恨和苦毒。</p>
-<p>社会文明程度很大程度上它体现为对弱者的尊重。即便你跌入谷底，社会也应该为你提供基本的保障。当然话虽如此，同理心，始终是人们最匮乏的一种品质。</p>
-<p>对于每个个体，如果我们无法真正的接纳弱者，这不也是我们道德上的免疫缺陷吗？</p>
-<iframe src="//player.bilibili.com/player.html?aid=754134170&amp;bvid=BV1dk4y1m7oJ&amp;cid=224031902&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
-</iframe>
-]]></content>
-      <tags>
-        <tag>社会</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>猫抓老鼠的简单讨论</title>
     <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
     <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
@@ -1787,6 +1784,20 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>社会文明程度很大程度上体现为对弱者的尊重</title>
+    <url>/2020/08/22/%E7%A4%BE%E4%BC%9A%E6%96%87%E6%98%8E%E7%A8%8B%E5%BA%A6%E5%BE%88%E5%A4%A7%E7%A8%8B%E5%BA%A6%E4%B8%8A%E4%BD%93%E7%8E%B0%E4%B8%BA%E5%AF%B9%E5%BC%B1%E8%80%85%E7%9A%84%E5%B0%8A%E9%87%8D/</url>
+    <content><![CDATA[<p>在现代社会，公众对艾滋病人的接纳，其实也是一个非常奢侈的话题。虽然每一年，我们都有一个专门的日子，我们来表达对艾滋病人的关心。但是，仅仅有这个日子是不够的。</p>
+<p>人们对于疾病总是有一种本能的恐惧。不要说艾滋病了，甚至乙肝病毒携带者，甚至白血病，等等都在社会中备受歧视。新闻就曾经报道过，有些白血病的孩子入学，被拒绝。所以在这样一种背景下，各位可以想象，艾滋病患呢，也很难走出歧视，并因为这个歧视，可能他们滋生对社会的仇恨和苦毒。</p>
+<p>社会文明程度很大程度上它体现为对弱者的尊重。即便你跌入谷底，社会也应该为你提供基本的保障。当然话虽如此，同理心，始终是人们最匮乏的一种品质。</p>
+<p>对于每个个体，如果我们无法真正的接纳弱者，这不也是我们道德上的免疫缺陷吗？</p>
+<iframe src="//player.bilibili.com/player.html?aid=754134170&amp;bvid=BV1dk4y1m7oJ&amp;cid=224031902&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
+]]></content>
+      <tags>
+        <tag>社会</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>科比--曼巴精神永不逝去</title>
     <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
     <content><![CDATA[纪念老科 Tomorrow is not grante. Inspire yourself.
@@ -1798,12 +1809,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>生活</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>背包问题泛型</title>
-    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
   <entry>
     <title>经典同步问题</title>
@@ -1827,6 +1832,12 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>操作系统</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>背包问题泛型</title>
+    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
+    <content><![CDATA[
+]]></content>
   </entry>
   <entry>
     <title>蓄水池算法</title>
