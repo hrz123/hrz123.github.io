@@ -185,6 +185,100 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/28/%E4%BA%86%E8%A7%A3java-GC%E8%BF%87%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/28/%E4%BA%86%E8%A7%A3java-GC%E8%BF%87%E7%A8%8B/" class="post-title-link" itemprop="url">了解java GC过程</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-28 22:57:02 / 修改时间：23:32:12" itemprop="dateCreated datePublished" datetime="2020-08-28T22:57:02+08:00">2020-08-28</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/28/%E4%BA%86%E8%A7%A3java-GC%E8%BF%87%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/28/%E4%BA%86%E8%A7%A3java-GC%E8%BF%87%E7%A8%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>堆的空间是用来存储我们new出来的对象的。当new的对象填充慢堆区的话，就会导致内存爆掉，我们的程序就会OOM。jvm 的 GC是清理堆上的对象的。</p>
+<p>首先我们应该判断这个对象应不应该被删除。那判断的标准是什么呢？有一个标准叫GCRoot。被</p>
+<ol type="1">
+<li>栈</li>
+<li>本地方法栈</li>
+<li>方法区（全局变量）</li>
+</ol>
+<p>直接或者间接引用的对象，是不能被删除的。</p>
+<p>就引出了一个以GCRoot为根的树结构。</p>
+<p>思路1：标记需要被删除，在扫描一遍，再删除。<strong>这就是标记清理。</strong></p>
+<p>缺点：产生内存碎片。（导致虽然有内存，但申请不了大内存）</p>
+<p>思路2：<strong>标记整理</strong>。在清除之后，后面的对象要补上来，后面的对象往前顶，减少内存碎片。</p>
+<p>缺点：代价太大。所有的对象都要前移。</p>
+<p>思路3：<strong>复制算法</strong>。将整个内存一分为二。在1区标记是否删除，等到快满了。往2区进行复制，需要删除就不复制，不需要删除的就复制过来，并且是紧凑的复制。这样既避免了内存碎片问题，整个的开销也不大。</p>
+<p>缺点：需要两倍的内存。</p>
+<p>实际的GC。</p>
+<p>对堆区进行了划分，一部分叫年轻代（Young区），另一部分叫老年区（Old区）。对年轻代又进行了划分，有3个区。eden区，survive0区， survive1区。Old区只有一块。new对象都会在eden区。当eden区快满的时候就会触发GC。这个GC只是Young这个区域的GC，所以这个GC又叫做YoungGC。YoungGC的过程采用的是上面的复制算法。不需要删除的依次复制到survive0区。eden比较大的原因是，对象的生命周期往往较短，所以在产生它们的地方区域会比较大，但是幸存下来的比较小。survive0、survive1、eden的比例大概是1：1：8，默认设置下。那为什么需要两块survive区呢？这两个S区是交替工作的。幸存到S0区之后，会将E和S1区全部删除。然后等下一次E区快满了之后，再将S0和E所有对象标记，然后全部复制到S1区。S0和S1交替使用，作为幸存下来的区域。E+S1复制到S0，E+S0复制到S1，E+S1复制到S0，如此往复。结合了对象的"朝生夕死"的特征进行设计的。每一次YoungGC之后，活下来的对象的年龄就会加1，直到对象满了6岁，不再往survive区中复制了，就直接到Old区中。这个原因是因为，如果一个对象在6次GC的清理中都没有被清理掉，那很有可能60次GC都不会清理掉，它可能会永远存在，或者存在很长一段时间。所以我们直接把它放到Old区中维护，这样就省得每次都在这边复制了。另外Old区除了存了年龄是大于等于6岁的这样的一些对象，同时它还存一些大的对象。大对象的原因是如果我们在Eden进行复制的时候，大对象的消耗是比较大的。大对象主要是什么呢？比如说有一个1000万大小的int数组，它就是一个大对象，这个大对象就会直接存到Old区，不进行Young区的存储。那在Old区同样存在它快满了的问题，快满了就会触发GC。OldGC一般会同时伴随着YoungGC，所以它又叫FullGC。FullGC会引起stop the world。stop the world就是说整个java程序直接暂停，然后全力地进行垃圾回收，(因为已经没有内存可用了)。垃圾回收主要采用的是标记清理的算法，或者是标记整理的算法。那我们就明确了，1和2思路（标记清理和标记整理）主要是用于FullGC的，也就是Old区的GC，复制主要是Young区的GC。</p>
+<p>这里举几个比较有名的垃圾收集器。</p>
+<p>年轻代的垃圾收集器可能是ParNew。</p>
+<p>老年代比较有名的可能是CMS。</p>
+<p>分别用了复制算法和标记清理算法，来进行垃圾回收。</p>
+<p>最新版的JDK已经不建议用以前的垃圾收集器了，而采用了一种全新的G1垃圾收集器。它有一种全新的理念。这里就不展开讲了。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/28/jvm%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%85%A8%E9%9D%A2%E8%A7%A3%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1279,95 +1373,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/" class="post-title-link" itemprop="url">__new__和__init__的区别</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-08-27 19:46:27" itemprop="dateCreated datePublished" datetime="2020-08-27T19:46:27+08:00">2020-08-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-28 16:24:29" itemprop="dateModified" datetime="2020-08-28T16:24:29+08:00">2020-08-28</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>先上代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span></span><br><span class="line">        print(<span class="string">&#x27;class.__new__ called&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> super(Student, cls).__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, name, height</span>):</span></span><br><span class="line">        print(<span class="string">&#x27;class.__init__ called&#x27;</span>)</span><br><span class="line">        self.name = name</span><br><span class="line">        self.height = height</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;The height of Student %s if %s&quot;</span> % (self.name, self.height)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    xiaoming = Student(<span class="string">&#x27;xiaoming&#x27;</span>, <span class="number">175</span>)</span><br><span class="line">    print(xiaoming)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">其中，__new__()不是一定要有，只有继承自object的类才有，该方法可以return父类（通过super(当前类名, cls).__new__())出来的实例，或者直接是object的__new__出来的实例。值得注意的是，在定义子类时没有重新定义__new__()时，Python默认调用该类父类的__new__()方法来构造该类实例，如果该类父类也没有重写__new__()，那么将一直追溯至object的__new__()方法，因为object是所有新式类的基类。如果子类中重写了__new__()方法，那么可以自由选择任意一个其他的新式类。</span><br><span class="line">可见，当类中同时出现__new__()和__init__()时，先调用__new__，再调用__init__()，具体的执行过程为：</span><br><span class="line">1. 调用实例对象代码xiaoming &#x3D; Student(&#39;xiaoming&#39;, 175);</span><br><span class="line">2. 传入name和height的参数，执行Student类的__new__()方法，该方法返回一个类的实例，通常会用父类super(Student, cls).__new__(cls)，__new__()产生的实例即__init__()的self；</span><br><span class="line">3 用实例来调用__init__()方法，进行初始化实例对象的操作。</span><br><span class="line">可以看到，python中__new__()与__init__()的区别，</span><br><span class="line">1. 首先用法不同，__new__()用于创建实例，所以该方法是在实例创建之前被调用，它是类级别的方法，是个静态方法；</span><br><span class="line">   而__init__()用于初始化实例，所以该方法是在实例对象创建后被调用，它是实例级别的方法，用于设置对象属性的一些初始值。</span><br><span class="line">   由此可知，__new__()在__init__()之前被调用。如果__new__()创建的是当前类的实例，会自动调用__init__()，通过return调用的__new__()的参数cls来保证是当前类实例，如果是其他类的类名，那么创建返回的是其他类实例，就不会调用当前类的__init__()函数。</span><br><span class="line">2. 其次传入参数不同</span><br><span class="line">   __new__()至少有一个参数cls，代表当前类，此参数在实例化时由Python解释器自动识别；</span><br><span class="line">   __init__()至少有一个参数self，就是这个__new__返回的实例，__init__()在__new__()的基础上完成一些初始化的操作。</span><br><span class="line">3. 返回值不同</span><br><span class="line">   __new__()必须有返回值，返回实例对象；</span><br><span class="line">   __init__()不需要有返回值。</span><br><span class="line">   另外谈谈__new__()的作用，__new__()方法主要用于继承一些不可变的class，比如int，str, tuple，提供一个自定义这些类的实例化过程的途径，一般通过重载__new__()的方法来实现。代码如下：</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PositiveInteger</span>(<span class="params">int</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, value</span>):</span></span><br><span class="line">        <span class="keyword">return</span> super(PositiveInteger, cls).__new__(cls, abs(value))</span><br><span class="line"></span><br><span class="line">a = PositiveInteger(<span class="number">-10</span>)</span><br><span class="line">print(a)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">另外，__new__()方法还可以用来实现单例模式，也就是使每次实例化时只返回同一个实例对象。代码如下：</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 利用__new__实现python单例模式.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span>(<span class="params">object</span>):</span></span><br><span class="line">    _instance_lock = threading.Lock()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> hasattr(Singleton, <span class="string">&quot;_instance&quot;</span>):</span><br><span class="line">            <span class="keyword">with</span> Singleton._instance_lock:</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> hasattr(Singleton, <span class="string">&quot;_instance&quot;</span>):</span><br><span class="line">                    Singleton._instance = object.__new__(cls)</span><br><span class="line">        <span class="keyword">return</span> Singleton._instance</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    obj1 = Singleton()</span><br><span class="line">    obj2 = Singleton()</span><br><span class="line">    obj1.attr = <span class="string">&#x27;value1&#x27;</span></span><br><span class="line">    print(obj1.attr, obj2.attr)</span><br><span class="line">    print(obj1 <span class="keyword">is</span> obj2)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-<h3 id="参考">参考</h3>
-<ol type="1">
-<li>实现单例模式的几种方式，new方式推荐使用 https://www.cnblogs.com/huchong/p/8244279.html#_lab2_1_3</li>
-<li>new 和 init 的区别，https://www.cnblogs.com/jayliu/p/9013155.html</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1439,7 +1444,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
