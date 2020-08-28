@@ -201,38 +201,6 @@
       </tags>
   </entry>
   <entry>
-    <title>MySQL如何正确地显示随机消息？ </title>
-    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论</p>
-<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
-<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
-<h3 id="正确的方法">正确的方法</h3>
-<p>下面这个流程：</p>
-<ol type="1">
-<li>取得整个表的行数，并记为C。</li>
-<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
-<li>再用limit Y，1 取得一行。</li>
-</ol>
-<p>下面这段代码，就是上面流程的执行语句的序列。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
-<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
-<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
-<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
-<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
-<ol type="1">
-<li>取得整个表的行数，即为C</li>
-<li>按照相同的随机方法得到Y1、Y2、Y3</li>
-<li>再执行三个limit Y, 1语句得到三行数据。</li>
-<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
-</ol>
-<h3 id="参考">参考</h3>
-<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MySQL事务隔离</title>
     <url>/2020/08/20/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/</url>
     <content><![CDATA[<h2 id="事务">事务</h2>
@@ -305,6 +273,38 @@
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> information_schema.innodb_trx <span class="keyword">where</span> TIME_TO_SEC(<span class="keyword">timediff</span>(<span class="keyword">now</span>(),trx_started))&gt;<span class="number">60</span></span><br></pre></td></tr></table></figure>
 <h2 id="小结">小结</h2>
 <p>这篇文章，主要介绍了MySQL的事务隔离级别的现象和实现，根据实现原理分析了长事务存在的风险，以及如何用正确的方式避免长事务，希望举的例子能够帮助你理解事务，并更好的使用MySQL的事务特性。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL如何正确地显示随机消息？ </title>
+    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论</p>
+<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
+<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
+<h3 id="正确的方法">正确的方法</h3>
+<p>下面这个流程：</p>
+<ol type="1">
+<li>取得整个表的行数，并记为C。</li>
+<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
+<li>再用limit Y，1 取得一行。</li>
+</ol>
+<p>下面这段代码，就是上面流程的执行语句的序列。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
+<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
+<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
+<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
+<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
+<ol type="1">
+<li>取得整个表的行数，即为C</li>
+<li>按照相同的随机方法得到Y1、Y2、Y3</li>
+<li>再执行三个limit Y, 1语句得到三行数据。</li>
+<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
+</ol>
+<h3 id="参考">参考</h3>
+<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -755,7 +755,7 @@
 <li>堆（存储实际对象）</li>
 </ol>
 <p>栈的空间出栈即可清空，但是堆上创建的对象是不能够随着函数的运行完毕去清理的，因为也不知道是否有其他线程也引用了当前对象，也使用了当前地址，所以它无法进行清空，因而用到了GC机制。</p>
-<p>堆中注意，对于对象类型，堆中存储的依然是对象类型的指针，指向在堆中对象的实际位置，直到基本类型，存储的是实际值。</p>
+<p>堆中注意，对于对象类型，堆中存储的依然是对象类型的指针，指向在堆中对象的实际位置，直到基本类型，存储的是实际值，形象地说是一连串的对象。</p>
 <p>除了栈和堆，还需要在意方法区。方法区什么时候起作用呢，比如说public static void main这个main函数就是存在方法区的。或者比如static Integer i = 10;这个i就是存在方法区。因为方法区也是一个全局的，所以在不同函数的栈中也可以同时的调用方法区里面的i。Main.i去调用静态变量。</p>
 ]]></content>
       <tags>
