@@ -244,23 +244,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="1-哲学家进餐问题"><a href="#1-哲学家进餐问题" class="headerlink" title="1.哲学家进餐问题"></a>1.哲学家进餐问题</h2><img data-src="/2020/08/20/%E7%BB%8F%E5%85%B8%E5%90%8C%E6%AD%A5%E9%97%AE%E9%A2%98/%E7%BB%8F%E5%85%B8%E5%90%8C%E6%AD%A5%E9%97%AE%E9%A2%98.jpg" class>
-
+          <h2 id="哲学家进餐问题">1.哲学家进餐问题</h2>
+<img data-src="/2020/08/20/%E7%BB%8F%E5%85%B8%E5%90%8C%E6%AD%A5%E9%97%AE%E9%A2%98/%E7%BB%8F%E5%85%B8%E5%90%8C%E6%AD%A5%E9%97%AE%E9%A2%98.jpg" class>
 <p>五个哲学家围着一张圆桌，每个哲学家免签放着食物。哲学家的生活有两种交替活动：吃饭以及思考。当一个哲学家吃法时，需要先拿起自己左右两边的两根筷子，并且一次只能拿起一根筷子。</p>
 <p>下面是一种错误的解法，如果所有哲学家同时拿起左手边的筷子，那么所有哲学家都在等到其他哲学家吃完并释放自己手中的筷子，导致死锁。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 5</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">philosopher</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        think();</span><br><span class="line">        take(i);       <span class="comment">// 拿起左边的筷子</span></span><br><span class="line">        take((i+<span class="number">1</span>)%N); <span class="comment">// 拿起右边的筷子</span></span><br><span class="line">        eat();</span><br><span class="line">        put(i);</span><br><span class="line">        put((i+<span class="number">1</span>)%N);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>为了防止死锁的发生，可以设置两个条件：</p>
 <ul>
 <li>必须同时拿起左右两根筷子；</li>
 <li>只有在两个邻居都没有进餐的情况下才允许进餐。</li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 5</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LEFT (i + N - 1) % N <span class="comment">// 左邻居</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RIGHT (i + 1) % N    <span class="comment">// 右邻居</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> THINKING 0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HUNGRY   1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EATING   2</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> semaphore;</span><br><span class="line"><span class="keyword">int</span> state[N];                <span class="comment">// 跟踪每个哲学家的状态</span></span><br><span class="line">semaphore mutex = <span class="number">1</span>;         <span class="comment">// 临界区的互斥，临界区是 state 数组，对其修改需要互斥</span></span><br><span class="line">semaphore s[N];              <span class="comment">// 每个哲学家一个信号量</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">philosopher</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        think(i);</span><br><span class="line">        take_two(i);</span><br><span class="line">        eat(i);</span><br><span class="line">        put_two(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">take_two</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    down(&amp;mutex);</span><br><span class="line">    state[i] = HUNGRY;</span><br><span class="line">    check(i);</span><br><span class="line">    up(&amp;mutex);</span><br><span class="line">    down(&amp;s[i]); <span class="comment">// 只有收到通知之后才可以开始吃，否则会一直等下去</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">put_two</span><span class="params">(i)</span> </span>&#123;</span><br><span class="line">    down(&amp;mutex);</span><br><span class="line">    state[i] = THINKING;</span><br><span class="line">    check(LEFT); <span class="comment">// 尝试通知左右邻居，自己吃完了，你们可以开始吃了</span></span><br><span class="line">    check(RIGHT);</span><br><span class="line">    up(&amp;mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">eat</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    down(&amp;mutex);</span><br><span class="line">    state[i] = EATING;</span><br><span class="line">    up(&amp;mutex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 检查两个邻居是否都没有用餐，如果是的话，就 up(&amp;s[i])，使得 down(&amp;s[i]) 能够得到通知并继续执行</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">check</span><span class="params">(i)</span> </span>&#123;         </span><br><span class="line">    <span class="keyword">if</span>(state[i] == HUNGRY &amp;&amp; state[LEFT] != EATING &amp;&amp; state[RIGHT] !=EATING) &#123;</span><br><span class="line">        state[i] = EATING;</span><br><span class="line">        up(&amp;s[i]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-读者-写者问题"><a href="#2-读者-写者问题" class="headerlink" title="2.读者-写者问题"></a>2.读者-写者问题</h2><p>允许多个进程同时对数据进行读操作，但是不允许读和写以及写和写操作同时发生。</p>
+<h2 id="读者-写者问题">2.读者-写者问题</h2>
+<p>允许多个进程同时对数据进行读操作，但是不允许读和写以及写和写操作同时发生。</p>
 <p>一个整型变量count记录在对数据进行读操作的进程数量，一个互斥量count_mutex用于对count加锁，一个互斥量data_mutex用于对读写的数据加锁。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> semaphore;</span><br><span class="line">semaphore count_mutex = <span class="number">1</span>;</span><br><span class="line">semaphore data_mutex = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        down(&amp;count_mutex);</span><br><span class="line">        count++;</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">1</span>) down(&amp;data_mutex); <span class="comment">// 第一个读者需要对数据进行加锁，防止写进程访问</span></span><br><span class="line">        up(&amp;count_mutex);</span><br><span class="line">        read();</span><br><span class="line">        down(&amp;count_mutex);</span><br><span class="line">        count--;</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>) up(&amp;data_mutex);</span><br><span class="line">        up(&amp;count_mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">writer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(TRUE) &#123;</span><br><span class="line">        down(&amp;data_mutex);</span><br><span class="line">        write();</span><br><span class="line">        up(&amp;data_mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 
       
     </div>
@@ -336,12 +334,11 @@
           <p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
 <p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
 <img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
-
 <p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
 <p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
 <p>以下是旅行商问题的不同解法。</p>
 <p><strong>朴素的解法：</strong></p>
-<ol>
+<ol type="1">
 <li>将城市1作为起点和终点</li>
 <li>生成所有（n-1）！城市的排列组合</li>
 <li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
@@ -349,15 +346,14 @@
 </ol>
 <p>时间复杂度：O(n!)</p>
 <p><strong>DP 动态递推</strong></p>
-<p>让给定的顶点集为{1, 2, 3, 4, …, n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
+<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
 <p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
-
 <p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
-<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n<em>2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2\</em>2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
+<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
 <p>我们很快就会讨论旅行推销员问题的近似算法。</p>
 <p><strong>参考：</strong></p>
-<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvdHJhdmVsbGluZy1zYWxlc21hbi1wcm9ibGVtLXNldC0xLw==">https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/<i class="fa fa-external-link-alt"></i></span></p>
+<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
 
       
     </div>
@@ -430,7 +426,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>软件的开始到后来…</p>
+          <p>软件的开始到后来...</p>
 <p>开始：</p>
 <p>软件=代码？</p>
 <p>软件=算法+数据结构？</p>
@@ -516,25 +512,25 @@
 <p>文件是存储在硬盘上的，文件的读写访问速度必然受到硬盘的物理限制，那么如何才能 1 分钟完成一个 100T 大文件的遍历呢？</p>
 <p>想要知道这个问题的答案，我们就必须知道文件系统的原理。做软件开发时，必然要经常和文件系统打交道，而文件系统也是一个软件，了解文件系统的设计原理，可以帮助我们更好地使用文件系统，另外设计文件系统时的各种考量，也对我们自己做软件设计有诸多借鉴意义。</p>
 <p>让我们先从硬盘的物理结构说起。</p>
-<h3 id="硬盘"><a href="#硬盘" class="headerlink" title="硬盘"></a>硬盘</h3><p>硬盘是一种可持久保存、多次读写数据的存储介质。硬盘的形式主要两种，一种是机械式硬盘，一种是固态硬盘。</p>
+<h3 id="硬盘">硬盘</h3>
+<p>硬盘是一种可持久保存、多次读写数据的存储介质。硬盘的形式主要两种，一种是机械式硬盘，一种是固态硬盘。</p>
 <p>机械式硬盘的结构，主要包含盘片、主轴、次投币，主轴带动盘片高速旋转，当需要读写盘上的数据的时候，磁头臂会移动磁头到盘片所在的磁道上，磁头读取磁道上的数据。读写数据需要移动磁头，这样一个机械的动作，至少需要花费数毫秒的时间，这是机械式硬盘访问延迟的主要原因。</p>
 <p>如果一个文件的数据在硬盘上不是连续存储的，比如数据库的B+树文件，那么要读取这个文件，磁头臂就必须来回移动，花费的时间必然很长。如果文件数据是连续存储的，比如日志文件，那么磁头臂就可以较少移动，相比离散存储的同样大小的文件，连续存储的文件的读写速度要快得多。</p>
 <p>机械式硬盘的数据就存储在具有磁性特质的盘片上，因此这种硬盘也被称为磁盘，而固态硬盘则没有这种磁性特质的存储介质，也没有电机驱动的机械式结构。</p>
 <p>其中主控芯片处理端口输入的指令和数据，然后控制闪存颗粒进行数据读写。由于固态硬盘没有了机械式硬盘的电机驱动磁头臂进行机械式物理移动的环节，而是完全的电子操作，因此固态硬盘的访问速度远快于机械式硬盘。</p>
 <p>但是，到目前为止固态硬盘的成本还是明显高于机械式磁盘，因此在生产环境中，最主要的存储介质依然是机械式硬盘。如果一个场景对数据访问速度、存储容量、成本都有较高要求，那么可以采用固态硬盘和机械式硬盘混合部署的方式，即在一台服务器上既有富态硬盘，也有机械式硬盘，以满足不同文件类型的存储需求，比如日志文件存储在机械式硬盘上，而系统文件和随机读写的文件存储在固态硬盘上。</p>
-<h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><p>作为应用程序开发者，我们不需要直接操作硬盘，而是通过操作系统，以文件的方式对硬盘上的数据进行读写访问。文件系统将硬盘空间以块为单位进行划分，每个文件占据若干个块，然后在通过一个文件控制块FCB记录每个文件占据的硬盘数据块。</p>
+<h3 id="文件系统">文件系统</h3>
+<p>作为应用程序开发者，我们不需要直接操作硬盘，而是通过操作系统，以文件的方式对硬盘上的数据进行读写访问。文件系统将硬盘空间以块为单位进行划分，每个文件占据若干个块，然后在通过一个文件控制块FCB记录每个文件占据的硬盘数据块。</p>
 <img data-src="/2020/08/16/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F1.png" class>
-
 <p>这个文件控制块在Linux操作系统中就是inode，要想访问文件，就必须获得文件的inode信息，在inode中查找文件数据块索引表，根据索引中记录的硬盘地址信息访问硬盘，读写数据。</p>
 <p>inode中记录着文件权限、所有者、修改时间和文件大小等文件属性信息，以及文件数据块硬盘地址索引。inode是固定结构的，能够记录的硬盘地址索引数也是固定的，只有15个索引。其中前12个索引直接记录数据块地址，第13个索引记录索引地址，也就是说，索引块指向的硬盘数据块并不直接记录文件数据，而是记录文件数据块的索引表，每个索引表可以记录256个索引；第14个索引记录二级索引地址，第15个索引记录三级索引地址，如下图：</p>
 <img data-src="/2020/08/16/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F2.jpg" class>
-
 <p>这样，每个inode最多可以存储12+256+256*256+256*256*256个数据块，如果每个数据块的大小为4k，也就是单个文件最大不超过70G，而且即使可以扩大数据块大小，文件大小也要受单个硬盘容量的限制。这样的话，对于我们开头提出的一分钟完成100T大文件的遍历，Linux文件系统是无法完成的。</p>
 <p>那么，有没有更给力的解决方案呢？</p>
-<h3 id="RAID"><a href="#RAID" class="headerlink" title="RAID"></a>RAID</h3><p>RAID，即独立硬盘冗余阵列，将多块硬盘通过硬件RAID卡或者软件RAID的方案管理起来，使其共同对外提供服务。RAID的核心思路其实是利用文件系统将数据写入硬盘中不同数据块的特性，将多块硬盘上的空闲空间看作一个整体，进行数据写入，也就是说，一个文件的多个数据块可能写入多个硬盘。</p>
+<h3 id="raid">RAID</h3>
+<p>RAID，即独立硬盘冗余阵列，将多块硬盘通过硬件RAID卡或者软件RAID的方案管理起来，使其共同对外提供服务。RAID的核心思路其实是利用文件系统将数据写入硬盘中不同数据块的特性，将多块硬盘上的空闲空间看作一个整体，进行数据写入，也就是说，一个文件的多个数据块可能写入多个硬盘。</p>
 <p>根据硬盘组织和使用方式不同，常用RAID有五种，分别是RAID 0、RAID 1、RAID 10、RAID 5和RAID 6。we</p>
 <img data-src="/2020/08/16/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F3.jpg" class>
-
 <p>RAID 0 将一个文件的数据分成 N 片，同时向 N 个硬盘写入，这样单个文件可以存储在 N 个硬盘上，文件容量可以扩大 N 倍，（理论上）读写速度也可以扩大 N 倍。但是使用 RAID 0 的最大问题是文件数据分散在 N 块硬盘上，任何一块硬盘损坏，就会导致数据不完整，整个文件系统全部损坏，文件的可用性极大地降低了。</p>
 <p>RAID 1 则是利用两块硬盘进行数据备份，文件同时向两块硬盘写入，这样任何一块硬盘损坏都不会出现文件数据丢失的情况，文件的可用性得到提升。</p>
 <p>RAID 10 结合 RAID 0 和 RAID 1，将多块硬盘进行两两分组，文件数据分成 N 片，每个分组写入一片，每个分组内的两块硬盘再进行数据备份。这样既扩大了文件的容量，又提高了文件的可用性。但是这种方式硬盘的利用率只有 50%，有一半的硬盘被用来做数据备份。</p>
@@ -542,20 +538,22 @@
 <p>RAID 5 可以解决一块硬盘损坏后文件不可用的问题，那么如果两块文件损坏？RAID 6 的解决方案是，用两种位运算校验算法计算两片校验数据，这样两块硬盘损坏还是可以计算得到丢失的数据片。</p>
 <p>实践中，使用最多的是 RAID 5，数据被分成 N-1 片并发写入 N-1 块硬盘，这样既可以得到较好的硬盘利用率，也能得到很好的读写速度，同时还能保证较好的数据可用性。使用 RAID 5 的文件系统比简单的文件系统文件容量和读写速度都提高了 N-1 倍，但是一台服务器上能插入的硬盘数量是有限的，通常是 8 块，也就是文件读写速度和存储容量提高了 7 倍，这远远达不到 1 分钟完成 100T 文件的遍历要求。</p>
 <p>那么，有没有更给力的解决方案呢？</p>
-<h3 id="分布式文件系统"><a href="#分布式文件系统" class="headerlink" title="分布式文件系统"></a>分布式文件系统</h3><p>我们再回过头看下Linux的文件系统：文件的基本信息，也就是文件元信息记录在文件控制块inode中，文件的数据记录在硬盘的数据块中，inode通过索引记录数据块的地址，读写文件的时候，查询inode中的索引记录得到数据块的硬盘地址，然后访问数据。</p>
+<h3 id="分布式文件系统">分布式文件系统</h3>
+<p>我们再回过头看下Linux的文件系统：文件的基本信息，也就是文件元信息记录在文件控制块inode中，文件的数据记录在硬盘的数据块中，inode通过索引记录数据块的地址，读写文件的时候，查询inode中的索引记录得到数据块的硬盘地址，然后访问数据。</p>
 <p>如果将数据块的地址改成分布式服务器的地址？也就是查询得到的数据块地址不只是本机的硬盘容量，还可以是其他服务器的地址，那么文件的存储容量就将是整个分布式服务器集群的硬盘容量，这样还可以在不同的服务器上同时并行读取文件的数据块，文件访问速度也将极大的加快。</p>
 <p>这样的文件系统就是分布式文件系统，分布式文件系统的思路其实和RAID是一脉相承的，就是将数据分成很多片，同时向N台服务器上进行数据写入。针对一片数据丢失就导致整个文件损坏的情况，分布式文件系统也是采取数据备份的方式，将多个备份数据片写入多个服务器，以保证文件的可用性。当然，也可以采用RAID 5的方式通过计算校验数据片的方式提高文件可用性。</p>
 <p>我们以Hadoop分布式文件系统HDFS为例，看下分布式文件系统的具体架构设计。</p>
 <img data-src="/2020/08/16/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F4.png" class>
-
 <p>HDFS的关键组件有两个，一个是DataNode，一个是NameNode。</p>
 <p>DataNode负责文件数据的存储和读写操作，HDFS将文件数据分隔成若干数据块（Block），每个DataNode存储一部分数据块，这样文件就分部存储在整个HDFS服务器集群中。应用程序客户端（Client）可以并行对这些数据块进行访问，从而使得HDFS可以在服务器集群规模上实现数据并行访问，极大地提高了访问速度。在实践中，HDFS集群的DataNode服务器会有很多台，一般在几百台到几千台这样的规模，每台服务器配有数块硬盘，整个集群的存储容量大概在几PB到数百PB。</p>
 <p>NameNode负责整个分布式文件系统的元数据（MetaData）管理，也就是文件路径名、访问权限、数据块的ID以及存储位置等信息，相当于Linux系统中inode的角色。HDFS为了保证数据的高可用，会将一个数据块复制为多分（缺省情况下为3份），并将多份相同的数据块存储在不同的服务器上，甚至不同的机架上。这样当有硬盘损坏，或者某个DataNode服务器宕机，甚至某个交换机宕机，导致其存储的数据块不能访问的时候，客户端会查找其备份的数据块进行访问。</p>
 <p>有了HDFS，可以实现单一文件存储几百T的数据，再配合大数据计算框架MapReduce或者Spark，可以对这个文件的数据块进行并发计算。也可以使用Impala这样的SQL引擎对这个文件进行结构化查询，在数千台服务器上并发遍历100T的数据，1分钟都是绰绰有余的。</p>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>文件系统从简单操作系统文件，到RAID没再到分布式文件系统，其设计思路其实是具有统一性的。这种统一性方面体现在文件数据如何管理，也就是如何通过文件控制块管理文件的数据，这个文件控制块在Linux系统中就是inode，在HDFS中就是NameNode。</p>
+<h3 id="小结">小结</h3>
+<p>文件系统从简单操作系统文件，到RAID没再到分布式文件系统，其设计思路其实是具有统一性的。这种统一性方面体现在文件数据如何管理，也就是如何通过文件控制块管理文件的数据，这个文件控制块在Linux系统中就是inode，在HDFS中就是NameNode。</p>
 <p>另一方面体现在如何利用更多的硬盘实现越来越大的文件存储需求和越来越快的读写速度需求，也就是将数据分片后同时写入多块硬盘。单服务器我们可以通过RAID来实现，多服务器则可以将这些服务器组成一个文件系统集群，共同对外提供文件服务，这时候，数千台服务器的数万块硬盘以单一存储资源的方式对文件使用提供服务，也就是一个文件可以存储数百T的数据，并在一分钟完成这样一个大文件的遍历。</p>
-<h3 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h3><p>在RAID 5的示意图中，P表示校验和数据，我们看到P不是单独存储在一块硬盘上，而是分散在不同的盘上，实际上，校验数据P的存储位置是螺旋式的散落在所有硬盘上的，为什么要这样设计？</p>
-<p>1.高可用，避免检验盘损坏了所有都用不了了。<br>2.读取速度快，实现了检验数据的并行访问，大大加快了检验速度。</p>
+<h3 id="思考题">思考题</h3>
+<p>在RAID 5的示意图中，P表示校验和数据，我们看到P不是单独存储在一块硬盘上，而是分散在不同的盘上，实际上，校验数据P的存储位置是螺旋式的散落在所有硬盘上的，为什么要这样设计？</p>
+<p>1.高可用，避免检验盘损坏了所有都用不了了。 2.读取速度快，实现了检验数据的并行访问，大大加快了检验速度。</p>
 
       
     </div>
@@ -634,8 +632,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h2><p>有一只青蛙，向右跳x步可以到达右边中点，向左边跳n-x步可以到达左边中点，问到达左边中点的概率。</p>
-<h2 id="求解方法"><a href="#求解方法" class="headerlink" title="求解方法"></a>求解方法</h2><p>我们定义f(x)为到达左边中点的概率。</p>
+          <h2 id="问题">问题：</h2>
+<p>有一只青蛙，向右跳x步可以到达右边中点，向左边跳n-x步可以到达左边中点，问到达左边中点的概率。</p>
+<h2 id="求解方法">求解方法</h2>
+<p>我们定义f(x)为到达左边中点的概率。</p>
 <p>那么f(0) = 0，因为我们已经到达右边终点，f(n) = 1，因为我们已经到达左边终点。</p>
 <p>我们知道，f(x) 接下来有两种走法，f(x-1)和f(x+1)，所以有</p>
 <p>f(x) = 0.5 * f(x-1) + 0.5 * f(x+1)</p>
@@ -716,21 +716,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="Splay的插入操作"><a href="#Splay的插入操作" class="headerlink" title="Splay的插入操作"></a>Splay的插入操作</h2><p>正如前篇博文所讲的，Splay树是一种自平衡的数据结构，最后一个访问的键总是根。插入操作和二叉搜索树的插入类似，额外多了一些步骤来保证新插入的键称为新的根节点。</p>
+          <h2 id="splay的插入操作">Splay的插入操作</h2>
+<p>正如前篇博文所讲的，Splay树是一种自平衡的数据结构，最后一个访问的键总是根。插入操作和二叉搜索树的插入类似，额外多了一些步骤来保证新插入的键称为新的根节点。</p>
 <p>以下是插入键值k到一个Splay Tree的不同情况</p>
-<ol>
+<ol type="1">
 <li>root是空：我们简单的分配一个新的节点，并将它作为root返回</li>
 <li>splay（伸展）给定的键值k。如果k已经存在，那么它称为新的根节点。如果不存在，那么最后访问的叶子节点称为新的根节点。</li>
 <li>如果新的根节点和k相同，什么都不做因为k已经存在了。</li>
-<li>否则，分配内存产生新的节点，并且将k和根的键值比较。<ol>
+<li>否则，分配内存产生新的节点，并且将k和根的键值比较。
+<ol type="1">
 <li>如果k比根的键值小，将root作为新节点的右孩子，复制root的左孩子作为新节点的左孩子，并且使root的左孩子置为NULL。</li>
 <li>如果k比跟的键值大，将root作为新节点的左孩子，复制root的右孩子作为新节点的右孩子，并且使root的右孩子置为NULL。</li>
-</ol>
-</li>
+</ol></li>
 <li>将新节点返回，作为整棵树的根。</li>
 </ol>
 <p>感觉Splay很大程度上是可以基于AVL树进行修改的，其中左旋、右旋、左右旋、右左旋操作是相同的，只是splay有splay操作。具体实现有时间会仔细看看，在下面参考的链接中有。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMi1pbnNlcnQtZGVsZXRlLz9yZWY9bGJw">https://www.geeksforgeeks.org/splay-tree-set-2-insert-delete/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="参考">参考</h2>
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMi1pbnNlcnQtZGVsZXRlLz9yZWY9bGJw">https://www.geeksforgeeks.org/splay-tree-set-2-insert-delete/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
 
       
     </div>
@@ -809,12 +811,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="数据结构与算法"><a href="#数据结构与算法" class="headerlink" title="数据结构与算法"></a>数据结构与算法</h2><ul>
+          <h2 id="数据结构与算法">数据结构与算法</h2>
+<ul>
 <li>leetcode刷到300题啦，继续加油啊！</li>
 <li>2020.08.22 第一次leetcode周赛全对，继续努力！</li>
 <li>2020.08.23 leetcode周赛进了前500，继续努力！</li>
 </ul>
-<h2 id="生活"><a href="#生活" class="headerlink" title="生活"></a>生活</h2><ul>
+<h2 id="生活">生活</h2>
+<ul>
 <li>拔掉了最后两颗智齿，所有的智齿都没啦！</li>
 <li>看完了《七武士》</li>
 <li>读完了《被讨厌的勇气》 2020.8.26</li>
@@ -891,9 +895,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="示例解法"><a href="#示例解法" class="headerlink" title="示例解法"></a>示例解法</h2><p>这道题目的dp要仔细分析。分析过程写在了注释中（个人习惯…）。</p>
+          <h2 id="示例解法">示例解法</h2>
+<p>这道题目的dp要仔细分析。分析过程写在了注释中（个人习惯…）。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 我们来分析这个问题</span></span><br><span class="line"><span class="comment"># 我们定义f(i)为距离终点为i时所需的指令大小</span></span><br><span class="line"><span class="comment"># 如果i == 2 ** n - 1，指令的长度就为n</span></span><br><span class="line"><span class="comment"># 如果i != 2 ** n - 1，我们有两种走法</span></span><br><span class="line"><span class="comment"># 假设 2**(n-1) -1 &lt; i &lt; 2 **n - 1</span></span><br><span class="line"><span class="comment"># 这样n就等于i的bit_length</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** n - 1</span></span><br><span class="line"><span class="comment"># 我们的指令是A^nR，指令长度为n+1，我们到终点的距离是 j-i，一定小于i</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** (n-1) - 1, j &lt; i</span></span><br><span class="line"><span class="comment"># 然后我们又往回走了 p = 2 ** k - 1, 现在我们的位置是 2 ** (n-1) - 2 ** k</span></span><br><span class="line"><span class="comment"># 指令长度是 A^(n-1)RA^kR n+k+1，我们现在距离终点 i - 2 **(n-1) + 2 ** k ,是小于i的</span></span><br><span class="line"><span class="comment"># 这样我们就得出了我们的递推公式</span></span><br><span class="line"><span class="comment"># f(i) = n if i == 2 ** n - 1</span></span><br><span class="line"><span class="comment"># f(i) = min(f(2**n -1 - i)+n+1, f(i-2**(n-1)+2**k)+n+k+1 k &lt; n-1)</span></span><br><span class="line"><span class="comment"># 初始化和边界条件f(0) = 0，注意向会回走的k不会大于等于n-1，因为等于n-1时就走到0了</span></span><br><span class="line"><span class="comment"># 返回值f(target)</span></span><br><span class="line"><span class="comment"># 优化复杂度</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">racecar</span>(<span class="params">self, target: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [<span class="number">0</span>] + [float(<span class="string">&#x27;inf&#x27;</span>)] * target</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, target + <span class="number">1</span>):</span><br><span class="line">            n = i.bit_length()</span><br><span class="line">            <span class="keyword">if</span> i == (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>:</span><br><span class="line">                dp[i] = n</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dp[i] = dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span> - i] + n + <span class="number">1</span></span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> range(n - <span class="number">1</span>):</span><br><span class="line">                    dp[i] = min(dp[i],</span><br><span class="line">                                dp[i - (<span class="number">1</span> &lt;&lt; (n - <span class="number">1</span>)) + (<span class="number">1</span> &lt;&lt; k)] + n + k + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> dp[target]</span><br></pre></td></tr></table></figure>
-
 
       
     </div>
@@ -968,7 +972,7 @@
       
           <p>合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。</p>
 <p>示例:</p>
-<p>输入:<br>[<br>  1-&gt;4-&gt;5,<br>  1-&gt;3-&gt;4,<br>  2-&gt;6<br>]<br>输出: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6</p>
+<p>输入: [ 1-&gt;4-&gt;5, 1-&gt;3-&gt;4, 2-&gt;6] 输出: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6</p>
 <p>是工业界很常见的一种操作，比如分布式系统中、数据库中，我们有多个索引是有序的，且在多个小文件中存储，我们要合并成一个新的有序链表。我们可以有哪些想法呢。</p>
 <p>最暴力的解法是，每次遍历所有链表，找到最小的链表头，将结果链表的下一个指针指向该链表头，然后链表头指向其下一个节点。</p>
 <ul>
@@ -991,12 +995,11 @@
 <li>时间复杂度：我们知道合并两个有序链表，等于两个链表长度的和，所以是O(2n)，要合并k/2个，之后合并k/4个链表，合并时间复杂度是O(4n)，所以最终的时间复杂度还是O(n k log(k)) 。</li>
 <li>空间复杂度：我们归并要使用递归，递归的深度为logk，所以我们要使用O(logk)的栈空间。</li>
 </ul>
-<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><p>使用堆合并</p>
+<h2 id="示例代码">示例代码</h2>
+<p>使用堆合并</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        cur = dummy</span><br><span class="line">        <span class="comment"># 这里的i为了排序</span></span><br><span class="line">        heap = [(l.val, i, l) <span class="keyword">for</span> i, l <span class="keyword">in</span> enumerate(lists) <span class="keyword">if</span> l]</span><br><span class="line">        heapq.heapify(heap)</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            val, ind, l = heapq.heappop(heap)</span><br><span class="line">            cur.next = l</span><br><span class="line">            <span class="keyword">if</span> l.next:</span><br><span class="line">                l = l.next</span><br><span class="line">                heapq.heappush(heap, (l.val, ind, l))</span><br><span class="line">            cur = cur.next</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
-
 <p>分支合并</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        n = len(lists)</span><br><span class="line">        <span class="keyword">return</span> self.merge(lists, <span class="number">0</span>, n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">merge</span>(<span class="params">self, lists, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span> lists[l]</span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        l1 = self.merge(lists, l, mid)</span><br><span class="line">        l2 = self.merge(lists, mid + <span class="number">1</span>, r)</span><br><span class="line">        <span class="keyword">return</span> self.mergeTwoLists(l1, l2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1, l2</span>):</span></span><br><span class="line">        dummy = cur = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val &lt;= l2.val:</span><br><span class="line">                cur.next = l1</span><br><span class="line">                l1 = l1.next</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur.next = l2</span><br><span class="line">                l2 = l2.next</span><br><span class="line">            cur = cur.next</span><br><span class="line">        cur.next = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
-
 
       
     </div>
@@ -1072,7 +1075,6 @@
           <p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
 <p>以下给出python版本的实现代码。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSort</span>(<span class="params">self, nums: List[int]</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.quickSortHelper(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSortHelper</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        pivot = self.partition(nums, l, r)</span><br><span class="line">        self.quickSortHelper(nums, l, pivot - <span class="number">1</span>)</span><br><span class="line">        self.quickSortHelper(nums, pivot + <span class="number">1</span>, r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># def partition(self, nums, l, r):</span></span><br><span class="line">    <span class="comment">#     ran = random.randint(l, r)</span></span><br><span class="line">    <span class="comment">#     nums[r], nums[ran] = nums[ran], nums[r]</span></span><br><span class="line">    <span class="comment">#     pivot = r</span></span><br><span class="line">    <span class="comment">#     right = l</span></span><br><span class="line">    <span class="comment">#     for i in range(l, r):</span></span><br><span class="line">    <span class="comment">#         if nums[i] &lt;= nums[pivot]:</span></span><br><span class="line">    <span class="comment">#             nums[i], nums[right] = nums[right], nums[i]</span></span><br><span class="line">    <span class="comment">#             right += 1</span></span><br><span class="line">    <span class="comment">#     nums[right], nums[pivot] = nums[pivot], nums[right]</span></span><br><span class="line">    <span class="comment">#     return right</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        ran = random.randint(l, r)</span><br><span class="line">        nums[l], nums[ran] = nums[ran], nums[l]</span><br><span class="line">        pivot = l</span><br><span class="line">        left = r</span><br><span class="line">        i = l + <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= left:</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt;= nums[pivot]:</span><br><span class="line">                nums[i], nums[left] = nums[left], nums[i]</span><br><span class="line">                left -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">        nums[left], nums[pivot] = nums[pivot], nums[left]</span><br><span class="line">        <span class="keyword">return</span> left</span><br></pre></td></tr></table></figure>
-
 <p>两个partition的效果是一样的。</p>
 <p>注意，我们使用一种随机方法，保证了我们的快排在遇到严格递增序列或者严格递减序列的时候，期望也是O(nlogn)时间复杂度的。这是一种随机方法，还有其他随机算法的实现。这种比较简单。而这个随机的步骤，也使得我们的快排不是稳定。</p>
 
