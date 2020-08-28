@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="题目描述  在排序数组中查找元素的第一个和最后一个位置  给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。 你的算法时间复杂度必须是 O(log n) 级别。 如果数组中不存在目标值，返回 [-1, -1]。 示例 1: 12输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8输出: [3,">
+  <meta name="description" content="题目描述 在排序数组中查找元素的第一个和最后一个位置  给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。 你的算法时间复杂度必须是 O(log n) 级别。 如果数组中不存在目标值，返回 [-1, -1]。 示例 1: 12输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8输出: [3,4">
 <meta property="og:type" content="article">
 <meta property="og:title" content="leetcode 34.在排序数组中查找元素的第一个和最后一个位置">
 <meta property="og:url" content="https://hrz123.github.io/2020/08/10/leetcode-34-%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="题目描述  在排序数组中查找元素的第一个和最后一个位置  给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。 你的算法时间复杂度必须是 O(log n) 级别。 如果数组中不存在目标值，返回 [-1, -1]。 示例 1: 12输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8输出: [3,">
+<meta property="og:description" content="题目描述 在排序数组中查找元素的第一个和最后一个位置  给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。 你的算法时间复杂度必须是 O(log n) 级别。 如果数组中不存在目标值，返回 [-1, -1]。 示例 1: 12输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8输出: [3,4">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-08-10T09:35:39.000Z">
 <meta property="article:modified_time" content="2020-08-10T09:56:37.976Z">
@@ -240,8 +240,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="题目描述">题目描述</h2>
-<ol start="34" type="1">
+        <h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><ol start="34">
 <li>在排序数组中查找元素的第一个和最后一个位置</li>
 </ol>
 <p>给定一个按照升序排列的整数数组 <code>nums</code>，和一个目标值 <code>target</code>。找出给定目标值在数组中的开始位置和结束位置。</p>
@@ -249,36 +248,41 @@
 <p>如果数组中不存在目标值，返回 <code>[-1, -1]</code>。</p>
 <p><strong>示例 1:</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8</span><br><span class="line">输出: [3,4]</span><br></pre></td></tr></table></figure>
+
 <p><strong>示例 2:</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 6</span><br><span class="line">输出: [-1,-1]</span><br></pre></td></tr></table></figure>
-<h2 id="思路">思路</h2>
-<p>这道题目当然可以给找左边界和右边界各写一个二分查找代码，因为比较简单就不写了。我们来看一下如何用一段代码找到临界索引。</p>
+
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这道题目当然可以给找左边界和右边界各写一个二分查找代码，因为比较简单就不写了。我们来看一下如何用一段代码找到临界索引。</p>
 <p>我们有几个前提条件</p>
-<ol type="1">
+<ol>
 <li>数组中可能不出现该值。</li>
 <li>数组中可能有重复元素。</li>
 </ol>
 <p>我们来分析一下：</p>
-<ol type="1">
-<li><p>对于一个元素，我们如果以插入的视角来看的话，这个元素有n+1个插入位置，对应的索引分别是0，1，2...，n。</p>
-<ol type="1">
+<ol>
+<li><p>对于一个元素，我们如果以插入的视角来看的话，这个元素有n+1个插入位置，对应的索引分别是0，1，2…，n。</p>
+<ol>
 <li>如果我们插入的位置，左边都小于该元素，右边都大于等于该元素，那么插入位置的索引，就是第一个大于等于该元素的索引；</li>
 <li>如果我们插入的位置，左边都小于等于该元素，右边都大于该元素，那么插入位置的索引，就是第一个大于该元素的索引，而这个索引减1，就是最后一个小于等于该元素的索引。</li>
-</ol></li>
+</ol>
+</li>
 <li><p>由于数组中可能不存在该值，我们第一步求得第一个大于等于该元素的索引，</p>
-<ol type="1">
+<ol>
 <li>可能为n，也就是说数组中没有大于等于该值的元素</li>
 <li>可能该索引对应的值不是等于该值，而是大于该值</li>
 </ol>
-<p>在这两种情况下，我们就不用再继续求右边的边界了。直接返回-1，-1</p></li>
-<li><p>这两种情况，仅仅是对于nums[mid] == target时，采取的策略不同，我们可以用一个参数控制不同的表现</p></li>
+<p>在这两种情况下，我们就不用再继续求右边的边界了。直接返回-1，-1</p>
+</li>
+<li><p>这两种情况，仅仅是对于nums[mid] == target时，采取的策略不同，我们可以用一个参数控制不同的表现</p>
+</li>
 </ol>
 <p>示例代码如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">      l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">       <span class="keyword">while</span> l &lt; r:</span><br><span class="line">              mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                        r = mid</span><br><span class="line">               <span class="keyword">else</span>:</span><br><span class="line">                        l = mid + <span class="number">1</span></span><br><span class="line">       <span class="keyword">return</span> l</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">        l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">        <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                        r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                        l = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> l</span><br></pre></td></tr></table></figure>
+
 <p>这里返回的就是右侧集合的开始位置的下标。</p>
-<h2 id="示例代码">示例代码</h2>
-<p>这道题的解法如下，加上了不在数组的判断</p>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><p>这道题的解法如下，加上了不在数组的判断</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">searchRange</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; List[int]:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">            l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">            <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                    r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    l = mid + <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> l</span><br><span class="line"></span><br><span class="line">        left = binary_search(nums, target, <span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">if</span> left == len(nums) <span class="keyword">or</span> nums[left] != target:</span><br><span class="line">            <span class="keyword">return</span> [<span class="number">-1</span>, <span class="number">-1</span>]</span><br><span class="line">        <span class="keyword">return</span> [left, binary_search(nums, target, <span class="literal">False</span>) - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -384,7 +388,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
