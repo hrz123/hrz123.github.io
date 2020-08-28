@@ -201,18 +201,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MySQL事务隔离</title>
     <url>/2020/08/20/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/</url>
     <content><![CDATA[<h2 id="事务">事务</h2>
@@ -288,6 +276,18 @@
 ]]></content>
       <tags>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -465,6 +465,15 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 207.课程表</title>
+    <url>/2020/08/04/leetcode-207-%E8%AF%BE%E7%A8%8B%E8%A1%A8/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 本题可约化为： 课程安排图是否是 有向无环图(DAG)。</span></span><br><span class="line"><span class="comment"># 即课程间规定了前置条件，但不能构成任何环路，否则课程前置条件将不成立。</span></span><br><span class="line"><span class="comment"># 思路是通过 拓扑排序 判断此课程安排图是否是 有向无环图(DAG) 。</span></span><br><span class="line"><span class="comment"># 拓扑排序原理： 对 DAG 的顶点进行排序，使得对每一条有向边 (u,v)，</span></span><br><span class="line"><span class="comment"># 均有 u（在排序记录中）比 v 先出现。</span></span><br><span class="line"><span class="comment"># 亦可理解为对某点 v 而言，只有当 v 的所有源点均出现了，v 才能出现。</span></span><br><span class="line"><span class="comment"># 通过课程前置条件列表 prerequisites 可以得到课程安排图的 邻接表 adjacency，</span></span><br><span class="line"><span class="comment"># 以降低算法时间复杂度，以下两种方法都会用到邻接表。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1.统计课程安排图中弄每个节点的入度，生成入度表indegrees</span></span><br><span class="line"><span class="comment"># 2.借助一个队列queue，将所有入度为0的节点入队。</span></span><br><span class="line"><span class="comment"># 3.当queue非空时，依次将队首节点出队，在课程安排图中删除此节点pre：</span></span><br><span class="line"><span class="comment">#    并不是真正从邻接表中删除此节点pre，而是将此节点对应所有邻接节点cur的入度-1</span></span><br><span class="line"><span class="comment">#    即indegrees[cur] -= 1.</span></span><br><span class="line"><span class="comment">#    当入度-1后邻接节点cur的入度为0，说明cur所有的前驱节点已经被&quot;删除&quot;，此时将cur入队。</span></span><br><span class="line"><span class="comment"># 4.在每次pre出队时，执行numCourses--;</span></span><br><span class="line"><span class="comment">#    若整个课程安排图是有向无环图（即可以安排），则所有节点一定都入队并出队过，即完成拓扑排序。</span></span><br><span class="line"><span class="comment">#    换个角度说，若课程安排图中存在环，一定有节点的入度始终不为0。</span></span><br><span class="line"><span class="comment">#    因此，拓扑排序出队次数等于课程个数，返回numCourses==0判断课程是否可以成功安排</span></span><br><span class="line"><span class="comment"># 时间复杂度 O(N+M)： 遍历一个图需要访问所有节点和所有临边，N 和 M 分别为节点数量和临边数量；</span></span><br><span class="line"><span class="comment"># 空间复杂度 O(N+M)： 为建立邻接表所需额外空间，adjacency 长度为 N ，并存储 M 条临边的数据。</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        indegrees = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        queue = deque()</span><br><span class="line">        <span class="comment"># Get the indegree and adjacency of every course.</span></span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            indegrees[cur] += <span class="number">1</span></span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="comment"># Get all the courses with the indegree of 0.</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(indegrees)):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> indegrees[i]:</span><br><span class="line">                queue.append(i)</span><br><span class="line">        <span class="comment"># BFS TopSort.</span></span><br><span class="line">        <span class="keyword">while</span> queue:</span><br><span class="line">            pre = queue.popleft()</span><br><span class="line">            numCourses -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> cur <span class="keyword">in</span> adjacency[pre]:</span><br><span class="line">                indegrees[cur] -= <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> indegrees[cur]:</span><br><span class="line">                    queue.append(cur)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> numCourses</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 原理是通过DFS判断图中是否有环</span></span><br><span class="line"><span class="comment"># 算法流程</span></span><br><span class="line"><span class="comment"># 1.借助一个标志列表flags，用于判断每个节点i（课程）的状态：</span></span><br><span class="line"><span class="comment">#    1.未被DFS访问：i==0</span></span><br><span class="line"><span class="comment">#    2.已被其他节点启动的DFS访问：i==-1</span></span><br><span class="line"><span class="comment">#    3.已被当前节点启动的DFS访问：i==1。</span></span><br><span class="line"><span class="comment"># 2.对numCourses个节点一次执行DFS，判断每个节点起步DFS是否存在换，若存在直接放回False</span></span><br><span class="line"><span class="comment">#    DFS流程</span></span><br><span class="line"><span class="comment">#    1.终止条件：</span></span><br><span class="line"><span class="comment">#      当flag[i] == -1，说明当前访问节点已被其他节点启动的DFS访问，</span></span><br><span class="line"><span class="comment">#      无需再重复搜索，直接返回True</span></span><br><span class="line"><span class="comment">#      当flag[i] == 1，说明在本轮DFS搜索中节点i被第2次访问，即课程安排图有环，直接返回False</span></span><br><span class="line"><span class="comment">#    2.将当前访问节点i对应flag[i]置1，即标记其本轮被DFS访问过；</span></span><br><span class="line"><span class="comment">#    3.递归访问当前节点i的所有邻接节点j，当发现环直接返回False；</span></span><br><span class="line"><span class="comment">#    4.当前节点所有邻接节点已被遍历，并没有发现环，则将当前节点flag置为-1并返回True</span></span><br><span class="line"><span class="comment"># 3.若整个图DFS结束并未发现环，返回True</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, adjacency, flags</span>):</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">-1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> adjacency[i]:</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> dfs(j, adjacency, flags):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">-1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        flags = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(numCourses):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> dfs(i, adjacency, flags):</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>leetcode 215. 数组中的第K个最大元素 </title>
     <url>/2020/08/07/leetcode-215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/</url>
     <content><![CDATA[<h2 id="借助本题深入了解快速排序中的随机选择和堆的堆化插入删除操作">借助本题深入了解快速排序中的随机选择，和堆的堆化、插入、删除操作</h2>
@@ -553,15 +562,6 @@
 <p>堆的解法考查了堆化、插入、和删除的代码写法，是非常好的面试题目。</p>
 <h2 id="参考">参考</h2>
 <p>https://leetcode-cn.com/problems/kth-largest-element-in-an-array/solution/partitionfen-er-zhi-zhi-you-xian-dui-lie-java-dai-/</p>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 207.课程表</title>
-    <url>/2020/08/04/leetcode-207-%E8%AF%BE%E7%A8%8B%E8%A1%A8/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 本题可约化为： 课程安排图是否是 有向无环图(DAG)。</span></span><br><span class="line"><span class="comment"># 即课程间规定了前置条件，但不能构成任何环路，否则课程前置条件将不成立。</span></span><br><span class="line"><span class="comment"># 思路是通过 拓扑排序 判断此课程安排图是否是 有向无环图(DAG) 。</span></span><br><span class="line"><span class="comment"># 拓扑排序原理： 对 DAG 的顶点进行排序，使得对每一条有向边 (u,v)，</span></span><br><span class="line"><span class="comment"># 均有 u（在排序记录中）比 v 先出现。</span></span><br><span class="line"><span class="comment"># 亦可理解为对某点 v 而言，只有当 v 的所有源点均出现了，v 才能出现。</span></span><br><span class="line"><span class="comment"># 通过课程前置条件列表 prerequisites 可以得到课程安排图的 邻接表 adjacency，</span></span><br><span class="line"><span class="comment"># 以降低算法时间复杂度，以下两种方法都会用到邻接表。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1.统计课程安排图中弄每个节点的入度，生成入度表indegrees</span></span><br><span class="line"><span class="comment"># 2.借助一个队列queue，将所有入度为0的节点入队。</span></span><br><span class="line"><span class="comment"># 3.当queue非空时，依次将队首节点出队，在课程安排图中删除此节点pre：</span></span><br><span class="line"><span class="comment">#    并不是真正从邻接表中删除此节点pre，而是将此节点对应所有邻接节点cur的入度-1</span></span><br><span class="line"><span class="comment">#    即indegrees[cur] -= 1.</span></span><br><span class="line"><span class="comment">#    当入度-1后邻接节点cur的入度为0，说明cur所有的前驱节点已经被&quot;删除&quot;，此时将cur入队。</span></span><br><span class="line"><span class="comment"># 4.在每次pre出队时，执行numCourses--;</span></span><br><span class="line"><span class="comment">#    若整个课程安排图是有向无环图（即可以安排），则所有节点一定都入队并出队过，即完成拓扑排序。</span></span><br><span class="line"><span class="comment">#    换个角度说，若课程安排图中存在环，一定有节点的入度始终不为0。</span></span><br><span class="line"><span class="comment">#    因此，拓扑排序出队次数等于课程个数，返回numCourses==0判断课程是否可以成功安排</span></span><br><span class="line"><span class="comment"># 时间复杂度 O(N+M)： 遍历一个图需要访问所有节点和所有临边，N 和 M 分别为节点数量和临边数量；</span></span><br><span class="line"><span class="comment"># 空间复杂度 O(N+M)： 为建立邻接表所需额外空间，adjacency 长度为 N ，并存储 M 条临边的数据。</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        indegrees = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        queue = deque()</span><br><span class="line">        <span class="comment"># Get the indegree and adjacency of every course.</span></span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            indegrees[cur] += <span class="number">1</span></span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="comment"># Get all the courses with the indegree of 0.</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(indegrees)):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> indegrees[i]:</span><br><span class="line">                queue.append(i)</span><br><span class="line">        <span class="comment"># BFS TopSort.</span></span><br><span class="line">        <span class="keyword">while</span> queue:</span><br><span class="line">            pre = queue.popleft()</span><br><span class="line">            numCourses -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> cur <span class="keyword">in</span> adjacency[pre]:</span><br><span class="line">                indegrees[cur] -= <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> indegrees[cur]:</span><br><span class="line">                    queue.append(cur)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> numCourses</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 原理是通过DFS判断图中是否有环</span></span><br><span class="line"><span class="comment"># 算法流程</span></span><br><span class="line"><span class="comment"># 1.借助一个标志列表flags，用于判断每个节点i（课程）的状态：</span></span><br><span class="line"><span class="comment">#    1.未被DFS访问：i==0</span></span><br><span class="line"><span class="comment">#    2.已被其他节点启动的DFS访问：i==-1</span></span><br><span class="line"><span class="comment">#    3.已被当前节点启动的DFS访问：i==1。</span></span><br><span class="line"><span class="comment"># 2.对numCourses个节点一次执行DFS，判断每个节点起步DFS是否存在换，若存在直接放回False</span></span><br><span class="line"><span class="comment">#    DFS流程</span></span><br><span class="line"><span class="comment">#    1.终止条件：</span></span><br><span class="line"><span class="comment">#      当flag[i] == -1，说明当前访问节点已被其他节点启动的DFS访问，</span></span><br><span class="line"><span class="comment">#      无需再重复搜索，直接返回True</span></span><br><span class="line"><span class="comment">#      当flag[i] == 1，说明在本轮DFS搜索中节点i被第2次访问，即课程安排图有环，直接返回False</span></span><br><span class="line"><span class="comment">#    2.将当前访问节点i对应flag[i]置1，即标记其本轮被DFS访问过；</span></span><br><span class="line"><span class="comment">#    3.递归访问当前节点i的所有邻接节点j，当发现环直接返回False；</span></span><br><span class="line"><span class="comment">#    4.当前节点所有邻接节点已被遍历，并没有发现环，则将当前节点flag置为-1并返回True</span></span><br><span class="line"><span class="comment"># 3.若整个图DFS结束并未发现环，返回True</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, adjacency, flags</span>):</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">-1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> adjacency[i]:</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> dfs(j, adjacency, flags):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">-1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        flags = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(numCourses):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> dfs(i, adjacency, flags):</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -993,47 +993,6 @@
       </tags>
   </entry>
   <entry>
-    <title>使用函数randa()来实现函数randb()</title>
-    <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
-    <content><![CDATA[<h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
-<p>原文引自：https://blog.csdn.net/wangruitao1991/article/details/51678815</p>
-<p>我们由浅入深，首先来看：</p>
-<ol type="1">
-<li><p>给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5</p>
-<p>rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand7，直到它生成1到5之间的数，然后返回。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand5</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>);  <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">5</span>)&#123;</span><br><span class="line">    x = rand7();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个函数可以等概率的产生1到5的数码？首先，它确确实实只会返回1到5这几个数，其次，对于这些数，都是由rand7等概率的产生的1/7，没有对任何一个数有偏袒，直觉告诉我们，rand5就是等概率的产生1到5的。事实呢？让我们来计算一下，产生1到5中的数是不是1/5就OK了。</p>
-<p>产生1的概率：等于第一次产生1的概率，加上第一次生成6，7第二次产生1的概率，加上... $$ p(x=1) = 1/7 + 2/7 * 1/7 + (2/7)^2 * 1/7 + ... \</p>
-<p>= 1/7 * (1 + 2/7 + (2/7)^2+...)\</p>
-<p>= 1/7 * 1 / (1-2/7)\</p>
-<p>= 1/5\ $$ 其他同理，所以从上面的分析，我们可以得到一个一般的结论，如果a &gt; b，那么一定可以用randa实现randb。其中，randa表示等概率生成1到a的函数，randb表示等概率生成1到b的函数。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">;<span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randb</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line"> <span class="keyword">while</span> (x &gt; b) &#123;</span><br><span class="line">      x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里还有没有优化的空间呢。我们想如果a大于b很多，那么这个循环大多数是无法退出的。这是我们可以找到一个最接近a的b的整数倍<strong>b * (A/b)</strong>，大于这个整数倍就继续循环，否则就返回 <strong>randa()%b + 1 </strong>。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randa</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x =  ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">//  max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; b * (a / b)) &#123;</span><br><span class="line">    x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>好了，a大于b时这个问题得到完美的解决了。那么a小于b的时候呢。</p>
-<p>比如，如何用rand5实现rand7。</p>
-<p>我们只需要将rand5映射到一个能产生更大随机数的randa，a &gt; 7，这个问题就可以解决了。这里要注意，映射之后的randa也应该是等概率生成1到a的。</p>
-<p>如何映射呢。其实可以将rand5想象成一个五进制数。2个rand5就可以表示25种情况。</p>
-<p>5 * (rand5() - 1) + rand5()，可以等概率的产生1-25之间的数字。</p>
-<p>根据上面的模板我们可以得到以下的代码：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">7</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在根据上面的模板简化：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">21</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % <span class="number">7</span> +<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过上文分析，我们可以得到步骤如下：</p>
-<ol type="1">
-<li>如果a &gt; b，进入步骤2；否则构造Randa2 = a * (Randa – 1) + Randa， 表示生成1到a2 随机数的函数。如果a2 仍小于b，继教构造 Randa3 = a * (Randa2 - 1) + Randa…直到ak &gt; b，这时我们得到Randak , 我们记为RandA。</li>
-<li>步骤1中我们得到了RandA(可能是Randa或Randak )，其中A &gt; b， 我们用下述代码构造Randb：</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// A &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Randb</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span>(x &gt; b*(A/b)) <span class="comment">// b*(A/b)表示最接近A且小于A的b的倍数</span></span><br><span class="line">        x = RandA();</span><br><span class="line">    <span class="keyword">return</span> x%b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
     <url>/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/</url>
     <content><![CDATA[<h2 id="问题描述">1. 问题描述</h2>
@@ -1089,6 +1048,76 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用函数randa()来实现函数randb()</title>
+    <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
+    <content><![CDATA[<h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
+<p>原文引自：https://blog.csdn.net/wangruitao1991/article/details/51678815</p>
+<p>我们由浅入深，首先来看：</p>
+<ol type="1">
+<li><p>给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5</p>
+<p>rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand7，直到它生成1到5之间的数，然后返回。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand5</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>);  <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">5</span>)&#123;</span><br><span class="line">    x = rand7();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数可以等概率的产生1到5的数码？首先，它确确实实只会返回1到5这几个数，其次，对于这些数，都是由rand7等概率的产生的1/7，没有对任何一个数有偏袒，直觉告诉我们，rand5就是等概率的产生1到5的。事实呢？让我们来计算一下，产生1到5中的数是不是1/5就OK了。</p>
+<p>产生1的概率：等于第一次产生1的概率，加上第一次生成6，7第二次产生1的概率，加上... $$ p(x=1) = 1/7 + 2/7 * 1/7 + (2/7)^2 * 1/7 + ... \</p>
+<p>= 1/7 * (1 + 2/7 + (2/7)^2+...)\</p>
+<p>= 1/7 * 1 / (1-2/7)\</p>
+<p>= 1/5\ $$ 其他同理，所以从上面的分析，我们可以得到一个一般的结论，如果a &gt; b，那么一定可以用randa实现randb。其中，randa表示等概率生成1到a的函数，randb表示等概率生成1到b的函数。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">;<span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randb</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line"> <span class="keyword">while</span> (x &gt; b) &#123;</span><br><span class="line">      x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里还有没有优化的空间呢。我们想如果a大于b很多，那么这个循环大多数是无法退出的。这是我们可以找到一个最接近a的b的整数倍<strong>b * (A/b)</strong>，大于这个整数倍就继续循环，否则就返回 <strong>randa()%b + 1 </strong>。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randa</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x =  ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">//  max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; b * (a / b)) &#123;</span><br><span class="line">    x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了，a大于b时这个问题得到完美的解决了。那么a小于b的时候呢。</p>
+<p>比如，如何用rand5实现rand7。</p>
+<p>我们只需要将rand5映射到一个能产生更大随机数的randa，a &gt; 7，这个问题就可以解决了。这里要注意，映射之后的randa也应该是等概率生成1到a的。</p>
+<p>如何映射呢。其实可以将rand5想象成一个五进制数。2个rand5就可以表示25种情况。</p>
+<p>5 * (rand5() - 1) + rand5()，可以等概率的产生1-25之间的数字。</p>
+<p>根据上面的模板我们可以得到以下的代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">7</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在根据上面的模板简化：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">21</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % <span class="number">7</span> +<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过上文分析，我们可以得到步骤如下：</p>
+<ol type="1">
+<li>如果a &gt; b，进入步骤2；否则构造Randa2 = a * (Randa – 1) + Randa， 表示生成1到a2 随机数的函数。如果a2 仍小于b，继教构造 Randa3 = a * (Randa2 - 1) + Randa…直到ak &gt; b，这时我们得到Randak , 我们记为RandA。</li>
+<li>步骤1中我们得到了RandA(可能是Randa或Randak )，其中A &gt; b， 我们用下述代码构造Randb：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// A &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Randb</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span>(x &gt; b*(A/b)) <span class="comment">// b*(A/b)表示最接近A且小于A的b的倍数</span></span><br><span class="line">        x = RandA();</span><br><span class="line">    <span class="keyword">return</span> x%b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>为什么rowid是6个字节</title>
+    <url>/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/</url>
+    <content><![CDATA[<p>首先官方文档是这么写的。参考<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnklMjBJbm5vREIlMjB0YWJsZSUyMGhhcyUyMGEsZm9yJTIwdGhlJTIwcm93cyUyMGlzJTIwc3RvcmVkLiZhbXA7dGV4dD1UaGUlMjByb3clMjBJRCUyMGlzJTIwYSxhcmUlMjBwaHlzaWNhbGx5JTIwaW4lMjBpbnNlcnRpb24lMjBvcmRlci4=">MySQL5.6 Ref manual<i class="fa fa-external-link-alt"></i></span>。</p>
+<p>每个InnoDB表都有一个特殊的索引，称为聚簇索引clustered index，行的数据就存储在这里。通常情况下，聚簇索引是主键的同义词。为了从查询、插入和其他数据库操作中获得最佳性能，你必须理解InnoDB是如何使用聚簇索引来优化每个表的最常见的查找和DML操作的。</p>
+<ul>
+<li>当你在表上定义一个primary key时，InnoDB就会把它作为聚簇索引。为你创建的每一个表定义一个主键。如果没有逻辑上唯一且非空的列或列集合，则添加一个新的自动增加列，其值会自动填入。</li>
+<li>如果你没有为你的表定义primary key，MySQL会定位第一个Unique索引，其中所有的关键列都是Not Null。InnoDB使用它作为聚簇索引。</li>
+<li>如果表没有primary key或合适的unique索引，InnoDB内部会在包含row id值的合成列上生成一个名为GEN_CLUST_INDEX的隐藏聚簇索引。行是由InnoDB分配给这种表中的行的ID来排序的。row id是一个6字节的字段，随着新行的插入而单调增加。因此，按row id排序的行在物理上是按插入顺序排列的。</li>
+</ul>
+<h5 id="聚簇索引是如何加快查询速度的">聚簇索引是如何加快查询速度的？</h5>
+<p>通过聚簇索引访问行的速度很快，因为索引搜索会直接引导到包含所有行数据的页面。如果一张表很大，与使用与索引记录不同的页面存储行数据的存储组织相比，聚簇索引架构往往可以节省一次磁盘I/O操作。</p>
+<h5 id="二级索引与聚簇索引的关系">二级索引与聚簇索引的关系</h5>
+<p>除了聚簇索引以外的所有索引都称为二级索引。在InnoDB中，二级索引中的每条记录都包含改行的主键列，以及二级索引指定的列。InnoDB使用这个主键值来搜索聚簇索引中的行。</p>
+<p>如果主键长，二级索引就会使用更多的空间，所以主键短是有利的。</p>
+<h3 id="回答标题的问题">回答标题的问题</h3>
+<img data-src="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/rowid1.gif" class>
+<p>这里我没有找打mysql的rowid为什么是6个字节的答案，找到是关于oracle rowid的解释，猜测是互通的。</p>
+<p>rowid是伪列。不会真正存在表的data block中，但是它会存在于index中。</p>
+<p>扩展的rowid在磁盘上需要10个字节的存储空间，并使用18个字符来显示。</p>
+<p>解释如下：</p>
+<p>在oracle 8以前，一个rowid占用6个字节大小的存储空间（10 bit file# + 22bit block # + 16 bit row #)，rowid格式为：BBBBBBBB.RRRR.FFFF。</p>
+<p>在oracle 8以后，rowid的存储空间扩大到了10个字节（32 bit object# + 10bit rfile# + 22 bit block# + 16 bit row#)，文件号仍然用10位表示，只是不再需要置换，为了向后兼容，同时引入了相对文件号（rfile#)，所以从Oracle7到Oracle8，rowid仍然无需发生变化。</p>
+<p>这里我猜测，mysql rowid也是存储了 10位的文件号，22位的块号，16位的行号。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -1231,21 +1260,21 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>学会承担责任</title>
-    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>堆的实现(大顶堆、小顶堆)</title>
     <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
     <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>学会承担责任</title>
+    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1419,6 +1448,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
+    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>快速排序的多种写法</title>
     <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
     <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
@@ -1440,15 +1478,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
 <p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
 <p>感谢罗翔罗老师。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
-    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
-    <content><![CDATA[
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1590,15 +1619,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>文凭只是敲门砖--于谦</title>
-    <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
-    <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>旅行商问题（使用MST的近似算法）</title>
     <url>/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/</url>
     <content><![CDATA[<p>上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。</p>
@@ -1627,6 +1647,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>文凭只是敲门砖--于谦</title>
+    <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
+    <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2016,17 +2045,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>钢铁是怎样炼成的</title>
-    <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
-    <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
-<p>人的一生应该这样度过：当他回忆往事的时候，他不会因为虚度年华而悔恨；也不会因为碌碌无为而羞愧，当他临死的时候，他能够说：我的整个生命和全部精力，都献给了世界上最壮丽的事业——为人类的解放而斗争。</p>
-<p>人应当赶紧的充分的生活，因为意外的疾病和悲惨的事故随时都可能结束他的生命。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>郭德纲写给儿子郭麒麟的家书</title>
     <url>/2020/07/23/%E9%83%AD%E5%BE%B7%E7%BA%B2%E5%86%99%E7%BB%99%E5%84%BF%E5%AD%90%E9%83%AD%E9%BA%92%E9%BA%9F%E7%9A%84%E5%AE%B6%E4%B9%A6/</url>
     <content><![CDATA[<h3 id="人生的真谛要用自己一辈子去理解">人生的真谛要用自己一辈子去理解</h3>
@@ -2037,6 +2055,17 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <p>一个人刚出道，不狂是没有出息的。但如果一直狂，是肯定没出息的。你眼中的你，和别人眼中的你，不是一回事。无限赞美自己，只是一种胆怯。我一直认为，恐惧到头就是愤怒。发挥无敌想象，给自己描绘了一个童话世界，白衣如雪来去如风。剑影刀光闪过后，你满脸冷酷地立于珠峰顶端，傲视苍生无比英武。此时我要问的是：孩子，你怎么下去？不让古人，是谓有志；不让今人，是谓无良。记住了，小俗便雅，大雅则俗。有人夸你，别信。有人骂你，别听。周围人随意捧骂，不可与之交，因其无志兴也。记住，言语多反复，当防欺诈。忘恩思小过，定会反戈。开口说大义，临大难必变节。逢人称兄弟，即深交也平常。</p>
 <p>另外，凡事要慎重。江湖子弟，拿得起来放得下。身边人很重要。一根稻草，扔街上就是垃圾，捆上白菜就是白菜价，捆上大闸蟹就是大闸蟹价。包括脚下的平台，也极重要。同样是一个人，步行一小时能走多远？骑车呢？开车呢？坐飞机呢？平台会决定你的速度，且记且记。</p>
 <p>此外，钱财要珍惜，但不可看得太重。财乃天地至公之物，假手于人罢了，雨打残花风卷流云，轮番更转而已。穷转富，富转穷，哪有百世富家翁？至于交友，吃点亏也无妨。人每所谓穷通寿夭为命所系，岂不知造物之报施，全视人之自取。芸芸众生富贵贫寒，不是谁都可以傲视乾坤。其中有命有运，要知因果懂善恶，我儿且记，但行好事，莫问前程。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>钢铁是怎样炼成的</title>
+    <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
+    <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
+<p>人的一生应该这样度过：当他回忆往事的时候，他不会因为虚度年华而悔恨；也不会因为碌碌无为而羞愧，当他临死的时候，他能够说：我的整个生命和全部精力，都献给了世界上最壮丽的事业——为人类的解放而斗争。</p>
+<p>人应当赶紧的充分的生活，因为意外的疾病和悲惨的事故随时都可能结束他的生命。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
