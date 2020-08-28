@@ -108,6 +108,37 @@
       </tags>
   </entry>
   <entry>
+    <title>K个一组翻转链表</title>
+    <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
+<p>将pre指向开头</p>
+<p>循环开始，只要head不为nil</p>
+<p>令tail = pre</p>
+<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
+<p>nxt记录下tail.next，head即将走向的下一个结点</p>
+<p>反转head到tail中的节点，返回新的head和tail</p>
+<p>def reverse(head, tail):</p>
+<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
+<p>​ while prev != tail:</p>
+<p>​ nxt = cur.next</p>
+<p>​ cur.next = prev</p>
+<p>​ prev = cur</p>
+<p>​ cur = nxt</p>
+<p>​ return tail, head</p>
+<p>将pre的next指向新的head</p>
+<p>pre.next = head</p>
+<p>尾部已相连</p>
+<p>更新pre指向tail</p>
+<p>head指向nxt</p>
+<p>最终head为nil时退出循环</p>
+<p>返回dummy.next</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span>(<span class="params">self, head: ListNode, k: int</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span>(<span class="params">self, head, tail</span>):</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL中的锁</title>
     <url>/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
     <content><![CDATA[<h2 id="全局锁表锁行锁间隙锁">全局锁、表锁、行锁、间隙锁。</h2>
@@ -167,37 +198,6 @@
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>K个一组翻转链表</title>
-    <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
-    <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
-<p>将pre指向开头</p>
-<p>循环开始，只要head不为nil</p>
-<p>令tail = pre</p>
-<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
-<p>nxt记录下tail.next，head即将走向的下一个结点</p>
-<p>反转head到tail中的节点，返回新的head和tail</p>
-<p>def reverse(head, tail):</p>
-<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
-<p>​ while prev != tail:</p>
-<p>​ nxt = cur.next</p>
-<p>​ cur.next = prev</p>
-<p>​ prev = cur</p>
-<p>​ cur = nxt</p>
-<p>​ return tail, head</p>
-<p>将pre的next指向新的head</p>
-<p>pre.next = head</p>
-<p>尾部已相连</p>
-<p>更新pre指向tail</p>
-<p>head指向nxt</p>
-<p>最终head为nil时退出循环</p>
-<p>返回dummy.next</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span>(<span class="params">self, head: ListNode, k: int</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span>(<span class="params">self, head, tail</span>):</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -506,44 +506,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 23.合并K个排序链表</title>
-    <url>/2020/08/11/leetcode-23-%E5%90%88%E5%B9%B6K%E4%B8%AA%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/</url>
-    <content><![CDATA[<p>合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。</p>
-<p>示例:</p>
-<p>输入: [ 1-&gt;4-&gt;5, 1-&gt;3-&gt;4, 2-&gt;6] 输出: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6</p>
-<p>是工业界很常见的一种操作，比如分布式系统中、数据库中，我们有多个索引是有序的，且在多个小文件中存储，我们要合并成一个新的有序链表。我们可以有哪些想法呢。</p>
-<p>最暴力的解法是，每次遍历所有链表，找到最小的链表头，将结果链表的下一个指针指向该链表头，然后链表头指向其下一个节点。</p>
-<ul>
-<li>时间复杂度：找最小的链表头O(k)，假设链表平均长度n，要找O(nk)次，总体是O(k^2n)的。</li>
-<li>空间复杂度：O(1)，不使用额外空间</li>
-</ul>
-<p>对于我来说最直接的想法是，建一个dummy哨兵链表节点，用cur指针指向dummy，同时观察所有链表的头部元素，选出最小的一个，将cur.next指向这个链表头，这个链表如果next不为Null，就加入这个链表头的集合中，否则就不加入，然后令cur=cur.next。这样加入我们共有K个链表，那么我们的集合就是K这么大，这样插入一个元素，每次删除其中最小元素都很高效的数据结构是堆。</p>
-<ul>
-<li>总的时间复杂度就是O(k*n*logk)。因为我们一共要插入和删除K次。</li>
-<li>空间复杂度：O(K)，我们要使用一个K大小的堆。</li>
-</ul>
-<p>另一种想法用分治的方法进行合并。我们</p>
-<ul>
-<li>将k个链表配对，将一对中的链表合并。</li>
-<li>第一轮合并以后，k个链表被合并成了k/2个链表，平均长度为2n/k，然后是k/4个链表，k/8个链表等等。</li>
-<li>重复这一过程，直到我们得到了最终的有序链表。</li>
-</ul>
-<p>我们来分析一下复杂度：</p>
-<ul>
-<li>时间复杂度：我们知道合并两个有序链表，等于两个链表长度的和，所以是O(2n)，要合并k/2个，之后合并k/4个链表，合并时间复杂度是O(4n)，所以最终的时间复杂度还是O(n k log(k)) 。</li>
-<li>空间复杂度：我们归并要使用递归，递归的深度为logk，所以我们要使用O(logk)的栈空间。</li>
-</ul>
-<h2 id="示例代码">示例代码</h2>
-<p>使用堆合并</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        cur = dummy</span><br><span class="line">        <span class="comment"># 这里的i为了排序</span></span><br><span class="line">        heap = [(l.val, i, l) <span class="keyword">for</span> i, l <span class="keyword">in</span> enumerate(lists) <span class="keyword">if</span> l]</span><br><span class="line">        heapq.heapify(heap)</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            val, ind, l = heapq.heappop(heap)</span><br><span class="line">            cur.next = l</span><br><span class="line">            <span class="keyword">if</span> l.next:</span><br><span class="line">                l = l.next</span><br><span class="line">                heapq.heappush(heap, (l.val, ind, l))</span><br><span class="line">            cur = cur.next</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
-<p>分支合并</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        n = len(lists)</span><br><span class="line">        <span class="keyword">return</span> self.merge(lists, <span class="number">0</span>, n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">merge</span>(<span class="params">self, lists, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span> lists[l]</span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        l1 = self.merge(lists, l, mid)</span><br><span class="line">        l2 = self.merge(lists, mid + <span class="number">1</span>, r)</span><br><span class="line">        <span class="keyword">return</span> self.mergeTwoLists(l1, l2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1, l2</span>):</span></span><br><span class="line">        dummy = cur = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val &lt;= l2.val:</span><br><span class="line">                cur.next = l1</span><br><span class="line">                l1 = l1.next</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur.next = l2</span><br><span class="line">                l2 = l2.next</span><br><span class="line">            cur = cur.next</span><br><span class="line">        cur.next = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 215. 数组中的第K个最大元素 </title>
     <url>/2020/08/07/leetcode-215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/</url>
     <content><![CDATA[<h2 id="借助本题深入了解快速排序中的随机选择和堆的堆化插入删除操作">借助本题深入了解快速排序中的随机选择，和堆的堆化、插入、删除操作</h2>
@@ -632,6 +594,44 @@
 <p>堆的解法考查了堆化、插入、和删除的代码写法，是非常好的面试题目。</p>
 <h2 id="参考">参考</h2>
 <p>https://leetcode-cn.com/problems/kth-largest-element-in-an-array/solution/partitionfen-er-zhi-zhi-you-xian-dui-lie-java-dai-/</p>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 23.合并K个排序链表</title>
+    <url>/2020/08/11/leetcode-23-%E5%90%88%E5%B9%B6K%E4%B8%AA%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p>合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。</p>
+<p>示例:</p>
+<p>输入: [ 1-&gt;4-&gt;5, 1-&gt;3-&gt;4, 2-&gt;6] 输出: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6</p>
+<p>是工业界很常见的一种操作，比如分布式系统中、数据库中，我们有多个索引是有序的，且在多个小文件中存储，我们要合并成一个新的有序链表。我们可以有哪些想法呢。</p>
+<p>最暴力的解法是，每次遍历所有链表，找到最小的链表头，将结果链表的下一个指针指向该链表头，然后链表头指向其下一个节点。</p>
+<ul>
+<li>时间复杂度：找最小的链表头O(k)，假设链表平均长度n，要找O(nk)次，总体是O(k^2n)的。</li>
+<li>空间复杂度：O(1)，不使用额外空间</li>
+</ul>
+<p>对于我来说最直接的想法是，建一个dummy哨兵链表节点，用cur指针指向dummy，同时观察所有链表的头部元素，选出最小的一个，将cur.next指向这个链表头，这个链表如果next不为Null，就加入这个链表头的集合中，否则就不加入，然后令cur=cur.next。这样加入我们共有K个链表，那么我们的集合就是K这么大，这样插入一个元素，每次删除其中最小元素都很高效的数据结构是堆。</p>
+<ul>
+<li>总的时间复杂度就是O(k*n*logk)。因为我们一共要插入和删除K次。</li>
+<li>空间复杂度：O(K)，我们要使用一个K大小的堆。</li>
+</ul>
+<p>另一种想法用分治的方法进行合并。我们</p>
+<ul>
+<li>将k个链表配对，将一对中的链表合并。</li>
+<li>第一轮合并以后，k个链表被合并成了k/2个链表，平均长度为2n/k，然后是k/4个链表，k/8个链表等等。</li>
+<li>重复这一过程，直到我们得到了最终的有序链表。</li>
+</ul>
+<p>我们来分析一下复杂度：</p>
+<ul>
+<li>时间复杂度：我们知道合并两个有序链表，等于两个链表长度的和，所以是O(2n)，要合并k/2个，之后合并k/4个链表，合并时间复杂度是O(4n)，所以最终的时间复杂度还是O(n k log(k)) 。</li>
+<li>空间复杂度：我们归并要使用递归，递归的深度为logk，所以我们要使用O(logk)的栈空间。</li>
+</ul>
+<h2 id="示例代码">示例代码</h2>
+<p>使用堆合并</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        cur = dummy</span><br><span class="line">        <span class="comment"># 这里的i为了排序</span></span><br><span class="line">        heap = [(l.val, i, l) <span class="keyword">for</span> i, l <span class="keyword">in</span> enumerate(lists) <span class="keyword">if</span> l]</span><br><span class="line">        heapq.heapify(heap)</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            val, ind, l = heapq.heappop(heap)</span><br><span class="line">            cur.next = l</span><br><span class="line">            <span class="keyword">if</span> l.next:</span><br><span class="line">                l = l.next</span><br><span class="line">                heapq.heappush(heap, (l.val, ind, l))</span><br><span class="line">            cur = cur.next</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
+<p>分支合并</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        n = len(lists)</span><br><span class="line">        <span class="keyword">return</span> self.merge(lists, <span class="number">0</span>, n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">merge</span>(<span class="params">self, lists, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span> lists[l]</span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        l1 = self.merge(lists, l, mid)</span><br><span class="line">        l2 = self.merge(lists, mid + <span class="number">1</span>, r)</span><br><span class="line">        <span class="keyword">return</span> self.mergeTwoLists(l1, l2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1, l2</span>):</span></span><br><span class="line">        dummy = cur = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val &lt;= l2.val:</span><br><span class="line">                cur.next = l1</span><br><span class="line">                l1 = l1.next</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur.next = l2</span><br><span class="line">                l2 = l2.next</span><br><span class="line">            cur = cur.next</span><br><span class="line">        cur.next = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -808,6 +808,28 @@
       </tags>
   </entry>
   <entry>
+    <title>python实现Trie(字典树、前缀树)</title>
+    <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
+<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
+<h2 id="应用">应用：</h2>
+<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
+<h2 id="要实现的方法">要实现的方法</h2>
+<p>一般来讲trie要实现这么几个方法</p>
+<ul>
+<li>插入一个单词insert(word: str) -&gt; None</li>
+<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
+<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
+</ul>
+<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python实现并查集</title>
     <url>/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
     <content><![CDATA[<h1 id="python实现并查集">python实现并查集</h1>
@@ -863,28 +885,6 @@
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现Trie(字典树、前缀树)</title>
-    <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
-    <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
-<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
-<h2 id="应用">应用：</h2>
-<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
-<h2 id="要实现的方法">要实现的方法</h2>
-<p>一般来讲trie要实现这么几个方法</p>
-<ul>
-<li>插入一个单词insert(word: str) -&gt; None</li>
-<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
-<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
-</ul>
-<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1651,6 +1651,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>文凭只是敲门砖--于谦</title>
+    <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
+    <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>旅行商问题（使用MST的近似算法）</title>
     <url>/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/</url>
     <content><![CDATA[<p>上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。</p>
@@ -1679,15 +1688,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>文凭只是敲门砖--于谦</title>
-    <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
-    <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1767,35 +1767,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>树状数组解法，用每个数的rank来离散化，反序插入树状数组中，前一位的前缀和就是右侧小于当前元素的个数。</p>
 <p>示例代码如下：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSmaller</span>(<span class="params">self, nums: List[int]</span>) -&gt; List[int]:</span></span><br><span class="line">        rank = &#123;val: i + <span class="number">1</span> <span class="keyword">for</span> i, val <span class="keyword">in</span> enumerate(sorted(nums))&#125;</span><br><span class="line">        n = len(nums)</span><br><span class="line">        res = []</span><br><span class="line"></span><br><span class="line">        BITree = [<span class="number">0</span>] * (n + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">i, k=<span class="number">1</span></span>):</span></span><br><span class="line">            <span class="keyword">while</span> i &lt;= n:</span><br><span class="line">                BITree[i] += k</span><br><span class="line">                i += i &amp; -i</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">i</span>):</span></span><br><span class="line">            s = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> i:</span><br><span class="line">                s += BITree[i]</span><br><span class="line">                i -= i &amp; -i</span><br><span class="line">            <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> num <span class="keyword">in</span> reversed(nums):</span><br><span class="line">            res.append(getSum(rank[num] - <span class="number">1</span>))</span><br><span class="line">            update(rank[num])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res[::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>猫抓老鼠的简单讨论</title>
-    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
-    <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
-<ol type="1">
-<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
-<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
-<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
-<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
-<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
-<p>答案是不能。</p>
-<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
-<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
-<p><span class="math display">\[
-\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
-\]</span></p>
-<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
-<p>根据猫的速度是老鼠的4倍，</p>
-<p><span class="math display">\[
-x = \frac{4-\pi}{4}r \approx0.2146r
-\]</span></p>
-<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
-<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
-</ol>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1883,6 +1854,35 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>猫抓老鼠的简单讨论</title>
+    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
+    <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
+<ol type="1">
+<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
+<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
+<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
+<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
+<p>答案是不能。</p>
+<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
+<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
+<p><span class="math display">\[
+\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
+\]</span></p>
+<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
+<p>根据猫的速度是老鼠的4倍，</p>
+<p><span class="math display">\[
+x = \frac{4-\pi}{4}r \approx0.2146r
+\]</span></p>
+<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
+<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>社会文明程度很大程度上体现为对弱者的尊重</title>
     <url>/2020/08/22/%E7%A4%BE%E4%BC%9A%E6%96%87%E6%98%8E%E7%A8%8B%E5%BA%A6%E5%BE%88%E5%A4%A7%E7%A8%8B%E5%BA%A6%E4%B8%8A%E4%BD%93%E7%8E%B0%E4%B8%BA%E5%AF%B9%E5%BC%B1%E8%80%85%E7%9A%84%E5%B0%8A%E9%87%8D/</url>
     <content><![CDATA[<p>在现代社会，公众对艾滋病人的接纳，其实也是一个非常奢侈的话题。虽然每一年，我们都有一个专门的日子，我们来表达对艾滋病人的关心。但是，仅仅有这个日子是不够的。</p>
@@ -1939,6 +1939,49 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
   </entry>
   <entry>
+    <title>蓄水池算法</title>
+    <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="蓄水池采样算法reservoir-sampling">蓄水池采样算法（Reservoir Sampling）</h1>
+<p>蓄水池采样算法是非常常用的一种<strong>流式数据处理算法</strong>。</p>
+<h2 id="问题">问题</h2>
+<h3 id="大致描述">大致描述：</h3>
+<p>给出一个数据流，这个数据流的长度很大或未知，并且对该数据流中的数据只能访问一次。请写出一个随机选择算法，使得数据流中所有数据被选中的概率相等。</p>
+<h3 id="一些实际问题">一些实际问题</h3>
+<ol type="1">
+<li>从 100,000 分调查报告中抽取1000份进行统计。</li>
+<li>从一本很厚的电话簿中抽取1000人进行姓氏统计。</li>
+<li>从google搜索"Ken Thompson"，从中抽取100个结果查看哪些是今年的。</li>
+</ol>
+<p>这些都是很基本的采样问题。</p>
+<p>既然说的采样问题，最重要的就是做到公平，也就是保证每个元素被采样到的概率是相同的。</p>
+<p>对于第一个问题，我们已经知道数据的规模，通过算法生成[0, 100,000-1]间的随机数1000个，并且保证不重复即可。再取出对应的元素即可。</p>
+<p>但是对于第二和第三个问题，我们不知道数据的整体规模是多大。可能有人会想到，可以先对数据进行一次遍历，计算出数据的规模N，然后按照第一题的方法采样即可。这当然可以，但是并不好。因为这可能需要遍历两次，需要花两次的时间。也可以尝试估算数据的规模，但是这样得到的采样数据可能并不平均。</p>
+<h3 id="问题严格定义">问题严格定义</h3>
+<p>给你一个长度为N的链表。N很大，但你不知道N有多大。你的任务是从这N个元素中随机抽取k个元素。你只能遍历这个链表一次。你的算法必须保证取出的元素恰好有k个，且它们是完全随机的（出现概率相等的）。</p>
+<h2 id="解法">解法</h2>
+<h3 id="蓄水池算法">蓄水池算法：</h3>
+<p>蓄水池算法是针对从一个序列中随机抽取不重复的K个数，保证每个数被抽取到的概率都为K/N这个问题构建的。</p>
+<h3 id="做法">做法：</h3>
+<p>首先构造一个可以容纳k个元素的蓄水池（数组），将序列前k个元素直接放入蓄水池数组中。</p>
+<p>然后从第i = k+1个数据开始，以k/i（k&lt;i&lt;=n）的概率决定它是否进入到蓄水池中。蓄水池中的k个元素被替换出去的概率是相同的。</p>
+<p>当遍历完所有元素之后，数组中剩下的元素即为所需采取的样本。</p>
+<h2 id="证明">证明</h2>
+<p>对于第i个数（i &lt;= k）。在k步之前，被选中的概率为1。当走到第k+1步时，被k+1个元素替换的概率=第k+1个元素被选中的概率<em>i被替换的概率，即为 k/(k+1) </em> 1/k = 1/(k+1)。则不被第k+1个元素替换的概率为1 - 1/(k+1) = k/(k+1)。依次类推，不被K+2个元素替换的概率为1-k/(k+2) * 1/k = (k+1)/(k+2)。则运行到第n步时，第i个数仍保留的概率=被选中的概率<em>不被替换的概率，即： <span class="math display">\[
+1 \times \frac {k}{k+1}\times \frac {k+1}{k+2}\times \frac {k+2}{k+3}\times ...\times \frac {n-1}{n} = \frac {k}{n}
+\]</span> 对于第j个数（j&gt;k）。我们知道，在第j步被选中的概率为k/j。不被j+1个元素替换的概率为1 - k/(j+1) </em> 1/k = j/(j+1)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即： <span class="math display">\[
+\frac {k}{j}\times \frac {j}{j+1}\times \frac {j+1}{j+2}\times \frac {j+2}{j+3}\times ... \times \frac {n-1}{n} = \frac {k}{n}
+\]</span> 所以对于中每个元素，被保留的概率都为k/n。</p>
+<h2 id="实现">实现</h2>
+<p>python3版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, node, k</span>):</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>(<span class="params">object</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span>(<span class="params">self</span>):</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="实战题目">实战题目</h2>
+<h4 id="链表随机节点"><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbGlua2VkLWxpc3QtcmFuZG9tLW5vZGUv">382. 链表随机节点<i class="fa fa-external-link-alt"></i></span></h4>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>被讨厌的勇气</title>
     <url>/2020/08/24/%E8%A2%AB%E8%AE%A8%E5%8E%8C%E7%9A%84%E5%8B%87%E6%B0%94/</url>
     <content><![CDATA[<p>「被讨厌的勇气」真是一本好书，希望大家都能看一看。</p>
@@ -1993,7 +2036,7 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <li><p>过去发生了什么与你的”此时此刻“没有任何关系，未来会如何也不是”此时此刻“要考虑的问题。</p></li>
 <li><p>人生中最大的黄痰就是不活在”此时此刻“。</p></li>
 <li><p>所以阿德勒再说了”并不存在普遍性的人生意义“之后还说：”<strong>人生意义是自己赋予自己的。</strong>“</p></li>
-<li><p>无论你过着怎么的刹那，即使有人讨厌你，<strong>只要没有迷失”他者贡献“这颗引导之星，那么你就不会迷失马尔切做什么都可以</strong>。即使被讨厌自己的人讨厌着也可以自由的生活。</p></li>
+<li><p>无论你过着怎么的刹那，即使有人讨厌你，<strong>只要没有迷失”他者贡献“这颗引导之星，那么你就不会迷失而且做什么都可以</strong>。即使被讨厌自己的人讨厌着也可以自由的生活。</p></li>
 <li><p><strong>世界不是靠他人改变而只能靠”我“来改变。</strong></p></li>
 </ol>
 ]]></content>
@@ -2329,49 +2372,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>蓄水池算法</title>
-    <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="蓄水池采样算法reservoir-sampling">蓄水池采样算法（Reservoir Sampling）</h1>
-<p>蓄水池采样算法是非常常用的一种<strong>流式数据处理算法</strong>。</p>
-<h2 id="问题">问题</h2>
-<h3 id="大致描述">大致描述：</h3>
-<p>给出一个数据流，这个数据流的长度很大或未知，并且对该数据流中的数据只能访问一次。请写出一个随机选择算法，使得数据流中所有数据被选中的概率相等。</p>
-<h3 id="一些实际问题">一些实际问题</h3>
-<ol type="1">
-<li>从 100,000 分调查报告中抽取1000份进行统计。</li>
-<li>从一本很厚的电话簿中抽取1000人进行姓氏统计。</li>
-<li>从google搜索"Ken Thompson"，从中抽取100个结果查看哪些是今年的。</li>
-</ol>
-<p>这些都是很基本的采样问题。</p>
-<p>既然说的采样问题，最重要的就是做到公平，也就是保证每个元素被采样到的概率是相同的。</p>
-<p>对于第一个问题，我们已经知道数据的规模，通过算法生成[0, 100,000-1]间的随机数1000个，并且保证不重复即可。再取出对应的元素即可。</p>
-<p>但是对于第二和第三个问题，我们不知道数据的整体规模是多大。可能有人会想到，可以先对数据进行一次遍历，计算出数据的规模N，然后按照第一题的方法采样即可。这当然可以，但是并不好。因为这可能需要遍历两次，需要花两次的时间。也可以尝试估算数据的规模，但是这样得到的采样数据可能并不平均。</p>
-<h3 id="问题严格定义">问题严格定义</h3>
-<p>给你一个长度为N的链表。N很大，但你不知道N有多大。你的任务是从这N个元素中随机抽取k个元素。你只能遍历这个链表一次。你的算法必须保证取出的元素恰好有k个，且它们是完全随机的（出现概率相等的）。</p>
-<h2 id="解法">解法</h2>
-<h3 id="蓄水池算法">蓄水池算法：</h3>
-<p>蓄水池算法是针对从一个序列中随机抽取不重复的K个数，保证每个数被抽取到的概率都为K/N这个问题构建的。</p>
-<h3 id="做法">做法：</h3>
-<p>首先构造一个可以容纳k个元素的蓄水池（数组），将序列前k个元素直接放入蓄水池数组中。</p>
-<p>然后从第i = k+1个数据开始，以k/i（k&lt;i&lt;=n）的概率决定它是否进入到蓄水池中。蓄水池中的k个元素被替换出去的概率是相同的。</p>
-<p>当遍历完所有元素之后，数组中剩下的元素即为所需采取的样本。</p>
-<h2 id="证明">证明</h2>
-<p>对于第i个数（i &lt;= k）。在k步之前，被选中的概率为1。当走到第k+1步时，被k+1个元素替换的概率=第k+1个元素被选中的概率<em>i被替换的概率，即为 k/(k+1) </em> 1/k = 1/(k+1)。则不被第k+1个元素替换的概率为1 - 1/(k+1) = k/(k+1)。依次类推，不被K+2个元素替换的概率为1-k/(k+2) * 1/k = (k+1)/(k+2)。则运行到第n步时，第i个数仍保留的概率=被选中的概率<em>不被替换的概率，即： <span class="math display">\[
-1 \times \frac {k}{k+1}\times \frac {k+1}{k+2}\times \frac {k+2}{k+3}\times ...\times \frac {n-1}{n} = \frac {k}{n}
-\]</span> 对于第j个数（j&gt;k）。我们知道，在第j步被选中的概率为k/j。不被j+1个元素替换的概率为1 - k/(j+1) </em> 1/k = j/(j+1)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即： <span class="math display">\[
-\frac {k}{j}\times \frac {j}{j+1}\times \frac {j+1}{j+2}\times \frac {j+2}{j+3}\times ... \times \frac {n-1}{n} = \frac {k}{n}
-\]</span> 所以对于中每个元素，被保留的概率都为k/n。</p>
-<h2 id="实现">实现</h2>
-<p>python3版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, node, k</span>):</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>(<span class="params">object</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span>(<span class="params">self</span>):</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="实战题目">实战题目</h2>
-<h4 id="链表随机节点"><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbGlua2VkLWxpc3QtcmFuZG9tLW5vZGUv">382. 链表随机节点<i class="fa fa-external-link-alt"></i></span></h4>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
