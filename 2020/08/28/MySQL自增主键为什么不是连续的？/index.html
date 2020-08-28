@@ -31,11 +31,15 @@
 <meta property="og:site_name" content="侯瑞哲的博客">
 <meta property="og:description" content="为了便于说明，我们创建一个表t，其中id是自增主键字段、c是唯一索引。 12345678CREATE TABLE &#96;t&#96; (  &#96;id&#96; int(11) NOT NULL AUTO_INCREMENT,  &#96;c&#96; int(11) DEFAULT NULL,  &#96;d&#96; int(11) DEFAULT NULL,  PRIMARY KEY (&#96;id&#96;),  UNIQUE KEY &#96;c&#96; (&#96;c&#96;))">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE1.jpg">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE2.png">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE3.png">
 <meta property="article:published_time" content="2020-08-28T05:52:22.000Z">
-<meta property="article:modified_time" content="2020-08-28T07:37:50.911Z">
+<meta property="article:modified_time" content="2020-08-28T07:38:47.860Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hrz123.github.io/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE1.jpg">
 
 <link rel="canonical" href="https://hrz123.github.io/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/">
 
@@ -212,7 +216,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-28 13:52:22 / 修改时间：15:37:50" itemprop="dateCreated datePublished" datetime="2020-08-28T13:52:22+08:00">2020-08-28</time>
+              <time title="创建时间：2020-08-28 13:52:22 / 修改时间：15:38:47" itemprop="dateCreated datePublished" datetime="2020-08-28T13:52:22+08:00">2020-08-28</time>
             </span>
 
           
@@ -276,11 +280,11 @@
 <li>继续执行插入数据操作，由于已经存在c=1的记录，所以报Duplicate key error，语句返回。</li>
 </ol>
 <p>对应的执行流程图如下：</p>
-
+<img data-src="/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE1.jpg" class>
 <p>可以看到，这个表的自增值改成3，是在真正执行插入数据的操作之前。这个语句真正执行的时候，因为碰到唯一键c冲突，所以id这一行并没有插入成功，但也没有将自增值再改回去。</p>
 <p>所以，在这之后，再插入新的数据行时，拿到的自增id就是3。也就是说，出现了自增主键不连续的情况。</p>
 <p>如下图所示就是完整的演示结果。</p>
-
+<img data-src="/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE2.png" class>
 <p>可以看到，这个操作序列复现了一个自增主键id不连续的现场（没有id=2的行）。可见，<strong>唯一键冲突是导致自增主键id不连续的第一种原因。</strong></p>
 <p>同样地，<strong>事务回滚也会产生类似的现象，这就是第二种原因。</strong></p>
 <p>下面这个语句序列就可以构造不连续的自增id，你可以自己验证一下。</p>
@@ -318,7 +322,7 @@
 <p>你一定有两个疑问：<strong>为什么默认设置下，insert...select要使用语句级的锁？为什么这个参数的默认值不是2？</strong></p>
 <p>答案是，这么设计还是为了数据的一致性。</p>
 <p>我们一起来看一下这个场景：</p>
-
+<img data-src="/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE3.png" class>
 <p>在这个例子里，我往表t1中插入了4行数据，然后创建了一个相同结构的表t2，然后两个session同时执行向表t2中插入数据的操作。</p>
 <p>你可以设想一下，如果session B是申请了自增值以后马上就释放自增锁，那么就可能出现这样的情况：</p>
 <ul>
@@ -364,6 +368,10 @@
 <p>你觉得为什么需要这么做呢?</p>
 <p>我的回答：</p>
 <p>如果不加记录和间隙锁，而binlog_format又是statement。那么此时如果有另一个事务对t有写操作，比如insert into t values(x, x, x)，这时由于事务的隔离级别是可重复读，t2是看不到新增的数据的。而我们的binlog记录时如果将insert into t2(c, d) select c,d from t；记在了刚才那个语句的后面。那么在备库使用binlog同步的时候，备库会基于binlog恢复临时库，t2会看到新增的数据，就会造成主备数据的不一致。</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MDUzMQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
 
     </div>
 
@@ -450,7 +458,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%A2%9E%E5%80%BC%E4%BF%AE%E6%94%B9%E6%9C%BA%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">自增值修改机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%A2%9E%E5%80%BC%E7%9A%84%E4%BF%AE%E6%94%B9%E6%97%B6%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">自增值的修改时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%A2%9E%E9%94%81%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">自增锁的优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%A2%9E%E5%80%BC%E4%BF%AE%E6%94%B9%E6%9C%BA%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">自增值修改机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%A2%9E%E5%80%BC%E7%9A%84%E4%BF%AE%E6%94%B9%E6%97%B6%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">自增值的修改时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%A2%9E%E9%94%81%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">自增锁的优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
