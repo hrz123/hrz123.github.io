@@ -201,6 +201,38 @@
       </tags>
   </entry>
   <entry>
+    <title>MySQL如何正确地显示随机消息？ </title>
+    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论</p>
+<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
+<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
+<h3 id="正确的方法">正确的方法</h3>
+<p>下面这个流程：</p>
+<ol type="1">
+<li>取得整个表的行数，并记为C。</li>
+<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
+<li>再用limit Y，1 取得一行。</li>
+</ol>
+<p>下面这段代码，就是上面流程的执行语句的序列。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
+<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
+<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
+<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
+<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
+<ol type="1">
+<li>取得整个表的行数，即为C</li>
+<li>按照相同的随机方法得到Y1、Y2、Y3</li>
+<li>再执行三个limit Y, 1语句得到三行数据。</li>
+<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
+</ol>
+<h3 id="参考">参考</h3>
+<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL事务隔离</title>
     <url>/2020/08/20/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/</url>
     <content><![CDATA[<h2 id="事务">事务</h2>
@@ -279,32 +311,132 @@
       </tags>
   </entry>
   <entry>
-    <title>MySQL如何正确地显示随机消息？ </title>
-    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论</p>
-<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
-<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
-<h3 id="正确的方法">正确的方法</h3>
-<p>下面这个流程：</p>
+    <title>MySQL自增主键为什么不是连续的？</title>
+    <url>/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/</url>
+    <content><![CDATA[<p>为了便于说明，我们创建一个表t，其中id是自增主键字段、c是唯一索引。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="自增值修改机制">自增值修改机制</h3>
+<p>在MySQL里面，如果字段id被定义为AUTO_INCREMENT，在插入一行数据的时候，自增值的行为如下：</p>
 <ol type="1">
-<li>取得整个表的行数，并记为C。</li>
-<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
-<li>再用limit Y，1 取得一行。</li>
+<li>如果插入数据时id字段指定为0、null或未指定值，那么就把这个表当前的AUTO_INCREMENT值填到自增字段；</li>
+<li>如果插入数据时id字段指定了具体的值，就直接使用语句里指定的值。</li>
 </ol>
-<p>下面这段代码，就是上面流程的执行语句的序列。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
-<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
-<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
-<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
-<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
+<p>根据要插入的值和当前值的大小关系，自增值的变更结果也会有所不同。假设，某次要插入的值是X，当前的自增值是Y。</p>
 <ol type="1">
-<li>取得整个表的行数，即为C</li>
-<li>按照相同的随机方法得到Y1、Y2、Y3</li>
-<li>再执行三个limit Y, 1语句得到三行数据。</li>
-<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
+<li>如果X&lt;Y，那么这个表的自增值不变；</li>
+<li>如果X&gt;=Y，就需要把当前自增值修改为新的自增值。</li>
 </ol>
-<h3 id="参考">参考</h3>
-<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
+<p><strong>新的自增值生成算法是</strong>：从auto_increment_offset开始，以auto_increment_increment为步长，持续叠加，直到找到第一个大于X的值，作为新的自增值。</p>
+<p>其中，auto_increment_offset和auto_increment_increment是两个系统参数，分别用来表示自增的初始值和步长，默认值都是1。</p>
+<blockquote>
+<p>备注：在一些场景下，使用的就不全是默认值。比如，双M的主备结构里要求双写的时候，我们就可能会设置成auto_increment_increment=2，让一个库的自增id都是奇数，另一个库的自增id都是偶数，避免两个库生成的主键发生冲突。</p>
+</blockquote>
+<p>当auto_increment_offset和auto_increment_increment都是1的时候，新的自增值生成逻辑很简单，就是：</p>
+<ol type="1">
+<li>如果准备插入的值&gt;=当前自增值，新的自增值就是”准备插入的值+1“；</li>
+<li>否则，自增值不变。</li>
+</ol>
+<p>这就引入了我们文章开头提到的问题，在这两个参数都设置为1的时候，自增主键id却不能保证是连续的，这是什么原因呢？</p>
+<h3 id="自增值的修改时机">自增值的修改时机</h3>
+<p>要回答这个问题，我们就要看一下自增值的修改时机。</p>
+<p>假设，表t里面已经有了（1，1，1）这条记录，这时我再执行一条插入数据命令：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<ol type="1">
+<li>这个语句的执行InnoDB引擎接口写入一行，传入的这一行的值是（0， 1， 1）；</li>
+<li>InnoDB发现用户没有指定自增id的值，获取表t当前的自增值2；</li>
+<li>将传入的行的值改成（2，1，1）；</li>
+<li>将表的自增值改成3；</li>
+<li>继续执行插入数据操作，由于已经存在c=1的记录，所以报Duplicate key error，语句返回。</li>
+</ol>
+<p>对应的执行流程图如下：</p>
+
+<p>可以看到，这个表的自增值改成3，是在真正执行插入数据的操作之前。这个语句真正执行的时候，因为碰到唯一键c冲突，所以id这一行并没有插入成功，但也没有将自增值再改回去。</p>
+<p>所以，在这之后，再插入新的数据行时，拿到的自增id就是3。也就是说，出现了自增主键不连续的情况。</p>
+<p>如下图所示就是完整的演示结果。</p>
+
+<p>可以看到，这个操作序列复现了一个自增主键id不连续的现场（没有id=2的行）。可见，<strong>唯一键冲突是导致自增主键id不连续的第一种原因。</strong></p>
+<p>同样地，<strong>事务回滚也会产生类似的现象，这就是第二种原因。</strong></p>
+<p>下面这个语句序列就可以构造不连续的自增id，你可以自己验证一下。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line"><span class="keyword">rollback</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">// 插入的行是(3, 2, 2)</span><br></pre></td></tr></table></figure>
+<p>你可能会问，为什么在出现唯一键冲突或者回滚的时候，MySQL没有把表t的自增值改回去呢？如果把表t的当前自增值从3改回2，再插入新数据的时候，不就可以生成id=2的一行数据了吗？</p>
+<p>其实，MySQL这么设计是为了提升性能。接下来，我就跟你分析一下这个设计思路，看看<strong>自增值为什么不能回退。</strong></p>
+<p>假设有两个并行执行的事务，在申请自增值的时候，为了避免两个事务申请到相同的自增id，肯定要加锁，然后顺序申请。</p>
+<ol type="1">
+<li>假设事务A申请到了id=2，事务B申请到Id=3，那么这时候表t的自增值是4，之后继续执行。</li>
+<li>事务B正确提交了，但事务A出现了唯一键冲突.</li>
+<li>如果允许事务A把自增id回退，也就是把表t的当前自增值改回2，那么就会出现这样的情况：表里面已经有id=3的行，而当前的自增id值是2。</li>
+<li>接下来，继续执行的其他事务就会申请到id=2，然后再申请到id=3。这是，就会出现插入语句报错”主键冲突“。</li>
+</ol>
+<p>而为了解决这个主键冲突，有两种方法：</p>
+<ol type="1">
+<li>每次申请id之前，先判断表里面是否已经存在这个id。如果存在，就跳过这个id。但是，这个方法的成本很高。因为，本来申请id是一个很快的操作，现在还要再去主键索引树上判断id是否存在。</li>
+<li>把自增id的缩范围扩大，必须等到一个事务执行完成并提交，下一个事务才能再申请自增id。这个方法的问题，就是锁的粒度太大，系统并发能力大大下降。</li>
+</ol>
+<p>可见，这两个方法都会导致性能问题。造成这些麻烦的罪魁祸首，就是我们假设的这个”允许自增id回退“的前提导致的。</p>
+<p>因此，InnoDB放弃了这个设计，语句执行失败也不回退自增id。也正是因为这样，所以才只保证了自增id是递增的，但不保证是连续的。</p>
+<h3 id="自增锁的优化">自增锁的优化</h3>
+<p>可以看到，自增id锁并不是一个事务锁，而是每次申请完就马上释放，以便允许别的事务再申请。其实，在MySQL5.1版本之前，并不是这样的.</p>
+<p>接下来，我会先给你介绍下自增锁设计的历史，这样有助于你分析接下来的一个问题。</p>
+<p>在MySQL5.0版本的时候，自增锁的范围是语句级别。也就是说，如果一个语句申请了一个表自增锁，这个锁会等语句执行结束以后才释放。显然，这样设计会影响并发度。</p>
+<p>MySQL 5.1.22版本引入了一个新的策略，新增参数innodb_autoinc_lock_mode，默认值是1。</p>
+<ol type="1">
+<li>这个参数的值被设置成0时，表示采用之前MySQL 5.0版本的策略，即语句执行结束后才释放锁；</li>
+<li>这个参数的值被设置为1时：
+<ul>
+<li>普通insert语句，自增锁在申请之后就马上释放；</li>
+<li>类似insert...select这样的批量插入数据的语句，自增锁还是要等语句结束后才被释放；</li>
+</ul></li>
+<li>这个参数值被设置为2的时候，所有申请自增主键的动作都是申请后就释放锁。</li>
+</ol>
+<p>你一定有两个疑问：<strong>为什么默认设置下，insert...select要使用语句级的锁？为什么这个参数的默认值不是2？</strong></p>
+<p>答案是，这么设计还是为了数据的一致性。</p>
+<p>我们一起来看一下这个场景：</p>
+
+<p>在这个例子里，我往表t1中插入了4行数据，然后创建了一个相同结构的表t2，然后两个session同时执行向表t2中插入数据的操作。</p>
+<p>你可以设想一下，如果session B是申请了自增值以后马上就释放自增锁，那么就可能出现这样的情况：</p>
+<ul>
+<li>session B先插入了亮条记录，（1，1，1）、（2，2，2）；</li>
+<li>然后，session A来申请自增id得到id=3，插入了（3，5，5）；</li>
+<li>之后，session B继续执行，插入两条记录（4，3，3）、（5，4，4）。</li>
+</ul>
+<p>你可能会说，这也没关系吧，毕竟session B的语义本身就没有要求表t2的所有行的数据都跟session A相同。</p>
+<p>是的，从数据逻辑上看是对的。但是，如果我们现在的binlog_format=statement，你可以设想下，binlog会怎么记录呢？</p>
+<p>由于两个session是同时执行插入数据命令的，所以binlog里面对表t2的更新日志只有两种情况：要么先记session A的，要么先记session B的。</p>
+<p>但不论是哪一种，这个binlog拿去从库执行，或者用来恢复临时实例，备库和临时实例里面，session B这个语句执行出来，生成的结果里面，id都是连续的。这是，这个库就发生了数据不一致。</p>
+<p>你可以分析一下，出现这个问题的原因是什么？</p>
+<p>其实，这是因为原库session B的insert语句，生成的id不连续。这个不连续的id，用statement格式的binlog来串行执行，是执行不出来的。</p>
+<p>而要解决这个问题，有两种思路：</p>
+<ol type="1">
+<li>一种思路是，让原库的批量插入数据语句，固定生成连续的id值。所以，自增锁直到语句执行结束才释放，就是为了达到这个目的。</li>
+<li>另一种思路是，在binlog里面把插入数据的操作都如实记录进来，到备库执行的时候，不再依赖于自增主键去生成。这种情况，其实就是innodb_autoinc_lock_mode设置为2，同时binlog_format设置为row。</li>
+</ol>
+<p>因此，<strong>生产上，尤其是有insert...select这种批量插入数据的场景时，从并发插入数据性能的角度考虑，我建议你这样设置：innodb_autoinc_lock_mode=2，并且binlog_format=row。</strong>这样做，既能提升并发性，又不会出现数据一致性问题。</p>
+<p>需要注意的是，我这里说的<strong>批量插入数据，包含的语句类型是insert...select、replace...select和load data语句</strong>。</p>
+<p>但是，普通的insert语句里面包含多个value值的情况下，即使innodb_autoinc_lock_mode设置为1，也不会等语句执行完才释放锁。因为这类语句在申请自增id的时候，是可以精确计算出需要多少个id的，然后一次性申请，申请完成后锁就可以释放了。</p>
+<p>也就是所，批量插入数据的语句，之所以需要这么设置，是因为”不知道要预先申请多少个id“。</p>
+<p>既然预先不知道要申请多少个自增id，那么一种直接的想法就是需要一个时申请一个。但如果一个select..insert语句要插入10万行数据，按照这个逻辑的话就要申请10万次。显然，这种申请自增id的策略，在大批量插入数据的情况下，不但速度慢，还会影响并发插入的性能。</p>
+<p><strong>因此，对于批量插入数据的语句，MySQL有一个批量申请自增id的策略：</strong></p>
+<ol type="1">
+<li>语句执行过程汇总，第一次申请自增id，会分配1个；</li>
+<li>1个用完以后，这个语句第二次申请自增id，会分配2个；</li>
+<li>2个用完以后，还是这个语句，第三次申请自增id，会分配4个；</li>
+<li>依次类推，同一个语句去申请自增id，每次申请到的自增id个数都是上一次的两倍。</li>
+</ol>
+<p>举个例子，我们一起看看下面的这个语句序列：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">3</span>, <span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">4</span>, <span class="number">4</span>);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t2 <span class="keyword">like</span> t;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br><span class="line"><span class="keyword">insert</span> ionto t2 <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">5</span>, <span class="number">5</span>);</span><br></pre></td></tr></table></figure>
+<p>insert...select，实际上往表t2中插入了4行数据。但是，这四行数据是分三次申请的自增id，第一次申请到了id=1，第二次被分配了id=2和id=3，第三次被分配到id=4到id=7。</p>
+<p>由于这条语句实际上只用上了4个id，所以id=5到id=7就被浪费掉了。之后，再执行insert into t2 values(null,5， 5），实际上插入的数据就是（8，5，5）。</p>
+<p><strong>这是主键id出现自增id不连续的第三种原因。</strong></p>
+<h3 id="小结">小结</h3>
+<p>今天，我们从”自增主键为什么会出现不连续的值”这个问题开始，首先讨论了自增值的存储。</p>
+<p>在MyISAM引擎里面，自增值是被写在数据文件上面的。而在InnoDB中，自增值是被记录在内存的。MySQL直到8.0版本，才给InnoDB表的自增值加上了持久化的能力，确保重启后一个表的自增值不变。（将自增值的变更记录在了 redo log 中，重启的时候依靠 redo log 恢复重启之前的值。）</p>
+<p>然后，我和你分享了在一个语句执行过程中，自增值改变的实际，分析了为什么MySQL在事务回滚的时候不能回收自增id。</p>
+<p>MySQL 5.1.22版本开始引入的参数innodb_autoinc_lock_mode，控制了自增值申请时的锁范围。从并发性能的角度考虑，我建议你将其设置为2，同时将binlog_format设置为row。我在前面的文章中多次提到，binlog_format设置为row，是很有必要的。今天的例子给这个结论多了一个理由。</p>
+<p>最后，我给你留一个思考题吧。</p>
+<p>在最后一个例子中，执行insert into t2(c, d) select c,d from t；这个语句的时候，如果隔离级别是可重复读（RR, repeatable read)，binlog_format=statement。这个语句会对表t的所有记录和间隙加锁。</p>
+<p>你觉得为什么需要这么做呢?</p>
+<p>我的回答：</p>
+<p>如果不加记录和间隙锁，而binlog_format又是statement。那么此时如果有另一个事务对t有写操作，比如insert into t values(x, x, x)，这时由于事务的隔离级别是可重复读，t2是看不到新增的数据的。而我们的binlog记录时如果将insert into t2(c, d) select c,d from t；记在了刚才那个语句的后面。那么在备库使用binlog同步的时候，备库会基于binlog恢复临时库，t2会看到新增的数据，就会造成主备数据的不一致。</p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -447,6 +579,26 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 1519. 子树中标签相同的节点数</title>
+    <url>/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/</url>
+    <content><![CDATA[<h3 id="原题链接">原题链接</h3>
+<p>https://leetcode-cn.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/</p>
+<h3 id="原题简要描述">原题简要描述</h3>
+<p>给你一棵树（即，一个连通的无环无向图），这棵树由编号从 <code>0</code> 到 <code>n - 1</code> 的 n 个节点组成，且恰好有 <code>n - 1</code> 条 <code>edges</code> 。树的根节点为节点 <code>0</code> ，树上的每一个节点都有一个标签，也就是字符串 <code>labels</code> 中的一个小写字符（编号为 <code>i</code> 的 节点的标签就是 <code>labels[i]</code> ）</p>
+<p>边数组 <code>edges</code> 以 <code>edges[i] = [ai, bi]</code> 的形式给出，该格式表示节点 <code>ai</code> 和 <code>bi</code> 之间存在一条边。</p>
+<p>返回一个大小为 <em><code>n</code></em> 的数组，其中 <code>ans[i]</code> 表示第 <code>i</code> 个节点的子树中与节点 <code>i</code> 标签相同的节点数。</p>
+<p>树 <code>T</code> 中的子树是由 <code>T</code> 中的某个节点及其所有后代节点组成的树。</p>
+<p>这道题目问题的描述有点绕，我第一遍没有读明白，后来才明白。</p>
+<p>其实就是将树变成无环无向图，有一个顶点。所有的边都给你了，顶点用数字表示，数字对应一个字符串的索引，让你写出每个数字的子树上（包括这个数字的顶点本身），有多少个和这个数字对应索引的字符相同的。</p>
+<h3 id="代码">代码</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义一个子函数</span></span><br><span class="line"><span class="comment"># 这个函数计算每一个节点为根的子树，所有标记的计数</span></span><br><span class="line"><span class="comment"># 因为用邻接表表示的边，我们为了防止边的重复访问，需要记录访问节点</span></span><br><span class="line"><span class="comment"># 因为没有环，所以我们只要记住前一个节点，在访问下一个节点的相邻节点的时候</span></span><br><span class="line"><span class="comment"># 不访问这个节点就可以了</span></span><br><span class="line"><span class="comment"># 参数为dfs(i, pre)， i就是这个节点的编号，pre就是前一个节点的编号</span></span><br><span class="line"><span class="comment"># 终止条件就是这个点的相邻节点都访问过了</span></span><br><span class="line"><span class="comment"># 这样我们在全局的一个数组变量中，更新相应的i的值即可</span></span><br><span class="line"><span class="comment"># 最后我们返回这个数组变量就是所求</span></span><br><span class="line"><span class="comment"># 利用了python中Counter有加法的api</span></span><br><span class="line"><span class="comment"># 我们可以简化代码</span></span><br><span class="line"><span class="comment"># 否则我们如果用字典，我们要遍历字典，把存在于本层的加上，不存在于本层的添加进来即可</span></span><br><span class="line"><span class="comment"># 稍微麻烦点</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = &#123;labels[i]: <span class="number">1</span>&#125;</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    <span class="keyword">for</span> k, v <span class="keyword">in</span> dfs(nxt, i).items():</span><br><span class="line">                        <span class="keyword">if</span> k <span class="keyword">in</span> data:</span><br><span class="line">                            data[k] += v</span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            data[k] = v</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = Counter(&#123;labels[i]: <span class="number">1</span>&#125;)</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    data += dfs(nxt, i)</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>epoll的优劣和原理</title>
     <url>/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/</url>
     <content><![CDATA[<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
@@ -474,26 +626,6 @@
 ]]></content>
       <tags>
         <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 1519. 子树中标签相同的节点数</title>
-    <url>/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/</url>
-    <content><![CDATA[<h3 id="原题链接">原题链接</h3>
-<p>https://leetcode-cn.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/</p>
-<h3 id="原题简要描述">原题简要描述</h3>
-<p>给你一棵树（即，一个连通的无环无向图），这棵树由编号从 <code>0</code> 到 <code>n - 1</code> 的 n 个节点组成，且恰好有 <code>n - 1</code> 条 <code>edges</code> 。树的根节点为节点 <code>0</code> ，树上的每一个节点都有一个标签，也就是字符串 <code>labels</code> 中的一个小写字符（编号为 <code>i</code> 的 节点的标签就是 <code>labels[i]</code> ）</p>
-<p>边数组 <code>edges</code> 以 <code>edges[i] = [ai, bi]</code> 的形式给出，该格式表示节点 <code>ai</code> 和 <code>bi</code> 之间存在一条边。</p>
-<p>返回一个大小为 <em><code>n</code></em> 的数组，其中 <code>ans[i]</code> 表示第 <code>i</code> 个节点的子树中与节点 <code>i</code> 标签相同的节点数。</p>
-<p>树 <code>T</code> 中的子树是由 <code>T</code> 中的某个节点及其所有后代节点组成的树。</p>
-<p>这道题目问题的描述有点绕，我第一遍没有读明白，后来才明白。</p>
-<p>其实就是将树变成无环无向图，有一个顶点。所有的边都给你了，顶点用数字表示，数字对应一个字符串的索引，让你写出每个数字的子树上（包括这个数字的顶点本身），有多少个和这个数字对应索引的字符相同的。</p>
-<h3 id="代码">代码</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义一个子函数</span></span><br><span class="line"><span class="comment"># 这个函数计算每一个节点为根的子树，所有标记的计数</span></span><br><span class="line"><span class="comment"># 因为用邻接表表示的边，我们为了防止边的重复访问，需要记录访问节点</span></span><br><span class="line"><span class="comment"># 因为没有环，所以我们只要记住前一个节点，在访问下一个节点的相邻节点的时候</span></span><br><span class="line"><span class="comment"># 不访问这个节点就可以了</span></span><br><span class="line"><span class="comment"># 参数为dfs(i, pre)， i就是这个节点的编号，pre就是前一个节点的编号</span></span><br><span class="line"><span class="comment"># 终止条件就是这个点的相邻节点都访问过了</span></span><br><span class="line"><span class="comment"># 这样我们在全局的一个数组变量中，更新相应的i的值即可</span></span><br><span class="line"><span class="comment"># 最后我们返回这个数组变量就是所求</span></span><br><span class="line"><span class="comment"># 利用了python中Counter有加法的api</span></span><br><span class="line"><span class="comment"># 我们可以简化代码</span></span><br><span class="line"><span class="comment"># 否则我们如果用字典，我们要遍历字典，把存在于本层的加上，不存在于本层的添加进来即可</span></span><br><span class="line"><span class="comment"># 稍微麻烦点</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = &#123;labels[i]: <span class="number">1</span>&#125;</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    <span class="keyword">for</span> k, v <span class="keyword">in</span> dfs(nxt, i).items():</span><br><span class="line">                        <span class="keyword">if</span> k <span class="keyword">in</span> data:</span><br><span class="line">                            data[k] += v</span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            data[k] = v</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = Counter(&#123;labels[i]: <span class="number">1</span>&#125;)</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    data += dfs(nxt, i)</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -663,53 +795,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 34.在排序数组中查找元素的第一个和最后一个位置</title>
-    <url>/2020/08/10/leetcode-34-%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE/</url>
-    <content><![CDATA[<h2 id="题目描述">题目描述</h2>
-<ol start="34" type="1">
-<li>在排序数组中查找元素的第一个和最后一个位置</li>
-</ol>
-<p>给定一个按照升序排列的整数数组 <code>nums</code>，和一个目标值 <code>target</code>。找出给定目标值在数组中的开始位置和结束位置。</p>
-<p>你的算法时间复杂度必须是 <em>O</em>(log <em>n</em>) 级别。</p>
-<p>如果数组中不存在目标值，返回 <code>[-1, -1]</code>。</p>
-<p><strong>示例 1:</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8</span><br><span class="line">输出: [3,4]</span><br></pre></td></tr></table></figure>
-<p><strong>示例 2:</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 6</span><br><span class="line">输出: [-1,-1]</span><br></pre></td></tr></table></figure>
-<h2 id="思路">思路</h2>
-<p>这道题目当然可以给找左边界和右边界各写一个二分查找代码，因为比较简单就不写了。我们来看一下如何用一段代码找到临界索引。</p>
-<p>我们有几个前提条件</p>
-<ol type="1">
-<li>数组中可能不出现该值。</li>
-<li>数组中可能有重复元素。</li>
-</ol>
-<p>我们来分析一下：</p>
-<ol type="1">
-<li><p>对于一个元素，我们如果以插入的视角来看的话，这个元素有n+1个插入位置，对应的索引分别是0，1，2...，n。</p>
-<ol type="1">
-<li>如果我们插入的位置，左边都小于该元素，右边都大于等于该元素，那么插入位置的索引，就是第一个大于等于该元素的索引；</li>
-<li>如果我们插入的位置，左边都小于等于该元素，右边都大于该元素，那么插入位置的索引，就是第一个大于该元素的索引，而这个索引减1，就是最后一个小于等于该元素的索引。</li>
-</ol></li>
-<li><p>由于数组中可能不存在该值，我们第一步求得第一个大于等于该元素的索引，</p>
-<ol type="1">
-<li>可能为n，也就是说数组中没有大于等于该值的元素</li>
-<li>可能该索引对应的值不是等于该值，而是大于该值</li>
-</ol>
-<p>在这两种情况下，我们就不用再继续求右边的边界了。直接返回-1，-1</p></li>
-<li><p>这两种情况，仅仅是对于nums[mid] == target时，采取的策略不同，我们可以用一个参数控制不同的表现</p></li>
-</ol>
-<p>示例代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">      l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">       <span class="keyword">while</span> l &lt; r:</span><br><span class="line">              mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                        r = mid</span><br><span class="line">               <span class="keyword">else</span>:</span><br><span class="line">                        l = mid + <span class="number">1</span></span><br><span class="line">       <span class="keyword">return</span> l</span><br></pre></td></tr></table></figure>
-<p>这里返回的就是右侧集合的开始位置的下标。</p>
-<h2 id="示例代码">示例代码</h2>
-<p>这道题的解法如下，加上了不在数组的判断</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">searchRange</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; List[int]:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">            l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">            <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                    r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    l = mid + <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> l</span><br><span class="line"></span><br><span class="line">        left = binary_search(nums, target, <span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">if</span> left == len(nums) <span class="keyword">or</span> nums[left] != target:</span><br><span class="line">            <span class="keyword">return</span> [<span class="number">-1</span>, <span class="number">-1</span>]</span><br><span class="line">        <span class="keyword">return</span> [left, binary_search(nums, target, <span class="literal">False</span>) - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 363.矩形区域不超过K的最大数值和，通过此题好好了解前缀和的各种应用和变化</title>
     <url>/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/</url>
     <content><![CDATA[<h2 id="题目描述">题目描述</h2>
@@ -772,6 +857,53 @@
 <p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
 <h3 id="算法">算法</h3>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 34.在排序数组中查找元素的第一个和最后一个位置</title>
+    <url>/2020/08/10/leetcode-34-%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE/</url>
+    <content><![CDATA[<h2 id="题目描述">题目描述</h2>
+<ol start="34" type="1">
+<li>在排序数组中查找元素的第一个和最后一个位置</li>
+</ol>
+<p>给定一个按照升序排列的整数数组 <code>nums</code>，和一个目标值 <code>target</code>。找出给定目标值在数组中的开始位置和结束位置。</p>
+<p>你的算法时间复杂度必须是 <em>O</em>(log <em>n</em>) 级别。</p>
+<p>如果数组中不存在目标值，返回 <code>[-1, -1]</code>。</p>
+<p><strong>示例 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8</span><br><span class="line">输出: [3,4]</span><br></pre></td></tr></table></figure>
+<p><strong>示例 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 6</span><br><span class="line">输出: [-1,-1]</span><br></pre></td></tr></table></figure>
+<h2 id="思路">思路</h2>
+<p>这道题目当然可以给找左边界和右边界各写一个二分查找代码，因为比较简单就不写了。我们来看一下如何用一段代码找到临界索引。</p>
+<p>我们有几个前提条件</p>
+<ol type="1">
+<li>数组中可能不出现该值。</li>
+<li>数组中可能有重复元素。</li>
+</ol>
+<p>我们来分析一下：</p>
+<ol type="1">
+<li><p>对于一个元素，我们如果以插入的视角来看的话，这个元素有n+1个插入位置，对应的索引分别是0，1，2...，n。</p>
+<ol type="1">
+<li>如果我们插入的位置，左边都小于该元素，右边都大于等于该元素，那么插入位置的索引，就是第一个大于等于该元素的索引；</li>
+<li>如果我们插入的位置，左边都小于等于该元素，右边都大于该元素，那么插入位置的索引，就是第一个大于该元素的索引，而这个索引减1，就是最后一个小于等于该元素的索引。</li>
+</ol></li>
+<li><p>由于数组中可能不存在该值，我们第一步求得第一个大于等于该元素的索引，</p>
+<ol type="1">
+<li>可能为n，也就是说数组中没有大于等于该值的元素</li>
+<li>可能该索引对应的值不是等于该值，而是大于该值</li>
+</ol>
+<p>在这两种情况下，我们就不用再继续求右边的边界了。直接返回-1，-1</p></li>
+<li><p>这两种情况，仅仅是对于nums[mid] == target时，采取的策略不同，我们可以用一个参数控制不同的表现</p></li>
+</ol>
+<p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">      l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">       <span class="keyword">while</span> l &lt; r:</span><br><span class="line">              mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                        r = mid</span><br><span class="line">               <span class="keyword">else</span>:</span><br><span class="line">                        l = mid + <span class="number">1</span></span><br><span class="line">       <span class="keyword">return</span> l</span><br></pre></td></tr></table></figure>
+<p>这里返回的就是右侧集合的开始位置的下标。</p>
+<h2 id="示例代码">示例代码</h2>
+<p>这道题的解法如下，加上了不在数组的判断</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">searchRange</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; List[int]:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">            l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">            <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                    r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    l = mid + <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> l</span><br><span class="line"></span><br><span class="line">        left = binary_search(nums, target, <span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">if</span> left == len(nums) <span class="keyword">or</span> nums[left] != target:</span><br><span class="line">            <span class="keyword">return</span> [<span class="number">-1</span>, <span class="number">-1</span>]</span><br><span class="line">        <span class="keyword">return</span> [left, binary_search(nums, target, <span class="literal">False</span>) - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -986,6 +1118,15 @@
       </tags>
   </entry>
   <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>人要多读书</title>
     <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
     <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
@@ -996,32 +1137,61 @@
       </tags>
   </entry>
   <entry>
-    <title>今年值得纪念的事情</title>
-    <url>/2020/08/12/%E4%BB%8A%E5%B9%B4%E5%80%BC%E5%BE%97%E7%BA%AA%E5%BF%B5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
-    <content><![CDATA[<h2 id="数据结构与算法">数据结构与算法</h2>
-<ul>
-<li>leetcode刷到300题啦，继续加油啊！</li>
-<li>2020.08.22 第一次leetcode周赛全对，继续努力！</li>
-<li>2020.08.23 leetcode周赛进了前500，继续努力！</li>
-</ul>
-<h2 id="生活">生活</h2>
-<ul>
-<li>拔掉了最后两颗智齿，所有的智齿都没啦！</li>
-<li>看完了《七武士》</li>
-<li>读完了《被讨厌的勇气》 2020.8.26</li>
-</ul>
+    <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
+    <url>/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/</url>
+    <content><![CDATA[<h2 id="问题描述">1. 问题描述</h2>
+<p>给出只包含int类型的数组，所有值出现k(k&gt;1)次，除了一个值，这个值出现了p次（p&gt;1, p%k!=0)。找到这个值。</p>
+<h2 id="从只有1bit的特殊情况开始">2. 从只有1bit的特殊情况开始</h2>
+<p>为了应用位运算，我们应该重新思考integers是如何在计算机中被表示的--通过位。让我们先考虑1位。假如我们有一数组的一bit数（除了0就是1），我们要统计数组中的1，使得当统计1的计数器到达k时，计数器回到0并且重新统计（k和我们问题中提到的k一样）。为了跟踪我们已经遇到多少个1，我们需要一个计数器。假设计数器二进制表示有m位：xm, ..., x1（最重要的位到最不重要的位）。我们至少可以总结出计数器的以下四个特性。</p>
+<ol type="1">
+<li>计数器有一个初始状态，简单来讲为0</li>
+<li>对于数组中的每一个输入，如果我们击中0，计数器应该保持不变</li>
+<li>对于数组中的每一个输入，如果我们击中1，计数器应该增加1</li>
+<li>为了覆盖k个计数，我们要求2^m&gt;=k，这意味着m &gt; logk</li>
+</ol>
+<p>这里是关键部分：当我们扫描数组时，计数器（从x1到xm）中的每个位如何变化。注意，我们被提示使用位运算。为了满足第2个属性，回想一下，如果另一个操作数为0，有哪些位操作不会改变操作数？是的，有位与x=x|0和位异或x=x^0。</p>
+<p>好了，我们现在有一个表达式：x = x | i或者x = x^i，其中i是数组中的扫描元素。哪一个更好呢？我们还不知道。所以，让我们开始实际的计算。</p>
+<p>开始的时候，计数器的所有位都初始化为0，即xm=0, ..., x1=0。由于我们要选择的位操作，保证了计数器的所有位在遇到0时都保持不变，所以直到我们遇到数组中第一个1，计数器将是0。当我们遇到第一个1的时候，我们得到：xm = 0, ... , x2=0, x1=1。让我们继续下去，直到打出第二个1，之后我们得到：xm=0, ... , x2=1, x1=0。注意，x1从1变成了0。对于x1 = x1 | i，在第二次计数之后，x1仍然会是1。所以很明显，我们应该使用x1 = x1 ^ i，那么x2, ..., xm呢？我们的想法是找到x2, ... , xm将改变其值的条件。以x2为例。如果我们打了一个1，需要改变x2的值，那么在我们进行改变之前，x1的值一定是多少？答案是：x1必须是1，否则我们不应该改变x2，因为把x1从0改成1就可以了。因此，只有当x1和i都是1时，x2才会改变值，或者数学上说，x2 = x2 ^ (x1 &amp; i)。同理，xm只有在，xm-1, ... , x1和i都是1的时候才会改变数值：xm = xm ^ (xm-1 &amp; ... &amp; x1 &amp; i)。ok，我们找到了这个位运算。</p>
+<p>但是，你可能会注意到，上面发现的位运算将从0开始计数，直到2^m-1，而不是k。如果k &lt; 2^m - 1，我们需要一些”切割“机制，以在计数达到k时将计数器重新初始化为0。为此，我们对xm, ... , x1应用位AND，并使用一些称为mask的变量，即xm = xm &amp; mask, ... , x1 = x1 &amp; mask。如果我们能保证只有当计数达到k时，mask才为0，而在其他所有计数情况下为1，那么我们就完成了。我们如何实现这一点呢？试着想一想，计数为k的情况与其他所有情况的区别是什么？是的，是1的计数！对于每一个计数，我们对计数器的每一个位都有唯一的值，这可以看作是它的状态。如果我们把k写成二进制形式：km, ... ,k1, 我们就可以构造mask如下。</p>
+<p>mask = ~(y1 &amp; y2 &amp; .. &amp; ym)，其中如果kj = 1, yj = xj， 如果kj = 0， yj = -xj ( j = 1 to m )</p>
+<p>简单来讲，就是只有当x1..xm和k的所有位都相等的时候，mask才会为0</p>
+<p>我们来举一些例子：</p>
+<p>k = 3: k1 = 1, k2 = 1, mask = ~(x1 &amp; x2);</p>
+<p>k = 5: k1 = 1, k2 = 1, k3 = 1, mask = ~(x1 &amp; ~x2 &amp; x3);</p>
+<p>综上所述，我们的算法将是这样的（nums是输入数组）：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : nums) &#123;</span><br><span class="line">    xm ^= (xm<span class="number">-1</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    xm<span class="number">-1</span> ^= (xm<span class="number">-2</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    .....</span><br><span class="line">    x1 ^= i;</span><br><span class="line">    </span><br><span class="line">    mask = ~(y1 &amp; y2 &amp; ... &amp; ym) where yj = xj <span class="keyword">if</span> kj = <span class="number">1</span>, <span class="keyword">and</span> yj = ~xj <span class="keyword">if</span> kj = <span class="number">0</span> (j = <span class="number">1</span> to m).</span><br><span class="line"></span><br><span class="line">    xm &amp;= mask;</span><br><span class="line">    ......</span><br><span class="line">    x1 &amp;= mask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="位数的一般情况">3. 32位数的一般情况</h2>
+<p>现在是时候把我们的结果从1位数的情况推广到32位整数了。一个直接的方法是为整数中的每个位创建32个计数器。但是，如果我们利用位操作的优势，我们也许可以”集体“管理所有的32个计数器，其中m是满足m&gt;=logk的最小整数。原因是位操作只适用于每个位，所以对不同位的操作是相互独立的（有点明显，对吧？）。这使得我们可以将32个计数器的对应位归为一个32位整数。下面是一个示意图，展示了如何做到这一点。</p>
+<img data-src="/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/%E4%BD%8D%E8%BF%90%E7%AE%971.png" class>
+<p>最上面的一行是32位的整数，其中每一个位，我们都有一个对应的m位计数器（由向上箭头下面的那一列所示）。由于对32位中每一个位的操作都是相互独立的，所以我们可以将比如说所有计数器的第m位，归为一个32位数（由橙色框所示）。这个32位数中的所有位（表示为xm）将遵循相同的位操作。由于每个计数器有m个位，我们最终得到m个32位数，对应于第二部分中定义的x1, ... , xm，但现在它们是32位数而不是1位数。因此，在上面开发的算法中，我们只需要将x1到xm视为32位整数而不是1位数。其他一切都将是相同的，我们就完成了。很简单，嗯？</p>
+<h2 id="返回什么">4. 返回什么</h2>
+<p>最后就是我们应该返回什么值，或者等价于x1到xm中哪一个会等于单一元素。为了得到正确的答案，我们需要了解m个32位整数x1到xm代表什么。以x1为例，x1有32位，我们把它们标注为r（r=1到32)。当我们扫描完输入数组后，x1的r-th位的值将由数组中所有元素的r-th为决定（更具体的说，假设数组中所有元素的r-th位1的总计数为q，那么最终r-th位就是q'=q%k，其二进制形式为：q'm, ... , q'1，那么根据定义，x1的r-th位将等于 q'1)。现在你可以问自己这个问题：如果x1的r-th位是1，这意味着什么？</p>
+<p>答案是要找到能对这个1做出贡献的东西，一个出现了k次的元素会有贡献吗？不会，为什么？因为一个元素要做出贡献，至少要同时满足两个条件：这个元素的r-th位是1，这个1的出现次数不是k的整数倍，第一个条件是微不足道的。第二个条件来自于每当1的命中次数为k时，计数器就会回零，也就是x1中的对应位会被重置为0，对于一个出现了k次的元素，不可能同时满足这两个条件（违反第二条），所以它不会有贡献。所以，只有出现p（p%k!=0）次的单个元素才会做出贡献。如果p&gt;k，那么前k*[p/k] ([p/k]表示p/k的整数部分)的元素也不会做出贡献。所以我们总是可以设置p' = p % k，并说这个单元素有效地出现了p'次。</p>
+<p>我们把p‘写成二进制形式：p'm, ... , p'1(注意p' &lt; k, 所以它将适合m位)。这里提出一个声明，xj等于这个单个元素的条件是p'j = 1(j =1 到 m)，下面给出一个快速证明：</p>
+<p>如果xj的r-th位是1，我们可以放心的说这个单一元素的r-th位也是1（否则没有任何东西可以使xj的r-th位是1）。我们还要证明，如果xj的r-th位是0，那么单元素的r-th位只能是0，我们就假设在这种情况下，单元素的r-th位是1，我们看看会发生什么。在扫描结束时，这个1将被计算p'次。根据定义，xj的r-th位将等于p'j，也就是1，这与xj的r-th位为0的假设相矛盾，因此我们得出结论，只要p'j=1，xj的r-th位将始终与单一元素的r-th位相同。由于这对xj中的所有位都是真的（即对若r=1到32来说是真的），所以我们得出结论，只要p'j=1，xj将等于这个单一元素的值。</p>
+<p>所以现在我们应该返回什么就很清楚了。只要用其二进制形式表达p'=p%k，只要p'j = 1，就可以返回对应的xj中的任何一个。总的来说，该算法将在O(n*logk)时间和O(logk)的空间内运行。</p>
+<h2 id="快速例子几个">快速例子几个</h2>
+<p>Here is a list of few quick examples to show how the algorithm works (you can easily come up with other examples):</p>
+<ol type="1">
+<li><code>k = 2, p = 1</code> <code>k</code> is <code>2</code>, then <code>m = 1</code>, we need only one 32-bit integer (<code>x1</code>) as the counter. And <code>2^m = k</code> so we do not even need a mask! A complete java program will look like:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    return x1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li><code>k = 3, p = 1</code> <code>k</code> is <code>3</code>, then <code>m = 2</code>, we need two 32-bit integers(<code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we do need a mask. Write <code>k</code> in its binary form: <code>k = '11'</code>, then <code>k1 = 1</code>, <code>k2 = 1</code>, so we have <code>mask = ~(x1 &amp; x2)</code>. A complete java program will look like:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; x2);</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 1, in binary form p &#x3D; &#39;01&#39;, then p1 &#x3D; 1, so we should return x1. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 2, in binary form p &#x3D; &#39;10&#39;, then p2 &#x3D; 1, and we should return x2.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3" type="1">
+<li><code>k = 5, p = 3</code> <code>k</code> is <code>5</code>, then <code>m = 3</code>, we need three 32-bit integers(<code>x3</code>, <code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we need a mask. Write <code>k</code> in its binary form: <code>k = '101'</code>, then <code>k1 = 1</code>, <code>k2 = 0</code>, <code>k3 = 1</code>, so we have <code>mask = ~(x1 &amp; ~x2 &amp; x3)</code>. A complete java program will look like:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, x3  &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">   </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x3 ^&#x3D; x2 &amp; x1 &amp; i;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; ~x2 &amp; x3);</span><br><span class="line">        x3 &amp;&#x3D; mask;</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 3, in binary form p &#x3D; &#39;011&#39;, then p1 &#x3D; p2 &#x3D; 1, so we can return either x1 or x2. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 4, in binary form p &#x3D; &#39;100&#39;, only p3 &#x3D; 1, which implies we can only return x3.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2 | x3).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Lastly I would like to thank those for providing feedbacks to make this post better. Hope it helps and happy coding!</p>
+<h2 id="相关力扣题目">相关力扣题目</h2>
+<p>136 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci8=">https://leetcode-cn.com/problems/single-number/<i class="fa fa-external-link-alt"></i></span></p>
+<p>137 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paS8=">https://leetcode-cn.com/problems/single-number-ii/<i class="fa fa-external-link-alt"></i></span></p>
+<p>260 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paWkv">https://leetcode-cn.com/problems/single-number-iii/<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1095,58 +1265,32 @@
       </tags>
   </entry>
   <entry>
-    <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
-    <url>/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/</url>
-    <content><![CDATA[<h2 id="问题描述">1. 问题描述</h2>
-<p>给出只包含int类型的数组，所有值出现k(k&gt;1)次，除了一个值，这个值出现了p次（p&gt;1, p%k!=0)。找到这个值。</p>
-<h2 id="从只有1bit的特殊情况开始">2. 从只有1bit的特殊情况开始</h2>
-<p>为了应用位运算，我们应该重新思考integers是如何在计算机中被表示的--通过位。让我们先考虑1位。假如我们有一数组的一bit数（除了0就是1），我们要统计数组中的1，使得当统计1的计数器到达k时，计数器回到0并且重新统计（k和我们问题中提到的k一样）。为了跟踪我们已经遇到多少个1，我们需要一个计数器。假设计数器二进制表示有m位：xm, ..., x1（最重要的位到最不重要的位）。我们至少可以总结出计数器的以下四个特性。</p>
+    <title>区间树</title>
+    <url>/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="参考">参考：</h2>
+<p>https://www.geeksforgeeks.org/interval-tree/</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">https://stackoverflow.com/questions/17466218/what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text=Segment%20tree%20stores%20intervals%2C%20and,with%20a%20given%20interval%22%20queries.<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="实际问题简单记类似于点的添加和删除和查找都要快速点的解决办法是平衡bst使得这几种操作都变成ologn区间的添加删除类似查找的是overlap这时就需要用到区间树">实际问题（简单记，类似于点的添加和删除和查找，都要快速，点的解决办法是平衡BST，使得这几种操作都变成O(logn)，区间的添加删除类似，查找的是overlap，这时就需要用到区间树）</h2>
+<p>Consider a situation where we have a set of intervals and we need following operations to be implemented efficiently. <strong>1)</strong> Add an interval <strong>2)</strong> Remove an interval <strong>3)</strong> Given an interval x, find if x overlaps with any of the existing intervals.</p>
+<p>考虑我们有一个集合的区间，并且我们需要以下操作能够有效率的实现：</p>
 <ol type="1">
-<li>计数器有一个初始状态，简单来讲为0</li>
-<li>对于数组中的每一个输入，如果我们击中0，计数器应该保持不变</li>
-<li>对于数组中的每一个输入，如果我们击中1，计数器应该增加1</li>
-<li>为了覆盖k个计数，我们要求2^m&gt;=k，这意味着m &gt; logk</li>
+<li>添加一个区间</li>
+<li>删除一个区间</li>
+<li>对于一个给定的区间x，找出x是否有和任意一个已经存在的区间有重合。</li>
 </ol>
-<p>这里是关键部分：当我们扫描数组时，计数器（从x1到xm）中的每个位如何变化。注意，我们被提示使用位运算。为了满足第2个属性，回想一下，如果另一个操作数为0，有哪些位操作不会改变操作数？是的，有位与x=x|0和位异或x=x^0。</p>
-<p>好了，我们现在有一个表达式：x = x | i或者x = x^i，其中i是数组中的扫描元素。哪一个更好呢？我们还不知道。所以，让我们开始实际的计算。</p>
-<p>开始的时候，计数器的所有位都初始化为0，即xm=0, ..., x1=0。由于我们要选择的位操作，保证了计数器的所有位在遇到0时都保持不变，所以直到我们遇到数组中第一个1，计数器将是0。当我们遇到第一个1的时候，我们得到：xm = 0, ... , x2=0, x1=1。让我们继续下去，直到打出第二个1，之后我们得到：xm=0, ... , x2=1, x1=0。注意，x1从1变成了0。对于x1 = x1 | i，在第二次计数之后，x1仍然会是1。所以很明显，我们应该使用x1 = x1 ^ i，那么x2, ..., xm呢？我们的想法是找到x2, ... , xm将改变其值的条件。以x2为例。如果我们打了一个1，需要改变x2的值，那么在我们进行改变之前，x1的值一定是多少？答案是：x1必须是1，否则我们不应该改变x2，因为把x1从0改成1就可以了。因此，只有当x1和i都是1时，x2才会改变值，或者数学上说，x2 = x2 ^ (x1 &amp; i)。同理，xm只有在，xm-1, ... , x1和i都是1的时候才会改变数值：xm = xm ^ (xm-1 &amp; ... &amp; x1 &amp; i)。ok，我们找到了这个位运算。</p>
-<p>但是，你可能会注意到，上面发现的位运算将从0开始计数，直到2^m-1，而不是k。如果k &lt; 2^m - 1，我们需要一些”切割“机制，以在计数达到k时将计数器重新初始化为0。为此，我们对xm, ... , x1应用位AND，并使用一些称为mask的变量，即xm = xm &amp; mask, ... , x1 = x1 &amp; mask。如果我们能保证只有当计数达到k时，mask才为0，而在其他所有计数情况下为1，那么我们就完成了。我们如何实现这一点呢？试着想一想，计数为k的情况与其他所有情况的区别是什么？是的，是1的计数！对于每一个计数，我们对计数器的每一个位都有唯一的值，这可以看作是它的状态。如果我们把k写成二进制形式：km, ... ,k1, 我们就可以构造mask如下。</p>
-<p>mask = ~(y1 &amp; y2 &amp; .. &amp; ym)，其中如果kj = 1, yj = xj， 如果kj = 0， yj = -xj ( j = 1 to m )</p>
-<p>简单来讲，就是只有当x1..xm和k的所有位都相等的时候，mask才会为0</p>
-<p>我们来举一些例子：</p>
-<p>k = 3: k1 = 1, k2 = 1, mask = ~(x1 &amp; x2);</p>
-<p>k = 5: k1 = 1, k2 = 1, k3 = 1, mask = ~(x1 &amp; ~x2 &amp; x3);</p>
-<p>综上所述，我们的算法将是这样的（nums是输入数组）：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : nums) &#123;</span><br><span class="line">    xm ^= (xm<span class="number">-1</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    xm<span class="number">-1</span> ^= (xm<span class="number">-2</span> &amp; ... &amp; x1 &amp; i);</span><br><span class="line">    .....</span><br><span class="line">    x1 ^= i;</span><br><span class="line">    </span><br><span class="line">    mask = ~(y1 &amp; y2 &amp; ... &amp; ym) where yj = xj <span class="keyword">if</span> kj = <span class="number">1</span>, <span class="keyword">and</span> yj = ~xj <span class="keyword">if</span> kj = <span class="number">0</span> (j = <span class="number">1</span> to m).</span><br><span class="line"></span><br><span class="line">    xm &amp;= mask;</span><br><span class="line">    ......</span><br><span class="line">    x1 &amp;= mask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="位数的一般情况">3. 32位数的一般情况</h2>
-<p>现在是时候把我们的结果从1位数的情况推广到32位整数了。一个直接的方法是为整数中的每个位创建32个计数器。但是，如果我们利用位操作的优势，我们也许可以”集体“管理所有的32个计数器，其中m是满足m&gt;=logk的最小整数。原因是位操作只适用于每个位，所以对不同位的操作是相互独立的（有点明显，对吧？）。这使得我们可以将32个计数器的对应位归为一个32位整数。下面是一个示意图，展示了如何做到这一点。</p>
-<img data-src="/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/%E4%BD%8D%E8%BF%90%E7%AE%971.png" class>
-<p>最上面的一行是32位的整数，其中每一个位，我们都有一个对应的m位计数器（由向上箭头下面的那一列所示）。由于对32位中每一个位的操作都是相互独立的，所以我们可以将比如说所有计数器的第m位，归为一个32位数（由橙色框所示）。这个32位数中的所有位（表示为xm）将遵循相同的位操作。由于每个计数器有m个位，我们最终得到m个32位数，对应于第二部分中定义的x1, ... , xm，但现在它们是32位数而不是1位数。因此，在上面开发的算法中，我们只需要将x1到xm视为32位整数而不是1位数。其他一切都将是相同的，我们就完成了。很简单，嗯？</p>
-<h2 id="返回什么">4. 返回什么</h2>
-<p>最后就是我们应该返回什么值，或者等价于x1到xm中哪一个会等于单一元素。为了得到正确的答案，我们需要了解m个32位整数x1到xm代表什么。以x1为例，x1有32位，我们把它们标注为r（r=1到32)。当我们扫描完输入数组后，x1的r-th位的值将由数组中所有元素的r-th为决定（更具体的说，假设数组中所有元素的r-th位1的总计数为q，那么最终r-th位就是q'=q%k，其二进制形式为：q'm, ... , q'1，那么根据定义，x1的r-th位将等于 q'1)。现在你可以问自己这个问题：如果x1的r-th位是1，这意味着什么？</p>
-<p>答案是要找到能对这个1做出贡献的东西，一个出现了k次的元素会有贡献吗？不会，为什么？因为一个元素要做出贡献，至少要同时满足两个条件：这个元素的r-th位是1，这个1的出现次数不是k的整数倍，第一个条件是微不足道的。第二个条件来自于每当1的命中次数为k时，计数器就会回零，也就是x1中的对应位会被重置为0，对于一个出现了k次的元素，不可能同时满足这两个条件（违反第二条），所以它不会有贡献。所以，只有出现p（p%k!=0）次的单个元素才会做出贡献。如果p&gt;k，那么前k*[p/k] ([p/k]表示p/k的整数部分)的元素也不会做出贡献。所以我们总是可以设置p' = p % k，并说这个单元素有效地出现了p'次。</p>
-<p>我们把p‘写成二进制形式：p'm, ... , p'1(注意p' &lt; k, 所以它将适合m位)。这里提出一个声明，xj等于这个单个元素的条件是p'j = 1(j =1 到 m)，下面给出一个快速证明：</p>
-<p>如果xj的r-th位是1，我们可以放心的说这个单一元素的r-th位也是1（否则没有任何东西可以使xj的r-th位是1）。我们还要证明，如果xj的r-th位是0，那么单元素的r-th位只能是0，我们就假设在这种情况下，单元素的r-th位是1，我们看看会发生什么。在扫描结束时，这个1将被计算p'次。根据定义，xj的r-th位将等于p'j，也就是1，这与xj的r-th位为0的假设相矛盾，因此我们得出结论，只要p'j=1，xj的r-th位将始终与单一元素的r-th位相同。由于这对xj中的所有位都是真的（即对若r=1到32来说是真的），所以我们得出结论，只要p'j=1，xj将等于这个单一元素的值。</p>
-<p>所以现在我们应该返回什么就很清楚了。只要用其二进制形式表达p'=p%k，只要p'j = 1，就可以返回对应的xj中的任何一个。总的来说，该算法将在O(n*logk)时间和O(logk)的空间内运行。</p>
-<h2 id="快速例子几个">快速例子几个</h2>
-<p>Here is a list of few quick examples to show how the algorithm works (you can easily come up with other examples):</p>
-<ol type="1">
-<li><code>k = 2, p = 1</code> <code>k</code> is <code>2</code>, then <code>m = 1</code>, we need only one 32-bit integer (<code>x1</code>) as the counter. And <code>2^m = k</code> so we do not even need a mask! A complete java program will look like:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    return x1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="2" type="1">
-<li><code>k = 3, p = 1</code> <code>k</code> is <code>3</code>, then <code>m = 2</code>, we need two 32-bit integers(<code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we do need a mask. Write <code>k</code> in its binary form: <code>k = '11'</code>, then <code>k1 = 1</code>, <code>k2 = 1</code>, so we have <code>mask = ~(x1 &amp; x2)</code>. A complete java program will look like:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">     </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; x2);</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 1, in binary form p &#x3D; &#39;01&#39;, then p1 &#x3D; 1, so we should return x1. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 2, in binary form p &#x3D; &#39;10&#39;, then p2 &#x3D; 1, and we should return x2.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="3" type="1">
-<li><code>k = 5, p = 3</code> <code>k</code> is <code>5</code>, then <code>m = 3</code>, we need three 32-bit integers(<code>x3</code>, <code>x2</code>, <code>x1</code>) as the counter. And <code>2^m &gt; k</code> so we need a mask. Write <code>k</code> in its binary form: <code>k = '101'</code>, then <code>k1 = 1</code>, <code>k2 = 0</code>, <code>k3 = 1</code>, so we have <code>mask = ~(x1 &amp; ~x2 &amp; x3)</code>. A complete java program will look like:</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int singleNumber(int[] nums) &#123;</span><br><span class="line">    int x1 &#x3D; 0, x2 &#x3D; 0, x3  &#x3D; 0, mask &#x3D; 0;</span><br><span class="line">   </span><br><span class="line">    for (int i : nums) &#123;</span><br><span class="line">        x3 ^&#x3D; x2 &amp; x1 &amp; i;</span><br><span class="line">        x2 ^&#x3D; x1 &amp; i;</span><br><span class="line">        x1 ^&#x3D; i;</span><br><span class="line">        mask &#x3D; ~(x1 &amp; ~x2 &amp; x3);</span><br><span class="line">        x3 &amp;&#x3D; mask;</span><br><span class="line">        x2 &amp;&#x3D; mask;</span><br><span class="line">        x1 &amp;&#x3D; mask;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return x1;  &#x2F;&#x2F; Since p &#x3D; 3, in binary form p &#x3D; &#39;011&#39;, then p1 &#x3D; p2 &#x3D; 1, so we can return either x1 or x2. </span><br><span class="line">                &#x2F;&#x2F; If p &#x3D; 4, in binary form p &#x3D; &#39;100&#39;, only p3 &#x3D; 1, which implies we can only return x3.</span><br><span class="line">                &#x2F;&#x2F; Or alternatively we can simply return (x1 | x2 | x3).</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Lastly I would like to thank those for providing feedbacks to make this post better. Hope it helps and happy coding!</p>
-<h2 id="相关力扣题目">相关力扣题目</h2>
-<p>136 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci8=">https://leetcode-cn.com/problems/single-number/<i class="fa fa-external-link-alt"></i></span></p>
-<p>137 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paS8=">https://leetcode-cn.com/problems/single-number-ii/<i class="fa fa-external-link-alt"></i></span></p>
-<p>260 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paWkv">https://leetcode-cn.com/problems/single-number-iii/<i class="fa fa-external-link-alt"></i></span></p>
+<p><strong><em>Interval Tree:</em></strong> The idea is to augment a self-balancing Binary Search Tree (BST) like <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcmVkLWJsYWNrLXRyZWUtc2V0LTEtaW50cm9kdWN0aW9uLTIv">Red Black Tree<i class="fa fa-external-link-alt"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYXZsLXRyZWUtc2V0LTEtaW5zZXJ0aW9uLw==">AVL Tree<i class="fa fa-external-link-alt"></i></span>, etc to maintain set of intervals so that all operations can be done in O(Logn) time.</p>
+<p>Every node of Interval Tree stores following information. a) <strong>i</strong>: An interval which is represented as a pair <em>[low, high]</em> b) <strong>max</strong>: Maximum <em>high</em> value in subtree rooted with this node.</p>
+<p>区间的最小值用作BST的键值来保持BST的顺序。那么插入和删除就和自平衡BST的插入删除一样。</p>
+<img data-src="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png" class>
+<p>那么我们就来看找重合区间的操作。</p>
+<p>Following is algorithm for searching an overlapping interval <em>x</em> in an Interval tree rooted with <em>root</em>.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Interval overlappingIntervalSearch(root, x)</span><br><span class="line">1) If x overlaps with root&#39;s interval, return the root&#39;s interval.</span><br><span class="line"></span><br><span class="line">2) If left child of root is not empty and the max  in left child </span><br><span class="line">is greater than x&#39;s low value, recur for left child</span><br><span class="line"></span><br><span class="line">3) Else recur for right child.</span><br></pre></td></tr></table></figure>
+<p><strong><em>How does the above algorithm work?</em></strong> Let the interval to be searched be x. We need to prove this in for following two cases.</p>
+<p><strong><em>Case 1:</em></strong> <em>When we go to right subtree, one of the following must be true.</em> a) There is an overlap in right subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: We go to right subtree only when either left is NULL or maximum value in left is smaller than <em>x.low</em>. So the interval cannot be present in left subtree.</p>
+<p><strong><em>Case 2:</em></strong> <em>When we go to left subtree, one of the following must be true.</em> a) There is an overlap in left subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: This is the most important part. We need to consider following facts. … We went to left subtree because <em>x.low &lt;= max</em> in left subtree …. max in left subtree is a high of one of the intervals let us say <em>[a, max]</em> in left subtree. …. Since <em>x</em> doesn’t overlap with any node in left subtree <em>x.low</em> must be smaller than ‘<em>a</em>‘. …. All nodes in BST are ordered by low value, so all nodes in right subtree must have low value greater than ‘<em>a</em>‘. …. From above two facts, we can say all intervals in right subtree have low value greater than <em>x.low</em>. So <em>x</em> cannot overlap with any interval in right subtree.</p>
+<p><strong>Applications of Interval Tree:</strong> Interval tree is mainly a geometric data structure and often used for windowing queries, for instance, to find all roads on a computerized map inside a rectangular viewport, or to find all visible elements inside a three-dimensional scene (Source <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9JbnRlcnZhbF90cmVl">Wiki<i class="fa fa-external-link-alt"></i></span>).</p>
+<p><strong>Interval Tree vs <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span></strong> Both segment and interval trees store intervals. Segment tree is mainly optimized for queries for a given point, and interval trees are mainly optimized for overlapping queries for a given interval.</p>
+<p>区间树和线段树都是存储区间的，不同的是线段是针对给定点的查询进行优化，区间树针对给定区间的重叠查询进行优化。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1226,38 +1370,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <h2 id="转载感谢">转载感谢</h2>
 <p>感谢优秀题解</p>
 <p>https://leetcode.com/problems/super-egg-drop/discuss/159079/Python-DP-from-kn2-to-knlogn-to-kn</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>区间树</title>
-    <url>/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/</url>
-    <content><![CDATA[<h2 id="参考">参考：</h2>
-<p>https://www.geeksforgeeks.org/interval-tree/</p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">https://stackoverflow.com/questions/17466218/what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text=Segment%20tree%20stores%20intervals%2C%20and,with%20a%20given%20interval%22%20queries.<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="实际问题简单记类似于点的添加和删除和查找都要快速点的解决办法是平衡bst使得这几种操作都变成ologn区间的添加删除类似查找的是overlap这时就需要用到区间树">实际问题（简单记，类似于点的添加和删除和查找，都要快速，点的解决办法是平衡BST，使得这几种操作都变成O(logn)，区间的添加删除类似，查找的是overlap，这时就需要用到区间树）</h2>
-<p>Consider a situation where we have a set of intervals and we need following operations to be implemented efficiently. <strong>1)</strong> Add an interval <strong>2)</strong> Remove an interval <strong>3)</strong> Given an interval x, find if x overlaps with any of the existing intervals.</p>
-<p>考虑我们有一个集合的区间，并且我们需要以下操作能够有效率的实现：</p>
-<ol type="1">
-<li>添加一个区间</li>
-<li>删除一个区间</li>
-<li>对于一个给定的区间x，找出x是否有和任意一个已经存在的区间有重合。</li>
-</ol>
-<p><strong><em>Interval Tree:</em></strong> The idea is to augment a self-balancing Binary Search Tree (BST) like <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcmVkLWJsYWNrLXRyZWUtc2V0LTEtaW50cm9kdWN0aW9uLTIv">Red Black Tree<i class="fa fa-external-link-alt"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYXZsLXRyZWUtc2V0LTEtaW5zZXJ0aW9uLw==">AVL Tree<i class="fa fa-external-link-alt"></i></span>, etc to maintain set of intervals so that all operations can be done in O(Logn) time.</p>
-<p>Every node of Interval Tree stores following information. a) <strong>i</strong>: An interval which is represented as a pair <em>[low, high]</em> b) <strong>max</strong>: Maximum <em>high</em> value in subtree rooted with this node.</p>
-<p>区间的最小值用作BST的键值来保持BST的顺序。那么插入和删除就和自平衡BST的插入删除一样。</p>
-<img data-src="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png" class>
-<p>那么我们就来看找重合区间的操作。</p>
-<p>Following is algorithm for searching an overlapping interval <em>x</em> in an Interval tree rooted with <em>root</em>.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Interval overlappingIntervalSearch(root, x)</span><br><span class="line">1) If x overlaps with root&#39;s interval, return the root&#39;s interval.</span><br><span class="line"></span><br><span class="line">2) If left child of root is not empty and the max  in left child </span><br><span class="line">is greater than x&#39;s low value, recur for left child</span><br><span class="line"></span><br><span class="line">3) Else recur for right child.</span><br></pre></td></tr></table></figure>
-<p><strong><em>How does the above algorithm work?</em></strong> Let the interval to be searched be x. We need to prove this in for following two cases.</p>
-<p><strong><em>Case 1:</em></strong> <em>When we go to right subtree, one of the following must be true.</em> a) There is an overlap in right subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: We go to right subtree only when either left is NULL or maximum value in left is smaller than <em>x.low</em>. So the interval cannot be present in left subtree.</p>
-<p><strong><em>Case 2:</em></strong> <em>When we go to left subtree, one of the following must be true.</em> a) There is an overlap in left subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: This is the most important part. We need to consider following facts. … We went to left subtree because <em>x.low &lt;= max</em> in left subtree …. max in left subtree is a high of one of the intervals let us say <em>[a, max]</em> in left subtree. …. Since <em>x</em> doesn’t overlap with any node in left subtree <em>x.low</em> must be smaller than ‘<em>a</em>‘. …. All nodes in BST are ordered by low value, so all nodes in right subtree must have low value greater than ‘<em>a</em>‘. …. From above two facts, we can say all intervals in right subtree have low value greater than <em>x.low</em>. So <em>x</em> cannot overlap with any interval in right subtree.</p>
-<p><strong>Applications of Interval Tree:</strong> Interval tree is mainly a geometric data structure and often used for windowing queries, for instance, to find all roads on a computerized map inside a rectangular viewport, or to find all visible elements inside a three-dimensional scene (Source <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9JbnRlcnZhbF90cmVl">Wiki<i class="fa fa-external-link-alt"></i></span>).</p>
-<p><strong>Interval Tree vs <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span></strong> Both segment and interval trees store intervals. Segment tree is mainly optimized for queries for a given point, and interval trees are mainly optimized for overlapping queries for a given interval.</p>
-<p>区间树和线段树都是存储区间的，不同的是线段是针对给定点的查询进行优化，区间树针对给定区间的重叠查询进行优化。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1348,35 +1460,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <h2 id="最后整体的实现">最后整体的实现</h2>
 <p>Python3版本</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">KMPSearch</span>(<span class="params">self, p, s</span>):</span></span><br><span class="line">        <span class="comment"># 特判</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> p:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        m, n = len(p), len(s)</span><br><span class="line">        lps = self.get_lps(p, m)</span><br><span class="line">        j = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> j != <span class="number">0</span> <span class="keyword">and</span> s[i] != p[j]:</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> s[i] == p[j]:</span><br><span class="line">                j += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> j == m:</span><br><span class="line">                <span class="comment"># return i - m + 1</span></span><br><span class="line">                print(<span class="string">&quot;find at &#123;&#125;&quot;</span>.format(i - m + <span class="number">1</span>))</span><br><span class="line">                j = lps[j - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_lps</span>(<span class="params">self, p, m</span>):</span></span><br><span class="line">        lps = [<span class="number">-1</span>] * m</span><br><span class="line">        k = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m):</span><br><span class="line">            <span class="keyword">while</span> k != <span class="number">-1</span> <span class="keyword">and</span> p[i] != p[k + <span class="number">1</span>]:</span><br><span class="line">                k = lps[k]</span><br><span class="line">            <span class="keyword">if</span> p[i] == p[k + <span class="number">1</span>]:</span><br><span class="line">                k += <span class="number">1</span></span><br><span class="line">            lps[i] = k</span><br><span class="line">        <span class="keyword">return</span> lps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    s = <span class="string">&quot;abcruizheuhuruizheaasdasd&quot;</span></span><br><span class="line">    p = <span class="string">&quot;ruizhe&quot;</span></span><br><span class="line">    res = sol.KMPSearch(p, s)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>并查集侦查无向图中的环</title>
-    <url>/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/</url>
-    <content><![CDATA[<p>并查集是一种数据结构，它跟踪一个集合的元素被分割成若干不相干（不重叠）的子集。union-find算法是一种对这种数据结构执行两种有用操作的算法：</p>
-<p>Find：确定一个特定的元素在哪个子集里。这可以用来确定两个元素是否在同一个子集中。</p>
-<p>Union：将两个子集连接成一个单一的子集。</p>
-<p>在这篇文章中，我们将讨论并查集的应用。这个应用就是检查一个给定的图是否有环。</p>
-<p>UnionFInd算法可以检查一个无向图是否有环。注意到我们已经讨论过一种检查环的<span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvZGV0ZWN0LWN5Y2xlLXVuZGlyZWN0ZWQtZ3JhcGgvP3JlZj1sYnA=">方法<i class="fa fa-external-link-alt"></i></span>。这是另一种使用并查集的防范。这个方法假设图中没有自环。</p>
-<p>我们可以在一个1D数组中跟踪子集，我们称它为parent[]。</p>
-<p>我们考虑如下图：</p>
-<img data-src="/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF.png" class>
-<p>对于每条边，用边的两个顶点做子集。如果两个顶点都已经在同一个子集中，就发现了一个环。</p>
-<p>初始化时，parent的所有槽位都初始化为-1（意味着每个子集中只有一个项目）。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2</span><br><span class="line">-1 -1  -1 </span><br></pre></td></tr></table></figure>
-<p>现在逐一处理所有的边。</p>
-<p>边0-1：找到顶点0和1所在的子集。由于它们在不同的子集中，我们对它们进行union操作。为了取union，可以让结点0作为节点1的父结点，或者反之。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 1 is made parent of 0 (1 is now representative of subset &#123;0, 1&#125;)</span><br><span class="line">1  -1  -1</span><br></pre></td></tr></table></figure>
-<p>边1-2：1已经在subset 1中，2在subset 2中，所以取union</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 2 is made parent of 1 (2 is now representative of subset &#123;0, 1, 2&#125;)</span><br><span class="line">1   2  -1</span><br></pre></td></tr></table></figure>
-<p>边0-2：0在subset 2中，2也在subset 2中。因此，包括这条边形成了一个环。</p>
-<p>为什么0的子集和和2相同？</p>
-<p>0-&gt;1-&gt;2 // 1是0的父结点2是1的父结点。</p>
-<p>根据以上解释，下面是实现。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># undirected_graph.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, k</span>):</span></span><br><span class="line">        self.uf = [<span class="number">-1</span>] * (k + <span class="number">1</span>)</span><br><span class="line">        self.sets_count = k</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        p_root = self.find(p)</span><br><span class="line">        q_root = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> p_root == q_root:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p_root] &gt; self.uf[q_root]:</span><br><span class="line">            self.uf[q_root] += self.uf[p_root]</span><br><span class="line">            self.uf[p_root] = q_root</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[p_root] += self.uf[q_root]</span><br><span class="line">            self.uf[q_root] = p_root</span><br><span class="line">        self.sets_count -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.uf = UnionFind(vertices)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isCyclic</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.graph:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> self.graph[i]:</span><br><span class="line">                <span class="keyword">if</span> self.uf.is_connected(i, j):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">                self.uf.union(i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">3</span>)</span><br><span class="line">    g.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    print(g.isCyclic())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1480,6 +1563,35 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>并查集侦查无向图中的环</title>
+    <url>/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/</url>
+    <content><![CDATA[<p>并查集是一种数据结构，它跟踪一个集合的元素被分割成若干不相干（不重叠）的子集。union-find算法是一种对这种数据结构执行两种有用操作的算法：</p>
+<p>Find：确定一个特定的元素在哪个子集里。这可以用来确定两个元素是否在同一个子集中。</p>
+<p>Union：将两个子集连接成一个单一的子集。</p>
+<p>在这篇文章中，我们将讨论并查集的应用。这个应用就是检查一个给定的图是否有环。</p>
+<p>UnionFInd算法可以检查一个无向图是否有环。注意到我们已经讨论过一种检查环的<span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvZGV0ZWN0LWN5Y2xlLXVuZGlyZWN0ZWQtZ3JhcGgvP3JlZj1sYnA=">方法<i class="fa fa-external-link-alt"></i></span>。这是另一种使用并查集的防范。这个方法假设图中没有自环。</p>
+<p>我们可以在一个1D数组中跟踪子集，我们称它为parent[]。</p>
+<p>我们考虑如下图：</p>
+<img data-src="/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF.png" class>
+<p>对于每条边，用边的两个顶点做子集。如果两个顶点都已经在同一个子集中，就发现了一个环。</p>
+<p>初始化时，parent的所有槽位都初始化为-1（意味着每个子集中只有一个项目）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2</span><br><span class="line">-1 -1  -1 </span><br></pre></td></tr></table></figure>
+<p>现在逐一处理所有的边。</p>
+<p>边0-1：找到顶点0和1所在的子集。由于它们在不同的子集中，我们对它们进行union操作。为了取union，可以让结点0作为节点1的父结点，或者反之。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 1 is made parent of 0 (1 is now representative of subset &#123;0, 1&#125;)</span><br><span class="line">1  -1  -1</span><br></pre></td></tr></table></figure>
+<p>边1-2：1已经在subset 1中，2在subset 2中，所以取union</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 2 is made parent of 1 (2 is now representative of subset &#123;0, 1, 2&#125;)</span><br><span class="line">1   2  -1</span><br></pre></td></tr></table></figure>
+<p>边0-2：0在subset 2中，2也在subset 2中。因此，包括这条边形成了一个环。</p>
+<p>为什么0的子集和和2相同？</p>
+<p>0-&gt;1-&gt;2 // 1是0的父结点2是1的父结点。</p>
+<p>根据以上解释，下面是实现。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># undirected_graph.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, k</span>):</span></span><br><span class="line">        self.uf = [<span class="number">-1</span>] * (k + <span class="number">1</span>)</span><br><span class="line">        self.sets_count = k</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        p_root = self.find(p)</span><br><span class="line">        q_root = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> p_root == q_root:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p_root] &gt; self.uf[q_root]:</span><br><span class="line">            self.uf[q_root] += self.uf[p_root]</span><br><span class="line">            self.uf[p_root] = q_root</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[p_root] += self.uf[q_root]</span><br><span class="line">            self.uf[q_root] = p_root</span><br><span class="line">        self.sets_count -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.uf = UnionFind(vertices)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isCyclic</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.graph:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> self.graph[i]:</span><br><span class="line">                <span class="keyword">if</span> self.uf.is_connected(i, j):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">                self.uf.union(i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">3</span>)</span><br><span class="line">    g.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    print(g.isCyclic())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
     <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
     <content><![CDATA[
@@ -1516,6 +1628,17 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>拔智齿</title>
     <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
     <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
@@ -1525,17 +1648,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
 <p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
 <p>一切都是好兆头。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1597,12 +1709,63 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>今年值得纪念的事情</title>
+    <url>/2020/08/12/%E4%BB%8A%E5%B9%B4%E5%80%BC%E5%BE%97%E7%BA%AA%E5%BF%B5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
+    <content><![CDATA[<h2 id="数据结构与算法">数据结构与算法</h2>
+<ul>
+<li>leetcode刷到300题啦，继续加油啊！</li>
+<li>2020.08.22 第一次leetcode周赛全对，继续努力！</li>
+<li>2020.08.23 leetcode周赛进了前500，继续努力！</li>
+</ul>
+<h2 id="生活">生活</h2>
+<ul>
+<li>拔掉了最后两颗智齿，所有的智齿都没啦！</li>
+<li>看完了《七武士》</li>
+<li>读完了《被讨厌的勇气》 2020.8.26</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>文凭只是敲门砖--于谦</title>
     <url>/2020/07/15/%E6%96%87%E5%87%AD%E5%8F%AA%E6%98%AF%E6%95%B2%E9%97%A8%E7%A0%96-%E4%BA%8E%E8%B0%A6/</url>
     <content><![CDATA[<p>现在这个社会，不光现在这个社会，实际上从有史以来，这个人，为了养家糊口，要学一门手艺。你包括你读书，你读到硕士，读到博士，你无非就是，学什么，都是为了找一份好工作。对吧，到最后。手艺人，是最吃香的。文凭，是个敲门砖，之后的一切素质，包括你工作上，用的一些东西，都是之后，进入社会，以后的再教育。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>旅行商问题（使用MST的近似算法）</title>
+    <url>/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/</url>
+    <content><![CDATA[<p>上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。</p>
+<p><strong>三角形不等式</strong>：从顶点i到顶点j的最短路径总是直接从i到达j，而不是通过其他顶点k，即dist(i, j)总是小于等于dist(i, k) + dist(k, j)。三角形不等式在很多情况下都是成立的。当成本函数满足三角形不等式时，我们可以为TSP设计一个近似算法，该算法返回的旅游成本永远不会超过最优旅游成本的两倍。其思想是使用最小生成树（Minimum Spanning Tree, MST)。以下是基于MST的算法。</p>
+<h2 id="算法">算法</h2>
+<ol type="1">
+<li>让1成为销售员的起点和终点。</li>
+<li>用Prim's Algorithm以1为根构建MST。</li>
+<li>列出构造的MST的前序遍历中所访问的顶点，并在最后添加1.</li>
+</ol>
+<p>让我们考虑下面的例子。第一张图是给定的图，第二张图是以1为根构建的MST。MST的前序遍历是1-2-4-3。在末尾加1，得到1-2-4-3-1，这就是这个算法的输出。</p>
+<img data-src="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST1.png" class>
+<img data-src="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST2.png" class>
+<p>这种情况下，近似算法会产生最优线路，但未必在所有情况下都能产生最优路径。</p>
+<p><strong>这个算法是如何2倍近似的？</strong>上述算法产生的输出成本永远不会超过最佳可能输出成本的两倍。我们来看看上述算法是如何保证这一点的。</p>
+<p>让我们定义一个术语"full walk"来理解这个问题。一个full walk是当一个顶点被前序遍历访问访问时列出它们，并且当某个顶点的子树被返回时也列出这些顶点。上面树的full walk将是1-2-1-4-1-3-1。下面是证明2-近似性的一些重要事实。</p>
+<ol type="1">
+<li>最好的旅行商路线的成本绝不小于MST的成本。（MST的定义说，它是连接所有顶点的最小成本树。）</li>
+<li>full walk的总成本最多是MST成本的两倍（MST的每条边最多被访问两次）。</li>
+<li>上述算法的输出小于full walk的成本。在上面的算法中，我们打印出preorder walk作为输出。在前序遍历中，full walk的两条或多条边被一条边所取代。例如，2-1和1-4被一条边2-4所取代。所以，如果图形遵循三角形不等式，那么这条结论总是对的。</li>
+</ol>
+<p>从以上三句陈述中，我们可以得出结论，近似算法产生的输出成本永远不会超过最佳可能解成本的两倍。</p>
+<p>我们讨论了一个非常简单的旅行商问题的2-近似算法。对于这个问题还有其他更好的近似算法。例如Christofides算法是1.5近似算法。我们将很快把这些算法作为单独的文章来讨论。</p>
+<h2 id="参考">参考</h2>
+<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-2-approximate-using-mst/?ref=lbp</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1657,37 +1820,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>操作系统</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>旅行商问题（使用MST的近似算法）</title>
-    <url>/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/</url>
-    <content><![CDATA[<p>上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。</p>
-<p><strong>三角形不等式</strong>：从顶点i到顶点j的最短路径总是直接从i到达j，而不是通过其他顶点k，即dist(i, j)总是小于等于dist(i, k) + dist(k, j)。三角形不等式在很多情况下都是成立的。当成本函数满足三角形不等式时，我们可以为TSP设计一个近似算法，该算法返回的旅游成本永远不会超过最优旅游成本的两倍。其思想是使用最小生成树（Minimum Spanning Tree, MST)。以下是基于MST的算法。</p>
-<h2 id="算法">算法</h2>
-<ol type="1">
-<li>让1成为销售员的起点和终点。</li>
-<li>用Prim's Algorithm以1为根构建MST。</li>
-<li>列出构造的MST的前序遍历中所访问的顶点，并在最后添加1.</li>
-</ol>
-<p>让我们考虑下面的例子。第一张图是给定的图，第二张图是以1为根构建的MST。MST的前序遍历是1-2-4-3。在末尾加1，得到1-2-4-3-1，这就是这个算法的输出。</p>
-<img data-src="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST1.png" class>
-<img data-src="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST2.png" class>
-<p>这种情况下，近似算法会产生最优线路，但未必在所有情况下都能产生最优路径。</p>
-<p><strong>这个算法是如何2倍近似的？</strong>上述算法产生的输出成本永远不会超过最佳可能输出成本的两倍。我们来看看上述算法是如何保证这一点的。</p>
-<p>让我们定义一个术语"full walk"来理解这个问题。一个full walk是当一个顶点被前序遍历访问访问时列出它们，并且当某个顶点的子树被返回时也列出这些顶点。上面树的full walk将是1-2-1-4-1-3-1。下面是证明2-近似性的一些重要事实。</p>
-<ol type="1">
-<li>最好的旅行商路线的成本绝不小于MST的成本。（MST的定义说，它是连接所有顶点的最小成本树。）</li>
-<li>full walk的总成本最多是MST成本的两倍（MST的每条边最多被访问两次）。</li>
-<li>上述算法的输出小于full walk的成本。在上面的算法中，我们打印出preorder walk作为输出。在前序遍历中，full walk的两条或多条边被一条边所取代。例如，2-1和1-4被一条边2-4所取代。所以，如果图形遵循三角形不等式，那么这条结论总是对的。</li>
-</ol>
-<p>从以上三句陈述中，我们可以得出结论，近似算法产生的输出成本永远不会超过最佳可能解成本的两倍。</p>
-<p>我们讨论了一个非常简单的旅行商问题的2-近似算法。对于这个问题还有其他更好的近似算法。例如Christofides算法是1.5近似算法。我们将很快把这些算法作为单独的文章来讨论。</p>
-<h2 id="参考">参考</h2>
-<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-2-approximate-using-mst/?ref=lbp</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -2087,24 +2219,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>软件=算法+数据结构+文档+数据？</title>
-    <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
-    <content><![CDATA[<p>软件的开始到后来...</p>
-<p>开始：</p>
-<p>软件=代码？</p>
-<p>软件=算法+数据结构？</p>
-<p>软件=算法+数据结构+文档？</p>
-<p>软件=算法+数据结构+文档+数据？</p>
-<p>后来：</p>
-<p>软件=算法+数据结构+文档+数据 + 单元测试 + workflow ？</p>
-<p>对自己的要求，至少要做到</p>
-<p>软件=算法+数据结构+文档。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>钢铁是怎样炼成的</title>
     <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
     <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
@@ -2187,6 +2301,24 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <p>因为f(0) = 0, f(n) = 1，所以f(1) = 1/n，f(2) = 2/n， f(x) = x/n，f(n-1) = (n-1)/n，f(n) = n/n</p>
 <p>所以，综上可得f(x) = x/n。</p>
 <p>也就是说，当向右走x步到达右边终点，向左n-x步到达左边终点时，我们最后到达左边终点的概率为x/n</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>软件=算法+数据结构+文档+数据？</title>
+    <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
+    <content><![CDATA[<p>软件的开始到后来...</p>
+<p>开始：</p>
+<p>软件=代码？</p>
+<p>软件=算法+数据结构？</p>
+<p>软件=算法+数据结构+文档？</p>
+<p>软件=算法+数据结构+文档+数据？</p>
+<p>后来：</p>
+<p>软件=算法+数据结构+文档+数据 + 单元测试 + workflow ？</p>
+<p>对自己的要求，至少要做到</p>
+<p>软件=算法+数据结构+文档。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -2677,11 +2809,5 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>MySQL自增主键为什么不是连续的？</title>
-    <url>/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
 </search>
