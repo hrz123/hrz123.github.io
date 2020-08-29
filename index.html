@@ -454,7 +454,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-29 13:35:41 / 修改时间：14:06:36" itemprop="dateCreated datePublished" datetime="2020-08-29T13:35:41+08:00">2020-08-29</time>
+              <time title="创建时间：2020-08-29 13:35:41 / 修改时间：18:03:00" itemprop="dateCreated datePublished" datetime="2020-08-29T13:35:41+08:00">2020-08-29</time>
             </span>
 
           
@@ -513,7 +513,8 @@
 </ul>
 <p>看到BNL算法，你就应该知道这条语句执行流程其实是这样的：</p>
 <ol type="1">
-<li>把表a的内容读入joiin_buffer中</li>
+<li>把表a的内容读入joiin_buffer中。因为是select *，所以字段f1和f2都被放入join_buffer了。</li>
+<li>顺序扫描表b，对于每一行数据，判断join条件（也就是(a.f1=b.f1) and (a.f1=1)）是否满足，满足条件的记录，作为结果集的一行返回。如果语句中有where子句，需要先判断where部分满足条件后，再返回</li>
 </ol>
 
       
