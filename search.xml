@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
+    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
+<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
+<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
+<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
+<h2 id="算法">算法</h2>
+<ol type="1">
+<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
+<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
+<li>while sptSet不包含所有的顶点：
+<ul>
+<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
+<li>将u加入到sptSet中。</li>
+<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
+</ul></li>
+</ol>
+<h2 id="代码示例">代码示例</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="参考">参考</h2>
+<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>GC的三种基本实现方式和优缺点</title>
     <url>/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/</url>
     <content><![CDATA[<h3 id="参考">参考：</h3>
@@ -109,33 +136,6 @@
 ]]></content>
       <tags>
         <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
-    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
-<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
-<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
-<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
-<h2 id="算法">算法</h2>
-<ol type="1">
-<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
-<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
-<li>while sptSet不包含所有的顶点：
-<ul>
-<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
-<li>将u加入到sptSet中。</li>
-<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
-</ul></li>
-</ol>
-<h2 id="代码示例">代码示例</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="参考">参考</h2>
-<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -447,18 +447,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Prim&#39;s最小生成树算法</title>
     <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
@@ -490,6 +478,43 @@
 <p><strong>如何实现上面的算法？</strong></p>
 <p>我们用一个布尔数组mstSet[]表示MST中包含的顶点集合。如果一个值mstSet[v]为true，那么顶点v就在MST中，否则就不是。数组key[]用来存储所有顶点的键值。另一个数组parent[]用来存储MST中父节点的索引。parent数组是输出数组，用来显示构建的MST。</p>
 <p>上面算法的时间复杂度为O(V^2)。如果使用邻接表表示输入图，那么在二叉堆的帮助下，Prim算法的时间复杂度可以降低到O（ElogV）。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Splay Tree-II</title>
+    <url>/2020/08/13/Splay-Tree-II/</url>
+    <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
+<p>正如前篇博文所讲的，Splay树是一种自平衡的数据结构，最后一个访问的键总是根。插入操作和二叉搜索树的插入类似，额外多了一些步骤来保证新插入的键称为新的根节点。</p>
+<p>以下是插入键值k到一个Splay Tree的不同情况</p>
+<ol type="1">
+<li>root是空：我们简单的分配一个新的节点，并将它作为root返回</li>
+<li>splay（伸展）给定的键值k。如果k已经存在，那么它称为新的根节点。如果不存在，那么最后访问的叶子节点称为新的根节点。</li>
+<li>如果新的根节点和k相同，什么都不做因为k已经存在了。</li>
+<li>否则，分配内存产生新的节点，并且将k和根的键值比较。
+<ol type="1">
+<li>如果k比根的键值小，将root作为新节点的右孩子，复制root的左孩子作为新节点的左孩子，并且使root的左孩子置为NULL。</li>
+<li>如果k比跟的键值大，将root作为新节点的左孩子，复制root的右孩子作为新节点的右孩子，并且使root的右孩子置为NULL。</li>
+</ol></li>
+<li>将新节点返回，作为整棵树的根。</li>
+</ol>
+<p>感觉Splay很大程度上是可以基于AVL树进行修改的，其中左旋、右旋、左右旋、右左旋操作是相同的，只是splay有splay操作。具体实现有时间会仔细看看，在下面参考的链接中有。</p>
+<h2 id="参考">参考</h2>
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMi1pbnNlcnQtZGVsZXRlLz9yZWY9bGJw">https://www.geeksforgeeks.org/splay-tree-set-2-insert-delete/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -607,28 +632,33 @@
       </tags>
   </entry>
   <entry>
-    <title>Splay Tree-II</title>
-    <url>/2020/08/13/Splay-Tree-II/</url>
-    <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
-<p>正如前篇博文所讲的，Splay树是一种自平衡的数据结构，最后一个访问的键总是根。插入操作和二叉搜索树的插入类似，额外多了一些步骤来保证新插入的键称为新的根节点。</p>
-<p>以下是插入键值k到一个Splay Tree的不同情况</p>
-<ol type="1">
-<li>root是空：我们简单的分配一个新的节点，并将它作为root返回</li>
-<li>splay（伸展）给定的键值k。如果k已经存在，那么它称为新的根节点。如果不存在，那么最后访问的叶子节点称为新的根节点。</li>
-<li>如果新的根节点和k相同，什么都不做因为k已经存在了。</li>
-<li>否则，分配内存产生新的节点，并且将k和根的键值比较。
-<ol type="1">
-<li>如果k比根的键值小，将root作为新节点的右孩子，复制root的左孩子作为新节点的左孩子，并且使root的左孩子置为NULL。</li>
-<li>如果k比跟的键值大，将root作为新节点的左孩子，复制root的右孩子作为新节点的右孩子，并且使root的右孩子置为NULL。</li>
-</ol></li>
-<li>将新节点返回，作为整棵树的根。</li>
-</ol>
-<p>感觉Splay很大程度上是可以基于AVL树进行修改的，其中左旋、右旋、左右旋、右左旋操作是相同的，只是splay有splay操作。具体实现有时间会仔细看看，在下面参考的链接中有。</p>
-<h2 id="参考">参考</h2>
-<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMi1pbnNlcnQtZGVsZXRlLz9yZWY9bGJw">https://www.geeksforgeeks.org/splay-tree-set-2-insert-delete/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
+    <title>epoll的优劣和原理</title>
+    <url>/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
+<p>首先，epoll 和 kqueue（mac os内核才有）随文件描述符（句柄数的增加，也表示并发连接数的增加）的增加，所消耗的时间几乎不变。而Poll和select所消耗的时间是急剧上升的。epoll基本与句柄数增加是无关的，所以它的性能会好很多，而且非常适合做大并发连接的处理。那么，为什么会这样呢？</p>
+<h3 id="前提">前提</h3>
+<p>高并发连接中，每次处理的活跃连接数量占比很小</p>
+<blockquote>
+<p>select 和 poll的实现是有问题的。每一次我去取操作系统的事件的时候，我都需要把这100万个连接通通地扔给操作系统，让它去依次地判断哪些连接上面有事件进来了，所以可以看到这里操作系统做了大量的无用功 ，它扫描了大量不活跃的连接。那么epoll就是用了这样的一个特性，因为每次处理的活跃连接的占比其实非常小，那么，它怎么实现的呢？其实非常简单，因为它维护了一个数据结构叫eventpoll。这里，它通过两个数据结构把这两件事分开了。也就是说，nginx每次取活跃连接的时候，我们只需要去遍历一个链表，这个链表里仅仅只有活跃的连接，这样我们的效率就很高。那么，我们还会经常做的操作是什么呢？比如说，nginx收到80端口建立连接的请求。那么，收到80端口建立连接成功以后呢，我们要添加一个读事件，这个读事件是用来读取HTTP消息的，那这时候呢，我可能会添加一个新的事件，或者写事件添加进来。这个时候添加呢，我只会放到这个红黑树中，这个二叉平衡树，它能保证我的插入效率值是logn。如果我现在不想再处理读事件或者写事件，我只需要从这个平衡二叉树中移除一个节点就可以了，同样是logn的时间复杂度。所以这个效率非常高。那么什么时候这个链表会有所增减呢。当我们读取一个事件的时候，链表中自然就没了。那么，当操作系统接收到网卡中发送来的一个报文的时候，那么这个链表就会增加一个新的元素，所以我们在使用epoll的时候，它的操作，添加修改删除，是非常快的，是logn复杂度的。而我们获取句柄的时候，只是去遍历这个rdllink，也就是ready准备好的所有的连接，是把它读取出来而已。那么，从内核态读取到用户态，只读这么一点东西，它的效率是非常高的。</p>
+</blockquote>
+<h3 id="实现">实现</h3>
+<ul>
+<li>红黑树</li>
+<li>链表</li>
+</ul>
+<h3 id="使用">使用</h3>
+<ul>
+<li>创建</li>
+<li>操作：添加/修改/删除</li>
+<li>获取句柄</li>
+<li>关闭</li>
+</ul>
+<p>以上，简单介绍了epoll的使用方法，它对我们理解nginx的事件驱动模型是有帮助的。</p>
+<h3 id="参考">参考</h3>
+<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyMDMwMS02ODM5NA==">Nginx核心知识100讲<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
-        <tag>数据结构与算法</tag>
+        <tag>nginx</tag>
       </tags>
   </entry>
   <entry>
@@ -691,36 +721,6 @@
 ]]></content>
       <tags>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>epoll的优劣和原理</title>
-    <url>/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/</url>
-    <content><![CDATA[<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
-<p>首先，epoll 和 kqueue（mac os内核才有）随文件描述符（句柄数的增加，也表示并发连接数的增加）的增加，所消耗的时间几乎不变。而Poll和select所消耗的时间是急剧上升的。epoll基本与句柄数增加是无关的，所以它的性能会好很多，而且非常适合做大并发连接的处理。那么，为什么会这样呢？</p>
-<h3 id="前提">前提</h3>
-<p>高并发连接中，每次处理的活跃连接数量占比很小</p>
-<blockquote>
-<p>select 和 poll的实现是有问题的。每一次我去取操作系统的事件的时候，我都需要把这100万个连接通通地扔给操作系统，让它去依次地判断哪些连接上面有事件进来了，所以可以看到这里操作系统做了大量的无用功 ，它扫描了大量不活跃的连接。那么epoll就是用了这样的一个特性，因为每次处理的活跃连接的占比其实非常小，那么，它怎么实现的呢？其实非常简单，因为它维护了一个数据结构叫eventpoll。这里，它通过两个数据结构把这两件事分开了。也就是说，nginx每次取活跃连接的时候，我们只需要去遍历一个链表，这个链表里仅仅只有活跃的连接，这样我们的效率就很高。那么，我们还会经常做的操作是什么呢？比如说，nginx收到80端口建立连接的请求。那么，收到80端口建立连接成功以后呢，我们要添加一个读事件，这个读事件是用来读取HTTP消息的，那这时候呢，我可能会添加一个新的事件，或者写事件添加进来。这个时候添加呢，我只会放到这个红黑树中，这个二叉平衡树，它能保证我的插入效率值是logn。如果我现在不想再处理读事件或者写事件，我只需要从这个平衡二叉树中移除一个节点就可以了，同样是logn的时间复杂度。所以这个效率非常高。那么什么时候这个链表会有所增减呢。当我们读取一个事件的时候，链表中自然就没了。那么，当操作系统接收到网卡中发送来的一个报文的时候，那么这个链表就会增加一个新的元素，所以我们在使用epoll的时候，它的操作，添加修改删除，是非常快的，是logn复杂度的。而我们获取句柄的时候，只是去遍历这个rdllink，也就是ready准备好的所有的连接，是把它读取出来而已。那么，从内核态读取到用户态，只读这么一点东西，它的效率是非常高的。</p>
-</blockquote>
-<h3 id="实现">实现</h3>
-<ul>
-<li>红黑树</li>
-<li>链表</li>
-</ul>
-<h3 id="使用">使用</h3>
-<ul>
-<li>创建</li>
-<li>操作：添加/修改/删除</li>
-<li>获取句柄</li>
-<li>关闭</li>
-</ul>
-<p>以上，简单介绍了epoll的使用方法，它对我们理解nginx的事件驱动模型是有帮助的。</p>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyMDMwMS02ODM5NA==">Nginx核心知识100讲<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>nginx</tag>
       </tags>
   </entry>
   <entry>
@@ -1169,6 +1169,17 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 818.赛车</title>
+    <url>/2020/08/12/leetcode-818-%E8%B5%9B%E8%BD%A6/</url>
+    <content><![CDATA[<h2 id="示例解法">示例解法</h2>
+<p>这道题目的dp要仔细分析。分析过程写在了注释中（个人习惯…）。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 我们来分析这个问题</span></span><br><span class="line"><span class="comment"># 我们定义f(i)为距离终点为i时所需的指令大小</span></span><br><span class="line"><span class="comment"># 如果i == 2 ** n - 1，指令的长度就为n</span></span><br><span class="line"><span class="comment"># 如果i != 2 ** n - 1，我们有两种走法</span></span><br><span class="line"><span class="comment"># 假设 2**(n-1) -1 &lt; i &lt; 2 **n - 1</span></span><br><span class="line"><span class="comment"># 这样n就等于i的bit_length</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** n - 1</span></span><br><span class="line"><span class="comment"># 我们的指令是A^nR，指令长度为n+1，我们到终点的距离是 j-i，一定小于i</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** (n-1) - 1, j &lt; i</span></span><br><span class="line"><span class="comment"># 然后我们又往回走了 p = 2 ** k - 1, 现在我们的位置是 2 ** (n-1) - 2 ** k</span></span><br><span class="line"><span class="comment"># 指令长度是 A^(n-1)RA^kR n+k+1，我们现在距离终点 i - 2 **(n-1) + 2 ** k ,是小于i的</span></span><br><span class="line"><span class="comment"># 这样我们就得出了我们的递推公式</span></span><br><span class="line"><span class="comment"># f(i) = n if i == 2 ** n - 1</span></span><br><span class="line"><span class="comment"># f(i) = min(f(2**n -1 - i)+n+1, f(i-2**(n-1)+2**k)+n+k+1 k &lt; n-1)</span></span><br><span class="line"><span class="comment"># 初始化和边界条件f(0) = 0，注意向会回走的k不会大于等于n-1，因为等于n-1时就走到0了</span></span><br><span class="line"><span class="comment"># 返回值f(target)</span></span><br><span class="line"><span class="comment"># 优化复杂度</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">racecar</span>(<span class="params">self, target: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [<span class="number">0</span>] + [float(<span class="string">&#x27;inf&#x27;</span>)] * target</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, target + <span class="number">1</span>):</span><br><span class="line">            n = i.bit_length()</span><br><span class="line">            <span class="keyword">if</span> i == (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>:</span><br><span class="line">                dp[i] = n</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dp[i] = dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span> - i] + n + <span class="number">1</span></span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> range(n - <span class="number">1</span>):</span><br><span class="line">                    dp[i] = min(dp[i],</span><br><span class="line">                                dp[i - (<span class="number">1</span> &lt;&lt; (n - <span class="number">1</span>)) + (<span class="number">1</span> &lt;&lt; k)] + n + k + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> dp[target]</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>leetcode 41.缺失的第一个正数</title>
     <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
     <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数">leetcode 41 缺失的第一个正数</h3>
@@ -1229,17 +1240,6 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 818.赛车</title>
-    <url>/2020/08/12/leetcode-818-%E8%B5%9B%E8%BD%A6/</url>
-    <content><![CDATA[<h2 id="示例解法">示例解法</h2>
-<p>这道题目的dp要仔细分析。分析过程写在了注释中（个人习惯…）。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 我们来分析这个问题</span></span><br><span class="line"><span class="comment"># 我们定义f(i)为距离终点为i时所需的指令大小</span></span><br><span class="line"><span class="comment"># 如果i == 2 ** n - 1，指令的长度就为n</span></span><br><span class="line"><span class="comment"># 如果i != 2 ** n - 1，我们有两种走法</span></span><br><span class="line"><span class="comment"># 假设 2**(n-1) -1 &lt; i &lt; 2 **n - 1</span></span><br><span class="line"><span class="comment"># 这样n就等于i的bit_length</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** n - 1</span></span><br><span class="line"><span class="comment"># 我们的指令是A^nR，指令长度为n+1，我们到终点的距离是 j-i，一定小于i</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** (n-1) - 1, j &lt; i</span></span><br><span class="line"><span class="comment"># 然后我们又往回走了 p = 2 ** k - 1, 现在我们的位置是 2 ** (n-1) - 2 ** k</span></span><br><span class="line"><span class="comment"># 指令长度是 A^(n-1)RA^kR n+k+1，我们现在距离终点 i - 2 **(n-1) + 2 ** k ,是小于i的</span></span><br><span class="line"><span class="comment"># 这样我们就得出了我们的递推公式</span></span><br><span class="line"><span class="comment"># f(i) = n if i == 2 ** n - 1</span></span><br><span class="line"><span class="comment"># f(i) = min(f(2**n -1 - i)+n+1, f(i-2**(n-1)+2**k)+n+k+1 k &lt; n-1)</span></span><br><span class="line"><span class="comment"># 初始化和边界条件f(0) = 0，注意向会回走的k不会大于等于n-1，因为等于n-1时就走到0了</span></span><br><span class="line"><span class="comment"># 返回值f(target)</span></span><br><span class="line"><span class="comment"># 优化复杂度</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">racecar</span>(<span class="params">self, target: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [<span class="number">0</span>] + [float(<span class="string">&#x27;inf&#x27;</span>)] * target</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, target + <span class="number">1</span>):</span><br><span class="line">            n = i.bit_length()</span><br><span class="line">            <span class="keyword">if</span> i == (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>:</span><br><span class="line">                dp[i] = n</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dp[i] = dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span> - i] + n + <span class="number">1</span></span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> range(n - <span class="number">1</span>):</span><br><span class="line">                    dp[i] = min(dp[i],</span><br><span class="line">                                dp[i - (<span class="number">1</span> &lt;&lt; (n - <span class="number">1</span>)) + (<span class="number">1</span> &lt;&lt; k)] + n + k + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> dp[target]</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -1411,11 +1411,11 @@
 <p>直接或者间接引用的对象，是不能被删除的。</p>
 <p>就引出了一个以GCRoot为根的树结构。</p>
 <p>思路1：标记需要被删除，在扫描一遍，再删除。这就是<strong>标记清理。</strong></p>
-<p>缺点：产生内存碎片。（导致虽然有内存，但申请不了大内存）</p>
+<p>缺点：<strong>产生内存碎片。</strong>（导致虽然有内存，但申请不了大内存）</p>
 <p>思路2：<strong>标记整理</strong>。在清除之后，后面的对象要补上来，后面的对象往前顶，减少内存碎片。</p>
-<p>缺点：代价太大。所有的对象都要前移。</p>
+<p>缺点：<strong>代价太大。所有的对象都要前移。</strong></p>
 <p>思路3：<strong>复制算法</strong>。将整个内存一分为二。在1区标记是否删除，等到快满了。往2区进行复制，需要删除就不复制，不需要删除的就复制过来，并且是紧凑的复制。这样既避免了内存碎片问题，整个的开销也不大。</p>
-<p>缺点：需要两倍的内存。</p>
+<p>缺点：<strong>需要两倍的内存。</strong></p>
 <p>实际的GC。</p>
 <p>对堆区进行了划分，一部分叫年轻代（Young区），另一部分叫老年区（Old区）。对年轻代又进行了划分，有3个区。eden区，survive0区， survive1区。Old区只有一块。new对象都会在eden区。当eden区快满的时候就会触发GC。这个GC只是Young这个区域的GC，所以这个GC又叫做YoungGC。YoungGC的过程采用的是上面的复制算法。不需要删除的依次复制到survive0区。eden比较大的原因是，对象的生命周期往往较短，所以在产生它们的地方区域会比较大，但是幸存下来的比较小。survive0、survive1、eden的比例大概是1：1：8，默认设置下。那为什么需要两块survive区呢？这两个S区是交替工作的。幸存到S0区之后，会将E和S1区全部删除。然后等下一次E区快满了之后，再将S0和E所有对象标记，然后全部复制到S1区。S0和S1交替使用，作为幸存下来的区域。E+S1复制到S0，E+S0复制到S1，E+S1复制到S0，如此往复。结合了对象的"朝生夕死"的特征进行设计的。每一次YoungGC之后，活下来的对象的年龄就会加1，直到对象满了6岁，不再往survive区中复制了，就直接到Old区中。这个原因是因为，如果一个对象在6次GC的清理中都没有被清理掉，那很有可能60次GC都不会清理掉，它可能会永远存在，或者存在很长一段时间。所以我们直接把它放到Old区中维护，这样就省得每次都在这边复制了。另外Old区除了存了年龄是大于等于6岁的这样的一些对象，同时它还存一些大的对象。大对象的原因是如果我们在Eden进行复制的时候，大对象的消耗是比较大的。大对象主要是什么呢？比如说有一个1000万大小的int数组，它就是一个大对象，这个大对象就会直接存到Old区，不进行Young区的存储。那在Old区同样存在它快满了的问题，快满了就会触发GC。OldGC一般会同时伴随着YoungGC，所以它又叫FullGC。FullGC会引起stop the world。stop the world就是说整个java程序直接暂停，然后全力地进行垃圾回收，(因为已经没有内存可用了)。垃圾回收主要采用的是标记清理的算法，或者是标记整理的算法。那我们就明确了，1和2思路（标记清理和标记整理）主要是用于FullGC的，也就是Old区的GC，复制主要是Young区的GC。</p>
 <p>这里举几个比较有名的垃圾收集器。</p>
@@ -1744,6 +1744,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>学会承担责任</title>
+    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>实现KMP算法</title>
     <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下https://time.geekbang.org/column/article/71845</p>
@@ -1785,15 +1794,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>学会承担责任</title>
-    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2072,70 +2072,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>总结：MySQL中的锁和MySQL的内部临时表</title>
-    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
-    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
-<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
-<p>高，并发度最低。</p>
-<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
-<p>低，并发度也最高。</p>
-<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
-<p>锁和行锁之间，并发度一般。</p>
-<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>读锁</th>
-<th>写锁</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>读锁</strong></td>
-<td>不互斥</td>
-<td>互斥</td>
-</tr>
-<tr class="even">
-<td><strong>写锁</strong></td>
-<td>互斥</td>
-<td>互斥</td>
-</tr>
-</tbody>
-</table>
-<h3 id="一些重要的锁">一些重要的锁：</h3>
-<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
-<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
-<p>属于表级锁。</p>
-<h4 id="间隙锁">间隙锁</h4>
-<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
-<h4 id="自增id锁">自增id锁</h4>
-<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
-<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
-<ol type="1">
-<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
-<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
-<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
-</ol>
-<h3 id="mysql常用操作">MySQL常用操作</h3>
-<ol type="1">
-<li>explain查看命令优化器优化结果；</li>
-<li>show engine innodb status;</li>
-<li>show warnings，看优化器改写后的语句；</li>
-<li>show create table t; 查看t的建表语句；</li>
-</ol>
-<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
-<ol type="1">
-<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
-<li>redoLog，undoLog，binLog重要概念。</li>
-<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>今生就是我们的哨岗，站好哨就可以了</title>
     <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
     <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
@@ -2282,6 +2218,70 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>总结：MySQL中的锁和MySQL的内部临时表</title>
+    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
+    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
+<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
+<p>高，并发度最低。</p>
+<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
+<p>低，并发度也最高。</p>
+<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
+<p>锁和行锁之间，并发度一般。</p>
+<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>读锁</th>
+<th>写锁</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>读锁</strong></td>
+<td>不互斥</td>
+<td>互斥</td>
+</tr>
+<tr class="even">
+<td><strong>写锁</strong></td>
+<td>互斥</td>
+<td>互斥</td>
+</tr>
+</tbody>
+</table>
+<h3 id="一些重要的锁">一些重要的锁：</h3>
+<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
+<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
+<p>属于表级锁。</p>
+<h4 id="间隙锁">间隙锁</h4>
+<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
+<h4 id="自增id锁">自增id锁</h4>
+<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
+<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
+<ol type="1">
+<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
+<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
+<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
+</ol>
+<h3 id="mysql常用操作">MySQL常用操作</h3>
+<ol type="1">
+<li>explain查看命令优化器优化结果；</li>
+<li>show engine innodb status;</li>
+<li>show warnings，看优化器改写后的语句；</li>
+<li>show create table t; 查看t的建表语句；</li>
+</ol>
+<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
+<ol type="1">
+<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
+<li>redoLog，undoLog，binLog重要概念。</li>
+<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -2488,20 +2488,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>社会文明程度很大程度上体现为对弱者的尊重</title>
-    <url>/2020/08/22/%E7%A4%BE%E4%BC%9A%E6%96%87%E6%98%8E%E7%A8%8B%E5%BA%A6%E5%BE%88%E5%A4%A7%E7%A8%8B%E5%BA%A6%E4%B8%8A%E4%BD%93%E7%8E%B0%E4%B8%BA%E5%AF%B9%E5%BC%B1%E8%80%85%E7%9A%84%E5%B0%8A%E9%87%8D/</url>
-    <content><![CDATA[<p>在现代社会，公众对艾滋病人的接纳，其实也是一个非常奢侈的话题。虽然每一年，我们都有一个专门的日子，我们来表达对艾滋病人的关心。但是，仅仅有这个日子是不够的。</p>
-<p>人们对于疾病总是有一种本能的恐惧。不要说艾滋病了，甚至乙肝病毒携带者，甚至白血病，等等都在社会中备受歧视。新闻就曾经报道过，有些白血病的孩子入学，被拒绝。所以在这样一种背景下，各位可以想象，艾滋病患呢，也很难走出歧视，并因为这个歧视，可能他们滋生对社会的仇恨和苦毒。</p>
-<p>社会文明程度很大程度上它体现为对弱者的尊重。即便你跌入谷底，社会也应该为你提供基本的保障。当然话虽如此，同理心，始终是人们最匮乏的一种品质。</p>
-<p>对于每个个体，如果我们无法真正的接纳弱者，这不也是我们道德上的免疫缺陷吗？</p>
-<iframe src="//player.bilibili.com/player.html?aid=754134170&amp;bvid=BV1dk4y1m7oJ&amp;cid=224031902&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
-</iframe>
-]]></content>
-      <tags>
-        <tag>社会</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>猫抓老鼠的简单讨论</title>
     <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
     <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
@@ -2528,6 +2514,20 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>社会文明程度很大程度上体现为对弱者的尊重</title>
+    <url>/2020/08/22/%E7%A4%BE%E4%BC%9A%E6%96%87%E6%98%8E%E7%A8%8B%E5%BA%A6%E5%BE%88%E5%A4%A7%E7%A8%8B%E5%BA%A6%E4%B8%8A%E4%BD%93%E7%8E%B0%E4%B8%BA%E5%AF%B9%E5%BC%B1%E8%80%85%E7%9A%84%E5%B0%8A%E9%87%8D/</url>
+    <content><![CDATA[<p>在现代社会，公众对艾滋病人的接纳，其实也是一个非常奢侈的话题。虽然每一年，我们都有一个专门的日子，我们来表达对艾滋病人的关心。但是，仅仅有这个日子是不够的。</p>
+<p>人们对于疾病总是有一种本能的恐惧。不要说艾滋病了，甚至乙肝病毒携带者，甚至白血病，等等都在社会中备受歧视。新闻就曾经报道过，有些白血病的孩子入学，被拒绝。所以在这样一种背景下，各位可以想象，艾滋病患呢，也很难走出歧视，并因为这个歧视，可能他们滋生对社会的仇恨和苦毒。</p>
+<p>社会文明程度很大程度上它体现为对弱者的尊重。即便你跌入谷底，社会也应该为你提供基本的保障。当然话虽如此，同理心，始终是人们最匮乏的一种品质。</p>
+<p>对于每个个体，如果我们无法真正的接纳弱者，这不也是我们道德上的免疫缺陷吗？</p>
+<iframe src="//player.bilibili.com/player.html?aid=754134170&amp;bvid=BV1dk4y1m7oJ&amp;cid=224031902&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
+]]></content>
+      <tags>
+        <tag>社会</tag>
       </tags>
   </entry>
   <entry>
@@ -2571,49 +2571,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
     <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
     <content><![CDATA[
 ]]></content>
-  </entry>
-  <entry>
-    <title>蓄水池算法</title>
-    <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="蓄水池采样算法reservoir-sampling">蓄水池采样算法（Reservoir Sampling）</h1>
-<p>蓄水池采样算法是非常常用的一种<strong>流式数据处理算法</strong>。</p>
-<h2 id="问题">问题</h2>
-<h3 id="大致描述">大致描述：</h3>
-<p>给出一个数据流，这个数据流的长度很大或未知，并且对该数据流中的数据只能访问一次。请写出一个随机选择算法，使得数据流中所有数据被选中的概率相等。</p>
-<h3 id="一些实际问题">一些实际问题</h3>
-<ol type="1">
-<li>从 100,000 分调查报告中抽取1000份进行统计。</li>
-<li>从一本很厚的电话簿中抽取1000人进行姓氏统计。</li>
-<li>从google搜索"Ken Thompson"，从中抽取100个结果查看哪些是今年的。</li>
-</ol>
-<p>这些都是很基本的采样问题。</p>
-<p>既然说的采样问题，最重要的就是做到公平，也就是保证每个元素被采样到的概率是相同的。</p>
-<p>对于第一个问题，我们已经知道数据的规模，通过算法生成[0, 100,000-1]间的随机数1000个，并且保证不重复即可。再取出对应的元素即可。</p>
-<p>但是对于第二和第三个问题，我们不知道数据的整体规模是多大。可能有人会想到，可以先对数据进行一次遍历，计算出数据的规模N，然后按照第一题的方法采样即可。这当然可以，但是并不好。因为这可能需要遍历两次，需要花两次的时间。也可以尝试估算数据的规模，但是这样得到的采样数据可能并不平均。</p>
-<h3 id="问题严格定义">问题严格定义</h3>
-<p>给你一个长度为N的链表。N很大，但你不知道N有多大。你的任务是从这N个元素中随机抽取k个元素。你只能遍历这个链表一次。你的算法必须保证取出的元素恰好有k个，且它们是完全随机的（出现概率相等的）。</p>
-<h2 id="解法">解法</h2>
-<h3 id="蓄水池算法">蓄水池算法：</h3>
-<p>蓄水池算法是针对从一个序列中随机抽取不重复的K个数，保证每个数被抽取到的概率都为K/N这个问题构建的。</p>
-<h3 id="做法">做法：</h3>
-<p>首先构造一个可以容纳k个元素的蓄水池（数组），将序列前k个元素直接放入蓄水池数组中。</p>
-<p>然后从第i = k+1个数据开始，以k/i（k&lt;i&lt;=n）的概率决定它是否进入到蓄水池中。蓄水池中的k个元素被替换出去的概率是相同的。</p>
-<p>当遍历完所有元素之后，数组中剩下的元素即为所需采取的样本。</p>
-<h2 id="证明">证明</h2>
-<p>对于第i个数（i &lt;= k）。在k步之前，被选中的概率为1。当走到第k+1步时，被k+1个元素替换的概率=第k+1个元素被选中的概率<em>i被替换的概率，即为 k/(k+1) </em> 1/k = 1/(k+1)。则不被第k+1个元素替换的概率为1 - 1/(k+1) = k/(k+1)。依次类推，不被K+2个元素替换的概率为1-k/(k+2) * 1/k = (k+1)/(k+2)。则运行到第n步时，第i个数仍保留的概率=被选中的概率<em>不被替换的概率，即： <span class="math display">\[
-1 \times \frac {k}{k+1}\times \frac {k+1}{k+2}\times \frac {k+2}{k+3}\times ...\times \frac {n-1}{n} = \frac {k}{n}
-\]</span> 对于第j个数（j&gt;k）。我们知道，在第j步被选中的概率为k/j。不被j+1个元素替换的概率为1 - k/(j+1) </em> 1/k = j/(j+1)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即： <span class="math display">\[
-\frac {k}{j}\times \frac {j}{j+1}\times \frac {j+1}{j+2}\times \frac {j+2}{j+3}\times ... \times \frac {n-1}{n} = \frac {k}{n}
-\]</span> 所以对于中每个元素，被保留的概率都为k/n。</p>
-<h2 id="实现">实现</h2>
-<p>python3版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, node, k</span>):</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>(<span class="params">object</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span>(<span class="params">self</span>):</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="实战题目">实战题目</h2>
-<h4 id="链表随机节点"><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbGlua2VkLWxpc3QtcmFuZG9tLW5vZGUv">382. 链表随机节点<i class="fa fa-external-link-alt"></i></span></h4>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
   </entry>
   <entry>
     <title>自增id用完怎么办？</title>
@@ -2669,6 +2626,49 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>蓄水池算法</title>
+    <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="蓄水池采样算法reservoir-sampling">蓄水池采样算法（Reservoir Sampling）</h1>
+<p>蓄水池采样算法是非常常用的一种<strong>流式数据处理算法</strong>。</p>
+<h2 id="问题">问题</h2>
+<h3 id="大致描述">大致描述：</h3>
+<p>给出一个数据流，这个数据流的长度很大或未知，并且对该数据流中的数据只能访问一次。请写出一个随机选择算法，使得数据流中所有数据被选中的概率相等。</p>
+<h3 id="一些实际问题">一些实际问题</h3>
+<ol type="1">
+<li>从 100,000 分调查报告中抽取1000份进行统计。</li>
+<li>从一本很厚的电话簿中抽取1000人进行姓氏统计。</li>
+<li>从google搜索"Ken Thompson"，从中抽取100个结果查看哪些是今年的。</li>
+</ol>
+<p>这些都是很基本的采样问题。</p>
+<p>既然说的采样问题，最重要的就是做到公平，也就是保证每个元素被采样到的概率是相同的。</p>
+<p>对于第一个问题，我们已经知道数据的规模，通过算法生成[0, 100,000-1]间的随机数1000个，并且保证不重复即可。再取出对应的元素即可。</p>
+<p>但是对于第二和第三个问题，我们不知道数据的整体规模是多大。可能有人会想到，可以先对数据进行一次遍历，计算出数据的规模N，然后按照第一题的方法采样即可。这当然可以，但是并不好。因为这可能需要遍历两次，需要花两次的时间。也可以尝试估算数据的规模，但是这样得到的采样数据可能并不平均。</p>
+<h3 id="问题严格定义">问题严格定义</h3>
+<p>给你一个长度为N的链表。N很大，但你不知道N有多大。你的任务是从这N个元素中随机抽取k个元素。你只能遍历这个链表一次。你的算法必须保证取出的元素恰好有k个，且它们是完全随机的（出现概率相等的）。</p>
+<h2 id="解法">解法</h2>
+<h3 id="蓄水池算法">蓄水池算法：</h3>
+<p>蓄水池算法是针对从一个序列中随机抽取不重复的K个数，保证每个数被抽取到的概率都为K/N这个问题构建的。</p>
+<h3 id="做法">做法：</h3>
+<p>首先构造一个可以容纳k个元素的蓄水池（数组），将序列前k个元素直接放入蓄水池数组中。</p>
+<p>然后从第i = k+1个数据开始，以k/i（k&lt;i&lt;=n）的概率决定它是否进入到蓄水池中。蓄水池中的k个元素被替换出去的概率是相同的。</p>
+<p>当遍历完所有元素之后，数组中剩下的元素即为所需采取的样本。</p>
+<h2 id="证明">证明</h2>
+<p>对于第i个数（i &lt;= k）。在k步之前，被选中的概率为1。当走到第k+1步时，被k+1个元素替换的概率=第k+1个元素被选中的概率<em>i被替换的概率，即为 k/(k+1) </em> 1/k = 1/(k+1)。则不被第k+1个元素替换的概率为1 - 1/(k+1) = k/(k+1)。依次类推，不被K+2个元素替换的概率为1-k/(k+2) * 1/k = (k+1)/(k+2)。则运行到第n步时，第i个数仍保留的概率=被选中的概率<em>不被替换的概率，即： <span class="math display">\[
+1 \times \frac {k}{k+1}\times \frac {k+1}{k+2}\times \frac {k+2}{k+3}\times ...\times \frac {n-1}{n} = \frac {k}{n}
+\]</span> 对于第j个数（j&gt;k）。我们知道，在第j步被选中的概率为k/j。不被j+1个元素替换的概率为1 - k/(j+1) </em> 1/k = j/(j+1)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即： <span class="math display">\[
+\frac {k}{j}\times \frac {j}{j+1}\times \frac {j+1}{j+2}\times \frac {j+2}{j+3}\times ... \times \frac {n-1}{n} = \frac {k}{n}
+\]</span> 所以对于中每个元素，被保留的概率都为k/n。</p>
+<h2 id="实现">实现</h2>
+<p>python3版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, node, k</span>):</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>(<span class="params">object</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span>(<span class="params">self</span>):</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="实战题目">实战题目</h2>
+<h4 id="链表随机节点"><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbGlua2VkLWxpc3QtcmFuZG9tLW5vZGUv">382. 链表随机节点<i class="fa fa-external-link-alt"></i></span></h4>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
