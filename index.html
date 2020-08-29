@@ -199,7 +199,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/08/29/%E8%87%AA%E5%A2%9Eid%E7%94%A8%E5%AE%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2020/08/29/%E8%87%AA%E5%A2%9Eid%E7%94%A8%E5%AE%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/" class="post-title-link" itemprop="url">自增id用完怎么办？</a>
         </h2>
 
         <div class="post-meta">
@@ -208,10 +208,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-08-29 20:16:11 / 修改时间：23:33:09" itemprop="dateCreated datePublished" datetime="2020-08-29T20:16:11+08:00">2020-08-29</time>
+              <time title="创建时间：2020-08-29 20:16:11" itemprop="dateCreated datePublished" datetime="2020-08-29T20:16:11+08:00">2020-08-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-30 00:57:28" itemprop="dateModified" datetime="2020-08-30T00:57:28+08:00">2020-08-30</time>
+              </span>
 
           
   
@@ -238,8 +244,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>title: 自增id用完怎么办？ date: 2020-08-29 20:16:11 tags: 数据库</p>
-<p>MySQL里有很多自增的id，每个自增id都是定义了初始值，然后不停地往上加步长。虽然自然数是没有上限的，但是在计算机里，只要定义了表示这个数的字节长度，那它就有上限。比如，无符号整型（unsigned int）是4个字节，上限就是2^32-1。</p>
+          <p>MySQL里有很多自增的id，每个自增id都是定义了初始值，然后不停地往上加步长。虽然自然数是没有上限的，但是在计算机里，只要定义了表示这个数的字节长度，那它就有上限。比如，无符号整型（unsigned int）是4个字节，上限就是2^32-1。</p>
 <p>既然自增id有上限，我们就来看看MySQL里面的几种自增id，一起分析一下它们的值达到上限之后，会出现什么情况。</p>
 <h3 id="表定义自增值id">表定义自增值id</h3>
 <p>说到自增id，你第一个想到的应该就是表结构定义里的自增字段，也就是我在第39篇文章<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MDUzMQ==">《自增主键为什么不是连续的？》<i class="fa fa-external-link-alt"></i></span>和你介绍过的自增主键id。</p>
@@ -345,6 +350,7 @@
 </ol>
 <p>当然，在MySQL里还有别的自增id，比如table_id、binlog文件序号等，就留给你去验证和探索了。</p>
 <p>不同的自增id有不同的上限值，上限值的大小取决于声明的类型长度。而我们的专栏声明的上限id就是45，所以今天这篇文章也是我们最后一篇技术文章了。</p>
+<p>既然没有下一个id了，课后也就没有思考题了</p>
 
       
     </div>
