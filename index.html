@@ -210,7 +210,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-29 11:13:06 / 修改时间：11:16:52" itemprop="dateCreated datePublished" datetime="2020-08-29T11:13:06+08:00">2020-08-29</time>
+              <time title="创建时间：2020-08-29 11:13:06 / 修改时间：11:18:35" itemprop="dateCreated datePublished" datetime="2020-08-29T11:13:06+08:00">2020-08-29</time>
             </span>
 
           
@@ -242,7 +242,7 @@
 <p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
 <p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
 <p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
-<p>直接操作系统表是不规范的操作。</p>
+<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
 
       
     </div>
