@@ -741,34 +741,6 @@
   </entry>
   <entry>
     <title>insert语句的锁为什么这么多？</title>
-    <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F_%E5%89%AF%E6%9C%AC/</url>
-    <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
-<p>因此，insert语句是一个很轻量的操作。不过，这个结论是对于“普通的insert语句”才有效。也就是说，还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
-<p>那么，今天这篇文章，我们就一起来聊聊这个话题。</p>
-<h3 id="insert...select语句">1. insert...select语句</h3>
-<p>我们先从上一篇文章的话题说起吧。表t1和t2的表结构、初始化数据语句如下，今天的例子我们还是针对这两个表展开。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">3</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t2 <span class="keyword">like</span> t</span><br></pre></td></tr></table></figure>
-<p>现在，我们一起来看看为什么在可重复读隔离级别下，binlog_format=statement时执行：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> iinto t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>这个语句时需要对表t的所有行和间隙加锁呢？</p>
-<p>其实，这个问题我们需要考虑的还是日志和数据的一致性。我们看下这个执行序列：</p>
-
-<p>实际的执行效果是，如果session B先执行，由于这个语句对表t主键索引加了（-∞，1]这个next-key lock，会在语句执行完成后，才允许session A的insert语句执行。</p>
-<p>但如果没有锁的话，就可能出现session B的insert语句先执行，但是后写入binlog的情况。于是，在binlog_format=statement的情况下，binlog里面就记录了这样的语句序列：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>这个语句到了备库执行，就会把id=-1这一行也写到表t2中，出现主备不一致。</p>
-<h3 id="insert循环写入">2. insert循环写入</h3>
-<p>当然了，之心吧insert...select的时候，对目标表也不是锁全表，而是只锁住需要访问的资源。</p>
-<p>如果现在有这么一个需求：要往表t2中插入一行数据，这一行的c值是表t中c值的最大值加1。</p>
-<p>此时，我们可以这么写这条SQL语句：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>insert语句的锁为什么这么多？</title>
     <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/</url>
     <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
 <p>因此，insert语句是一个很轻量的操作。不过，这个结论是对于“普通的insert语句”才有效。也就是说，还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
@@ -860,6 +832,34 @@
 <p>你平时在两个表之间拷贝数据用的是什么方法，有什么注意事项吗？在你的应用场景里，这个方法，相较于其他方法的优势是什么呢？</p>
 <p>另外，insert..select执行期间，有其他线程操作原表，会导致逻辑错误。其实这是不会的，如果不加锁，就是快照读。</p>
 <p>一条语句执行期间，它的一致性视图是不会修改的，所以即使有其他事务修改了原表的数据，也不会影响这条语句看到的数据。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>insert语句的锁为什么这么多？</title>
+    <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F_%E5%89%AF%E6%9C%AC/</url>
+    <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
+<p>因此，insert语句是一个很轻量的操作。不过，这个结论是对于“普通的insert语句”才有效。也就是说，还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
+<p>那么，今天这篇文章，我们就一起来聊聊这个话题。</p>
+<h3 id="insert...select语句">1. insert...select语句</h3>
+<p>我们先从上一篇文章的话题说起吧。表t1和t2的表结构、初始化数据语句如下，今天的例子我们还是针对这两个表展开。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">3</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t2 <span class="keyword">like</span> t</span><br></pre></td></tr></table></figure>
+<p>现在，我们一起来看看为什么在可重复读隔离级别下，binlog_format=statement时执行：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> iinto t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
+<p>这个语句时需要对表t的所有行和间隙加锁呢？</p>
+<p>其实，这个问题我们需要考虑的还是日志和数据的一致性。我们看下这个执行序列：</p>
+
+<p>实际的执行效果是，如果session B先执行，由于这个语句对表t主键索引加了（-∞，1]这个next-key lock，会在语句执行完成后，才允许session A的insert语句执行。</p>
+<p>但如果没有锁的话，就可能出现session B的insert语句先执行，但是后写入binlog的情况。于是，在binlog_format=statement的情况下，binlog里面就记录了这样的语句序列：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
+<p>这个语句到了备库执行，就会把id=-1这一行也写到表t2中，出现主备不一致。</p>
+<h3 id="insert循环写入">2. insert循环写入</h3>
+<p>当然了，之心吧insert...select的时候，对目标表也不是锁全表，而是只锁住需要访问的资源。</p>
+<p>如果现在有这么一个需求：要往表t2中插入一行数据，这一行的c值是表t中c值的最大值加1。</p>
+<p>此时，我们可以这么写这条SQL语句：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -1243,67 +1243,6 @@
       </tags>
   </entry>
   <entry>
-    <title>python实现并查集</title>
-    <url>/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
-    <content><![CDATA[<h1 id="python实现并查集">python实现并查集</h1>
-<h2 id="并查集概念">并查集概念</h2>
-<p>并查集（UnionFind）也被称为不相交集数据结构。顾名思义，并查集主要操作是合并与查询，它是把初始不相交的集合经过多次合并操作后合并为一个大集合，然后可以通过查询判断两个元素是否已经在同一个集合中了。</p>
-<p>并查集的应用场景一般就是动态连通性的判断，例如判断网络中的两台电脑是否连通，在程序中判断两个变量名是否指向同一内存地址等。</p>
-<h2 id="并查集的实现">并查集的实现</h2>
-<h3 id="并查集的存储结构">并查集的存储结构</h3>
-<p>并查集逻辑上是森林，我们可以选出一个根结点作为代表，其他子结点指向根结点表示都在同一片森林中。在这里，并不关心结点的子结点是谁，只关心父结点是谁，所以物理上可以简单用python的列表来表示并查集，列表的下标表示结点，列表元素的值表示父结点。</p>
-<h3 id="并查集的api">并查集的API</h3>
-<p>根据并查集的特性，可以设计以下api</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>(<span class="params">object</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;并查集&quot;&quot;&quot;</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;查找p的根结点（祖先）&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;连通p,q 让q指向p&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;判断pq是否已经连通&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
-<h3 id="并查集的初始化">并查集的初始化</h3>
-<p>并查集的初始化有几种，无非就是用一种特殊的方式来表示初始的每一个元素都不相交，等待后续的合并操作。</p>
-<p>第一种初始化的方式是用列表的下标初始化对应位置的值，当一个并查集S[i] == i时则判断它自己就是根结点。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">  self.uf = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]      <span class="comment"># 列表为0位置空出</span></span><br><span class="line">  self.sets_count = n                                      <span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
-<p>第二种初始化方式将列表每一个结点初始化为-1，列表的节点值为负数表示它自己就是根结点，这样做还有一个好处可以用-n表示自己的子结点数量，下面的按规模优化中可以让结点数量小的树并到结点多的树上，提高find操作的效率。我们就选用这种方式来初始化。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">  self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)] <span class="comment"># 列表0位置空出</span></span><br><span class="line">  self.sets_count = n                                       <span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
-<h3 id="并查集的查询">并查集的查询</h3>
-<p>查询操作是查找某个结点所在的集合，返回该集合的根结点，即返回列表的下标。下面是一种简单的查询，代码如下。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt;= <span class="number">0</span>:</span><br><span class="line">    p = self.yf[p]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
-<p>可以很清楚的看出上面的方法很简单，找到结点元素值为负的表示找到了根结点并返回，但是该种方法在极端情况下（由树退化为链表）效率不高，查找的效率为O(n)，如左下图所示</p>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%861.png" class>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%862.png" class>
-<p>查询是并查集的核心操作之一，它的效率也决定了整个算法的效率，所以在规模很大的情况下，O(n)的时间的复杂度是不被接受的，那就需要改进，改进的方法就是路径压缩。路径压缩的思想也很简单，就是在查找根结点的过程中，顺便把子结点的父结点改成根结点，这样下次查询的效率只需要O(1)的时间复杂度就可以完成，大大提高了效率。改进后效果图如右上图所示。</p>
-<p>路径压缩的find操作可以通过递归来实现</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;尾递归&quot;&quot;&quot;</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">  self.uf[p] = self.find(self.uf[p])</span><br><span class="line">  <span class="keyword">return</span> self.uf[p]</span><br></pre></td></tr></table></figure>
-<p>可以发现这个递归是尾递归，可以改进成循环的方式</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;查找p的根节点（祖先）&quot;&quot;&quot;</span></span><br><span class="line">  r = p                                                           <span class="comment"># 初始p</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt; <span class="number">0</span>:</span><br><span class="line">    p = self.uf[p]</span><br><span class="line">  <span class="keyword">while</span> r != p:                                           <span class="comment"># 路径压缩，把压缩下来的结点祖先全指向根结点</span></span><br><span class="line">    self.uf[r], r = p, self.uf[r]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
-<h3 id="并查集的合并">并查集的合并</h3>
-<p>合并两棵树的操作可以简单的规定让右边的树的根结点指向左边树的根结点，示意图如左下图所示。</p>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%863.png" class>
-<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%864.png" class>
-<p>直接右往左合并的缺点就是当右边的规模大于左边的规模时，在查找时，做路径压缩需要把右边所有的根结点更改为左边的根结点，如右上图所示，这明显有些划不来，所以合并的一种优化方式就是按规模合并，即吧规模小的树往规模大的树上合并。其实还有一种按秩合并（树高度小的往高度大的合并而不改变树的整体高度）。但是这种方法不与路径压缩兼容，因为路径压缩直接改变了数的高度，所以本人选择按规模合并和路径压缩结合的方式优化并查集。代码如下</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;连通p, q 让q指向p&quot;&quot;&quot;</span></span><br><span class="line">  proot = self.find(p)</span><br><span class="line">  qroot = self.find(q)</span><br><span class="line">  <span class="keyword">if</span> proot == qroot:</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[proot] &gt; self.uf[qroot]:     <span class="comment"># 负数比较，左边的规模更小</span></span><br><span class="line">    self.uf[qroot] += self.uf[proot]</span><br><span class="line">    self.uf[proot] = qroot</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    self.uf[proot] += self.uf[qroot]       <span class="comment"># 规模相加</span></span><br><span class="line">    self.uf[qroot] = proot</span><br><span class="line">  self.sets_count -= <span class="number">1</span>                  <span class="comment"># 连通后集合总数减一</span></span><br></pre></td></tr></table></figure>
-<h3 id="连通性的判断">连通性的判断</h3>
-<p>有了查找操作，判断两个结点是否连通就显得容易多了，一行代码就可以搞定，就是判断他们的根结点是否相同。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;判断pq是否已经连通&quot;&quot;&quot;</span></span><br><span class="line">  <span class="keyword">return</span> self.find(p) == self.find(q)   <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
-<h3 id="完整代码附录">完整代码附录</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;并查集类&quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">        self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]    <span class="comment"># 列表0位置空出</span></span><br><span class="line">        self.sets_count = n                     <span class="comment"># 判断并查集里共有几个集合, 初始化默认互相独立</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     &quot;&quot;&quot;查找p的根结点(祖先)&quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment">#     r = p                                   # 初始p</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt; 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     while r != p:                           # 路径压缩, 把搜索下来的结点祖先全指向根结点</span></span><br><span class="line">    <span class="comment">#         self.uf[r], r = p, self.uf[r]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt;= 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;尾递归&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;连通p,q 让q指向p&quot;&quot;&quot;</span></span><br><span class="line">        proot = self.find(p)</span><br><span class="line">        qroot = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> proot == qroot:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">elif</span> self.uf[proot] &gt; self.uf[qroot]:   <span class="comment"># 负数比较, 左边规模更小</span></span><br><span class="line">            self.uf[qroot] += self.uf[proot]</span><br><span class="line">            self.uf[proot] = qroot</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[proot] += self.uf[qroot]  <span class="comment"># 规模相加</span></span><br><span class="line">            self.uf[qroot] = proot</span><br><span class="line">        self.sets_count -= <span class="number">1</span>                    <span class="comment"># 连通后集合总数减一</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;判断pq是否已经连通&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)     <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
-<h2 id="转载">转载</h2>
-<p>出处：https://www.cnblogs.com/yscl/p/10185293.html</p>
-<p>作者：yscl</p>
-<h4 id="参考">参考</h4>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vaGFwamluL3AvNTQ3ODM1Mi5odG1s">数据结构--并查集的原理及实现<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2RtX3ZpbmNlbnQvYXJ0aWNsZS9kZXRhaWxzLzc2NTU3NjQ=">并查集(Union-Find)算法介绍<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-<h4 id="其他并查集">其他并查集</h4>
-<p>普通的并查集只是简单的记录了和集合的关系，即判断是否属于该集合，而带权并查集则是不仅记录了和集合的关系，还记录了集合内元素的关系，一般就是指代集合内元素和根结点的关系，实现起来也很简单，就是额外利用一个列表value[]，来记录每个节点与根结点的关系。然后在每次合并和路径压缩中更新权值。更新的规则遵循向量法则，处理环类关系的问题中，还可以取模更新。具体可以参考一下文章。</p>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lqcjM0MjY2MTkvYXJ0aWNsZS9kZXRhaWxzLzgyMzE1MTMz">https://blog.csdn.net/yjr3426619/article/details/82315133<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
-<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>python实现简单布隆过滤器</title>
     <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
     <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
@@ -1372,6 +1311,67 @@
 ]]></content>
       <tags>
         <tag>青春</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现并查集</title>
+    <url>/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
+    <content><![CDATA[<h1 id="python实现并查集">python实现并查集</h1>
+<h2 id="并查集概念">并查集概念</h2>
+<p>并查集（UnionFind）也被称为不相交集数据结构。顾名思义，并查集主要操作是合并与查询，它是把初始不相交的集合经过多次合并操作后合并为一个大集合，然后可以通过查询判断两个元素是否已经在同一个集合中了。</p>
+<p>并查集的应用场景一般就是动态连通性的判断，例如判断网络中的两台电脑是否连通，在程序中判断两个变量名是否指向同一内存地址等。</p>
+<h2 id="并查集的实现">并查集的实现</h2>
+<h3 id="并查集的存储结构">并查集的存储结构</h3>
+<p>并查集逻辑上是森林，我们可以选出一个根结点作为代表，其他子结点指向根结点表示都在同一片森林中。在这里，并不关心结点的子结点是谁，只关心父结点是谁，所以物理上可以简单用python的列表来表示并查集，列表的下标表示结点，列表元素的值表示父结点。</p>
+<h3 id="并查集的api">并查集的API</h3>
+<p>根据并查集的特性，可以设计以下api</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>(<span class="params">object</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;并查集&quot;&quot;&quot;</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;查找p的根结点（祖先）&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;连通p,q 让q指向p&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;判断pq是否已经连通&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="并查集的初始化">并查集的初始化</h3>
+<p>并查集的初始化有几种，无非就是用一种特殊的方式来表示初始的每一个元素都不相交，等待后续的合并操作。</p>
+<p>第一种初始化的方式是用列表的下标初始化对应位置的值，当一个并查集S[i] == i时则判断它自己就是根结点。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">  self.uf = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]      <span class="comment"># 列表为0位置空出</span></span><br><span class="line">  self.sets_count = n                                      <span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
+<p>第二种初始化方式将列表每一个结点初始化为-1，列表的节点值为负数表示它自己就是根结点，这样做还有一个好处可以用-n表示自己的子结点数量，下面的按规模优化中可以让结点数量小的树并到结点多的树上，提高find操作的效率。我们就选用这种方式来初始化。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">  self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)] <span class="comment"># 列表0位置空出</span></span><br><span class="line">  self.sets_count = n                                       <span class="comment"># 判断并查集里共有几个集合，初始化默认互相独立</span></span><br></pre></td></tr></table></figure>
+<h3 id="并查集的查询">并查集的查询</h3>
+<p>查询操作是查找某个结点所在的集合，返回该集合的根结点，即返回列表的下标。下面是一种简单的查询，代码如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt;= <span class="number">0</span>:</span><br><span class="line">    p = self.yf[p]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
+<p>可以很清楚的看出上面的方法很简单，找到结点元素值为负的表示找到了根结点并返回，但是该种方法在极端情况下（由树退化为链表）效率不高，查找的效率为O(n)，如左下图所示</p>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%861.png" class>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%862.png" class>
+<p>查询是并查集的核心操作之一，它的效率也决定了整个算法的效率，所以在规模很大的情况下，O(n)的时间的复杂度是不被接受的，那就需要改进，改进的方法就是路径压缩。路径压缩的思想也很简单，就是在查找根结点的过程中，顺便把子结点的父结点改成根结点，这样下次查询的效率只需要O(1)的时间复杂度就可以完成，大大提高了效率。改进后效果图如右上图所示。</p>
+<p>路径压缩的find操作可以通过递归来实现</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;尾递归&quot;&quot;&quot;</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">  self.uf[p] = self.find(self.uf[p])</span><br><span class="line">  <span class="keyword">return</span> self.uf[p]</span><br></pre></td></tr></table></figure>
+<p>可以发现这个递归是尾递归，可以改进成循环的方式</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;查找p的根节点（祖先）&quot;&quot;&quot;</span></span><br><span class="line">  r = p                                                           <span class="comment"># 初始p</span></span><br><span class="line">  <span class="keyword">while</span> self.uf[p] &gt; <span class="number">0</span>:</span><br><span class="line">    p = self.uf[p]</span><br><span class="line">  <span class="keyword">while</span> r != p:                                           <span class="comment"># 路径压缩，把压缩下来的结点祖先全指向根结点</span></span><br><span class="line">    self.uf[r], r = p, self.uf[r]</span><br><span class="line">  <span class="keyword">return</span> p</span><br></pre></td></tr></table></figure>
+<h3 id="并查集的合并">并查集的合并</h3>
+<p>合并两棵树的操作可以简单的规定让右边的树的根结点指向左边树的根结点，示意图如左下图所示。</p>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%863.png" class>
+<img data-src="/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/%E5%B9%B6%E6%9F%A5%E9%9B%864.png" class>
+<p>直接右往左合并的缺点就是当右边的规模大于左边的规模时，在查找时，做路径压缩需要把右边所有的根结点更改为左边的根结点，如右上图所示，这明显有些划不来，所以合并的一种优化方式就是按规模合并，即吧规模小的树往规模大的树上合并。其实还有一种按秩合并（树高度小的往高度大的合并而不改变树的整体高度）。但是这种方法不与路径压缩兼容，因为路径压缩直接改变了数的高度，所以本人选择按规模合并和路径压缩结合的方式优化并查集。代码如下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;连通p, q 让q指向p&quot;&quot;&quot;</span></span><br><span class="line">  proot = self.find(p)</span><br><span class="line">  qroot = self.find(q)</span><br><span class="line">  <span class="keyword">if</span> proot == qroot:</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  <span class="keyword">if</span> self.uf[proot] &gt; self.uf[qroot]:     <span class="comment"># 负数比较，左边的规模更小</span></span><br><span class="line">    self.uf[qroot] += self.uf[proot]</span><br><span class="line">    self.uf[proot] = qroot</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    self.uf[proot] += self.uf[qroot]       <span class="comment"># 规模相加</span></span><br><span class="line">    self.uf[qroot] = proot</span><br><span class="line">  self.sets_count -= <span class="number">1</span>                  <span class="comment"># 连通后集合总数减一</span></span><br></pre></td></tr></table></figure>
+<h3 id="连通性的判断">连通性的判断</h3>
+<p>有了查找操作，判断两个结点是否连通就显得容易多了，一行代码就可以搞定，就是判断他们的根结点是否相同。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">  <span class="string">&quot;&quot;&quot;判断pq是否已经连通&quot;&quot;&quot;</span></span><br><span class="line">  <span class="keyword">return</span> self.find(p) == self.find(q)   <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
+<h3 id="完整代码附录">完整代码附录</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;并查集类&quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;长度为n的并查集&quot;&quot;&quot;</span></span><br><span class="line">        self.uf = [<span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)]    <span class="comment"># 列表0位置空出</span></span><br><span class="line">        self.sets_count = n                     <span class="comment"># 判断并查集里共有几个集合, 初始化默认互相独立</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     &quot;&quot;&quot;查找p的根结点(祖先)&quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment">#     r = p                                   # 初始p</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt; 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     while r != p:                           # 路径压缩, 把搜索下来的结点祖先全指向根结点</span></span><br><span class="line">    <span class="comment">#         self.uf[r], r = p, self.uf[r]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># def find(self, p):</span></span><br><span class="line">    <span class="comment">#     while self.uf[p] &gt;= 0:</span></span><br><span class="line">    <span class="comment">#         p = self.uf[p]</span></span><br><span class="line">    <span class="comment">#     return p</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;尾递归&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;连通p,q 让q指向p&quot;&quot;&quot;</span></span><br><span class="line">        proot = self.find(p)</span><br><span class="line">        qroot = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> proot == qroot:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">elif</span> self.uf[proot] &gt; self.uf[qroot]:   <span class="comment"># 负数比较, 左边规模更小</span></span><br><span class="line">            self.uf[qroot] += self.uf[proot]</span><br><span class="line">            self.uf[proot] = qroot</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[proot] += self.uf[qroot]  <span class="comment"># 规模相加</span></span><br><span class="line">            self.uf[qroot] = proot</span><br><span class="line">        self.sets_count -= <span class="number">1</span>                    <span class="comment"># 连通后集合总数减一</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;判断pq是否已经连通&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)     <span class="comment"># 即判断两个结点是否是属于同一个祖先</span></span><br></pre></td></tr></table></figure>
+<h2 id="转载">转载</h2>
+<p>出处：https://www.cnblogs.com/yscl/p/10185293.html</p>
+<p>作者：yscl</p>
+<h4 id="参考">参考</h4>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vaGFwamluL3AvNTQ3ODM1Mi5odG1s">数据结构--并查集的原理及实现<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2RtX3ZpbmNlbnQvYXJ0aWNsZS9kZXRhaWxzLzc2NTU3NjQ=">并查集(Union-Find)算法介绍<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<h4 id="其他并查集">其他并查集</h4>
+<p>普通的并查集只是简单的记录了和集合的关系，即判断是否属于该集合，而带权并查集则是不仅记录了和集合的关系，还记录了集合内元素的关系，一般就是指代集合内元素和根结点的关系，实现起来也很简单，就是额外利用一个列表value[]，来记录每个节点与根结点的关系。然后在每次合并和路径压缩中更新权值。更新的规则遵循向量法则，处理环类关系的问题中，还可以取模更新。具体可以参考一下文章。</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lqcjM0MjY2MTkvYXJ0aWNsZS9kZXRhaWxzLzgyMzE1MTMz">https://blog.csdn.net/yjr3426619/article/details/82315133<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1923,15 +1923,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
-    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>快速排序的多种写法</title>
     <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
     <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
@@ -1942,6 +1933,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
+    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2072,7 +2072,7 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>总结：MySQL中的锁</title>
+    <title>总结：MySQL中的锁和MySQL的内部临时表</title>
     <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
     <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
 <p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
@@ -2081,14 +2081,30 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>低，并发度也最高。</p>
 <p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
 <p>锁和行锁之间，并发度一般。</p>
-<p>一些重要的锁：</p>
-<h3 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h3>
+<h3 id="一些重要的锁">一些重要的锁：</h3>
+<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
 <p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
 <p>属于表级锁。</p>
-<h3 id="间隙锁">间隙锁</h3>
+<h4 id="间隙锁">间隙锁</h4>
 <p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="自增id锁">自增id锁</h3>
+<h4 id="自增id锁">自增id锁</h4>
 <p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
+<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
+<ol type="1">
+<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
+<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
+<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
+</ol>
+<h3 id="mysql常用操作">MySQL常用操作</h3>
+<ol type="1">
+<li>explain查看命令优化器优化结果</li>
+<li>show engine innodb status;</li>
+</ol>
+<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
+<ol type="1">
+<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念</li>
+<li>索引的<strong>最左前缀规则</strong>，利用最左前缀规则，节省索引数量，节省空间。</li>
+</ol>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -2756,6 +2772,47 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>转：说一说这些好问题</title>
+    <url>/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>在我看来，能够帮我们扩展一个逻辑的边界的问题，就是好问题。因为通过解决这样的问题，能够加深我们对这个逻辑的理解，或者帮我们关联到另外一个知识点，进而可以帮助我们建立起自己的知识网络。</p>
+<p>在工作中会问好问题，是一个很重要的能力。</p>
+<h3 id="join的写法">join的写法</h3>
+<p>在35篇文章《join语句怎么优化?》中，我在介绍join执行顺序的时候，用的都是strainght_join。有同学哉问候提出了两个问题：</p>
+<ol type="1">
+<li>如果用left join的话，左边的表一定是驱动表吗？</li>
+<li>如果两个表的join包含多个条件的等值匹配，是都要写到on里面呢，还是只把一个条件写到on里面，其他条件写到where部分？</li>
+</ol>
+<p>为了同时回答这两个问题，我来构造两个表a和b：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> a(f1 <span class="built_in">int</span>, f2 <span class="built_in">int</span>, <span class="keyword">index</span>(f1))<span class="keyword">engine</span>=<span class="keyword">innodb</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> b(f1 <span class="built_in">int</span>, f2 <span class="built_in">int</span>)<span class="keyword">engine</span>=<span class="keyword">innodb</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> a <span class="keyword">values</span>(<span class="number">1</span>,<span class="number">1</span>),(<span class="number">2</span>,<span class="number">2</span>),(<span class="number">3</span>,<span class="number">3</span>),(<span class="number">4</span>,<span class="number">4</span>),(<span class="number">5</span>,<span class="number">5</span>),(<span class="number">6</span>,<span class="number">6</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> b <span class="keyword">values</span>(<span class="number">3</span>,<span class="number">3</span>),(<span class="number">4</span>,<span class="number">4</span>),(<span class="number">5</span>,<span class="number">5</span>),(<span class="number">6</span>,<span class="number">6</span>),(<span class="number">7</span>,<span class="number">7</span>),(<span class="number">8</span>,<span class="number">8</span>);</span><br></pre></td></tr></table></figure>
+<p>表a和b都有两个字段f1和f2，不同的是表a的字段f1上有索引。然后，我往两个表中都插入了6条记录，其中在表a和b上同时存在的数据有4行。</p>
+<p>同学提到的第二个问题，其实就是下面这两种写法的区别：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">left</span> <span class="keyword">join</span> b <span class="keyword">on</span> (a.f1=b.f1) <span class="keyword">and</span> (a.f2=b.f2); <span class="comment">/*Q1*/</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">left</span> <span class="keyword">join</span> b <span class="keyword">on</span> (a.f1=b.f1) <span class="keyword">where</span> (a.f2=b.f2); <span class="comment">/*Q2*/</span></span><br></pre></td></tr></table></figure>
+<p>我把这两条语句分别记为Q1和Q2。</p>
+<p>首先，需要说明的是，这两个left join语句的语义逻辑并不相同。我们先来看一下它们的执行结果。</p>
+
+<p>可以看到：</p>
+<ol type="1">
+<li>语句Q1返回的数据集是6行，表a中即使没有满足匹配条件的记录，查询结果中也会返回一行，并将表b的各个字段值填成NULL。</li>
+<li>语句Q2返回的是4行。从逻辑上可以这么理解，最后的两行，由于表b中没有匹配的字段，结果集里面b.f2的值是空，不满足where部分的条件判断，因此不能作为结果集的一部分。</li>
+</ol>
+<p>接下来，我们看看实际执行这两条语句时，MySQL是怎么做的。</p>
+<p>我们先一起看看语句Q1的explain结果：</p>
+
+<p>可以看到，这个结果符合我们的预期：</p>
+<ul>
+<li>驱动表是表a，被驱动表是表b；</li>
+<li>由于表b的f1字段上没有索引，所以使用的是Block Nested Loop Join（简称BNL）算法。</li>
+</ul>
+<p>看到BNL算法，你就应该知道这条语句执行流程其实是这样的：</p>
+<ol type="1">
+<li>把表a的内容读入joiin_buffer中</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>软件=算法+数据结构+文档+数据？</title>
     <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
     <content><![CDATA[<p>软件的开始到后来...</p>
@@ -3066,6 +3123,186 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <p>但话说回来，过期读在本质上是由一写多读导致的。在实际应用中，可能会有别的不需要等待就可以水平扩展的数据库方案，但这往往是用牺牲写性能换来的，也就是需要在读性能和写性能中取权衡。</p>
 <h3 id="转载">转载</h3>
 <p>感谢丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NzYzNg==">专栏<i class="fa fa-external-link-alt"></i></span>，如转载参考有不妥，请通知我立即删除。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>到底可不可以使用join</title>
+    <url>/2020/08/29/%E5%88%B0%E5%BA%95%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8join/</url>
+    <content><![CDATA[<p>问题：</p>
+<ol type="1">
+<li>能不能使用join？</li>
+<li>两个大小不同的表，应该用哪个表做驱动表？</li>
+</ol>
+<p>为了便于量化分析，我建两个表t1和t2来和你说明。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t2`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`a`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`b`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`a`</span> (<span class="string">`a`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">procedure</span> idata;</span><br><span class="line">delimiter ;;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">procedure</span> idata()</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">  <span class="keyword">declare</span> i <span class="built_in">int</span>;</span><br><span class="line">  <span class="keyword">set</span> i=<span class="number">1</span>;</span><br><span class="line">  while(i&lt;=1000)do</span><br><span class="line">    <span class="keyword">insert</span> <span class="keyword">into</span> t2 <span class="keyword">values</span>(i, i, i);</span><br><span class="line">    <span class="keyword">set</span> i=i+<span class="number">1</span>;</span><br><span class="line">  <span class="keyword">end</span> <span class="keyword">while</span>;</span><br><span class="line"><span class="keyword">end</span>;;</span><br><span class="line">delimiter ;</span><br><span class="line"><span class="keyword">call</span> idata();</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t1 <span class="keyword">like</span> t2;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t1 (<span class="keyword">select</span> * <span class="keyword">from</span> t2 <span class="keyword">where</span> <span class="keyword">id</span>&lt;=<span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到，这两个表都有一个主键索引id和一个索引a，字段b上无索引。存储过程idata()往表t2里插入了1000行数据，在表t1里插入的是100行数据。</p>
+<h3 id="index-nested-loop-join">Index Nested-Loop Join</h3>
+<p>我们来看一下这个语句：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t1 <span class="keyword">straight_join</span> t2 <span class="keyword">on</span> (t1.a=t2.a);</span><br></pre></td></tr></table></figure>
+<p>如果直接使用join语句，MySQL优化器可能会选择表t1或t2作为驱动表，这样会影响我们分析SQL语句的执行过程。所以，为了便于分析执行过程中的性能问题，我改用strainght_join让MySQL使用固定的连接方式执行查询，这样优化器只会按照我们指定的方式去join。在这个语句里，t1是驱动表，t2是被驱动表。</p>
+<p>现在，我们来看一下这条语句的explain结果。</p>
+
+<p>可以看到，在这条语句里，被驱动表t2的字段a上有索引，join过程用上了这个索引，因此这个语句的执行流程是这样的：</p>
+<ol type="1">
+<li>从表t1中读入一行数据R；</li>
+<li>从数据行R中，取出a字段到表t2里查找；</li>
+<li>取出表t2中满足条件的行，跟R组成一行，作为结果集的一部分；</li>
+<li>重复执行步骤1到3，直到表t1的末尾循环结束。</li>
+</ol>
+<p>这个过程是先遍历表t1，然后根据从表t1中取出的每行数据中的a值，去表t2中查找满足条件的记录。在形式上，这个过程就跟我们写程序时的嵌套查询类似，并且可以用上被驱动表的索引，所以我们称之为"Index Nested-Loop Join"，简称NLJ。</p>
+<p>它对应的流程图如下所示：</p>
+
+<p>在这个流程里：</p>
+<ol type="1">
+<li>对驱动表t1做了全表扫描，这个过程需要扫描100行；</li>
+<li>而对于每一行R，根据a字段去表t2查找，走的是树搜索过程。由于我们构造的数据都是一一对应的，因此每次搜索过程都只扫描一行，也是总共扫描100行；</li>
+<li>所以，整个执行流程，总扫描行数是200。</li>
+</ol>
+<p>现在我们知道了这个过程，再试着回答一下文章开头的两个问题。</p>
+<p>先看第一个问题，<strong>能不能使用join？</strong></p>
+<p>假设不使用join，那我们就只能单表查询，我们看看上面这条语句的需求，用单表查询怎么实现。</p>
+<ol type="1">
+<li>执行select * from t1，查出表t1的所有数据，这里有100行；</li>
+<li>循环遍历这100行数据：
+<ul>
+<li>从每一行R取出字段a的值$R.a；</li>
+<li>执行select * from t2 where a=$R.a；</li>
+<li>把返回的结果和R构成结果集的一行。</li>
+</ul></li>
+</ol>
+<p>可以看到，在这个查询过程，也是扫描了200行，但是总共执行了101条语句，比直接join多了100次交互。除此之外，客户端还要自己拼接SQL语句和结果。</p>
+<p>显然，这么做还不如直接join好。</p>
+<p>我们再来看看第二个问题：<strong>怎么选择驱动表</strong>？</p>
+<p>在这个join语句执行过程中，驱动表是走全表扫描，而被驱动表是走数搜索。</p>
+<p>假设被驱动表的行数是M。每次在被驱动表查一行数据，要先搜索索引a，再搜索主键索引。每次搜索一棵树近似复杂度是以2为底的M的对数，记为log2M，所以在被驱动表上查一行的时间复杂度是2*log2M。</p>
+<p>假设驱动表的行数是N，执行过程就要扫描驱动表N行，然后对于每一行，到被驱动表上匹配一次。</p>
+<p>因此整个执行过程，近似复杂度是N+N<em>2</em>log2M。</p>
+<p>显然，N对扫描行数的影响更大，因此应该让小表来做驱动表。</p>
+<p>到这里小结一下，通过上面的分析我们得到了两个结论：</p>
+<ol type="1">
+<li>使用join语句，性能比强拆成多个单表执行SQL语句的性能要好；</li>
+<li>如果使用join语句的话，需要让小表做驱动表。</li>
+</ol>
+<p>但是，你需要注意，这个结论的前提是“可以使用被驱动表的索引”。</p>
+<p>接下来，我们再看看被驱动表用不上索引的情况。</p>
+<h3 id="simple-nested-loop-join">Simple Nested-Loop Join</h3>
+<p>现在，我们把SQL语句改成这样：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t1 <span class="keyword">straight_join</span> t2 <span class="keyword">on</span> (t1.a=t2.b);</span><br></pre></td></tr></table></figure>
+<p>由于表t2的字段b上没有索引，因此再用图2的执行流程时，每次到t2去匹配的时候，就要做一次全表扫描。</p>
+<p>你可以设想一下这个问题，继续使用图2的算法，是不是可以得到正确的结果呢？如果只看结果的话，这个算法是正确的，而且这个算法也有一个名字，叫做“Simple Nested-Loop Join”。</p>
+<p>但是，这样算来，这个SQL请求就要扫描表t2多达100次，总共扫描100*1000=10万行。</p>
+<p>这还只是两个小表，如果t1和t2都是10万行的表（当然了，这也还是属于小表的范围，在现在的硬件条件下，1千万行一下的表都可以认为是小表），就要扫描100亿行，这个算法看上去太“笨重”了。</p>
+<p>当然，MySQL也没有使用这个Simple Nested-Loop Join算法，而是使用了另一个叫做“Block Nested-Loop Join"的算法，简称BNL。</p>
+<h3 id="block-nested-loop-join">Block Nested-Loop Join</h3>
+<p>这时候，被驱动表上没有可用的索引，算法的流程是这样的：</p>
+<ol type="1">
+<li>把表t1的数据读入线程内存join_buffer中，由于我们这个语句中写的是select *，因此是把整个表t1放入了内存；</li>
+<li>扫描表t2，把表t2中的每一行取出来，跟join_buffer中的数据作对比，满足join条件的，作为结果集的一部分返回。</li>
+</ol>
+<p>这个过程的流程图如下：</p>
+
+<p>对应地，这条SQL语句的explain结果如下所示：</p>
+
+<p>可以看到，在这个过程中，对表t1和t2都做了一次全表扫描，因此总的扫描行数是1100。由于join_buffer是以无序数组的方式组织的，因此对表t2中的每一行，都要做100次判断，总共需要在内存中做得判断次数是：100*1000=10万次。</p>
+<p>前面我们说过，如果使用Simple Nested-Loop Join算法进行查询，扫描行数也是10万行。因此，从时间复杂度上来说，这两个算法是一样的。<strong>但是，Block Nested-Loop 算法的这10万次判断是内存操作，速度上会快很多，性能也更好。</strong>（原因在这里，我们把小表的数据放到了内存中。而对于Simple Nested-Loop Join算法，是对表t2做了全表扫面，每次拿出一个数据页到内存中，再做判断，这样增加了磁盘IO次数，就比较慢）</p>
+<p>接下来，我们来看一下，在这种情况下，应该选择哪个表做驱动表。</p>
+<p>假设小表的行数是N，大表的行数是M，那么在这个算法里：</p>
+<ol type="1">
+<li>两个表都做一次全表扫描，所以总的扫描行数是M+N；</li>
+<li>内存中判断的次数时M*N。</li>
+</ol>
+<p>可以看到，调换这两个算式中M和N没差别，因此这时候选择大表还是小表做驱动表，执行耗时是一样的。</p>
+<p>然后，你可能马上就会问了，这个例子里表t1才100行，要是t1是一个大表，join_buffer放不下怎么办呢？</p>
+<p>join_buffer的大小是由参数join_buffer_size设定的，默认值是256k。<strong>如果放不下表t1的所有数据的话，策略很简单，就是分段放。</strong>我把join_buffer_size改成1200，再执行：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t1 <span class="keyword">straight_join</span> t2 <span class="keyword">on</span> (t1.a=t2.b);</span><br></pre></td></tr></table></figure>
+<p>执行过程就变成了：</p>
+<ol type="1">
+<li>扫描表t1，顺序读取数据行放入join_buffer中，放完第88行join_buffer满了，继续第2步；</li>
+<li>扫描表t2，把t2中的每一行取出来，跟join_buffer中的数据作对比，满足join条件的，作为结果集的一部分返回；</li>
+<li>清空join_buffer;</li>
+<li>继续扫描表t1，顺序读取最后的12行数据放入join_buffer中，继续执行第2步。</li>
+</ol>
+<p>执行流程图也就变成这样：</p>
+
+<p>图中的步骤4和5，表示清空join_buffer再复用。</p>
+<p>这个流程才体现出了这个算法名字中"Block"的由来，表示“分块去join"。</p>
+<p>可以看到，这时候由于表t1被分成了两次放入join_buffer中，导致表t2会被扫描两次。虽然分成两次放入join_buffer，但是判断等之条件的次数还是不变的，依然是(88+12)*1000=10万次。</p>
+<p>我们再来看下，在这种情况下驱动表的选择问题。</p>
+<p>假设，驱动表的数据行数是N，需要分K段才能完成算法流程，被驱动表的数据行数是M。</p>
+<p>注意，这里的K不是常数，N越大K就会越大，因此把K表示为λ*N，显然λ的取值范围是（0， 1）。</p>
+<p>所以，在这个算法的执行过程中：</p>
+<ol type="1">
+<li>扫描行数是N+λ*N*M；</li>
+<li>内存判断N*M次。</li>
+</ol>
+<p>显然，内存判断次数是不受选择哪个表作为驱动表影响的。而考虑到扫描行数，在M和N大小确定的情况下，N小一些，整个算式的结果会更小。</p>
+<p>所以结论是，应该让小表当驱动表。</p>
+<p>当然，你会发现，在N+λ*N*M这个式子里，λ才是影响扫描行数的关键因素，这个值越小越好。</p>
+<p>刚刚我们说了N越大，分段数K越大。那么，N固定的时候，什么参数会影响K的大小呢？（也就是λ的大小）Join_buffer_size。join_buffer_size越大，一次可以放入的行越多，分成的段数也就越少，对被驱动表的全表扫描次数就越少。</p>
+<p>这就是为什么，你可能看到一些建议说，如果你的join语句很慢，就把join_buffer_size改大。</p>
+<p>理解了MySQL执行join的两种算法，现在我们再来试着回答文章开头的两个问题。</p>
+<p>第一个问题：能不能使用join'语句？</p>
+<ol type="1">
+<li>如果可以使用Index Nested-Loop Join算法，也就是说可以用上被驱动表上的索引，其实是没问题的；</li>
+<li>如果使用Block Nested-Loop Join算法，扫描行数就会过多。尤其是在大表上的join操作，这样可能要扫描被驱动表很多次，会占用大量的系统资源。所以这种join尽量不要用。</li>
+</ol>
+<p>所以你在判断要不要使用join语句时，就是看explain结果里面，Extra字段里面有没有出现“Block Nested Loop"字样。</p>
+<p>第二个问题：如果要使用join，应该选择大表做驱动表还是选择小表做驱动表？</p>
+<ol type="1">
+<li>如果是Index Nested-Loop Join算法，应该选择小表做驱动表；</li>
+<li>如果是Block Nested-Loop Join算法：
+<ul>
+<li>在join_buffer_size足够大的时候，是一样的；</li>
+<li>在join_buffer_size不够大的时候（这种情况才是更为常见的），应该选择小表做驱动表。</li>
+</ul></li>
+</ol>
+<p>所以，这个问题的结论就是，总是应该选择小表做驱动表。</p>
+<p>当然，这里我需要说明下，<strong>什么叫做"小表"？</strong></p>
+<p>我们前面的例子是没有加条件的。如果我在语句的where条件加上t2.id&lt;=50这个限定条件，再来看下这两条语句：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t1 <span class="keyword">straight_join</span> t2 <span class="keyword">on</span> (t1.b=t2.b) <span class="keyword">where</span> t2.id&lt;=<span class="number">50</span>;</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t2 <span class="keyword">straight_join</span> t1 <span class="keyword">on</span> (t1.b=t2.b) <span class="keyword">where</span> t2.id&lt;=<span class="number">50</span>;</span><br></pre></td></tr></table></figure>
+<p>注意，为了让两条语句的被驱动表都用不上索引，所以join字段都使用了没有索引的字段b。</p>
+<p>但如果是用第二个语句的话，join_buffer只需要放入t2的前50行，显然是更好的。所以这里，"t2的前50行"是那个相对小的表，也就是"小表"。</p>
+<p>我们再来看另外一组例子：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> t1.b,t2.* <span class="keyword">from</span> t1 <span class="keyword">straight_join</span> t2 <span class="keyword">on</span> (t1.b=t2.b) <span class="keyword">where</span> t2.id&lt;=<span class="number">100</span>;</span><br><span class="line"><span class="keyword">select</span> t1.b,t2.* <span class="keyword">from</span> t2 <span class="keyword">straight_join</span> t1 <span class="keyword">on</span> (t1.b=t2.b) <span class="keyword">where</span> t2.id&lt;=<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+<p>这个例子里，表t1和t2都是只有100行参加join。但是，这两条语句每次查询放入join_buffer中的数据是不一样的：</p>
+<ol type="1">
+<li>表t1只查字段b，因此如果把t1放到join_buffer中，则join_buffer中只需要放入b的值；</li>
+<li>表t2需要查所有的字段，因此如果把表t2放到join_buffer中的话，就需要放入三个字段为id、a、b。</li>
+</ol>
+<p>这里，我们应该选择表t1作为驱动表。也就是说在这个例子里，"只需要一列参与join的表t1"是那个相对小的表。</p>
+<p>所以，更准确的说，<strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个子弹的总数据量，数据量小的那个表，就是"小表"，应该作为驱动表。</strong></p>
+<h3 id="小结">小结</h3>
+<p>今天，我和你介绍了MySQL执行join语句的两种可能算法，这两种算法，是由能否使用被驱动表的索引决定的。而能否用上被驱动表的索引，对join语句的性能影响很大。</p>
+<p>通过对Index Nested-Loop Join和Block Nested-Loop Join两个算法执行过程的分析，我们也得到了文章开头两个问题的答案：</p>
+<ol type="1">
+<li>如果可以使用被驱动表的索引，join语句还是有其优势的；</li>
+<li>不能使用被驱动表的索引，只能使用Block Nested-Loop Join算法，这样的语句尽量不要使用；</li>
+<li>在使用join的时候，应该让小表做驱动表。</li>
+</ol>
+<p>最后，又到了今天的问题时间。</p>
+<p>我们在上文中说到，使用Block Nested-Loop Join算法，可能会因为join_buffer不够大，需要对被驱动表做多次全表扫描。</p>
+<p>我的问题是，如果被驱动表是一个大表，并且是一个冷数据表，除了查询过程中农可能会导致IO压力大以外，你觉得对这个MySQL服务还有什么更严重的影响吗？（这个问题需要结合上一篇<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83OTQwNw==">文章<i class="fa fa-external-link-alt"></i></span>的知识点）</p>
+<p>解答：</p>
+<p>我在上一篇文章末尾，给你留下的思考题是，使用 Block Nested-Loop Join(BNL) 算法时，可能会对被驱动表做多次扫描。如果这个被驱动表是一个大的冷数据表，除了会导致 IO 压力大以外，还会对系统有什么影响呢？</p>
+<p>在<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83OTQwNw==">33篇文章<i class="fa fa-external-link-alt"></i></span>中，我们说到InnoDB的LRU算法的时候提到，由于InnoDB对Buffer Pool的LRU算法做了优化，即：第一次从磁盘读入内存的数据页，会先放在old区域（很像jvm GC分成了Young和Old，但是相反）。如果1秒之后这个数据页不再被访问了，就不会被移动到LRU链表头部，这样对Buffer Pool的命中率影响就不大。</p>
+<p>但是，如果一个使用BNL算法的join语句，多次扫描一个冷表，而且这个语句执行时间超过1秒，就会在再次扫描冷表的时候，把冷表的数据页移到LRU链表的头部。</p>
+<p>这种情况对应的，是冷表的数据量小于整个Buffer Pool的3/8，能够完全放入old区域的情况。</p>
+<p>如果这个冷表很大，就会出现另外一种情况：业务正常访问的数据页，没有机会进入young区域。</p>
+<p>由于优化机制的存在，一个正常访问的数据页，要进入young区域，需要隔1秒后再次被访问到。但是，由于我们的join语句在循环读磁盘和淘汰内存页，进入old区域的数据页，很可能在1秒之内就被淘汰了。这样，就会导致这个MySQL实例的Buffer Pool在这段时间内，young区域的数据页没有被合理地淘汰。</p>
+<p>也就是说，这两种情况都会影响Buffer Pool的正常运作。</p>
+<p><strong>大表join操作虽然对IO有影响，但是在语句执行结束后，对IO的影响也就结束了。但是，对Buffer Pool的影响就是持续性的，需要依靠后续的查询请求慢慢恢复内存命中率。</strong></p>
+<p>为了减少这种影响，你可以考虑增大join_buffer_size的值，减少对被驱动表的扫描次数。</p>
+<p>也就是说，BNL算法对系统的影响主要包括三个方面：</p>
+<ol type="1">
+<li>可能会多次扫描被驱动表，占用磁盘IO资源；</li>
+<li>判断join条件需要执行M*N次对比（M、N分别是两张表的行数），如果是大表就会占用非常多的CPU资源；</li>
+<li>可能会导致Buffer Pool的热数据被淘汰，影响内存命中率。</li>
+</ol>
+<p>我们执行语句之前，需要通过理论分析和查看explain结果的方式，确认是否要使用BNL算法。如果确认优化器会使用BNL算法，就需要做优化。优化的常见做法是，给被驱动表的join字段加上索引，把BNL算法转成BKA算法。</p>
+<p>关于BKA算法的详细内容，请看下一篇<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MDE0Nw==">文章35<i class="fa fa-external-link-alt"></i></span>。</p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
