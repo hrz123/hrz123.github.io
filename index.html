@@ -210,7 +210,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-29 20:16:11 / 修改时间：22:03:32" itemprop="dateCreated datePublished" datetime="2020-08-29T20:16:11+08:00">2020-08-29</time>
+              <time title="创建时间：2020-08-29 20:16:11 / 修改时间：22:36:45" itemprop="dateCreated datePublished" datetime="2020-08-29T20:16:11+08:00">2020-08-29</time>
             </span>
 
           
@@ -280,12 +280,24 @@
 <p>Xid和InnoDB的trx_Id是两个容易混淆的概念。</p>
 <p>Xid是由server层维护的。InnoDB内部使用Xid，就是为了能够在InnoDB事务和server之间做关联。但是，InnoDB自己的trx_id，是另外维护的。</p>
 <p>其实，你应该非常熟悉这个trx_id。它就是我们在第8篇文章<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83MDU2Mg==">《事务到底是隔离的还是不隔离的？》<i class="fa fa-external-link-alt"></i></span>讲事务可见性时，用到的事务id（transaction id）。</p>
-<p>InnoDB内部维护了一个mas_trx_id全局变量，每次需要申请一个新的trx_id时，就获得mas_trx_id的当前值，然后并将max_trx_id加1。</p>
-<p>InnoDB数据可见性的核心思想是：每一行数据都记录了更新它的trx_id，当一个事务读到一行数据的时候，判断这个数据时候可见的方法，就是通过事务的一致性视图与这行数据的trx_id做对比。</p>
+<p>InnoDB内部维护了一个max_trx_id全局变量，每次需要申请一个新的trx_id时，就获得max_trx_id的当前值，然后并将max_trx_id加1。</p>
+<p>InnoDB数据可见性的核心思想是：每一行数据都记录了更新它的trx_id，当一个事务读到一行数据的时候，判断这个数据是否可见的方法，就是通过事务的一致性视图与这行数据的trx_id做对比。</p>
 <p>对于正在执行的事务，你可以从information_schema.innodb_trx表中看到事务的trx_id。</p>
 <p>我在上一篇文章的末尾留给你的思考题，就是关于从innodb_trx表里面查到的trx_id的。现在，我们一起来看一个事务现场：</p>
 
 <p>session B里，我从innodb_trx表里查出的这两个字段，第二个字段trx_mysql_thread_id就是线程id。显示线程id，是为了说明这两次查询看到的事务对应的线程id都是5，也就是session A所在的线程。</p>
+<p>可以看到，T2时刻显示的trx_id是一个很大的数；T4时刻显示的trx_id是1289，看上去是一个比较正常的数字。这是什么原因呢？</p>
+<p>实际上，在T1时刻，session A还没有涉及到更新，是一个只读事务。而对于只读事务，InnoDB并不会分配trx_id。也就是说：</p>
+<ol type="1">
+<li>在T1时刻，trx_id的值其实就是0。而这个很大的数，只是显示用的。一会儿我会再和你说说这个数据的生成逻辑。</li>
+<li>直到session A在T3时刻执行insert语句的时候，InnoDB才真正分配了trx_id。所以，T4时刻，session B查到的这个trx_id的值就是1289。</li>
+</ol>
+<p>需要注意的是，除了显而易见的修改类语句外，如果select语句后面加上for update，这个事务也不是只读事务。</p>
+<p>在上一篇文章的评论区，有同学提出，实验的时候发现不止加1。这是因为：</p>
+<ol type="1">
+<li>update和delete语句除了事务本身，还涉及到标记删除旧数据，也就是要把数据放到purge队列里等待后续物理删除，这个操作也会把max_trx_id+1，因此在一个事务中至少加2；</li>
+<li>InnoDB的后台操作，比如表的索引信息统计这类操作，也是会启动内部事务的，因此你可能看到，trx_id值</li>
+</ol>
 
       
     </div>

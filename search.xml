@@ -459,43 +459,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Prim&#39;s最小生成树算法</title>
-    <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
-<p>在图论中，连接两组顶点的一组边被称为切边（cut）。所有，在Prim算法的每一步，我们都要要找到一个cut（关于这两个集合的，一个包含已经在MST中的顶点，另一个包含其余的顶点），从cut中挑选出最小权重的边，并将这个顶点包含到MST集合（包含已经在MST中的顶点）中。</p>
-<p><strong>Prim's Algorithm是如何工作的？</strong>Prim算法背后的思想很简单，一颗生成树意味着所有顶点必须是连接的。所以，两个不相干的顶点子集（上面讨论的）必须连接起来，才能组成一个生成树。而且它们必须用最小的权重边连接起来，才能使之成为一颗最小生成树。</p>
-<p><strong>算法：</strong></p>
-<ol type="1">
-<li>创建一个集合mstSet，用来跟踪已经包含在MST中的顶点。</li>
-<li>给输入图中的所有顶点分配一个键值。初始化所有的键值为infinity。为第一个顶点分配键值为0，这样它就会被首先选中。</li>
-<li>while mstSet不包含所有的顶点
-<ol type="1">
-<li>选取一个在mstSet中没有的顶点u，并且其键值最小。</li>
-<li>将u加入到mstSet中。</li>
-<li>更新u的所有相邻顶点的键值，更新键值时，要遍历所有相邻顶点。对于每一个相邻顶点v，如果边u-v的权重小于v的前一个键值，则更新键值为u-v的权重。</li>
-</ol></li>
-</ol>
-<p>使用键值的想法是为了从cut中挑选出最小权重的边。键值只用于尚未包含在MST中的顶点，这些顶点的键值表示连接它们与MST中包含的顶点集的最小权重边的权重。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim1.jpg" class>
-<p>集合mstSet开始的时候是空的，并且每个顶点键值时{0, INF, INF, INF, INF, INF, INF, INF}，INF表示无穷大。现在，选出一个拥有最小键值的顶点。顶点0被选出，将其放入mstSet。所以mstSet成为了{0}。在包括进mstSet之后，更新相邻顶点的键值。0的相邻顶点是1和7。1和7的键值被更新为4和8。下面的子图显示了顶点和它们的键值，只有有有限键值的顶点展示了出来。在MST中的顶点用绿颜色表示了出来。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim2.jpg" class>
-<p>选出有最小键值的顶点并且还没有被包括进MST（还不在mstSet）。顶点1被选出来，并且被加入mstSet。所以mstSet成为了{0, 1}。更新1的相邻顶点的键值。顶点2的键值变成了8。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim3.jpg" class>
-<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。我们可以选择顶点7或者2，我们让7被选中。所以mstSet现在变成了{0, 1, 7}。更新7的相邻顶点的键值，顶点6和8的键值变成了有限的（分别为1和7）。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim4.jpg" class>
-<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。顶点6被选中。所以mstSet现在为{0, 1, 7, 6}。更新6的相邻顶点的键值。5和8的键值被更新。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim5.jpg" class>
-<p>我们重复上面的步骤直到mstSet包含了给定图中所有的顶点。最终，我们得到了如下的图。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim6.jpg" class>
-<p><strong>如何实现上面的算法？</strong></p>
-<p>我们用一个布尔数组mstSet[]表示MST中包含的顶点集合。如果一个值mstSet[v]为true，那么顶点v就在MST中，否则就不是。数组key[]用来存储所有顶点的键值。另一个数组parent[]用来存储MST中父节点的索引。parent数组是输出数组，用来显示构建的MST。</p>
-<p>上面算法的时间复杂度为O(V^2)。如果使用邻接表表示输入图，那么在二叉堆的帮助下，Prim算法的时间复杂度可以降低到O（ElogV）。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Python----socket编程</title>
     <url>/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<h3 id="基于tcp的套接字编程">基于TCP的套接字编程：</h3>
@@ -608,6 +571,43 @@
       </tags>
   </entry>
   <entry>
+    <title>Prim&#39;s最小生成树算法</title>
+    <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
+<p>在图论中，连接两组顶点的一组边被称为切边（cut）。所有，在Prim算法的每一步，我们都要要找到一个cut（关于这两个集合的，一个包含已经在MST中的顶点，另一个包含其余的顶点），从cut中挑选出最小权重的边，并将这个顶点包含到MST集合（包含已经在MST中的顶点）中。</p>
+<p><strong>Prim's Algorithm是如何工作的？</strong>Prim算法背后的思想很简单，一颗生成树意味着所有顶点必须是连接的。所以，两个不相干的顶点子集（上面讨论的）必须连接起来，才能组成一个生成树。而且它们必须用最小的权重边连接起来，才能使之成为一颗最小生成树。</p>
+<p><strong>算法：</strong></p>
+<ol type="1">
+<li>创建一个集合mstSet，用来跟踪已经包含在MST中的顶点。</li>
+<li>给输入图中的所有顶点分配一个键值。初始化所有的键值为infinity。为第一个顶点分配键值为0，这样它就会被首先选中。</li>
+<li>while mstSet不包含所有的顶点
+<ol type="1">
+<li>选取一个在mstSet中没有的顶点u，并且其键值最小。</li>
+<li>将u加入到mstSet中。</li>
+<li>更新u的所有相邻顶点的键值，更新键值时，要遍历所有相邻顶点。对于每一个相邻顶点v，如果边u-v的权重小于v的前一个键值，则更新键值为u-v的权重。</li>
+</ol></li>
+</ol>
+<p>使用键值的想法是为了从cut中挑选出最小权重的边。键值只用于尚未包含在MST中的顶点，这些顶点的键值表示连接它们与MST中包含的顶点集的最小权重边的权重。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim1.jpg" class>
+<p>集合mstSet开始的时候是空的，并且每个顶点键值时{0, INF, INF, INF, INF, INF, INF, INF}，INF表示无穷大。现在，选出一个拥有最小键值的顶点。顶点0被选出，将其放入mstSet。所以mstSet成为了{0}。在包括进mstSet之后，更新相邻顶点的键值。0的相邻顶点是1和7。1和7的键值被更新为4和8。下面的子图显示了顶点和它们的键值，只有有有限键值的顶点展示了出来。在MST中的顶点用绿颜色表示了出来。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim2.jpg" class>
+<p>选出有最小键值的顶点并且还没有被包括进MST（还不在mstSet）。顶点1被选出来，并且被加入mstSet。所以mstSet成为了{0, 1}。更新1的相邻顶点的键值。顶点2的键值变成了8。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim3.jpg" class>
+<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。我们可以选择顶点7或者2，我们让7被选中。所以mstSet现在变成了{0, 1, 7}。更新7的相邻顶点的键值，顶点6和8的键值变成了有限的（分别为1和7）。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim4.jpg" class>
+<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。顶点6被选中。所以mstSet现在为{0, 1, 7, 6}。更新6的相邻顶点的键值。5和8的键值被更新。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim5.jpg" class>
+<p>我们重复上面的步骤直到mstSet包含了给定图中所有的顶点。最终，我们得到了如下的图。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim6.jpg" class>
+<p><strong>如何实现上面的算法？</strong></p>
+<p>我们用一个布尔数组mstSet[]表示MST中包含的顶点集合。如果一个值mstSet[v]为true，那么顶点v就在MST中，否则就不是。数组key[]用来存储所有顶点的键值。另一个数组parent[]用来存储MST中父节点的索引。parent数组是输出数组，用来显示构建的MST。</p>
+<p>上面算法的时间复杂度为O(V^2)。如果使用邻接表表示输入图，那么在二叉堆的帮助下，Prim算法的时间复杂度可以降低到O（ElogV）。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Splay Tree-II</title>
     <url>/2020/08/13/Splay-Tree-II/</url>
     <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
@@ -695,6 +695,22 @@
       </tags>
   </entry>
   <entry>
+    <title>grant之后要跟着flush privileges吗？ </title>
+    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论：</p>
+<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
+<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
+<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
+<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
+<h3 id="小结">小结</h3>
+<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
+<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>epoll的优劣和原理</title>
     <url>/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/</url>
     <content><![CDATA[<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
@@ -722,22 +738,6 @@
 ]]></content>
       <tags>
         <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>grant之后要跟着flush privileges吗？ </title>
-    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论：</p>
-<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
-<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
-<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
-<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
-<h3 id="小结">小结</h3>
-<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
-<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -1591,6 +1591,8 @@
 <p>在oracle 8以前，一个rowid占用6个字节大小的存储空间（10 bit file# + 22bit block # + 16 bit row #)，rowid格式为：BBBBBBBB.RRRR.FFFF。</p>
 <p>在oracle 8以后，rowid的存储空间扩大到了10个字节（32 bit object# + 10bit rfile# + 22 bit block# + 16 bit row#)，文件号仍然用10位表示，只是不再需要置换，为了向后兼容，同时引入了相对文件号（rfile#)，所以从Oracle7到Oracle8，rowid仍然无需发生变化。</p>
 <p>这里我猜测，mysql rowid也是存储了 10位的文件号，22位的块号，16位的行号。</p>
+<h3 id="更新已经得到答案">更新：已经得到答案。</h3>
+<p>详见<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MzE4Mw==">文章<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -1933,6 +1935,19 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>快速排序的多种写法</title>
+    <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
+    <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
+<p>以下给出python版本的实现代码。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSort</span>(<span class="params">self, nums: List[int]</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.quickSortHelper(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSortHelper</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        pivot = self.partition(nums, l, r)</span><br><span class="line">        self.quickSortHelper(nums, l, pivot - <span class="number">1</span>)</span><br><span class="line">        self.quickSortHelper(nums, pivot + <span class="number">1</span>, r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># def partition(self, nums, l, r):</span></span><br><span class="line">    <span class="comment">#     ran = random.randint(l, r)</span></span><br><span class="line">    <span class="comment">#     nums[r], nums[ran] = nums[ran], nums[r]</span></span><br><span class="line">    <span class="comment">#     pivot = r</span></span><br><span class="line">    <span class="comment">#     right = l</span></span><br><span class="line">    <span class="comment">#     for i in range(l, r):</span></span><br><span class="line">    <span class="comment">#         if nums[i] &lt;= nums[pivot]:</span></span><br><span class="line">    <span class="comment">#             nums[i], nums[right] = nums[right], nums[i]</span></span><br><span class="line">    <span class="comment">#             right += 1</span></span><br><span class="line">    <span class="comment">#     nums[right], nums[pivot] = nums[pivot], nums[right]</span></span><br><span class="line">    <span class="comment">#     return right</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        ran = random.randint(l, r)</span><br><span class="line">        nums[l], nums[ran] = nums[ran], nums[l]</span><br><span class="line">        pivot = l</span><br><span class="line">        left = r</span><br><span class="line">        i = l + <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= left:</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt;= nums[pivot]:</span><br><span class="line">                nums[i], nums[left] = nums[left], nums[i]</span><br><span class="line">                left -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">        nums[left], nums[pivot] = nums[pivot], nums[left]</span><br><span class="line">        <span class="keyword">return</span> left</span><br></pre></td></tr></table></figure>
+<p>两个partition的效果是一样的。</p>
+<p>注意，我们使用一种随机方法，保证了我们的快排在遇到严格递增序列或者严格递减序列的时候，期望也是O(nlogn)时间复杂度的。这是一种随机方法，还有其他随机算法的实现。这种比较简单。而这个随机的步骤，也使得我们的快排不是稳定。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>怎么最快地复制一张表？</title>
     <url>/2020/08/28/%E6%80%8E%E4%B9%88%E6%9C%80%E5%BF%AB%E5%9C%B0%E5%A4%8D%E5%88%B6%E4%B8%80%E5%BC%A0%E8%A1%A8%EF%BC%9F/</url>
     <content><![CDATA[<p>我在上一篇文章最后，给你留下的问题是怎么在两张表中拷贝数据。如果可以控制对源表的扫描行数和加锁范围很小的话，我们简单地使用insert..select语句即可实现。</p>
@@ -2060,19 +2075,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>快速排序的多种写法</title>
-    <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
-    <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
-<p>以下给出python版本的实现代码。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSort</span>(<span class="params">self, nums: List[int]</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.quickSortHelper(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSortHelper</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        pivot = self.partition(nums, l, r)</span><br><span class="line">        self.quickSortHelper(nums, l, pivot - <span class="number">1</span>)</span><br><span class="line">        self.quickSortHelper(nums, pivot + <span class="number">1</span>, r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># def partition(self, nums, l, r):</span></span><br><span class="line">    <span class="comment">#     ran = random.randint(l, r)</span></span><br><span class="line">    <span class="comment">#     nums[r], nums[ran] = nums[ran], nums[r]</span></span><br><span class="line">    <span class="comment">#     pivot = r</span></span><br><span class="line">    <span class="comment">#     right = l</span></span><br><span class="line">    <span class="comment">#     for i in range(l, r):</span></span><br><span class="line">    <span class="comment">#         if nums[i] &lt;= nums[pivot]:</span></span><br><span class="line">    <span class="comment">#             nums[i], nums[right] = nums[right], nums[i]</span></span><br><span class="line">    <span class="comment">#             right += 1</span></span><br><span class="line">    <span class="comment">#     nums[right], nums[pivot] = nums[pivot], nums[right]</span></span><br><span class="line">    <span class="comment">#     return right</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        ran = random.randint(l, r)</span><br><span class="line">        nums[l], nums[ran] = nums[ran], nums[l]</span><br><span class="line">        pivot = l</span><br><span class="line">        left = r</span><br><span class="line">        i = l + <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= left:</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt;= nums[pivot]:</span><br><span class="line">                nums[i], nums[left] = nums[left], nums[i]</span><br><span class="line">                left -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">        nums[left], nums[pivot] = nums[pivot], nums[left]</span><br><span class="line">        <span class="keyword">return</span> left</span><br></pre></td></tr></table></figure>
-<p>两个partition的效果是一样的。</p>
-<p>注意，我们使用一种随机方法，保证了我们的快排在遇到严格递增序列或者严格递减序列的时候，期望也是O(nlogn)时间复杂度的。这是一种随机方法，还有其他随机算法的实现。这种比较简单。而这个随机的步骤，也使得我们的快排不是稳定。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>总结：MySQL中的锁和MySQL的内部临时表</title>
     <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
     <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
@@ -2166,20 +2168,20 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>拔智齿后记</title>
-    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
-    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
       </tags>
   </entry>
   <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
+    <title>拔智齿后记</title>
+    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
+    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -2618,12 +2620,24 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <p>Xid和InnoDB的trx_Id是两个容易混淆的概念。</p>
 <p>Xid是由server层维护的。InnoDB内部使用Xid，就是为了能够在InnoDB事务和server之间做关联。但是，InnoDB自己的trx_id，是另外维护的。</p>
 <p>其实，你应该非常熟悉这个trx_id。它就是我们在第8篇文章<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83MDU2Mg==">《事务到底是隔离的还是不隔离的？》<i class="fa fa-external-link-alt"></i></span>讲事务可见性时，用到的事务id（transaction id）。</p>
-<p>InnoDB内部维护了一个mas_trx_id全局变量，每次需要申请一个新的trx_id时，就获得mas_trx_id的当前值，然后并将max_trx_id加1。</p>
-<p>InnoDB数据可见性的核心思想是：每一行数据都记录了更新它的trx_id，当一个事务读到一行数据的时候，判断这个数据时候可见的方法，就是通过事务的一致性视图与这行数据的trx_id做对比。</p>
+<p>InnoDB内部维护了一个max_trx_id全局变量，每次需要申请一个新的trx_id时，就获得max_trx_id的当前值，然后并将max_trx_id加1。</p>
+<p>InnoDB数据可见性的核心思想是：每一行数据都记录了更新它的trx_id，当一个事务读到一行数据的时候，判断这个数据是否可见的方法，就是通过事务的一致性视图与这行数据的trx_id做对比。</p>
 <p>对于正在执行的事务，你可以从information_schema.innodb_trx表中看到事务的trx_id。</p>
 <p>我在上一篇文章的末尾留给你的思考题，就是关于从innodb_trx表里面查到的trx_id的。现在，我们一起来看一个事务现场：</p>
 
 <p>session B里，我从innodb_trx表里查出的这两个字段，第二个字段trx_mysql_thread_id就是线程id。显示线程id，是为了说明这两次查询看到的事务对应的线程id都是5，也就是session A所在的线程。</p>
+<p>可以看到，T2时刻显示的trx_id是一个很大的数；T4时刻显示的trx_id是1289，看上去是一个比较正常的数字。这是什么原因呢？</p>
+<p>实际上，在T1时刻，session A还没有涉及到更新，是一个只读事务。而对于只读事务，InnoDB并不会分配trx_id。也就是说：</p>
+<ol type="1">
+<li>在T1时刻，trx_id的值其实就是0。而这个很大的数，只是显示用的。一会儿我会再和你说说这个数据的生成逻辑。</li>
+<li>直到session A在T3时刻执行insert语句的时候，InnoDB才真正分配了trx_id。所以，T4时刻，session B查到的这个trx_id的值就是1289。</li>
+</ol>
+<p>需要注意的是，除了显而易见的修改类语句外，如果select语句后面加上for update，这个事务也不是只读事务。</p>
+<p>在上一篇文章的评论区，有同学提出，实验的时候发现不止加1。这是因为：</p>
+<ol type="1">
+<li>update和delete语句除了事务本身，还涉及到标记删除旧数据，也就是要把数据放到purge队列里等待后续物理删除，这个操作也会把max_trx_id+1，因此在一个事务中至少加2；</li>
+<li>InnoDB的后台操作，比如表的索引信息统计这类操作，也是会启动内部事务的，因此你可能看到，trx_id值</li>
+</ol>
 ]]></content>
       <tags>
         <tag>数据库</tag>
