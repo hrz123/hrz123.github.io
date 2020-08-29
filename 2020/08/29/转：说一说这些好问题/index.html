@@ -31,11 +31,19 @@
 <meta property="og:site_name" content="侯瑞哲的博客">
 <meta property="og:description" content="在我看来，能够帮我们扩展一个逻辑的边界的问题，就是好问题。因为通过解决这样的问题，能够加深我们对这个逻辑的理解，或者帮我们关联到另外一个知识点，进而可以帮助我们建立起自己的知识网络。 在工作中会问好问题，是一个很重要的能力。 join的写法 在35篇文章《join语句怎么优化?》中，我在介绍join执行顺序的时候，用的都是strainght_join。有同学哉问候提出了两个问题：  如果用left">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%98-%E4%B8%A4%E4%B8%AAjoin%E7%9A%84%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C.png">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%98-Q1%E7%9A%84explain%E7%BB%93%E6%9E%9C.png">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%982.jpg">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%983.png">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%984.png">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%985.png">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%986.png">
 <meta property="article:published_time" content="2020-08-29T05:35:41.000Z">
-<meta property="article:modified_time" content="2020-08-29T12:01:56.214Z">
+<meta property="article:modified_time" content="2020-08-29T12:03:12.845Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hrz123.github.io/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%98-%E4%B8%A4%E4%B8%AAjoin%E7%9A%84%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C.png">
 
 <link rel="canonical" href="https://hrz123.github.io/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/">
 
@@ -212,7 +220,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-29 13:35:41 / 修改时间：20:01:56" itemprop="dateCreated datePublished" datetime="2020-08-29T13:35:41+08:00">2020-08-29</time>
+              <time title="创建时间：2020-08-29 13:35:41 / 修改时间：20:03:12" itemprop="dateCreated datePublished" datetime="2020-08-29T13:35:41+08:00">2020-08-29</time>
             </span>
 
           
@@ -255,7 +263,7 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">left</span> <span class="keyword">join</span> b <span class="keyword">on</span> (a.f1=b.f1) <span class="keyword">and</span> (a.f2=b.f2); <span class="comment">/*Q1*/</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">left</span> <span class="keyword">join</span> b <span class="keyword">on</span> (a.f1=b.f1) <span class="keyword">where</span> (a.f2=b.f2); <span class="comment">/*Q2*/</span></span><br></pre></td></tr></table></figure>
 <p>我把这两条语句分别记为Q1和Q2。</p>
 <p>首先，需要说明的是，这两个left join语句的语义逻辑并不相同。我们先来看一下它们的执行结果。</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%98-%E4%B8%A4%E4%B8%AAjoin%E7%9A%84%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C.png" class>
 <p>可以看到：</p>
 <ol type="1">
 <li>语句Q1返回的数据集是6行，表a中即使没有满足匹配条件的记录，查询结果中也会返回一行，并将表b的各个字段值填成NULL。</li>
@@ -263,7 +271,7 @@
 </ol>
 <p>接下来，我们看看实际执行这两条语句时，MySQL是怎么做的。</p>
 <p>我们先一起看看语句Q1的explain结果：</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%98-Q1%E7%9A%84explain%E7%BB%93%E6%9E%9C.png" class>
 <p>可以看到，这个结果符合我们的预期：</p>
 <ul>
 <li>驱动表是表a，被驱动表是表b；</li>
@@ -276,10 +284,10 @@
 <li>表b扫描完成后，对于没有被匹配的表a的行（在这个例子中就是(1,1)、(2,2)这两行），把剩余字段补上NULL，再放入结果集中。</li>
 </ol>
 <p>对应的流程图如下：</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%982.jpg" class>
 <p>可以看到，这条语句确实是以表a为驱动表，而且从执行效果看，也和使用straight_join是一样的。</p>
 <p>你可能会想，语句Q2的查询结果里面少了最后两行数据，是不是就是把上面流程中的步骤3去掉呢？我们还是先看一下语句Q2的explain结果吧。</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%983.png" class>
 <p>可以看到，这条语句是以表b为驱动表的。而如果一条join语句的Extra字段什么都没写的话，就表示使用的是Index Nested-Loop Join (NLJ) 算法。</p>
 <p>因此，语句Q2使用了a的f1索引，执行流程是这样的：顺序扫描表b，每一行用b.f1到表a中去查，匹配到记录后判断a.f2=b.f2是否满足，满足条件的话就作为结果集的一部分返回。</p>
 <p>那么，<strong>为什么语句Q1和Q2这两个查询的执行流程会差距这么大呢？</strong>其实，这是因为优化器基于Q2这个查询的语义做了优化。</p>
@@ -287,13 +295,13 @@
 <p>因此，语句Q2里面where a.f2=b.f2就表示，查询结果里面不会包含b.f2是NULL的行，这样这个left join的语义就是"找到这两个表里面，f1、f2对应相同的行。对于表a中存在，而表b中匹配不到的行，就放弃"。</p>
 <p>这样，这条语句虽然用的是left join，但是语义跟join是一致的。</p>
 <p>因此，优化器就把这条语句的left join改写成了join，然后因为表a的f1上有索引，就把表b作为驱动表，，这样就可以用上NLJ算法。在执行explain之后，你再执行show warnings，就能看到这个改写的结果，如图5所示。</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%984.png" class>
 <p>这个例子说明，即使我们在SQL语句中写成left join，执行过程还是有可能不是从左到右连接的。也就是说，<strong>使用left join时，左边的表不一定是驱动表。</strong></p>
 <p>这样看来，<strong>如果需要left join的语义，就不能把被驱动表的字段放在where条件里面做等值判断或不等值判断，必须都写在on里面。</strong>那如果是join语句呢？</p>
 <p>这时候，我们再看看这两条语句：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">join</span> b <span class="keyword">on</span>(a.f1=b.f1) <span class="keyword">and</span> (a.f2=b.f2); <span class="comment">/*Q3*/</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">join</span> b <span class="keyword">on</span>(a.f1=b.f1) <span class="keyword">where</span> (a.f2=b.f2); <span class="comment">/*Q4*/</span></span><br></pre></td></tr></table></figure>
 <p>我们再使用一次看explain和show warnings的方法，看看优化器是怎么做的。</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%985.png" class>
 <p>可以看到，这两条语句都被改写成：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">join</span> b <span class="keyword">where</span> (a.f1=b.f1) <span class="keyword">and</span> (a.f2=b.f2);</span><br></pre></td></tr></table></figure>
 <p>执行计划自然也是一模一样的。</p>
@@ -344,7 +352,7 @@
 <p>其次，这个问题限定在statement的格式下，也是对的。因为row格式的binlog就没有这个问题了，Write row event里面直接写了每一行的所有字段的值。</p>
 <p>而至于为什么不会发生不一致的情况，我们来看一下下面的这个例子。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t(<span class="keyword">id</span>, it auto_increment primary <span class="keyword">key</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>);</span><br></pre></td></tr></table></figure>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%986.png" class>
 <p>可以看到，在insert语句之前，还有一句SET INSERT_ID=1。这条命令的意思是，这个线程里下一次需要用到自增值的时候，不论当前表的自增值是多少，固定用1这个值。</p>
 <p>这个SET INSERT_ID语句是固定跟在insert语句之前的，比如同学提到的场景，主库上语句A的id是1，语句B的id是2，但是写入binlog的顺序先B后A，那么binlog就变成：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> INSERT_ID=<span class="number">2</span>;</span><br><span class="line">语句B;</span><br><span class="line"><span class="keyword">SET</span> INSERT_ID=<span class="number">1</span>;</span><br><span class="line">语句A;</span><br></pre></td></tr></table></figure>
@@ -353,7 +361,8 @@
 <h3 id="小结">小结</h3>
 <p>今天这篇答疑文章，我选了4个好问题和你分享，并做了分析。在我看来，能够提出好问题，首先表示这些同学理解了我们文章的内容，进而又做了深入思考。</p>
 <p>答疑文章也是要有课后思考题的。</p>
-<p>在<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83MDU2Mg==">第8篇文章的评论区<i class="fa fa-external-link-alt"></i></span>，有同学提了一个问题：他查看了一下innodb_trx，发现这个事务的trx_id是一个很大的数（281479535353408），而且似乎在同一个session中启动会话得到的trx_Id是保持不变的。当执行任何加写</p>
+<p>在<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83MDU2Mg==">第8篇文章的评论区<i class="fa fa-external-link-alt"></i></span>，有同学提了一个问题：他查看了一下innodb_trx，发现这个事务的trx_id是一个很大的数（281479535353408），而且似乎在同一个session中启动会话得到的trx_Id是保持不变的。当执行任何加写锁的语句后，trx_id都会变成一个很小的数字(118378)。</p>
+<p>你可以通过实验验证一下，然后分析看看，事务id的分配规则是什么，以及MySQL为什么要这么设计呢？</p>
 
     </div>
 
@@ -459,7 +468,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">84</span>
+          <span class="site-state-item-count">85</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

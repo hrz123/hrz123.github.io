@@ -185,6 +185,97 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/29/%E8%87%AA%E5%A2%9Eid%E7%94%A8%E5%AE%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/29/%E8%87%AA%E5%A2%9Eid%E7%94%A8%E5%AE%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/" class="post-title-link" itemprop="url">自增id用完怎么办？</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-29 20:16:11 / 修改时间：20:36:35" itemprop="dateCreated datePublished" datetime="2020-08-29T20:16:11+08:00">2020-08-29</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/29/%E8%87%AA%E5%A2%9Eid%E7%94%A8%E5%AE%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/29/%E8%87%AA%E5%A2%9Eid%E7%94%A8%E5%AE%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>MySQL里有很多自增的id，每个自增id都是定义了初始值，然后不停地往上加步长。虽然自然数是没有上限的，但是在计算机里，只要定义了表示这个数的字节长度，那它就有上限。比如，无符号整型（unsigned int）是4个字节，上限就是2^32-1。</p>
+<p>既然自增id有上限，我们就来看看MySQL里面的几种自增id，一起分析一下它们的值达到上限之后，会出现什么情况。</p>
+<h3 id="表定义自增值id">表定义自增值id</h3>
+<p>说到自增id，你第一个想到的应该就是表结构定义里的自增字段，也就是我在第39篇文章<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MDUzMQ==">《自增主键为什么不是连续的？》<i class="fa fa-external-link-alt"></i></span>和你介绍过的自增主键id。</p>
+<p>表定义的自增值达到上限后的逻辑是：再申请下一个id时，得到的值保持不变。</p>
+<p>我们可以通过下面这个语句序列验证一下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t(<span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">unsigned</span> auto_increment primary <span class="keyword">key</span>) auto_increment=<span class="number">4294967295</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>);</span><br><span class="line">//成功插入一行 4294967295</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">create</span> <span class="keyword">table</span> t;</span><br><span class="line"><span class="comment">/* CREATE TABLE `t` (</span></span><br><span class="line"><span class="comment">  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,</span></span><br><span class="line"><span class="comment">  PRIMARY KEY (`id`)</span></span><br><span class="line"><span class="comment">) ENGINE=InnoDB AUTO_INCREMENT=4294967295;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>);</span><br><span class="line">//Duplicate entry &#x27;4294967295&#x27; for key &#x27;PRIMARY&#x27;</span><br></pre></td></tr></table></figure>
+<p>可以看到，第一个insert语句插入数据成功后，这个表的AUTO_INCREMENT没有改变（还是4294967295），就导致了第二个insert语句又拿到相同的自增id值，再试图执行插入语句，报主键冲突错误。</p>
+<p>2^32-1（4294967295）不是一个特别大的数，对于一个频繁插入删除数据的表来说，是可能会被用完的。因此在建表的时候你需要考察你的表是否有可能达到这个上限，如果有可能，就应该创建成8个字节的bigint unsigned。</p>
+<h3 id="innodb系统自增row_id">InnoDB系统自增row_id</h3>
+<p>如果你创建的InnoDB表没有指定主键，那么InnoDB会给你创建一个不可见的，长度为6个字节的row_id。InnoDB维护了一个全局的dict_sys.row_id值，所有无主键的InnoDB表，每插入一行数据，都将当前的dict_sys.row_id值作为要插入数据的row_id，然后把dict_sys.row_id的值加1。</p>
+<p>实际上，在代码实现时row_id是一个长度为8字节的无符号长整型（bigint unsigned）。但是，InnoDB在设计时，给row_id留的只是6个字节的长度，这样写到数据表中时只放了最后6个字节，所以row_id能写到数据表中的值，就有两个特征：</p>
+<ol type="1">
+<li>row_id写入表中额值范围，是从0到2^48-1；</li>
+<li>当dict_sys.row_id=2^48时，如果再有插入数据的行为要来申请row_id，拿到以后再取最后6个字节的话就是0。</li>
+</ol>
+<p>也就是说，写入表的row_id是从0开始到2^48-1。达到上限后，下一个值就是0，然后继续循环。</p>
+<p>当然，2^48-1这个值本身已经很大了，但是如果一个MySQL实例跑得足够久的话，还是可能达到这个上限的。在InnoDB逻辑里，申请到row_id=N后，就将这行数据写入表中；如果表中已经存在row_id=N的行，新写入的行就会覆盖原有的行。</p>
+<p>要验证这个结论的话，你可以通过gdb修改系统的自增row_id来实现。注意，用gdb改变量这个操作是为了便于我们复现问题</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/29/%E5%88%B0%E5%BA%95%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8join/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -454,7 +545,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-29 13:35:41 / 修改时间：20:01:56" itemprop="dateCreated datePublished" datetime="2020-08-29T13:35:41+08:00">2020-08-29</time>
+              <time title="创建时间：2020-08-29 13:35:41 / 修改时间：20:03:12" itemprop="dateCreated datePublished" datetime="2020-08-29T13:35:41+08:00">2020-08-29</time>
             </span>
 
           
@@ -497,7 +588,7 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">left</span> <span class="keyword">join</span> b <span class="keyword">on</span> (a.f1=b.f1) <span class="keyword">and</span> (a.f2=b.f2); <span class="comment">/*Q1*/</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">left</span> <span class="keyword">join</span> b <span class="keyword">on</span> (a.f1=b.f1) <span class="keyword">where</span> (a.f2=b.f2); <span class="comment">/*Q2*/</span></span><br></pre></td></tr></table></figure>
 <p>我把这两条语句分别记为Q1和Q2。</p>
 <p>首先，需要说明的是，这两个left join语句的语义逻辑并不相同。我们先来看一下它们的执行结果。</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%98-%E4%B8%A4%E4%B8%AAjoin%E7%9A%84%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C.png" class>
 <p>可以看到：</p>
 <ol type="1">
 <li>语句Q1返回的数据集是6行，表a中即使没有满足匹配条件的记录，查询结果中也会返回一行，并将表b的各个字段值填成NULL。</li>
@@ -505,7 +596,7 @@
 </ol>
 <p>接下来，我们看看实际执行这两条语句时，MySQL是怎么做的。</p>
 <p>我们先一起看看语句Q1的explain结果：</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%98-Q1%E7%9A%84explain%E7%BB%93%E6%9E%9C.png" class>
 <p>可以看到，这个结果符合我们的预期：</p>
 <ul>
 <li>驱动表是表a，被驱动表是表b；</li>
@@ -518,10 +609,10 @@
 <li>表b扫描完成后，对于没有被匹配的表a的行（在这个例子中就是(1,1)、(2,2)这两行），把剩余字段补上NULL，再放入结果集中。</li>
 </ol>
 <p>对应的流程图如下：</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%982.jpg" class>
 <p>可以看到，这条语句确实是以表a为驱动表，而且从执行效果看，也和使用straight_join是一样的。</p>
 <p>你可能会想，语句Q2的查询结果里面少了最后两行数据，是不是就是把上面流程中的步骤3去掉呢？我们还是先看一下语句Q2的explain结果吧。</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%983.png" class>
 <p>可以看到，这条语句是以表b为驱动表的。而如果一条join语句的Extra字段什么都没写的话，就表示使用的是Index Nested-Loop Join (NLJ) 算法。</p>
 <p>因此，语句Q2使用了a的f1索引，执行流程是这样的：顺序扫描表b，每一行用b.f1到表a中去查，匹配到记录后判断a.f2=b.f2是否满足，满足条件的话就作为结果集的一部分返回。</p>
 <p>那么，<strong>为什么语句Q1和Q2这两个查询的执行流程会差距这么大呢？</strong>其实，这是因为优化器基于Q2这个查询的语义做了优化。</p>
@@ -529,13 +620,13 @@
 <p>因此，语句Q2里面where a.f2=b.f2就表示，查询结果里面不会包含b.f2是NULL的行，这样这个left join的语义就是"找到这两个表里面，f1、f2对应相同的行。对于表a中存在，而表b中匹配不到的行，就放弃"。</p>
 <p>这样，这条语句虽然用的是left join，但是语义跟join是一致的。</p>
 <p>因此，优化器就把这条语句的left join改写成了join，然后因为表a的f1上有索引，就把表b作为驱动表，，这样就可以用上NLJ算法。在执行explain之后，你再执行show warnings，就能看到这个改写的结果，如图5所示。</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%984.png" class>
 <p>这个例子说明，即使我们在SQL语句中写成left join，执行过程还是有可能不是从左到右连接的。也就是说，<strong>使用left join时，左边的表不一定是驱动表。</strong></p>
 <p>这样看来，<strong>如果需要left join的语义，就不能把被驱动表的字段放在where条件里面做等值判断或不等值判断，必须都写在on里面。</strong>那如果是join语句呢？</p>
 <p>这时候，我们再看看这两条语句：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">join</span> b <span class="keyword">on</span>(a.f1=b.f1) <span class="keyword">and</span> (a.f2=b.f2); <span class="comment">/*Q3*/</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">join</span> b <span class="keyword">on</span>(a.f1=b.f1) <span class="keyword">where</span> (a.f2=b.f2); <span class="comment">/*Q4*/</span></span><br></pre></td></tr></table></figure>
 <p>我们再使用一次看explain和show warnings的方法，看看优化器是怎么做的。</p>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%985.png" class>
 <p>可以看到，这两条语句都被改写成：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">join</span> b <span class="keyword">where</span> (a.f1=b.f1) <span class="keyword">and</span> (a.f2=b.f2);</span><br></pre></td></tr></table></figure>
 <p>执行计划自然也是一模一样的。</p>
@@ -586,7 +677,7 @@
 <p>其次，这个问题限定在statement的格式下，也是对的。因为row格式的binlog就没有这个问题了，Write row event里面直接写了每一行的所有字段的值。</p>
 <p>而至于为什么不会发生不一致的情况，我们来看一下下面的这个例子。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t(<span class="keyword">id</span>, it auto_increment primary <span class="keyword">key</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>);</span><br></pre></td></tr></table></figure>
-
+<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%986.png" class>
 <p>可以看到，在insert语句之前，还有一句SET INSERT_ID=1。这条命令的意思是，这个线程里下一次需要用到自增值的时候，不论当前表的自增值是多少，固定用1这个值。</p>
 <p>这个SET INSERT_ID语句是固定跟在insert语句之前的，比如同学提到的场景，主库上语句A的id是1，语句B的id是2，但是写入binlog的顺序先B后A，那么binlog就变成：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> INSERT_ID=<span class="number">2</span>;</span><br><span class="line">语句B;</span><br><span class="line"><span class="keyword">SET</span> INSERT_ID=<span class="number">1</span>;</span><br><span class="line">语句A;</span><br></pre></td></tr></table></figure>
@@ -595,7 +686,8 @@
 <h3 id="小结">小结</h3>
 <p>今天这篇答疑文章，我选了4个好问题和你分享，并做了分析。在我看来，能够提出好问题，首先表示这些同学理解了我们文章的内容，进而又做了深入思考。</p>
 <p>答疑文章也是要有课后思考题的。</p>
-<p>在<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83MDU2Mg==">第8篇文章的评论区<i class="fa fa-external-link-alt"></i></span>，有同学提了一个问题：他查看了一下innodb_trx，发现这个事务的trx_id是一个很大的数（281479535353408），而且似乎在同一个session中启动会话得到的trx_Id是保持不变的。当执行任何加写</p>
+<p>在<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83MDU2Mg==">第8篇文章的评论区<i class="fa fa-external-link-alt"></i></span>，有同学提了一个问题：他查看了一下innodb_trx，发现这个事务的trx_id是一个很大的数（281479535353408），而且似乎在同一个session中启动会话得到的trx_Id是保持不变的。当执行任何加写锁的语句后，trx_id都会变成一个很小的数字(118378)。</p>
+<p>你可以通过实验验证一下，然后分析看看，事务id的分配规则是什么，以及MySQL为什么要这么设计呢？</p>
 
       
     </div>
@@ -640,7 +732,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-29 12:33:27 / 修改时间：20:01:54" itemprop="dateCreated datePublished" datetime="2020-08-29T12:33:27+08:00">2020-08-29</time>
+              <time title="创建时间：2020-08-29 12:33:27 / 修改时间：20:24:06" itemprop="dateCreated datePublished" datetime="2020-08-29T12:33:27+08:00">2020-08-29</time>
             </span>
 
           
@@ -716,12 +808,13 @@
 <li>explain查看命令优化器优化结果；</li>
 <li>show engine innodb status;</li>
 <li>show warnings，看优化器改写后的语句；</li>
+<li>show create table t; 查看t的建表语句；</li>
 </ol>
 <h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
 <ol type="1">
 <li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
 <li>redoLog，undoLog，binLog重要概念。</li>
-<li>索引的<strong>最左前缀规则</strong>，利用最左前缀规则，节省索引数量，节省空间。</li>
+<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
 </ol>
 
       
@@ -767,7 +860,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-29 11:23:02 / 修改时间：13:34:09" itemprop="dateCreated datePublished" datetime="2020-08-29T11:23:02+08:00">2020-08-29</time>
+              <time title="创建时间：2020-08-29 11:23:02 / 修改时间：20:14:23" itemprop="dateCreated datePublished" datetime="2020-08-29T11:23:02+08:00">2020-08-29</time>
             </span>
 
           
@@ -879,6 +972,17 @@
 <p>当然，如果你的团队已经维护了一个成熟的分库分表中间件，用业务分表，对业务开发同学来说，并没有额外的复杂性，对DBA也更直观，自然是更好的。</p>
 <p>最后，我给你留一个思考题吧。</p>
 <p>我们举例的表中，没有用到自增主键，假如现在要创建一个自增字段id。MySQL要求分区表中的主键必须包含分区字段。如果要在表t的基础上做修改，你会怎么定义这个表的主键呢？为什么这么定义呢？</p>
+<p>解答：</p>
+<p>上期的问题是，怎么给分区表t创建自增主键。由于MySQL要求主键包含所有的分区字段，所以肯定是要创建联合主键的。</p>
+<p>这时候就有两种可选：一种是（ftime, id），另一种是（id, ftime）。</p>
+<p>如果从利用率上来看，应该使用（ftime, id）这种模式。因为用ftime做分区key，说明大多数语句都是包含ftime的，使用这种模式，可以利用前缀索引的规则，减少一个索引。</p>
+<p>这时的建表语句是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line"> <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"> <span class="string">`ftime`</span> datatime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line"> PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>, <span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=MyISAM <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = MyISAM);</span><br></pre></td></tr></table></figure>
+<p>当然，我的建议是你要尽量使用InnoDB引擎。InnoDB表要求至少有一个索引，以自增字段作为第一个字段，所以需要一个id的单独索引。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`ftime`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>,<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`id`</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>);</span><br></pre></td></tr></table></figure>
+<p>当然把字段反过来，创建成：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PRIMARY KEY (`id`,`ftime`),</span><br><span class="line">KEY `id` (`ftime`)</span><br></pre></td></tr></table></figure>
+<p>也是可以的。</p>
 
       
     </div>
@@ -1528,168 +1632,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/" class="post-title-link" itemprop="url">insert语句的锁为什么这么多？</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-08-28 15:40:09 / 修改时间：17:14:42" itemprop="dateCreated datePublished" datetime="2020-08-28T15:40:09+08:00">2020-08-28</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
-<p>因此，insert语句是一个很轻量的操作。不过，这个结论是对于“普通的insert语句”才有效。也就是说，还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
-<p>那么，今天这篇文章，我们就一起来聊聊这个话题。</p>
-<h3 id="insert...select语句">1. insert...select语句</h3>
-<p>我们先从上一篇文章的话题说起吧。表t1和t2的表结构、初始化数据语句如下，今天的例子我们还是针对这两个表展开。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">3</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t2 <span class="keyword">like</span> t</span><br></pre></td></tr></table></figure>
-<p>现在，我们一起来看看为什么在可重复读隔离级别下，binlog_format=statement时执行：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> iinto t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>这个语句时需要对表t的所有行和间隙加锁呢？</p>
-<p>其实，这个问题我们需要考虑的还是日志和数据的一致性。我们看下这个执行序列：</p>
-<img data-src="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/insert-%E5%B9%B6%E5%8F%91insert%E5%9C%BA%E6%99%AF.png" class>
-<p>实际的执行效果是，如果session B先执行，由于这个语句对表t主键索引加了（-∞，1]这个next-key lock，会在语句执行完成后，才允许session A的insert语句执行。</p>
-<p>但如果没有锁的话，就可能出现session B的insert语句先执行，但是后写入binlog的情况。于是，在binlog_format=statement的情况下，binlog里面就记录了这样的语句序列：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>这个语句到了备库执行，就会把id=-1这一行也写到表t2中，出现主备不一致。</p>
-<h3 id="insert循环写入">2. insert循环写入</h3>
-<p>当然了，执行insert...select的时候，对目标表也不是锁全表，而是只锁住需要访问的资源。</p>
-<p>如果现在有这么一个需求：要往表t2中插入一行数据，这一行的c值是表t中c值的最大值加1。</p>
-<p>此时，我们可以这么写这条SQL语句：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) (<span class="keyword">select</span> c+<span class="number">1</span>, d <span class="keyword">from</span> t <span class="keyword">force</span> <span class="keyword">index</span>(c) <span class="keyword">order</span> <span class="keyword">by</span> c <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-<p>这个语句的加锁范围，就是表t索引c上的(3, 4]和(4, supremum]的两个next-key lock，以及主键索引上id=4这一行。</p>
-<p>它的执行流程也比较简单，从表t中按照索引c倒序，扫描第一行，拿到结果写入到表t2中。</p>
-<p>因此整条语句的扫描行数是1。</p>
-<p>这个语句执行的慢查询日志（slow log），如下图所示：</p>
-<img data-src="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/insert-%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97-%E5%B0%86%E6%95%B0%E6%8D%AE%E6%8F%92%E5%85%A5%E8%A1%A8t2.png" class>
-<p>通过这个慢查询日志，我们看到Rows_examined=1，正好验证了执行这条语句的扫描行数为1。</p>
-<p>那么，如果我们是要把这样的一行数据插入到表t中的话：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t(c, d) (<span class="keyword">select</span> c+<span class="number">1</span>, d <span class="keyword">from</span> t <span class="keyword">force</span> <span class="keyword">index</span>(c) <span class="keyword">order</span> <span class="keyword">by</span> c <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-<p>这个语句的执行流程是怎样的？扫描行数又是多少呢？</p>
-<p>这时候，我们再看慢查询日志就会发现不对了。</p>
-<img data-src="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/insert-%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97-%E5%B0%86%E6%95%B0%E6%8D%AE%E6%8F%92%E5%85%A5%E8%A1%A8t.png" class>
-<p>可以看到，这时候的Rows_examined的值是5。</p>
-<p>我在前面的文章提到过，希望你能够学会用explain的结果来“脑补”正条语句的执行过程。今天，我们就来一起试试。</p>
-<p>如图4所示就是这条语句的explain结果。i</p>
-<img data-src="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/insert-explain%E7%BB%93%E6%9E%9C.png" class>
-<p>从Extra字段可以看到“Using temporary"字样，表示这个语句用到了临时表。也就是说，执行过程中，需要把表t的内容读出来，写入临时表。</p>
-<p>图中rows显示的是1，我们不妨先对这个语句的执行流程做一个猜测：如果说是把子查询的结果读出来（扫描1行），写入临时表，然后再从临时表读出来（扫描1行），写回表t中。那么，这个语句的扫描行数就应该是2，而不是5。</p>
-<p>所以，这个猜测不对。实际上，Explain结果里的rows=1是因为受到了limit 1的影响。</p>
-<p>从另一个角度考虑的话，我们可以看看InnoDB扫描了多少行。如下图所示，是在执行这个语句前后查看innodb_rows_read的结果。</p>
-<img data-src="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/insert-innodb-rows-read%E5%8F%98%E5%8C%96.png" class>
-<p>可以看到，这个语句执行前后，Innodb_rows_read的值增加了4。因此默认临时表是使用Memory引擎的，所以这4行查的都是表t，也就是说对表t做了全表扫描。</p>
-<p>这样，我们就把整个执行过程理清楚了：</p>
-<ol type="1">
-<li>创建临时表，表里有两个字段c和d。</li>
-<li>按照索引c扫描表t，依次取c=4、3、2、1，然后回表，读到c和d的值写入临时表。这时，Rows_examined=4。</li>
-<li>由于语义里面有limit 1，所以只取了临时表的第一行，再插入到表t中。这时，Rows_examined的值加1，变成了5。</li>
-</ol>
-<p>也就是说，这个语句会导致在表t上做全表扫描，并且会给索引c上的所有间隙都加上共享的next-key lock。所以，这个语句执行期间，其他事务不能在这个表上插入数据。</p>
-<p>至于这个语句的执行为什么需要临时表，原因是这类一边遍历数据，一边更新数据的情况，如果读出来的数据直接写回原表，就可能在遍历的过程中，读到刚刚插入的记录，新插入的记录如果参与计算逻辑，就跟语义不符。</p>
-<p>由于实现上这个语句没有在子查询中就直接使用limit 1，从而导致了这个语句的执行需要遍历整个表t。它的优化方法也比较简单，就是用前面介绍的方法，先insert into到临时表temp_t，这样就只需要扫描一行；然后再从表temp_t里面取出这行数据插入表t1。</p>
-<p>当然，由于这个语句涉及到的数据量很小，你可以考虑使用内存临时表来做这个优化。使用内存临时表优化时，语句序列的写法如下：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">temporary</span> <span class="keyword">table</span> temp_t(c <span class="built_in">int</span>,d <span class="built_in">int</span>) <span class="keyword">engine</span>=<span class="keyword">memory</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> temp_t (<span class="keyword">select</span> c + <span class="number">1</span>, d <span class="keyword">from</span> t <span class="keyword">force</span> <span class="keyword">index</span>(c) <span class="keyword">order</span> <span class="keyword">by</span> c <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">select</span> * <span class="keyword">from</span> temp_t;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> temp_t;</span><br></pre></td></tr></table></figure>
-<h3 id="insert唯一键冲突">3. insert唯一键冲突</h3>
-<p>前面的两个例子是使用insert...select的情况，接下来我要介绍的这个例子就是最常见的insert语句出现唯一键冲突的情况。</p>
-<p>对于有唯一键的表，插入数据时出现唯一键冲突也是常见的情况了。我先给你举一个简单的唯一键冲突的例子。</p>
-<img data-src="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/insert-%E5%94%AF%E4%B8%80%E9%94%AE%E5%86%B2%E7%AA%81%E5%8A%A0%E9%94%81.png" class>
-<p>这个例子也是在可重复读（repeatable read）隔离级别下执行的。可以看到，session B要执行的insert语句进入了锁等待状态。</p>
-<p>也就是说，session A执行的insert语句，发生唯一键冲突的时候，并不只是简单地报错返回，还在冲突的索引上加了锁。我们前面说过，一个next-key lock就是由它的右边界的值定义的。这时候，session A持有索引c上的(5, 10]共享的next-key lock（读锁）。</p>
-<p>至于为什么要加这个锁，其实我也没找到合理的解释。从作用上来看，这样做可以避免这一行被别的事务删掉。</p>
-<p>这里官方文档有一个描述错误，认为如果冲突的是主键索引，就加记录锁，唯一索引才加next-key lock。但实际上，这两类索引冲突加的都是next-key lock。</p>
-<p>这里，我就先和你分享一个经典的死锁场景。</p>
-<img data-src="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/insert-%E5%94%AF%E4%B8%80%E9%94%AE%E5%86%B2%E7%AA%81-%E6%AD%BB%E9%94%81.png" class>
-<p>在session A执行rollback语句回滚的时候，session C几乎同时发现死锁并返回。</p>
-<p>这个死锁产生的逻辑是这样的：</p>
-<ol type="1">
-<li>在T1时刻，启动session A，并执行insert语句，此时在索引c的c=5上加了记录锁。注意，这个索引是唯一索引，因此退化为记录锁（如果你的印象模糊了，可以回顾下<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">第21篇文章<i class="fa fa-external-link-alt"></i></span>介绍的加锁规则）。</li>
-<li>在T2时刻，session B要执行相同的insert语句，发现了唯一键冲突，加上读锁；同样地，session C也在索引c上，c=5这一个记录上，加了读锁。</li>
-<li>T3时刻，session A回滚。这时候，session B和session C都试图继续执行插入操作，都要加上写锁。两个session都要等待对方的行锁，所以就出现了死锁。</li>
-</ol>
-<p>这个流程的状态变化图如下所示。</p>
-<img data-src="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/insert-%E7%8A%B6%E6%80%81%E5%8F%98%E5%8C%96%E5%9B%BE-%E6%AD%BB%E9%94%81.jpg" class>
-<h3 id="insert-into-...-on-duplicate-key-update">4. insert into ... on duplicate key update</h3>
-<p>上面这个例子是主键冲突后直接报错，如果是改写成</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">11</span>, <span class="number">10</span>, <span class="number">10</span>) <span class="keyword">on</span> <span class="keyword">duplicate</span> <span class="keyword">key</span> <span class="keyword">update</span> d=<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
-<p>的话，就会给索引c上(5, 10]加一个排他的next-key lock（写锁）。</p>
-<p><strong>insert into ... on duplicate key update 这个语义的逻辑是，插入一行数据，如果碰到唯一键约束，就执行后面的更新语句。</strong></p>
-<p>注意，如果有多个列违反了唯一性约束，就会按照索引的顺序，修改跟第一个索引冲突的行。</p>
-<p>现在表t里面已经有了(1, 1, 1)和(2, 2, 2)这两行，我们再来看看下面这个语句执行的效果：</p>
-<img data-src="/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/insert-%E4%B8%A4%E4%B8%AA%E5%94%AF%E4%B8%80%E9%94%AE%E5%90%8C%E6%97%B6%E5%86%B2%E7%AA%81.png" class>
-<p>可以看到，主键id是先判断的，MySQL认为这个语句跟id=2这一行冲突，所以修改的是id=2的行。</p>
-<p>需要注意的是，执行这条语句的affected rows返回的是2，很容易在成误解。实际上，真正更新的只有一行，只是在代码实现桑，insert和update都认为自己成功了，update计数增加了1，insert计数增加了1。</p>
-<h3 id="小结">小结</h3>
-<p>今天这篇文章，我和你介绍了几种特殊情况下的insert语句。</p>
-<p>insert...select时很常见的在两个表之间拷贝数据的方法。你需要注意，在可重复读隔离级别下，这个语句会给select的表里扫描到的记录和间隙加读锁。</p>
-<p>而如果insert和select的对象是同一个表，则有可能会造成循环写入。这种情况下，我们需要引入用户临时表来做优化。</p>
-<p>insert语句如果出现唯一键冲突，会在冲突的唯一值上加共享的next-key lock（S锁）。因此，碰到由于唯一键约束导致报错后，要尽快提交或回滚事务，避免加锁时间过长。</p>
-<p>最后，我给你留一个问题吧。</p>
-<p>你平时在两个表之间拷贝数据用的是什么方法，有什么注意事项吗？在你的应用场景里，这个方法，相较于其他方法的优势是什么呢？</p>
-<p>另外，insert..select执行期间，有其他线程操作原表，会导致逻辑错误。其实这是不会的，如果不加锁，就是快照读。</p>
-<p>一条语句执行期间，它的一致性视图是不会修改的，所以即使有其他事务修改了原表的数据，也不会影响这条语句看到的数据。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1761,7 +1703,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">84</span>
+          <span class="site-state-item-count">85</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
