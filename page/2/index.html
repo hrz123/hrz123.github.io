@@ -1134,7 +1134,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-28 16:24:29" itemprop="dateModified" datetime="2020-08-28T16:24:29+08:00">2020-08-28</time>
+                <time title="修改时间：2020-08-31 00:55:15" itemprop="dateModified" datetime="2020-08-31T00:55:15+08:00">2020-08-31</time>
               </span>
 
           
@@ -1162,7 +1162,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
+          <h3 id="epoll-网络事件收集器模型也有分发">epoll 网络事件收集器模型（也有分发）</h3>
+<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
 <p>首先，epoll 和 kqueue（mac os内核才有）随文件描述符（句柄数的增加，也表示并发连接数的增加）的增加，所消耗的时间几乎不变。而Poll和select所消耗的时间是急剧上升的。epoll基本与句柄数增加是无关的，所以它的性能会好很多，而且非常适合做大并发连接的处理。那么，为什么会这样呢？</p>
 <h3 id="前提">前提</h3>
 <p>高并发连接中，每次处理的活跃连接数量占比很小</p>

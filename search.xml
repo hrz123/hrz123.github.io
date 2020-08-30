@@ -108,6 +108,37 @@
       </tags>
   </entry>
   <entry>
+    <title>K个一组翻转链表</title>
+    <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
+<p>将pre指向开头</p>
+<p>循环开始，只要head不为nil</p>
+<p>令tail = pre</p>
+<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
+<p>nxt记录下tail.next，head即将走向的下一个结点</p>
+<p>反转head到tail中的节点，返回新的head和tail</p>
+<p>def reverse(head, tail):</p>
+<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
+<p>​ while prev != tail:</p>
+<p>​ nxt = cur.next</p>
+<p>​ cur.next = prev</p>
+<p>​ prev = cur</p>
+<p>​ cur = nxt</p>
+<p>​ return tail, head</p>
+<p>将pre的next指向新的head</p>
+<p>pre.next = head</p>
+<p>尾部已相连</p>
+<p>更新pre指向tail</p>
+<p>head指向nxt</p>
+<p>最终head为nil时退出循环</p>
+<p>返回dummy.next</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span>(<span class="params">self, head: ListNode, k: int</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span>(<span class="params">self, head, tail</span>):</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL中的锁</title>
     <url>/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
     <content><![CDATA[<h2 id="全局锁表锁行锁间隙锁">全局锁、表锁、行锁、间隙锁。</h2>
@@ -167,37 +198,6 @@
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>K个一组翻转链表</title>
-    <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
-    <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
-<p>将pre指向开头</p>
-<p>循环开始，只要head不为nil</p>
-<p>令tail = pre</p>
-<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
-<p>nxt记录下tail.next，head即将走向的下一个结点</p>
-<p>反转head到tail中的节点，返回新的head和tail</p>
-<p>def reverse(head, tail):</p>
-<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
-<p>​ while prev != tail:</p>
-<p>​ nxt = cur.next</p>
-<p>​ cur.next = prev</p>
-<p>​ prev = cur</p>
-<p>​ cur = nxt</p>
-<p>​ return tail, head</p>
-<p>将pre的next指向新的head</p>
-<p>pre.next = head</p>
-<p>尾部已相连</p>
-<p>更新pre指向tail</p>
-<p>head指向nxt</p>
-<p>最终head为nil时退出循环</p>
-<p>返回dummy.next</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span>(<span class="params">self, head: ListNode, k: int</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span>(<span class="params">self, head, tail</span>):</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -715,7 +715,8 @@
   <entry>
     <title>epoll的优劣和原理</title>
     <url>/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/</url>
-    <content><![CDATA[<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
+    <content><![CDATA[<h3 id="epoll-网络事件收集器模型也有分发">epoll 网络事件收集器模型（也有分发）</h3>
+<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
 <p>首先，epoll 和 kqueue（mac os内核才有）随文件描述符（句柄数的增加，也表示并发连接数的增加）的增加，所消耗的时间几乎不变。而Poll和select所消耗的时间是急剧上升的。epoll基本与句柄数增加是无关的，所以它的性能会好很多，而且非常适合做大并发连接的处理。那么，为什么会这样呢？</p>
 <h3 id="前提">前提</h3>
 <p>高并发连接中，每次处理的活跃连接数量占比很小</p>
@@ -1558,6 +1559,37 @@
       </tags>
   </entry>
   <entry>
+    <title>为什么rowid是6个字节</title>
+    <url>/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/</url>
+    <content><![CDATA[<p>首先官方文档是这么写的。参考<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnklMjBJbm5vREIlMjB0YWJsZSUyMGhhcyUyMGEsZm9yJTIwdGhlJTIwcm93cyUyMGlzJTIwc3RvcmVkLiZhbXA7dGV4dD1UaGUlMjByb3clMjBJRCUyMGlzJTIwYSxhcmUlMjBwaHlzaWNhbGx5JTIwaW4lMjBpbnNlcnRpb24lMjBvcmRlci4=">MySQL5.6 Ref manual<i class="fa fa-external-link-alt"></i></span>。</p>
+<p>每个InnoDB表都有一个特殊的索引，称为聚簇索引clustered index，行的数据就存储在这里。通常情况下，聚簇索引是主键的同义词。为了从查询、插入和其他数据库操作中获得最佳性能，你必须理解InnoDB是如何使用聚簇索引来优化每个表的最常见的查找和DML操作的。</p>
+<ul>
+<li>当你在表上定义一个primary key时，InnoDB就会把它作为聚簇索引。为你创建的每一个表定义一个主键。如果没有逻辑上唯一且非空的列或列集合，则添加一个新的自动增加列，其值会自动填入。</li>
+<li>如果你没有为你的表定义primary key，MySQL会定位第一个Unique索引，其中所有的关键列都是Not Null。InnoDB使用它作为聚簇索引。</li>
+<li>如果表没有primary key或合适的unique索引，InnoDB内部会在包含row id值的合成列上生成一个名为GEN_CLUST_INDEX的隐藏聚簇索引。行是由InnoDB分配给这种表中的行的ID来排序的。row id是一个6字节的字段，随着新行的插入而单调增加。因此，按row id排序的行在物理上是按插入顺序排列的。</li>
+</ul>
+<h5 id="聚簇索引是如何加快查询速度的">聚簇索引是如何加快查询速度的？</h5>
+<p>通过聚簇索引访问行的速度很快，因为索引搜索会直接引导到包含所有行数据的页面。如果一张表很大，与使用与索引记录不同的页面存储行数据的存储组织相比，聚簇索引架构往往可以节省一次磁盘I/O操作。</p>
+<h5 id="二级索引与聚簇索引的关系">二级索引与聚簇索引的关系</h5>
+<p>除了聚簇索引以外的所有索引都称为二级索引。在InnoDB中，二级索引中的每条记录都包含改行的主键列，以及二级索引指定的列。InnoDB使用这个主键值来搜索聚簇索引中的行。</p>
+<p>如果主键长，二级索引就会使用更多的空间，所以主键短是有利的。</p>
+<h3 id="回答标题的问题">回答标题的问题</h3>
+<img data-src="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/rowid1.gif" class>
+<p>这里我没有找到mysql的rowid为什么是6个字节的答案，找到是关于oracle rowid的解释，猜测是互通的。</p>
+<p>rowid是伪列。不会真正存在表的data block中，但是它会存在于index中。</p>
+<p>扩展的rowid在磁盘上需要10个字节的存储空间，并使用18个字符来显示。</p>
+<p>解释如下：</p>
+<p>在oracle 8以前，一个rowid占用6个字节大小的存储空间（10 bit file# + 22bit block # + 16 bit row #)，rowid格式为：BBBBBBBB.RRRR.FFFF。</p>
+<p>在oracle 8以后，rowid的存储空间扩大到了10个字节（32 bit object# + 10bit rfile# + 22 bit block# + 16 bit row#)，文件号仍然用10位表示，只是不再需要置换，为了向后兼容，同时引入了相对文件号（rfile#)，所以从Oracle7到Oracle8，rowid仍然无需发生变化。</p>
+<p>这里我猜测，mysql rowid也是存储了 10位的文件号，22位的块号，16位的行号。</p>
+<h3 id="更新已经得到答案">更新：已经得到答案。</h3>
+<p>详见<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MzE4Mw==">文章<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用函数randa()来实现函数randb()</title>
     <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
     <content><![CDATA[<h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
@@ -1596,37 +1628,6 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>为什么rowid是6个字节</title>
-    <url>/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/</url>
-    <content><![CDATA[<p>首先官方文档是这么写的。参考<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnklMjBJbm5vREIlMjB0YWJsZSUyMGhhcyUyMGEsZm9yJTIwdGhlJTIwcm93cyUyMGlzJTIwc3RvcmVkLiZhbXA7dGV4dD1UaGUlMjByb3clMjBJRCUyMGlzJTIwYSxhcmUlMjBwaHlzaWNhbGx5JTIwaW4lMjBpbnNlcnRpb24lMjBvcmRlci4=">MySQL5.6 Ref manual<i class="fa fa-external-link-alt"></i></span>。</p>
-<p>每个InnoDB表都有一个特殊的索引，称为聚簇索引clustered index，行的数据就存储在这里。通常情况下，聚簇索引是主键的同义词。为了从查询、插入和其他数据库操作中获得最佳性能，你必须理解InnoDB是如何使用聚簇索引来优化每个表的最常见的查找和DML操作的。</p>
-<ul>
-<li>当你在表上定义一个primary key时，InnoDB就会把它作为聚簇索引。为你创建的每一个表定义一个主键。如果没有逻辑上唯一且非空的列或列集合，则添加一个新的自动增加列，其值会自动填入。</li>
-<li>如果你没有为你的表定义primary key，MySQL会定位第一个Unique索引，其中所有的关键列都是Not Null。InnoDB使用它作为聚簇索引。</li>
-<li>如果表没有primary key或合适的unique索引，InnoDB内部会在包含row id值的合成列上生成一个名为GEN_CLUST_INDEX的隐藏聚簇索引。行是由InnoDB分配给这种表中的行的ID来排序的。row id是一个6字节的字段，随着新行的插入而单调增加。因此，按row id排序的行在物理上是按插入顺序排列的。</li>
-</ul>
-<h5 id="聚簇索引是如何加快查询速度的">聚簇索引是如何加快查询速度的？</h5>
-<p>通过聚簇索引访问行的速度很快，因为索引搜索会直接引导到包含所有行数据的页面。如果一张表很大，与使用与索引记录不同的页面存储行数据的存储组织相比，聚簇索引架构往往可以节省一次磁盘I/O操作。</p>
-<h5 id="二级索引与聚簇索引的关系">二级索引与聚簇索引的关系</h5>
-<p>除了聚簇索引以外的所有索引都称为二级索引。在InnoDB中，二级索引中的每条记录都包含改行的主键列，以及二级索引指定的列。InnoDB使用这个主键值来搜索聚簇索引中的行。</p>
-<p>如果主键长，二级索引就会使用更多的空间，所以主键短是有利的。</p>
-<h3 id="回答标题的问题">回答标题的问题</h3>
-<img data-src="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/rowid1.gif" class>
-<p>这里我没有找到mysql的rowid为什么是6个字节的答案，找到是关于oracle rowid的解释，猜测是互通的。</p>
-<p>rowid是伪列。不会真正存在表的data block中，但是它会存在于index中。</p>
-<p>扩展的rowid在磁盘上需要10个字节的存储空间，并使用18个字符来显示。</p>
-<p>解释如下：</p>
-<p>在oracle 8以前，一个rowid占用6个字节大小的存储空间（10 bit file# + 22bit block # + 16 bit row #)，rowid格式为：BBBBBBBB.RRRR.FFFF。</p>
-<p>在oracle 8以后，rowid的存储空间扩大到了10个字节（32 bit object# + 10bit rfile# + 22 bit block# + 16 bit row#)，文件号仍然用10位表示，只是不再需要置换，为了向后兼容，同时引入了相对文件号（rfile#)，所以从Oracle7到Oracle8，rowid仍然无需发生变化。</p>
-<p>这里我猜测，mysql rowid也是存储了 10位的文件号，22位的块号，16位的行号。</p>
-<h3 id="更新已经得到答案">更新：已经得到答案。</h3>
-<p>详见<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MzE4Mw==">文章<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
