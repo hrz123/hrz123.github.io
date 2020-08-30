@@ -1,33 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
-    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
-<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
-<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
-<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
-<h2 id="算法">算法</h2>
-<ol type="1">
-<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
-<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
-<li>while sptSet不包含所有的顶点：
-<ul>
-<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
-<li>将u加入到sptSet中。</li>
-<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
-</ul></li>
-</ol>
-<h2 id="代码示例">代码示例</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="参考">参考</h2>
-<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>GC的三种基本实现方式和优缺点</title>
     <url>/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/</url>
     <content><![CDATA[<h3 id="参考">参考：</h3>
@@ -105,6 +78,33 @@
 ]]></content>
       <tags>
         <tag>高级编程语言</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
+    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
+<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
+<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
+<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
+<h2 id="算法">算法</h2>
+<ol type="1">
+<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
+<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
+<li>while sptSet不包含所有的顶点：
+<ul>
+<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
+<li>将u加入到sptSet中。</li>
+<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
+</ul></li>
+</ol>
+<h2 id="代码示例">代码示例</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="参考">参考</h2>
+<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -201,6 +201,38 @@
       </tags>
   </entry>
   <entry>
+    <title>MySQL如何正确地显示随机消息？ </title>
+    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论</p>
+<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
+<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
+<h3 id="正确的方法">正确的方法</h3>
+<p>下面这个流程：</p>
+<ol type="1">
+<li>取得整个表的行数，并记为C。</li>
+<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
+<li>再用limit Y，1 取得一行。</li>
+</ol>
+<p>下面这段代码，就是上面流程的执行语句的序列。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
+<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
+<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
+<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
+<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
+<ol type="1">
+<li>取得整个表的行数，即为C</li>
+<li>按照相同的随机方法得到Y1、Y2、Y3</li>
+<li>再执行三个limit Y, 1语句得到三行数据。</li>
+<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
+</ol>
+<h3 id="参考">参考</h3>
+<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL事务隔离</title>
     <url>/2020/08/20/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/</url>
     <content><![CDATA[<h2 id="事务">事务</h2>
@@ -273,38 +305,6 @@
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> information_schema.innodb_trx <span class="keyword">where</span> TIME_TO_SEC(<span class="keyword">timediff</span>(<span class="keyword">now</span>(),trx_started))&gt;<span class="number">60</span></span><br></pre></td></tr></table></figure>
 <h2 id="小结">小结</h2>
 <p>这篇文章，主要介绍了MySQL的事务隔离级别的现象和实现，根据实现原理分析了长事务存在的风险，以及如何用正确的方式避免长事务，希望举的例子能够帮助你理解事务，并更好的使用MySQL的事务特性。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL如何正确地显示随机消息？ </title>
-    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论</p>
-<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
-<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
-<h3 id="正确的方法">正确的方法</h3>
-<p>下面这个流程：</p>
-<ol type="1">
-<li>取得整个表的行数，并记为C。</li>
-<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
-<li>再用limit Y，1 取得一行。</li>
-</ol>
-<p>下面这段代码，就是上面流程的执行语句的序列。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
-<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
-<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
-<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
-<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
-<ol type="1">
-<li>取得整个表的行数，即为C</li>
-<li>按照相同的随机方法得到Y1、Y2、Y3</li>
-<li>再执行三个limit Y, 1语句得到三行数据。</li>
-<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
-</ol>
-<h3 id="参考">参考</h3>
-<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -920,44 +920,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 23.合并K个排序链表</title>
-    <url>/2020/08/11/leetcode-23-%E5%90%88%E5%B9%B6K%E4%B8%AA%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/</url>
-    <content><![CDATA[<p>合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。</p>
-<p>示例:</p>
-<p>输入: [ 1-&gt;4-&gt;5, 1-&gt;3-&gt;4, 2-&gt;6] 输出: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6</p>
-<p>是工业界很常见的一种操作，比如分布式系统中、数据库中，我们有多个索引是有序的，且在多个小文件中存储，我们要合并成一个新的有序链表。我们可以有哪些想法呢。</p>
-<p>最暴力的解法是，每次遍历所有链表，找到最小的链表头，将结果链表的下一个指针指向该链表头，然后链表头指向其下一个节点。</p>
-<ul>
-<li>时间复杂度：找最小的链表头O(k)，假设链表平均长度n，要找O(nk)次，总体是O(k^2n)的。</li>
-<li>空间复杂度：O(1)，不使用额外空间</li>
-</ul>
-<p>对于我来说最直接的想法是，建一个dummy哨兵链表节点，用cur指针指向dummy，同时观察所有链表的头部元素，选出最小的一个，将cur.next指向这个链表头，这个链表如果next不为Null，就加入这个链表头的集合中，否则就不加入，然后令cur=cur.next。这样加入我们共有K个链表，那么我们的集合就是K这么大，这样插入一个元素，每次删除其中最小元素都很高效的数据结构是堆。</p>
-<ul>
-<li>总的时间复杂度就是O(k*n*logk)。因为我们一共要插入和删除K次。</li>
-<li>空间复杂度：O(K)，我们要使用一个K大小的堆。</li>
-</ul>
-<p>另一种想法用分治的方法进行合并。我们</p>
-<ul>
-<li>将k个链表配对，将一对中的链表合并。</li>
-<li>第一轮合并以后，k个链表被合并成了k/2个链表，平均长度为2n/k，然后是k/4个链表，k/8个链表等等。</li>
-<li>重复这一过程，直到我们得到了最终的有序链表。</li>
-</ul>
-<p>我们来分析一下复杂度：</p>
-<ul>
-<li>时间复杂度：我们知道合并两个有序链表，等于两个链表长度的和，所以是O(2n)，要合并k/2个，之后合并k/4个链表，合并时间复杂度是O(4n)，所以最终的时间复杂度还是O(n k log(k)) 。</li>
-<li>空间复杂度：我们归并要使用递归，递归的深度为logk，所以我们要使用O(logk)的栈空间。</li>
-</ul>
-<h2 id="示例代码">示例代码</h2>
-<p>使用堆合并</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        cur = dummy</span><br><span class="line">        <span class="comment"># 这里的i为了排序</span></span><br><span class="line">        heap = [(l.val, i, l) <span class="keyword">for</span> i, l <span class="keyword">in</span> enumerate(lists) <span class="keyword">if</span> l]</span><br><span class="line">        heapq.heapify(heap)</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            val, ind, l = heapq.heappop(heap)</span><br><span class="line">            cur.next = l</span><br><span class="line">            <span class="keyword">if</span> l.next:</span><br><span class="line">                l = l.next</span><br><span class="line">                heapq.heappush(heap, (l.val, ind, l))</span><br><span class="line">            cur = cur.next</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
-<p>分支合并</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        n = len(lists)</span><br><span class="line">        <span class="keyword">return</span> self.merge(lists, <span class="number">0</span>, n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">merge</span>(<span class="params">self, lists, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span> lists[l]</span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        l1 = self.merge(lists, l, mid)</span><br><span class="line">        l2 = self.merge(lists, mid + <span class="number">1</span>, r)</span><br><span class="line">        <span class="keyword">return</span> self.mergeTwoLists(l1, l2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1, l2</span>):</span></span><br><span class="line">        dummy = cur = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val &lt;= l2.val:</span><br><span class="line">                cur.next = l1</span><br><span class="line">                l1 = l1.next</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur.next = l2</span><br><span class="line">                l2 = l2.next</span><br><span class="line">            cur = cur.next</span><br><span class="line">        cur.next = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 215. 数组中的第K个最大元素 </title>
     <url>/2020/08/07/leetcode-215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/</url>
     <content><![CDATA[<h2 id="借助本题深入了解快速排序中的随机选择和堆的堆化插入删除操作">借助本题深入了解快速排序中的随机选择，和堆的堆化、插入、删除操作</h2>
@@ -1052,6 +1014,44 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 23.合并K个排序链表</title>
+    <url>/2020/08/11/leetcode-23-%E5%90%88%E5%B9%B6K%E4%B8%AA%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p>合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。</p>
+<p>示例:</p>
+<p>输入: [ 1-&gt;4-&gt;5, 1-&gt;3-&gt;4, 2-&gt;6] 输出: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6</p>
+<p>是工业界很常见的一种操作，比如分布式系统中、数据库中，我们有多个索引是有序的，且在多个小文件中存储，我们要合并成一个新的有序链表。我们可以有哪些想法呢。</p>
+<p>最暴力的解法是，每次遍历所有链表，找到最小的链表头，将结果链表的下一个指针指向该链表头，然后链表头指向其下一个节点。</p>
+<ul>
+<li>时间复杂度：找最小的链表头O(k)，假设链表平均长度n，要找O(nk)次，总体是O(k^2n)的。</li>
+<li>空间复杂度：O(1)，不使用额外空间</li>
+</ul>
+<p>对于我来说最直接的想法是，建一个dummy哨兵链表节点，用cur指针指向dummy，同时观察所有链表的头部元素，选出最小的一个，将cur.next指向这个链表头，这个链表如果next不为Null，就加入这个链表头的集合中，否则就不加入，然后令cur=cur.next。这样加入我们共有K个链表，那么我们的集合就是K这么大，这样插入一个元素，每次删除其中最小元素都很高效的数据结构是堆。</p>
+<ul>
+<li>总的时间复杂度就是O(k*n*logk)。因为我们一共要插入和删除K次。</li>
+<li>空间复杂度：O(K)，我们要使用一个K大小的堆。</li>
+</ul>
+<p>另一种想法用分治的方法进行合并。我们</p>
+<ul>
+<li>将k个链表配对，将一对中的链表合并。</li>
+<li>第一轮合并以后，k个链表被合并成了k/2个链表，平均长度为2n/k，然后是k/4个链表，k/8个链表等等。</li>
+<li>重复这一过程，直到我们得到了最终的有序链表。</li>
+</ul>
+<p>我们来分析一下复杂度：</p>
+<ul>
+<li>时间复杂度：我们知道合并两个有序链表，等于两个链表长度的和，所以是O(2n)，要合并k/2个，之后合并k/4个链表，合并时间复杂度是O(4n)，所以最终的时间复杂度还是O(n k log(k)) 。</li>
+<li>空间复杂度：我们归并要使用递归，递归的深度为logk，所以我们要使用O(logk)的栈空间。</li>
+</ul>
+<h2 id="示例代码">示例代码</h2>
+<p>使用堆合并</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        cur = dummy</span><br><span class="line">        <span class="comment"># 这里的i为了排序</span></span><br><span class="line">        heap = [(l.val, i, l) <span class="keyword">for</span> i, l <span class="keyword">in</span> enumerate(lists) <span class="keyword">if</span> l]</span><br><span class="line">        heapq.heapify(heap)</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            val, ind, l = heapq.heappop(heap)</span><br><span class="line">            cur.next = l</span><br><span class="line">            <span class="keyword">if</span> l.next:</span><br><span class="line">                l = l.next</span><br><span class="line">                heapq.heappush(heap, (l.val, ind, l))</span><br><span class="line">            cur = cur.next</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
+<p>分支合并</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        n = len(lists)</span><br><span class="line">        <span class="keyword">return</span> self.merge(lists, <span class="number">0</span>, n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">merge</span>(<span class="params">self, lists, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span> lists[l]</span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        l1 = self.merge(lists, l, mid)</span><br><span class="line">        l2 = self.merge(lists, mid + <span class="number">1</span>, r)</span><br><span class="line">        <span class="keyword">return</span> self.mergeTwoLists(l1, l2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1, l2</span>):</span></span><br><span class="line">        dummy = cur = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val &lt;= l2.val:</span><br><span class="line">                cur.next = l1</span><br><span class="line">                l1 = l1.next</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur.next = l2</span><br><span class="line">                l2 = l2.next</span><br><span class="line">            cur = cur.next</span><br><span class="line">        cur.next = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>leetcode 329.矩阵中的最长递增路径</title>
     <url>/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/</url>
     <content><![CDATA[<h2 id="问题描述">问题描述</h2>
@@ -1124,6 +1124,28 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 41.缺失的第一个正数</title>
+    <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
+    <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数">leetcode 41 缺失的第一个正数</h3>
+<h3 id="问题描述">问题描述</h3>
+<p>给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。</p>
+<p>示例 1:</p>
+<p>输入: [1,2,0] 输出: 3 示例 2:</p>
+<p>输入: [3,4,-1,1] 输出: 2 示例 3:</p>
+<p>输入: [7,8,9,11,12] 输出: 1</p>
+<p>提示：</p>
+<p>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。</p>
+<h3 id="思路">思路</h3>
+<p>这道题目和不使用任何额外空间的计数排序很像，因为都对时空复杂度做了严格的限制，我们都不得不改变原数组，设法将其改为我们能够利用的数据结构。否则这两道题目都无法有「真正」的解。不使用额外空间计数排序的那道题目规定数组的元素有一定的范围，我们可以利用32位整数的前16位计数，最终输出计数排序的结果。</p>
+<p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
+<h3 id="算法">算法</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>leetcode 363.矩形区域不超过K的最大数值和，通过此题好好了解前缀和的各种应用和变化</title>
     <url>/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/</url>
     <content><![CDATA[<h2 id="题目描述">题目描述</h2>
@@ -1164,28 +1186,6 @@
 <p>这道题目就是使用了第一种前缀和的变化，并应用了贪心的思想。</p>
 <p>一旦发现target在区间和中，我们就重新统计前缀和。示例代码如下：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxNonOverlapping</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; int:</span></span><br><span class="line">        pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">        p = <span class="number">0</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">            p += n</span><br><span class="line">            <span class="keyword">if</span> p - target <span class="keyword">in</span> pre:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">                pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                pre.add(p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 41.缺失的第一个正数</title>
-    <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
-    <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数">leetcode 41 缺失的第一个正数</h3>
-<h3 id="问题描述">问题描述</h3>
-<p>给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。</p>
-<p>示例 1:</p>
-<p>输入: [1,2,0] 输出: 3 示例 2:</p>
-<p>输入: [3,4,-1,1] 输出: 2 示例 3:</p>
-<p>输入: [7,8,9,11,12] 输出: 1</p>
-<p>提示：</p>
-<p>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。</p>
-<h3 id="思路">思路</h3>
-<p>这道题目和不使用任何额外空间的计数排序很像，因为都对时空复杂度做了严格的限制，我们都不得不改变原数组，设法将其改为我们能够利用的数据结构。否则这两道题目都无法有「真正」的解。不使用额外空间计数排序的那道题目规定数组的元素有一定的范围，我们可以利用32位整数的前16位计数，最终输出计数排序的结果。</p>
-<p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
-<h3 id="算法">算法</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -1238,6 +1238,38 @@
 <h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
 <p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现简单布隆过滤器</title>
+    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
+<p>布隆过滤器vshash table</p>
+<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
+<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
+<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
+<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
+<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
+<h2 id="案例">案例</h2>
+<ol type="1">
+<li>比特币网络</li>
+<li>分布式系统（Map-Reduce) - Hadoop、search engine
+<ol type="1">
+<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
+</ol></li>
+<li>Redis缓存</li>
+<li>垃圾邮件、评论等的过滤</li>
+</ol>
+<h2 id="简单实现示例">简单实现示例</h2>
+<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
+<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
+<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
+<p>search是search(s:str) -&gt;bool</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1299,38 +1331,6 @@
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现简单布隆过滤器</title>
-    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
-<p>布隆过滤器vshash table</p>
-<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
-<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
-<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
-<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
-<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
-<h2 id="案例">案例</h2>
-<ol type="1">
-<li>比特币网络</li>
-<li>分布式系统（Map-Reduce) - Hadoop、search engine
-<ol type="1">
-<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
-</ol></li>
-<li>Redis缓存</li>
-<li>垃圾邮件、评论等的过滤</li>
-</ol>
-<h2 id="简单实现示例">简单实现示例</h2>
-<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
-<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
-<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
-<p>search是search(s:str) -&gt;bool</p>
-<p>示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1447,6 +1447,7 @@
 <li>leetcode刷到300题啦，继续加油啊！</li>
 <li>2020.08.22 第一次leetcode周赛全对，继续努力！</li>
 <li>2020.08.23 leetcode周赛进了前500，继续努力！</li>
+<li>2020.08.30 leetcode 204 周赛全国排名68，进入前100啦！世界排名239，进入前300啦！继续加油啊！</li>
 </ul>
 <h2 id="生活">生活</h2>
 <ul>
@@ -1466,6 +1467,47 @@
 ]]></content>
       <tags>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用函数randa()来实现函数randb()</title>
+    <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
+    <content><![CDATA[<h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
+<p>原文引自：https://blog.csdn.net/wangruitao1991/article/details/51678815</p>
+<p>我们由浅入深，首先来看：</p>
+<ol type="1">
+<li><p>给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5</p>
+<p>rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand7，直到它生成1到5之间的数，然后返回。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand5</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>);  <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">5</span>)&#123;</span><br><span class="line">    x = rand7();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数可以等概率的产生1到5的数码？首先，它确确实实只会返回1到5这几个数，其次，对于这些数，都是由rand7等概率的产生的1/7，没有对任何一个数有偏袒，直觉告诉我们，rand5就是等概率的产生1到5的。事实呢？让我们来计算一下，产生1到5中的数是不是1/5就OK了。</p>
+<p>产生1的概率：等于第一次产生1的概率，加上第一次生成6，7第二次产生1的概率，加上... $$ p(x=1) = 1/7 + 2/7 * 1/7 + (2/7)^2 * 1/7 + ... \</p>
+<p>= 1/7 * (1 + 2/7 + (2/7)^2+...)\</p>
+<p>= 1/7 * 1 / (1-2/7)\</p>
+<p>= 1/5\ $$ 其他同理，所以从上面的分析，我们可以得到一个一般的结论，如果a &gt; b，那么一定可以用randa实现randb。其中，randa表示等概率生成1到a的函数，randb表示等概率生成1到b的函数。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">;<span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randb</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line"> <span class="keyword">while</span> (x &gt; b) &#123;</span><br><span class="line">      x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里还有没有优化的空间呢。我们想如果a大于b很多，那么这个循环大多数是无法退出的。这是我们可以找到一个最接近a的b的整数倍<strong>b * (A/b)</strong>，大于这个整数倍就继续循环，否则就返回 <strong>randa()%b + 1 </strong>。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randa</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x =  ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">//  max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; b * (a / b)) &#123;</span><br><span class="line">    x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了，a大于b时这个问题得到完美的解决了。那么a小于b的时候呢。</p>
+<p>比如，如何用rand5实现rand7。</p>
+<p>我们只需要将rand5映射到一个能产生更大随机数的randa，a &gt; 7，这个问题就可以解决了。这里要注意，映射之后的randa也应该是等概率生成1到a的。</p>
+<p>如何映射呢。其实可以将rand5想象成一个五进制数。2个rand5就可以表示25种情况。</p>
+<p>5 * (rand5() - 1) + rand5()，可以等概率的产生1-25之间的数字。</p>
+<p>根据上面的模板我们可以得到以下的代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">7</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在根据上面的模板简化：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">21</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % <span class="number">7</span> +<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过上文分析，我们可以得到步骤如下：</p>
+<ol type="1">
+<li>如果a &gt; b，进入步骤2；否则构造Randa2 = a * (Randa – 1) + Randa， 表示生成1到a2 随机数的函数。如果a2 仍小于b，继教构造 Randa3 = a * (Randa2 - 1) + Randa…直到ak &gt; b，这时我们得到Randak , 我们记为RandA。</li>
+<li>步骤1中我们得到了RandA(可能是Randa或Randak )，其中A &gt; b， 我们用下述代码构造Randb：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// A &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Randb</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span>(x &gt; b*(A/b)) <span class="comment">// b*(A/b)表示最接近A且小于A的b的倍数</span></span><br><span class="line">        x = RandA();</span><br><span class="line">    <span class="keyword">return</span> x%b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1521,47 +1563,6 @@
 <p>136 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci8=">https://leetcode-cn.com/problems/single-number/<i class="fa fa-external-link-alt"></i></span></p>
 <p>137 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paS8=">https://leetcode-cn.com/problems/single-number-ii/<i class="fa fa-external-link-alt"></i></span></p>
 <p>260 <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc2luZ2xlLW51bWJlci1paWkv">https://leetcode-cn.com/problems/single-number-iii/<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用函数randa()来实现函数randb()</title>
-    <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
-    <content><![CDATA[<h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
-<p>原文引自：https://blog.csdn.net/wangruitao1991/article/details/51678815</p>
-<p>我们由浅入深，首先来看：</p>
-<ol type="1">
-<li><p>给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5</p>
-<p>rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand7，直到它生成1到5之间的数，然后返回。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand5</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>);  <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">5</span>)&#123;</span><br><span class="line">    x = rand7();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个函数可以等概率的产生1到5的数码？首先，它确确实实只会返回1到5这几个数，其次，对于这些数，都是由rand7等概率的产生的1/7，没有对任何一个数有偏袒，直觉告诉我们，rand5就是等概率的产生1到5的。事实呢？让我们来计算一下，产生1到5中的数是不是1/5就OK了。</p>
-<p>产生1的概率：等于第一次产生1的概率，加上第一次生成6，7第二次产生1的概率，加上... $$ p(x=1) = 1/7 + 2/7 * 1/7 + (2/7)^2 * 1/7 + ... \</p>
-<p>= 1/7 * (1 + 2/7 + (2/7)^2+...)\</p>
-<p>= 1/7 * 1 / (1-2/7)\</p>
-<p>= 1/5\ $$ 其他同理，所以从上面的分析，我们可以得到一个一般的结论，如果a &gt; b，那么一定可以用randa实现randb。其中，randa表示等概率生成1到a的函数，randb表示等概率生成1到b的函数。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">;<span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randb</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line"> <span class="keyword">while</span> (x &gt; b) &#123;</span><br><span class="line">      x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里还有没有优化的空间呢。我们想如果a大于b很多，那么这个循环大多数是无法退出的。这是我们可以找到一个最接近a的b的整数倍<strong>b * (A/b)</strong>，大于这个整数倍就继续循环，否则就返回 <strong>randa()%b + 1 </strong>。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randa</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x =  ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">//  max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; b * (a / b)) &#123;</span><br><span class="line">    x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>好了，a大于b时这个问题得到完美的解决了。那么a小于b的时候呢。</p>
-<p>比如，如何用rand5实现rand7。</p>
-<p>我们只需要将rand5映射到一个能产生更大随机数的randa，a &gt; 7，这个问题就可以解决了。这里要注意，映射之后的randa也应该是等概率生成1到a的。</p>
-<p>如何映射呢。其实可以将rand5想象成一个五进制数。2个rand5就可以表示25种情况。</p>
-<p>5 * (rand5() - 1) + rand5()，可以等概率的产生1-25之间的数字。</p>
-<p>根据上面的模板我们可以得到以下的代码：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">7</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在根据上面的模板简化：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">21</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % <span class="number">7</span> +<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过上文分析，我们可以得到步骤如下：</p>
-<ol type="1">
-<li>如果a &gt; b，进入步骤2；否则构造Randa2 = a * (Randa – 1) + Randa， 表示生成1到a2 随机数的函数。如果a2 仍小于b，继教构造 Randa3 = a * (Randa2 - 1) + Randa…直到ak &gt; b，这时我们得到Randak , 我们记为RandA。</li>
-<li>步骤1中我们得到了RandA(可能是Randa或Randak )，其中A &gt; b， 我们用下述代码构造Randb：</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// A &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Randb</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span>(x &gt; b*(A/b)) <span class="comment">// b*(A/b)表示最接近A且小于A的b的倍数</span></span><br><span class="line">        x = RandA();</span><br><span class="line">    <span class="keyword">return</span> x%b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure></li>
-</ol>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1800,6 +1801,44 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>并查集侦查无向图中的环</title>
+    <url>/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/</url>
+    <content><![CDATA[<p>并查集是一种数据结构，它跟踪一个集合的元素被分割成若干不相干（不重叠）的子集。union-find算法是一种对这种数据结构执行两种有用操作的算法：</p>
+<p>Find：确定一个特定的元素在哪个子集里。这可以用来确定两个元素是否在同一个子集中。</p>
+<p>Union：将两个子集连接成一个单一的子集。</p>
+<p>在这篇文章中，我们将讨论并查集的应用。这个应用就是检查一个给定的图是否有环。</p>
+<p>UnionFInd算法可以检查一个无向图是否有环。注意到我们已经讨论过一种检查环的<span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvZGV0ZWN0LWN5Y2xlLXVuZGlyZWN0ZWQtZ3JhcGgvP3JlZj1sYnA=">方法<i class="fa fa-external-link-alt"></i></span>。这是另一种使用并查集的防范。这个方法假设图中没有自环。</p>
+<p>我们可以在一个1D数组中跟踪子集，我们称它为parent[]。</p>
+<p>我们考虑如下图：</p>
+<img data-src="/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF.png" class>
+<p>对于每条边，用边的两个顶点做子集。如果两个顶点都已经在同一个子集中，就发现了一个环。</p>
+<p>初始化时，parent的所有槽位都初始化为-1（意味着每个子集中只有一个项目）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2</span><br><span class="line">-1 -1  -1 </span><br></pre></td></tr></table></figure>
+<p>现在逐一处理所有的边。</p>
+<p>边0-1：找到顶点0和1所在的子集。由于它们在不同的子集中，我们对它们进行union操作。为了取union，可以让结点0作为节点1的父结点，或者反之。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 1 is made parent of 0 (1 is now representative of subset &#123;0, 1&#125;)</span><br><span class="line">1  -1  -1</span><br></pre></td></tr></table></figure>
+<p>边1-2：1已经在subset 1中，2在subset 2中，所以取union</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 2 is made parent of 1 (2 is now representative of subset &#123;0, 1, 2&#125;)</span><br><span class="line">1   2  -1</span><br></pre></td></tr></table></figure>
+<p>边0-2：0在subset 2中，2也在subset 2中。因此，包括这条边形成了一个环。</p>
+<p>为什么0的子集和和2相同？</p>
+<p>0-&gt;1-&gt;2 // 1是0的父结点2是1的父结点。</p>
+<p>根据以上解释，下面是实现。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># undirected_graph.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, k</span>):</span></span><br><span class="line">        self.uf = [<span class="number">-1</span>] * (k + <span class="number">1</span>)</span><br><span class="line">        self.sets_count = k</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        p_root = self.find(p)</span><br><span class="line">        q_root = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> p_root == q_root:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p_root] &gt; self.uf[q_root]:</span><br><span class="line">            self.uf[q_root] += self.uf[p_root]</span><br><span class="line">            self.uf[p_root] = q_root</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[p_root] += self.uf[q_root]</span><br><span class="line">            self.uf[q_root] = p_root</span><br><span class="line">        self.sets_count -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.uf = UnionFind(vertices)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isCyclic</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.graph:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> self.graph[i]:</span><br><span class="line">                <span class="keyword">if</span> self.uf.is_connected(i, j):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">                self.uf.union(i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">3</span>)</span><br><span class="line">    g.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    print(g.isCyclic())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
+    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>平衡二叉搜索树、B树、B+树、B*树理解</title>
     <url>/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="平衡二叉搜索树">平衡二叉搜索树</h2>
@@ -1894,44 +1933,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>并查集侦查无向图中的环</title>
-    <url>/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/</url>
-    <content><![CDATA[<p>并查集是一种数据结构，它跟踪一个集合的元素被分割成若干不相干（不重叠）的子集。union-find算法是一种对这种数据结构执行两种有用操作的算法：</p>
-<p>Find：确定一个特定的元素在哪个子集里。这可以用来确定两个元素是否在同一个子集中。</p>
-<p>Union：将两个子集连接成一个单一的子集。</p>
-<p>在这篇文章中，我们将讨论并查集的应用。这个应用就是检查一个给定的图是否有环。</p>
-<p>UnionFInd算法可以检查一个无向图是否有环。注意到我们已经讨论过一种检查环的<span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvZGV0ZWN0LWN5Y2xlLXVuZGlyZWN0ZWQtZ3JhcGgvP3JlZj1sYnA=">方法<i class="fa fa-external-link-alt"></i></span>。这是另一种使用并查集的防范。这个方法假设图中没有自环。</p>
-<p>我们可以在一个1D数组中跟踪子集，我们称它为parent[]。</p>
-<p>我们考虑如下图：</p>
-<img data-src="/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF.png" class>
-<p>对于每条边，用边的两个顶点做子集。如果两个顶点都已经在同一个子集中，就发现了一个环。</p>
-<p>初始化时，parent的所有槽位都初始化为-1（意味着每个子集中只有一个项目）。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2</span><br><span class="line">-1 -1  -1 </span><br></pre></td></tr></table></figure>
-<p>现在逐一处理所有的边。</p>
-<p>边0-1：找到顶点0和1所在的子集。由于它们在不同的子集中，我们对它们进行union操作。为了取union，可以让结点0作为节点1的父结点，或者反之。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 1 is made parent of 0 (1 is now representative of subset &#123;0, 1&#125;)</span><br><span class="line">1  -1  -1</span><br></pre></td></tr></table></figure>
-<p>边1-2：1已经在subset 1中，2在subset 2中，所以取union</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 2 is made parent of 1 (2 is now representative of subset &#123;0, 1, 2&#125;)</span><br><span class="line">1   2  -1</span><br></pre></td></tr></table></figure>
-<p>边0-2：0在subset 2中，2也在subset 2中。因此，包括这条边形成了一个环。</p>
-<p>为什么0的子集和和2相同？</p>
-<p>0-&gt;1-&gt;2 // 1是0的父结点2是1的父结点。</p>
-<p>根据以上解释，下面是实现。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># undirected_graph.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, k</span>):</span></span><br><span class="line">        self.uf = [<span class="number">-1</span>] * (k + <span class="number">1</span>)</span><br><span class="line">        self.sets_count = k</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        p_root = self.find(p)</span><br><span class="line">        q_root = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> p_root == q_root:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p_root] &gt; self.uf[q_root]:</span><br><span class="line">            self.uf[q_root] += self.uf[p_root]</span><br><span class="line">            self.uf[p_root] = q_root</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[p_root] += self.uf[q_root]</span><br><span class="line">            self.uf[q_root] = p_root</span><br><span class="line">        self.sets_count -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.uf = UnionFind(vertices)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isCyclic</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.graph:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> self.graph[i]:</span><br><span class="line">                <span class="keyword">if</span> self.uf.is_connected(i, j):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">                self.uf.union(i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">3</span>)</span><br><span class="line">    g.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    print(g.isCyclic())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
-    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2171,20 +2172,20 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
+    <title>拔智齿后记</title>
+    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
+    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
       </tags>
   </entry>
   <entry>
-    <title>拔智齿后记</title>
-    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
-    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -2413,6 +2414,35 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>猫抓老鼠的简单讨论</title>
+    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
+    <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
+<ol type="1">
+<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
+<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
+<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
+<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
+<p>答案是不能。</p>
+<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
+<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
+<p><span class="math display">\[
+\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
+\]</span></p>
+<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
+<p>根据猫的速度是老鼠的4倍，</p>
+<p><span class="math display">\[
+x = \frac{4-\pi}{4}r \approx0.2146r
+\]</span></p>
+<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
+<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>深入理解MySQL索引底层实现原理丨技术干货</title>
     <url>/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/</url>
     <content><![CDATA[<h3 id="转载">转载：</h3>
@@ -2491,35 +2521,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>猫抓老鼠的简单讨论</title>
-    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
-    <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
-<ol type="1">
-<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
-<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
-<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
-<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
-<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
-<p>答案是不能。</p>
-<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
-<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
-<p><span class="math display">\[
-\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
-\]</span></p>
-<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
-<p>根据猫的速度是老鼠的4倍，</p>
-<p><span class="math display">\[
-x = \frac{4-\pi}{4}r \approx0.2146r
-\]</span></p>
-<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
-<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -2903,6 +2904,18 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>讨论已经到达了&#39;水边&#39;，是否喝水就看你的决心了</title>
+    <url>/2020/08/28/%E8%AE%A8%E8%AE%BA%E5%B7%B2%E7%BB%8F%E5%88%B0%E8%BE%BE%E4%BA%86-%E6%B0%B4%E8%BE%B9-%EF%BC%8C%E6%98%AF%E5%90%A6%E5%96%9D%E6%B0%B4%E5%B0%B1%E7%9C%8B%E4%BD%A0%E7%9A%84%E5%86%B3%E5%BF%83%E4%BA%86/</url>
+    <content><![CDATA[<p><strong>只要没有迷失”他者贡献“这课引导之星，那么你就不会迷失，而且做什么都可以。</strong></p>
+<p>我们要像跳舞一样认真过好作为刹那的”此时此刻“，既不看过去也不看未来，只需过好每一个完结的刹那。没必要与谁竞争，也不需要目的地，只要跳着，就一定会到达某一个地方。</p>
+<p><strong>我的力量无穷大。</strong></p>
+<p><strong>世界不是靠他人改变而只能靠我来改变。</strong></p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>解决博弈问题的动态规划通用思路</title>
     <url>/2020/07/24/%E8%A7%A3%E5%86%B3%E5%8D%9A%E5%BC%88%E9%97%AE%E9%A2%98%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E9%80%9A%E7%94%A8%E6%80%9D%E8%B7%AF/</url>
     <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 解决博弈问题动态规划通用思路.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们把石头游戏改得更具有一般性</span></span><br><span class="line"><span class="comment"># 你和你的朋友面前有一排石头堆，用一个数组piles表示</span></span><br><span class="line"><span class="comment"># piles[i]表示第i堆石子有多少个。</span></span><br><span class="line"><span class="comment"># 你们轮流拿石头，一次拿一堆，但是只能拿走最左边或者最右边的石头堆。</span></span><br><span class="line"><span class="comment"># 所有石头被拿完后，谁拥有的石头多，谁获胜</span></span><br><span class="line"><span class="comment"># 假设两人都很聪明，请你设计一个算法，返回先手和后手最后得分（石头总数）之差</span></span><br><span class="line"><span class="comment"># 比如：</span></span><br><span class="line"><span class="comment"># piles = [1, 100, 3]</span></span><br><span class="line"><span class="comment"># 先手能得4分，后手能得100分，返回-96</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 思路</span></span><br><span class="line"><span class="comment"># 子问题</span></span><br><span class="line"><span class="comment"># 在第i到第j堆石头，先手能获得最大石头数是多少，后手是多少</span></span><br><span class="line"><span class="comment"># 定义状态数组</span></span><br><span class="line"><span class="comment"># f(i, j, 0) f(i, j, 1) 表示第i到第j个石头，包括第i和第j个，0表示先手，1表示后手</span></span><br><span class="line"><span class="comment"># 因为两人都极聪明，先手选完就变后手，来回交替的</span></span><br><span class="line"><span class="comment"># 递推方程</span></span><br><span class="line"><span class="comment"># f(i, j, 0) = max 拿左边 f(i+1, j, 1) + a[i]</span></span><br><span class="line"><span class="comment">#            =     拿右边 f(i, j-1, 1) + a[j]</span></span><br><span class="line"><span class="comment"># 知道了拿左边还是右边后</span></span><br><span class="line"><span class="comment"># f(i, j, 1) =     先手拿左边 f(i+1, j, 0)</span></span><br><span class="line"><span class="comment">#            =     先手拿右边 f(i, j-1, 0)</span></span><br><span class="line"><span class="comment"># 初始化</span></span><br><span class="line"><span class="comment"># f(i, i, 0) = a[i] 只有一堆石子的时候，先手为该堆石子个数，后手就为0</span></span><br><span class="line"><span class="comment"># f(i, i, 1) = 0</span></span><br><span class="line"><span class="comment"># 返回值</span></span><br><span class="line"><span class="comment"># f(0, n-1, 0) 先手最终石子数 - f(0, n-1, 1)后手最终石子数</span></span><br><span class="line"><span class="comment"># 优化空间复杂度</span></span><br><span class="line"><span class="comment"># 是对角线的递推，这种情况最好不要优化空间，还可以利用计算机的缓存</span></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">game</span>(<span class="params">self, piles: List[int]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> piles:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        n = len(piles)</span><br><span class="line">        dp = [[[<span class="number">0</span>] * <span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            dp[i][i][<span class="number">0</span>] = piles[i]</span><br><span class="line">        <span class="keyword">for</span> gap <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n - gap):</span><br><span class="line">                j = i + gap</span><br><span class="line">                left = dp[i + <span class="number">1</span>][j][<span class="number">1</span>] + piles[i]</span><br><span class="line">                right = dp[i][j - <span class="number">1</span>][<span class="number">1</span>] + piles[j]</span><br><span class="line">                <span class="comment"># 先手选左边</span></span><br><span class="line">                <span class="keyword">if</span> left &gt; right:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = left</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i + <span class="number">1</span>][j][<span class="number">0</span>]</span><br><span class="line">                <span class="comment"># 先手选右边</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    dp[i][j][<span class="number">0</span>] = right</span><br><span class="line">                    dp[i][j][<span class="number">1</span>] = dp[i][j - <span class="number">1</span>][<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">0</span>] - dp[<span class="number">0</span>][n - <span class="number">1</span>][<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    sol = Solution()</span><br><span class="line"></span><br><span class="line">    piles = [<span class="number">1</span>, <span class="number">100</span>, <span class="number">3</span>]</span><br><span class="line">    res = sol.game(piles)</span><br><span class="line">    print(res)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
@@ -2914,18 +2927,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>讨论已经到达了&#39;水边&#39;，是否喝水就看你的决心了</title>
-    <url>/2020/08/28/%E8%AE%A8%E8%AE%BA%E5%B7%B2%E7%BB%8F%E5%88%B0%E8%BE%BE%E4%BA%86-%E6%B0%B4%E8%BE%B9-%EF%BC%8C%E6%98%AF%E5%90%A6%E5%96%9D%E6%B0%B4%E5%B0%B1%E7%9C%8B%E4%BD%A0%E7%9A%84%E5%86%B3%E5%BF%83%E4%BA%86/</url>
-    <content><![CDATA[<p><strong>只要没有迷失”他者贡献“这课引导之星，那么你就不会迷失，而且做什么都可以。</strong></p>
-<p>我们要像跳舞一样认真过好作为刹那的”此时此刻“，既不看过去也不看未来，只需过好每一个完结的刹那。没必要与谁竞争，也不需要目的地，只要跳着，就一定会到达某一个地方。</p>
-<p><strong>我的力量无穷大。</strong></p>
-<p><strong>世界不是靠他人改变而只能靠我来改变。</strong></p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
