@@ -745,7 +745,8 @@
 <p>相同的Low和Disc值有助于解决其他图的问题，如衔接点、桥和双连接分量。</p>
 <p>为了跟踪以头部为根的子树，我们可以使用栈（在访问时不断推送节点）。当发现一个头部节点时，从堆栈中弹出所有节点，直到从栈中得到头部。</p>
 <p>为了确保不考虑交叉边，当我们到达一个已经被访问过的节点时，只有当栈中存在被访问过的节点时，我们才应该对该节点进行处理，否则忽略该节点。</p>
-<h3 id="todo-写一个tarjan算法找到有向图的所有连通分量并打印出来">Todo: 写一个Tarjan算法找到有向图的所有连通分量并打印出来</h3>
+<h3 id="实现写一个tarjan算法找到有向图的所有连通分量并打印出来">实现：写一个Tarjan算法找到有向图的所有连通分量并打印出来</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># tarjan_scc.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.Time = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">scc_util</span>(<span class="params">self, u, low, disc, stack_member, stack: list</span>):</span></span><br><span class="line">        <span class="comment"># Initialize discovery time and low value</span></span><br><span class="line">        disc[u] = self.Time</span><br><span class="line">        low[u] = self.Time</span><br><span class="line">        self.Time += <span class="number">1</span></span><br><span class="line">        stack_member[u] = <span class="literal">True</span></span><br><span class="line">        stack.append(u)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Go through all vertices adjacent to this</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> self.graph[u]:</span><br><span class="line">            <span class="comment"># If v is not visited yet, then recur for it</span></span><br><span class="line">            <span class="keyword">if</span> disc[v] == <span class="number">-1</span>:</span><br><span class="line">                self.scc_util(v, low, disc, stack_member, stack)</span><br><span class="line">                <span class="comment"># check if the subtree rooted with v has a connection to</span></span><br><span class="line">                <span class="comment"># one of the ancestors of u</span></span><br><span class="line">                <span class="comment"># Case 1 (per above discussion on Disc and Low value)</span></span><br><span class="line">                low[u] = min(low[u], low[v])</span><br><span class="line">            <span class="keyword">elif</span> stack_member[v]:</span><br><span class="line">                <span class="comment"># Update low value of &#x27;u&#x27; only if &#x27;v&#x27; is still in stack</span></span><br><span class="line">                <span class="comment"># (i.e. it&#x27;s a back edge, not cross edge).</span></span><br><span class="line">                <span class="comment"># Case 2 (per above discussion on Disc and Low value)</span></span><br><span class="line">                low[u] = min(low[u], disc[v])</span><br><span class="line">        <span class="comment"># head node found, pop the stack and print an SCC</span></span><br><span class="line">        w = <span class="number">-1</span>  <span class="comment"># To store stack extracted vertices</span></span><br><span class="line">        <span class="keyword">if</span> low[u] == disc[u]:</span><br><span class="line">            <span class="keyword">while</span> w != u:</span><br><span class="line">                w = stack.pop()</span><br><span class="line">                print(w)</span><br><span class="line">                stack_member[w] = <span class="literal">False</span></span><br><span class="line">            print()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># The function to do DFS traversal</span></span><br><span class="line">    <span class="comment"># It uses recursive SCCUtil()1</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">scc</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="comment"># Mark all the vertices as not visited</span></span><br><span class="line">        <span class="comment"># and Initialize parent and visited,</span></span><br><span class="line">        <span class="comment"># and ap(articulation point) arrays</span></span><br><span class="line">        disc = [<span class="number">-1</span>] * self.V</span><br><span class="line">        low = [<span class="number">-1</span>] * self.V</span><br><span class="line">        stack_member = [<span class="literal">False</span>] * self.V</span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> disc[i] == <span class="number">-1</span>:</span><br><span class="line">                self.scc_util(i, low, disc, stack_member, stack)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g1 = Graph(<span class="number">5</span>)</span><br><span class="line">    g1.addEdge(<span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">    g1.addEdge(<span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line">    g1.addEdge(<span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">    g1.addEdge(<span class="number">0</span>, <span class="number">3</span>)</span><br><span class="line">    g1.addEdge(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in first graph&quot;</span>)</span><br><span class="line">    g1.scc()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>时间复杂度：算法主要使用DFS，邻接表表示的图的DFS算法是O(V+E)复杂度的。</p>
 ]]></content>
       <tags>
@@ -822,6 +823,34 @@
 <h3 id="小结">小结</h3>
 <p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
 <p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>insert语句的锁为什么这么多？</title>
+    <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F_%E5%89%AF%E6%9C%AC/</url>
+    <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
+<p>因此，insert语句是一个很轻量的操作。不过，这个结论是对于“普通的insert语句”才有效。也就是说，还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
+<p>那么，今天这篇文章，我们就一起来聊聊这个话题。</p>
+<h3 id="insert...select语句">1. insert...select语句</h3>
+<p>我们先从上一篇文章的话题说起吧。表t1和t2的表结构、初始化数据语句如下，今天的例子我们还是针对这两个表展开。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">3</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t2 <span class="keyword">like</span> t</span><br></pre></td></tr></table></figure>
+<p>现在，我们一起来看看为什么在可重复读隔离级别下，binlog_format=statement时执行：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> iinto t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
+<p>这个语句时需要对表t的所有行和间隙加锁呢？</p>
+<p>其实，这个问题我们需要考虑的还是日志和数据的一致性。我们看下这个执行序列：</p>
+
+<p>实际的执行效果是，如果session B先执行，由于这个语句对表t主键索引加了（-∞，1]这个next-key lock，会在语句执行完成后，才允许session A的insert语句执行。</p>
+<p>但如果没有锁的话，就可能出现session B的insert语句先执行，但是后写入binlog的情况。于是，在binlog_format=statement的情况下，binlog里面就记录了这样的语句序列：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
+<p>这个语句到了备库执行，就会把id=-1这一行也写到表t2中，出现主备不一致。</p>
+<h3 id="insert循环写入">2. insert循环写入</h3>
+<p>当然了，之心吧insert...select的时候，对目标表也不是锁全表，而是只锁住需要访问的资源。</p>
+<p>如果现在有这么一个需求：要往表t2中插入一行数据，这一行的c值是表t中c值的最大值加1。</p>
+<p>此时，我们可以这么写这条SQL语句：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -920,34 +949,6 @@
 <p>你平时在两个表之间拷贝数据用的是什么方法，有什么注意事项吗？在你的应用场景里，这个方法，相较于其他方法的优势是什么呢？</p>
 <p>另外，insert..select执行期间，有其他线程操作原表，会导致逻辑错误。其实这是不会的，如果不加锁，就是快照读。</p>
 <p>一条语句执行期间，它的一致性视图是不会修改的，所以即使有其他事务修改了原表的数据，也不会影响这条语句看到的数据。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>insert语句的锁为什么这么多？</title>
-    <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F_%E5%89%AF%E6%9C%AC/</url>
-    <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
-<p>因此，insert语句是一个很轻量的操作。不过，这个结论是对于“普通的insert语句”才有效。也就是说，还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
-<p>那么，今天这篇文章，我们就一起来聊聊这个话题。</p>
-<h3 id="insert...select语句">1. insert...select语句</h3>
-<p>我们先从上一篇文章的话题说起吧。表t1和t2的表结构、初始化数据语句如下，今天的例子我们还是针对这两个表展开。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">3</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t2 <span class="keyword">like</span> t</span><br></pre></td></tr></table></figure>
-<p>现在，我们一起来看看为什么在可重复读隔离级别下，binlog_format=statement时执行：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> iinto t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>这个语句时需要对表t的所有行和间隙加锁呢？</p>
-<p>其实，这个问题我们需要考虑的还是日志和数据的一致性。我们看下这个执行序列：</p>
-
-<p>实际的执行效果是，如果session B先执行，由于这个语句对表t主键索引加了（-∞，1]这个next-key lock，会在语句执行完成后，才允许session A的insert语句执行。</p>
-<p>但如果没有锁的话，就可能出现session B的insert语句先执行，但是后写入binlog的情况。于是，在binlog_format=statement的情况下，binlog里面就记录了这样的语句序列：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>这个语句到了备库执行，就会把id=-1这一行也写到表t2中，出现主备不一致。</p>
-<h3 id="insert循环写入">2. insert循环写入</h3>
-<p>当然了，之心吧insert...select的时候，对目标表也不是锁全表，而是只锁住需要访问的资源。</p>
-<p>如果现在有这么一个需求：要往表t2中插入一行数据，这一行的c值是表t中c值的最大值加1。</p>
-<p>此时，我们可以这么写这条SQL语句：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -1510,16 +1511,6 @@
       </tags>
   </entry>
   <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>了解java GC过程</title>
     <url>/2020/08/28/%E4%BA%86%E8%A7%A3java-GC%E8%BF%87%E7%A8%8B/</url>
     <content><![CDATA[<p>堆的空间是用来存储我们new出来的对象的。当new的对象填充满堆区的话，就会导致内存爆掉，我们的程序就会OOM。jvm 的 GC是清理堆上的对象的。</p>
@@ -1547,6 +1538,16 @@
 ]]></content>
       <tags>
         <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2129,6 +2130,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
+    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>快速排序的多种写法</title>
     <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
     <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
@@ -2139,15 +2149,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
-    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
