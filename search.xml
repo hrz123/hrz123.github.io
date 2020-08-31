@@ -459,43 +459,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Prim&#39;s最小生成树算法</title>
-    <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
-<p>在图论中，连接两组顶点的一组边被称为切边（cut）。所有，在Prim算法的每一步，我们都要要找到一个cut（关于这两个集合的，一个包含已经在MST中的顶点，另一个包含其余的顶点），从cut中挑选出最小权重的边，并将这个顶点包含到MST集合（包含已经在MST中的顶点）中。</p>
-<p><strong>Prim's Algorithm是如何工作的？</strong>Prim算法背后的思想很简单，一颗生成树意味着所有顶点必须是连接的。所以，两个不相干的顶点子集（上面讨论的）必须连接起来，才能组成一个生成树。而且它们必须用最小的权重边连接起来，才能使之成为一颗最小生成树。</p>
-<p><strong>算法：</strong></p>
-<ol type="1">
-<li>创建一个集合mstSet，用来跟踪已经包含在MST中的顶点。</li>
-<li>给输入图中的所有顶点分配一个键值。初始化所有的键值为infinity。为第一个顶点分配键值为0，这样它就会被首先选中。</li>
-<li>while mstSet不包含所有的顶点
-<ol type="1">
-<li>选取一个在mstSet中没有的顶点u，并且其键值最小。</li>
-<li>将u加入到mstSet中。</li>
-<li>更新u的所有相邻顶点的键值，更新键值时，要遍历所有相邻顶点。对于每一个相邻顶点v，如果边u-v的权重小于v的前一个键值，则更新键值为u-v的权重。</li>
-</ol></li>
-</ol>
-<p>使用键值的想法是为了从cut中挑选出最小权重的边。键值只用于尚未包含在MST中的顶点，这些顶点的键值表示连接它们与MST中包含的顶点集的最小权重边的权重。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim1.jpg" class>
-<p>集合mstSet开始的时候是空的，并且每个顶点键值时{0, INF, INF, INF, INF, INF, INF, INF}，INF表示无穷大。现在，选出一个拥有最小键值的顶点。顶点0被选出，将其放入mstSet。所以mstSet成为了{0}。在包括进mstSet之后，更新相邻顶点的键值。0的相邻顶点是1和7。1和7的键值被更新为4和8。下面的子图显示了顶点和它们的键值，只有有有限键值的顶点展示了出来。在MST中的顶点用绿颜色表示了出来。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim2.jpg" class>
-<p>选出有最小键值的顶点并且还没有被包括进MST（还不在mstSet）。顶点1被选出来，并且被加入mstSet。所以mstSet成为了{0, 1}。更新1的相邻顶点的键值。顶点2的键值变成了8。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim3.jpg" class>
-<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。我们可以选择顶点7或者2，我们让7被选中。所以mstSet现在变成了{0, 1, 7}。更新7的相邻顶点的键值，顶点6和8的键值变成了有限的（分别为1和7）。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim4.jpg" class>
-<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。顶点6被选中。所以mstSet现在为{0, 1, 7, 6}。更新6的相邻顶点的键值。5和8的键值被更新。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim5.jpg" class>
-<p>我们重复上面的步骤直到mstSet包含了给定图中所有的顶点。最终，我们得到了如下的图。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim6.jpg" class>
-<p><strong>如何实现上面的算法？</strong></p>
-<p>我们用一个布尔数组mstSet[]表示MST中包含的顶点集合。如果一个值mstSet[v]为true，那么顶点v就在MST中，否则就不是。数组key[]用来存储所有顶点的键值。另一个数组parent[]用来存储MST中父节点的索引。parent数组是输出数组，用来显示构建的MST。</p>
-<p>上面算法的时间复杂度为O(V^2)。如果使用邻接表表示输入图，那么在二叉堆的帮助下，Prim算法的时间复杂度可以降低到O（ElogV）。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Python----socket编程</title>
     <url>/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<h3 id="基于tcp的套接字编程">基于TCP的套接字编程：</h3>
@@ -703,6 +666,43 @@
       </tags>
   </entry>
   <entry>
+    <title>Prim&#39;s最小生成树算法</title>
+    <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
+<p>在图论中，连接两组顶点的一组边被称为切边（cut）。所有，在Prim算法的每一步，我们都要要找到一个cut（关于这两个集合的，一个包含已经在MST中的顶点，另一个包含其余的顶点），从cut中挑选出最小权重的边，并将这个顶点包含到MST集合（包含已经在MST中的顶点）中。</p>
+<p><strong>Prim's Algorithm是如何工作的？</strong>Prim算法背后的思想很简单，一颗生成树意味着所有顶点必须是连接的。所以，两个不相干的顶点子集（上面讨论的）必须连接起来，才能组成一个生成树。而且它们必须用最小的权重边连接起来，才能使之成为一颗最小生成树。</p>
+<p><strong>算法：</strong></p>
+<ol type="1">
+<li>创建一个集合mstSet，用来跟踪已经包含在MST中的顶点。</li>
+<li>给输入图中的所有顶点分配一个键值。初始化所有的键值为infinity。为第一个顶点分配键值为0，这样它就会被首先选中。</li>
+<li>while mstSet不包含所有的顶点
+<ol type="1">
+<li>选取一个在mstSet中没有的顶点u，并且其键值最小。</li>
+<li>将u加入到mstSet中。</li>
+<li>更新u的所有相邻顶点的键值，更新键值时，要遍历所有相邻顶点。对于每一个相邻顶点v，如果边u-v的权重小于v的前一个键值，则更新键值为u-v的权重。</li>
+</ol></li>
+</ol>
+<p>使用键值的想法是为了从cut中挑选出最小权重的边。键值只用于尚未包含在MST中的顶点，这些顶点的键值表示连接它们与MST中包含的顶点集的最小权重边的权重。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim1.jpg" class>
+<p>集合mstSet开始的时候是空的，并且每个顶点键值时{0, INF, INF, INF, INF, INF, INF, INF}，INF表示无穷大。现在，选出一个拥有最小键值的顶点。顶点0被选出，将其放入mstSet。所以mstSet成为了{0}。在包括进mstSet之后，更新相邻顶点的键值。0的相邻顶点是1和7。1和7的键值被更新为4和8。下面的子图显示了顶点和它们的键值，只有有有限键值的顶点展示了出来。在MST中的顶点用绿颜色表示了出来。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim2.jpg" class>
+<p>选出有最小键值的顶点并且还没有被包括进MST（还不在mstSet）。顶点1被选出来，并且被加入mstSet。所以mstSet成为了{0, 1}。更新1的相邻顶点的键值。顶点2的键值变成了8。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim3.jpg" class>
+<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。我们可以选择顶点7或者2，我们让7被选中。所以mstSet现在变成了{0, 1, 7}。更新7的相邻顶点的键值，顶点6和8的键值变成了有限的（分别为1和7）。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim4.jpg" class>
+<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。顶点6被选中。所以mstSet现在为{0, 1, 7, 6}。更新6的相邻顶点的键值。5和8的键值被更新。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim5.jpg" class>
+<p>我们重复上面的步骤直到mstSet包含了给定图中所有的顶点。最终，我们得到了如下的图。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim6.jpg" class>
+<p><strong>如何实现上面的算法？</strong></p>
+<p>我们用一个布尔数组mstSet[]表示MST中包含的顶点集合。如果一个值mstSet[v]为true，那么顶点v就在MST中，否则就不是。数组key[]用来存储所有顶点的键值。另一个数组parent[]用来存储MST中父节点的索引。parent数组是输出数组，用来显示构建的MST。</p>
+<p>上面算法的时间复杂度为O(V^2)。如果使用邻接表表示输入图，那么在二叉堆的帮助下，Prim算法的时间复杂度可以降低到O（ElogV）。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</title>
     <url>/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/</url>
     <content><![CDATA[<h2 id="原文">原文</h2>
@@ -762,28 +762,16 @@
       </tags>
   </entry>
   <entry>
-    <title>insert语句的锁为什么这么多？</title>
-    <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F_%E5%89%AF%E6%9C%AC/</url>
-    <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
-<p>因此，insert语句是一个很轻量的操作。不过，这个结论是对于“普通的insert语句”才有效。也就是说，还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
-<p>那么，今天这篇文章，我们就一起来聊聊这个话题。</p>
-<h3 id="insert...select语句">1. insert...select语句</h3>
-<p>我们先从上一篇文章的话题说起吧。表t1和t2的表结构、初始化数据语句如下，今天的例子我们还是针对这两个表展开。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">3</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t2 <span class="keyword">like</span> t</span><br></pre></td></tr></table></figure>
-<p>现在，我们一起来看看为什么在可重复读隔离级别下，binlog_format=statement时执行：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> iinto t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>这个语句时需要对表t的所有行和间隙加锁呢？</p>
-<p>其实，这个问题我们需要考虑的还是日志和数据的一致性。我们看下这个执行序列：</p>
-
-<p>实际的执行效果是，如果session B先执行，由于这个语句对表t主键索引加了（-∞，1]这个next-key lock，会在语句执行完成后，才允许session A的insert语句执行。</p>
-<p>但如果没有锁的话，就可能出现session B的insert语句先执行，但是后写入binlog的情况。于是，在binlog_format=statement的情况下，binlog里面就记录了这样的语句序列：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>这个语句到了备库执行，就会把id=-1这一行也写到表t2中，出现主备不一致。</p>
-<h3 id="insert循环写入">2. insert循环写入</h3>
-<p>当然了，之心吧insert...select的时候，对目标表也不是锁全表，而是只锁住需要访问的资源。</p>
-<p>如果现在有这么一个需求：要往表t2中插入一行数据，这一行的c值是表t中c值的最大值加1。</p>
-<p>此时，我们可以这么写这条SQL语句：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into</span><br></pre></td></tr></table></figure>
+    <title>grant之后要跟着flush privileges吗？ </title>
+    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论：</p>
+<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
+<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
+<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
+<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
+<h3 id="小结">小结</h3>
+<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
+<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -888,16 +876,28 @@
       </tags>
   </entry>
   <entry>
-    <title>grant之后要跟着flush privileges吗？ </title>
-    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论：</p>
-<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
-<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
-<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
-<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
-<h3 id="小结">小结</h3>
-<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
-<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
+    <title>insert语句的锁为什么这么多？</title>
+    <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F_%E5%89%AF%E6%9C%AC/</url>
+    <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
+<p>因此，insert语句是一个很轻量的操作。不过，这个结论是对于“普通的insert语句”才有效。也就是说，还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
+<p>那么，今天这篇文章，我们就一起来聊聊这个话题。</p>
+<h3 id="insert...select语句">1. insert...select语句</h3>
+<p>我们先从上一篇文章的话题说起吧。表t1和t2的表结构、初始化数据语句如下，今天的例子我们还是针对这两个表展开。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">3</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t2 <span class="keyword">like</span> t</span><br></pre></td></tr></table></figure>
+<p>现在，我们一起来看看为什么在可重复读隔离级别下，binlog_format=statement时执行：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> iinto t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
+<p>这个语句时需要对表t的所有行和间隙加锁呢？</p>
+<p>其实，这个问题我们需要考虑的还是日志和数据的一致性。我们看下这个执行序列：</p>
+
+<p>实际的执行效果是，如果session B先执行，由于这个语句对表t主键索引加了（-∞，1]这个next-key lock，会在语句执行完成后，才允许session A的insert语句执行。</p>
+<p>但如果没有锁的话，就可能出现session B的insert语句先执行，但是后写入binlog的情况。于是，在binlog_format=statement的情况下，binlog里面就记录了这样的语句序列：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
+<p>这个语句到了备库执行，就会把id=-1这一行也写到表t2中，出现主备不一致。</p>
+<h3 id="insert循环写入">2. insert循环写入</h3>
+<p>当然了，之心吧insert...select的时候，对目标表也不是锁全表，而是只锁住需要访问的资源。</p>
+<p>如果现在有这么一个需求：要往表t2中插入一行数据，这一行的c值是表t中c值的最大值加1。</p>
+<p>此时，我们可以这么写这条SQL语句：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -928,15 +928,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 207.课程表</title>
-    <url>/2020/08/04/leetcode-207-%E8%AF%BE%E7%A8%8B%E8%A1%A8/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 本题可约化为： 课程安排图是否是 有向无环图(DAG)。</span></span><br><span class="line"><span class="comment"># 即课程间规定了前置条件，但不能构成任何环路，否则课程前置条件将不成立。</span></span><br><span class="line"><span class="comment"># 思路是通过 拓扑排序 判断此课程安排图是否是 有向无环图(DAG) 。</span></span><br><span class="line"><span class="comment"># 拓扑排序原理： 对 DAG 的顶点进行排序，使得对每一条有向边 (u,v)，</span></span><br><span class="line"><span class="comment"># 均有 u（在排序记录中）比 v 先出现。</span></span><br><span class="line"><span class="comment"># 亦可理解为对某点 v 而言，只有当 v 的所有源点均出现了，v 才能出现。</span></span><br><span class="line"><span class="comment"># 通过课程前置条件列表 prerequisites 可以得到课程安排图的 邻接表 adjacency，</span></span><br><span class="line"><span class="comment"># 以降低算法时间复杂度，以下两种方法都会用到邻接表。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1.统计课程安排图中弄每个节点的入度，生成入度表indegrees</span></span><br><span class="line"><span class="comment"># 2.借助一个队列queue，将所有入度为0的节点入队。</span></span><br><span class="line"><span class="comment"># 3.当queue非空时，依次将队首节点出队，在课程安排图中删除此节点pre：</span></span><br><span class="line"><span class="comment">#    并不是真正从邻接表中删除此节点pre，而是将此节点对应所有邻接节点cur的入度-1</span></span><br><span class="line"><span class="comment">#    即indegrees[cur] -= 1.</span></span><br><span class="line"><span class="comment">#    当入度-1后邻接节点cur的入度为0，说明cur所有的前驱节点已经被&quot;删除&quot;，此时将cur入队。</span></span><br><span class="line"><span class="comment"># 4.在每次pre出队时，执行numCourses--;</span></span><br><span class="line"><span class="comment">#    若整个课程安排图是有向无环图（即可以安排），则所有节点一定都入队并出队过，即完成拓扑排序。</span></span><br><span class="line"><span class="comment">#    换个角度说，若课程安排图中存在环，一定有节点的入度始终不为0。</span></span><br><span class="line"><span class="comment">#    因此，拓扑排序出队次数等于课程个数，返回numCourses==0判断课程是否可以成功安排</span></span><br><span class="line"><span class="comment"># 时间复杂度 O(N+M)： 遍历一个图需要访问所有节点和所有临边，N 和 M 分别为节点数量和临边数量；</span></span><br><span class="line"><span class="comment"># 空间复杂度 O(N+M)： 为建立邻接表所需额外空间，adjacency 长度为 N ，并存储 M 条临边的数据。</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        indegrees = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        queue = deque()</span><br><span class="line">        <span class="comment"># Get the indegree and adjacency of every course.</span></span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            indegrees[cur] += <span class="number">1</span></span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="comment"># Get all the courses with the indegree of 0.</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(indegrees)):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> indegrees[i]:</span><br><span class="line">                queue.append(i)</span><br><span class="line">        <span class="comment"># BFS TopSort.</span></span><br><span class="line">        <span class="keyword">while</span> queue:</span><br><span class="line">            pre = queue.popleft()</span><br><span class="line">            numCourses -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> cur <span class="keyword">in</span> adjacency[pre]:</span><br><span class="line">                indegrees[cur] -= <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> indegrees[cur]:</span><br><span class="line">                    queue.append(cur)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> numCourses</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 原理是通过DFS判断图中是否有环</span></span><br><span class="line"><span class="comment"># 算法流程</span></span><br><span class="line"><span class="comment"># 1.借助一个标志列表flags，用于判断每个节点i（课程）的状态：</span></span><br><span class="line"><span class="comment">#    1.未被DFS访问：i==0</span></span><br><span class="line"><span class="comment">#    2.已被其他节点启动的DFS访问：i==-1</span></span><br><span class="line"><span class="comment">#    3.已被当前节点启动的DFS访问：i==1。</span></span><br><span class="line"><span class="comment"># 2.对numCourses个节点一次执行DFS，判断每个节点起步DFS是否存在换，若存在直接放回False</span></span><br><span class="line"><span class="comment">#    DFS流程</span></span><br><span class="line"><span class="comment">#    1.终止条件：</span></span><br><span class="line"><span class="comment">#      当flag[i] == -1，说明当前访问节点已被其他节点启动的DFS访问，</span></span><br><span class="line"><span class="comment">#      无需再重复搜索，直接返回True</span></span><br><span class="line"><span class="comment">#      当flag[i] == 1，说明在本轮DFS搜索中节点i被第2次访问，即课程安排图有环，直接返回False</span></span><br><span class="line"><span class="comment">#    2.将当前访问节点i对应flag[i]置1，即标记其本轮被DFS访问过；</span></span><br><span class="line"><span class="comment">#    3.递归访问当前节点i的所有邻接节点j，当发现环直接返回False；</span></span><br><span class="line"><span class="comment">#    4.当前节点所有邻接节点已被遍历，并没有发现环，则将当前节点flag置为-1并返回True</span></span><br><span class="line"><span class="comment"># 3.若整个图DFS结束并未发现环，返回True</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, adjacency, flags</span>):</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">-1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> adjacency[i]:</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> dfs(j, adjacency, flags):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">-1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        flags = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(numCourses):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> dfs(i, adjacency, flags):</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 1519. 子树中标签相同的节点数</title>
     <url>/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/</url>
     <content><![CDATA[<h3 id="原题链接">原题链接</h3>
@@ -951,6 +942,15 @@
 <h3 id="代码">代码</h3>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义一个子函数</span></span><br><span class="line"><span class="comment"># 这个函数计算每一个节点为根的子树，所有标记的计数</span></span><br><span class="line"><span class="comment"># 因为用邻接表表示的边，我们为了防止边的重复访问，需要记录访问节点</span></span><br><span class="line"><span class="comment"># 因为没有环，所以我们只要记住前一个节点，在访问下一个节点的相邻节点的时候</span></span><br><span class="line"><span class="comment"># 不访问这个节点就可以了</span></span><br><span class="line"><span class="comment"># 参数为dfs(i, pre)， i就是这个节点的编号，pre就是前一个节点的编号</span></span><br><span class="line"><span class="comment"># 终止条件就是这个点的相邻节点都访问过了</span></span><br><span class="line"><span class="comment"># 这样我们在全局的一个数组变量中，更新相应的i的值即可</span></span><br><span class="line"><span class="comment"># 最后我们返回这个数组变量就是所求</span></span><br><span class="line"><span class="comment"># 利用了python中Counter有加法的api</span></span><br><span class="line"><span class="comment"># 我们可以简化代码</span></span><br><span class="line"><span class="comment"># 否则我们如果用字典，我们要遍历字典，把存在于本层的加上，不存在于本层的添加进来即可</span></span><br><span class="line"><span class="comment"># 稍微麻烦点</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = &#123;labels[i]: <span class="number">1</span>&#125;</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    <span class="keyword">for</span> k, v <span class="keyword">in</span> dfs(nxt, i).items():</span><br><span class="line">                        <span class="keyword">if</span> k <span class="keyword">in</span> data:</span><br><span class="line">                            data[k] += v</span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            data[k] = v</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = Counter(&#123;labels[i]: <span class="number">1</span>&#125;)</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    data += dfs(nxt, i)</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 207.课程表</title>
+    <url>/2020/08/04/leetcode-207-%E8%AF%BE%E7%A8%8B%E8%A1%A8/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 本题可约化为： 课程安排图是否是 有向无环图(DAG)。</span></span><br><span class="line"><span class="comment"># 即课程间规定了前置条件，但不能构成任何环路，否则课程前置条件将不成立。</span></span><br><span class="line"><span class="comment"># 思路是通过 拓扑排序 判断此课程安排图是否是 有向无环图(DAG) 。</span></span><br><span class="line"><span class="comment"># 拓扑排序原理： 对 DAG 的顶点进行排序，使得对每一条有向边 (u,v)，</span></span><br><span class="line"><span class="comment"># 均有 u（在排序记录中）比 v 先出现。</span></span><br><span class="line"><span class="comment"># 亦可理解为对某点 v 而言，只有当 v 的所有源点均出现了，v 才能出现。</span></span><br><span class="line"><span class="comment"># 通过课程前置条件列表 prerequisites 可以得到课程安排图的 邻接表 adjacency，</span></span><br><span class="line"><span class="comment"># 以降低算法时间复杂度，以下两种方法都会用到邻接表。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1.统计课程安排图中弄每个节点的入度，生成入度表indegrees</span></span><br><span class="line"><span class="comment"># 2.借助一个队列queue，将所有入度为0的节点入队。</span></span><br><span class="line"><span class="comment"># 3.当queue非空时，依次将队首节点出队，在课程安排图中删除此节点pre：</span></span><br><span class="line"><span class="comment">#    并不是真正从邻接表中删除此节点pre，而是将此节点对应所有邻接节点cur的入度-1</span></span><br><span class="line"><span class="comment">#    即indegrees[cur] -= 1.</span></span><br><span class="line"><span class="comment">#    当入度-1后邻接节点cur的入度为0，说明cur所有的前驱节点已经被&quot;删除&quot;，此时将cur入队。</span></span><br><span class="line"><span class="comment"># 4.在每次pre出队时，执行numCourses--;</span></span><br><span class="line"><span class="comment">#    若整个课程安排图是有向无环图（即可以安排），则所有节点一定都入队并出队过，即完成拓扑排序。</span></span><br><span class="line"><span class="comment">#    换个角度说，若课程安排图中存在环，一定有节点的入度始终不为0。</span></span><br><span class="line"><span class="comment">#    因此，拓扑排序出队次数等于课程个数，返回numCourses==0判断课程是否可以成功安排</span></span><br><span class="line"><span class="comment"># 时间复杂度 O(N+M)： 遍历一个图需要访问所有节点和所有临边，N 和 M 分别为节点数量和临边数量；</span></span><br><span class="line"><span class="comment"># 空间复杂度 O(N+M)： 为建立邻接表所需额外空间，adjacency 长度为 N ，并存储 M 条临边的数据。</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        indegrees = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        queue = deque()</span><br><span class="line">        <span class="comment"># Get the indegree and adjacency of every course.</span></span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            indegrees[cur] += <span class="number">1</span></span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="comment"># Get all the courses with the indegree of 0.</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(indegrees)):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> indegrees[i]:</span><br><span class="line">                queue.append(i)</span><br><span class="line">        <span class="comment"># BFS TopSort.</span></span><br><span class="line">        <span class="keyword">while</span> queue:</span><br><span class="line">            pre = queue.popleft()</span><br><span class="line">            numCourses -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> cur <span class="keyword">in</span> adjacency[pre]:</span><br><span class="line">                indegrees[cur] -= <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> indegrees[cur]:</span><br><span class="line">                    queue.append(cur)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> numCourses</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 原理是通过DFS判断图中是否有环</span></span><br><span class="line"><span class="comment"># 算法流程</span></span><br><span class="line"><span class="comment"># 1.借助一个标志列表flags，用于判断每个节点i（课程）的状态：</span></span><br><span class="line"><span class="comment">#    1.未被DFS访问：i==0</span></span><br><span class="line"><span class="comment">#    2.已被其他节点启动的DFS访问：i==-1</span></span><br><span class="line"><span class="comment">#    3.已被当前节点启动的DFS访问：i==1。</span></span><br><span class="line"><span class="comment"># 2.对numCourses个节点一次执行DFS，判断每个节点起步DFS是否存在换，若存在直接放回False</span></span><br><span class="line"><span class="comment">#    DFS流程</span></span><br><span class="line"><span class="comment">#    1.终止条件：</span></span><br><span class="line"><span class="comment">#      当flag[i] == -1，说明当前访问节点已被其他节点启动的DFS访问，</span></span><br><span class="line"><span class="comment">#      无需再重复搜索，直接返回True</span></span><br><span class="line"><span class="comment">#      当flag[i] == 1，说明在本轮DFS搜索中节点i被第2次访问，即课程安排图有环，直接返回False</span></span><br><span class="line"><span class="comment">#    2.将当前访问节点i对应flag[i]置1，即标记其本轮被DFS访问过；</span></span><br><span class="line"><span class="comment">#    3.递归访问当前节点i的所有邻接节点j，当发现环直接返回False；</span></span><br><span class="line"><span class="comment">#    4.当前节点所有邻接节点已被遍历，并没有发现环，则将当前节点flag置为-1并返回True</span></span><br><span class="line"><span class="comment"># 3.若整个图DFS结束并未发现环，返回True</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, adjacency, flags</span>):</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">-1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> adjacency[i]:</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> dfs(j, adjacency, flags):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">-1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        flags = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(numCourses):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> dfs(i, adjacency, flags):</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -1271,6 +1271,17 @@
       </tags>
   </entry>
   <entry>
+    <title>nginx所有worker进程协同工作的关键：共享内存</title>
+    <url>/2020/08/31/nginx%E6%89%80%E6%9C%89worker%E8%BF%9B%E7%A8%8B%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%85%B3%E9%94%AE%EF%BC%9A%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</url>
+    <content><![CDATA[<p>nginx是一个多进程程序，那么不同的worker进程之间，如果需要共享数据，那么只能通过共享内存。那么下面我们来看一看，nginx中的共享内存是怎么使用的。</p>
+<p>nginx的进程间的通讯方式，主要有两种，第一种是信号，那么之前我们在说如何管理nginx的过程中，已经比较详细的介绍过了，那么如果需要做数据的同步呢？那么只能通过共享内存，所谓共享内存，也就是说我们打开了一块内存，比如说10M，那么一整块0-10M之间，多个worker进程之间，可以同时的访问它，包括读取和写入。那么为了使用好这样一块共享内存，就会引入另外两个问题。第一个问题呢，就是锁，因为多个worker进程同时操作一块内存，一定会出现竞争关系，所以我们需要加锁，在nginx的锁中，在早期它还有基于信号量的锁，信号量是一种linux里比较久远的进程同步方式，它会导致你的进程进入了休眠状态，也就是发生了主动切换，而现在大多数操作系统版本中，nginx所使用的锁，都是自旋锁，而不会基于信号量，自旋锁，也就是说，当这个锁的条件没有满足，比如说这块内存现在被1号worker进程所使用，那么2号worker进程需要去获取锁的时候，只要1号进程没有释放锁，2号进程会一直在不停地去请求这个把锁，就好像，如果是基于信号量的早期的nginx锁，那么假设这把锁锁住了一扇门，如果worker进程1已经拿到了这把锁进到了屋里，那么worker进程2试图去拿锁，敲门，发现里面已经有人了，那么worker进程2就会就地休息，等待worker进程1从门里出来以后，通知它。而自选锁不一样，worker2进程2发现门里已经有worker进程1了，它就一直的持续的在敲门，所以，使用自旋锁，要求所有的nginx模块必须快速的使用共享内存，也就是快速的取得锁以后，快速的释放锁。一旦出现有第三方模块不遵守这样的规则，就可能导致出现死锁，或者说性能下降的问题。那么，有了这么一块共享内存，会引入第2个问题，因为一整块共享内存，往往是给许多对象同时使用的，如果我们在模块中手动去编写分配，把这些内存给到不同的对象，是非常繁琐的，所以，这个时候，我们使用了slab内存管理器。这个接下来我们会再说，那么nginx哪些模块使用了共享内存呢？我对官方的常用的nginx模块使用共享内存做了一个总结。那么使用共享内存，主要使用这两种数据结构，第一个是红黑树，比如我们想做限速或者流控等等场景时，我们是不同容忍在内存中做的，否则一个worker进程，对某一个用户，触发了流控，而其他worker进程还不知道，所以我们只能在共享内存中做，比如说，limit connection，比如说limit request（ngx_stream_limit_req_module），还有所有的http cache，做反向代理时用的，还有ssl，那么红黑树有一个特点，就是它的增删改查特别的快，当然也可以做遍历，所以这些模块都有一个特点，我需要做快速的插入和删除，比如我现在发现了一个客户端，我对它限速，那么限速如果达到了，我需要把这个客户端从我的限速数据结构容器中移出，都需要非常的快速。第二个常用的数据结构是单链表，也就是说我只要这些需要共享的元素都串起来就可以了。Ngx_http_upstream_zone_module或者Ngx_stream_upstream_zone_module，然后我们再来一个稍微复杂的例子，也就是ngx_http_lua_api，这个模块，实际上是openresty的核心模块，那么openresty在这个模块中定义了一个sdk，这个sdk叫lua_shared_dict，当这个指令出现的时候，它会分配一块共享内存，比如这个我们指定了10m，m就是我们的空间大小。那么这块共享内存会有一个名称，叫做dogs。接下来，我们在lua代码中，比如这一段content_by_lua_blocks，这对应这我们nginx收到了set这个url的时候需要做一些什么样的事情，我们首先从dogs共享内存中取出，然后设置了一个key value，然后向客户端返回，我已存储。然后在get请求中，我们把刚才存下的值取出来，返回给用户。那么在这一段代码中呢，我们同时使用了刚刚我们介绍中红黑树，以及链表。那么，这个lua_shared_dict dogs10m了。中间呢，使用红黑树来保存每一个key value，红黑树中的每一个节点就是它的key，它的value就是8，那么为什么我还需要一个链表呢，是因为这个10m是有限的，但我们的lua代码，涉及到了我们的应用业务代码，应用业务代码，很容易就超过了10m的限制，当我们超过10m的限制了呢，我们有很多种处理办法，比如让它写入失败，但是lua_shared_dict采用了另外一种处理方式，就是它用lru淘汰。也就是最早不用的节点，会被最早淘汰，当已经达到10m的最大值时。所以，这个lua_shared_dict中，它对共享内存的使用，同时满足了红黑树和链表。</p>
+<p>共享内存是nginx跨多个worker通讯的最有效的手段，只要我们需要让一段业务逻辑，在多个worker进程中，同时生效，比如许多在集群的流控上，那么必须使用共享内存，而不能在每一个worker内存中去操作。</p>
+]]></content>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python实现Trie(字典树、前缀树)</title>
     <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
     <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
@@ -1489,6 +1500,15 @@
       </tags>
   </entry>
   <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>今年值得纪念的事情</title>
     <url>/2020/08/12/%E4%BB%8A%E5%B9%B4%E5%80%BC%E5%BE%97%E7%BA%AA%E5%BF%B5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
     <content><![CDATA[<h2 id="数据结构与算法">数据结构与算法</h2>
@@ -1504,15 +1524,6 @@
 <li>看完了《七武士》</li>
 <li>读完了《被讨厌的勇气》 2020.8.26</li>
 </ul>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -2460,6 +2471,67 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入浅出索引</title>
+    <url>/2020/08/31/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%B4%A2%E5%BC%95/</url>
+    <content><![CDATA[<p>覆盖索引</p>
+<p>如果执行的语句是select ID from T where k between 3 and 5，这时只需要查ID的值，而ID的值已经在k索引树上了，因此可以直接提供查询结果，不需要回表。也就是说，在这个查询里面，索引k已经“覆盖了”我们的查询需求，我们称为覆盖索引。</p>
+<p><strong>由于覆盖索引可以减少树的搜索次数，显著提升查询性能，所以使用覆盖索引是一个常用的性能优化手段。</strong></p>
+<p>需要注意的是，在引擎内部使用覆盖索引在索引k上其实读了三个记录，R3~R5（对应的索引k上的记录项），但是对于MySQL的Server层来说，它就是找引擎拿到了两条记录，因此MySQL认为扫描行数是2。</p>
+<blockquote>
+<p>备注：关于如何查看扫描行数的问题，我将会在第16篇文章《如何正确地显示随机消息？》中，和你详细讨论。</p>
+</blockquote>
+<p>基于上面覆盖索引的说明，我们来讨论一个问题：<strong>在一个市民信息表上，是否有必要将身份证号和名字建立联合索引？</strong></p>
+<p>假设这个市民表的定义是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE TABLE &#96;tuser&#96; (</span><br><span class="line"> &#96;id&#96; int(11) NOT NULL,</span><br><span class="line">  &#96;id_card&#96; varchar(32) DEFAULT NULL,</span><br><span class="line">  &#96;name&#96; varchar(32) DEFAULT NULL,</span><br><span class="line">  &#96;age&#96; int(11) DEFAULT NULL,</span><br><span class="line">  &#96;ismale&#96; tinyint(1) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (&#96;id&#96;),</span><br><span class="line">  KEY &#96;id_card&#96; (&#96;id_card&#96;),</span><br><span class="line">  KEY &#96;name_age&#96; (&#96;name&#96;, &#96;age&#96;)</span><br><span class="line">) ENGINE&#x3D; InnoDB</span><br></pre></td></tr></table></figure>
+<p>我们知道，身份证号是市民的唯一标识。也就是说，如果有根据身份证号查询市民信息的需求，我们只要在身份证号字段上建立索引就够了。而再建立一个（身份证号、姓名）的联合索引，是不是浪费空间？</p>
+<p>如果现在有一个高频请求是，要根据市民的身份证号查询他的姓名，这个联合索引就有意义了。它可以在这个高频请求上用到覆盖索引，不再需要回表查整行记录，减少语句的执行时间。</p>
+<p>当然，索引字段的维护总是有代价的。因此，在建立冗余索引来支持覆盖索引时就需要权衡考虑了。这正是业务DBA，或者称为业务数据架构师的工作。</p>
+<h3 id="最左前缀原则">最左前缀原则</h3>
+<p>看到这里你一定有一个疑问，如果为每一种查询都设计一个索引，索引是不是太多了。如果我现在要按照市民的身份证号去查他的家庭地址呢？虽然这个查询需求在业务中的出现的概率不高，但总不能让它走全表扫描吧？反过来说，单独为一个不频繁的请求创建一个（身份证号、地址）的索引又感觉有点浪费。应该怎么做呢？</p>
+<p>这里，我先和你说结论吧。<strong>B+树这种索引结构，可以利用索引的“最左前缀”，来定位记录。</strong></p>
+<p>为了直观地说明这个概念，我们用（name，age）这个联合索引来分析。</p>
+<img data-src="/2020/08/31/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%B4%A2%E5%BC%95/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%B4%A2%E5%BC%951.jpg" class>
+<p>可以看到，索引项式按照索引定义里面出现的字段顺序排序的。</p>
+<p>当你的逻辑需求是查到所有名字是“张三”的人时，可以快速定位到ID4，然后向后遍历得到所有需要的结果。</p>
+<p>如果你要查的是所有名字第一个字是“张”的人，你的SQL语句的条件是“where name like ‘张%'”。这时，你也能够用上这个索引，查找到第一个符合条件的记录是ID3，然后向后遍历，直到不满足条件为止。</p>
+<p>可以看到，不只是索引的全部定义，只要满足最左前缀，就可以利用索引来加速检索。这个最左前缀可以是联合索引的最左N个字段，也可以是字符串索引的最左M个字符。</p>
+<p>基于上面对最左索引的说明，我们来讨论一个问题：<strong>在建立联合索引的时候，如何安排索引内的字段顺序。</strong></p>
+<p>这里我们评估的标准是，索引的复用能力。因为可以支持最左前缀，所以当已经有了（a, b）这个联合索引之后，一般就不需要单独在a上建立索引了。因此，<strong>第一原则是，如果通过调整顺序，可以少维护一个索引，那么这个顺序往往就是需要优先考虑的</strong></p>
+<p>所以现在你知道了，这段开头的问题里，我们要为高频请求创建（身份证号，姓名）这个联合索引，并用这个索引支持“根据身份证号查询地址”的需求。</p>
+<p>那么，如果既有联合查询，又有基于a、b各自的查询呢？查询条件里面只有b的语句，是无法使用（a，b）这个联合索引的，这时候你不得不维护另外一个索引，也就是说你需要同时维护（a, b)、（b）两个索引。</p>
+<p>这时候，我们需要<strong>考虑的原则就是空间了。</strong>比如上面这个市民表的情况，name字段是比age字段大的，那我就建议你创建一个（name，age）的联合索引和一个（age）的单字段索引。</p>
+<h3 id="索引下推">索引下推</h3>
+<p>上一段我们说到满足最左前缀规则的时候，最左前缀可以用于在索引中定位记录。这是，你可能要问，那些不符合最左前缀的部分，会怎么样呢？</p>
+<p>我们还是以市民表的联合索引（name，age）为例。如果现在有一个需求：检索出表中“名字第一个字是张，而且年龄是10岁的所有男孩”。那么，SQL语句是这么写的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql&gt;select * from tuser where name like &#39;张%&#39; and age&#x3D;10 and ismale&#x3D;1;</span><br></pre></td></tr></table></figure>
+<p>你已经知道了前缀索引规则，所以这个语句在搜索索引树的时候，只能用”张“，找到第一个满足条件的记录ID3。当然，这还不错，总比全表扫描好。</p>
+<p>然后呢？</p>
+<p>当然是判断其他条件是否满足。</p>
+<p>在MySQL 5.6之前，只能从ID3开始一个个回表。到主键索引上找出数据行，再对比字段值。</p>
+<p>而MySQL 5.6引入的索引下推优化（index condition pushdown），可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。</p>
+<p>图3和图4，是这两个过程的执行流程图。</p>
+<img data-src="/2020/08/31/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%B4%A2%E5%BC%95/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%B4%A2%E5%BC%952.jpg" class>
+<img data-src="/2020/08/31/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%B4%A2%E5%BC%95/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%B4%A2%E5%BC%953.jpg" class>
+<p>在图3和图4这两个图里面，每个虚线箭头表示回表一次。</p>
+<p>图3中，在（name, age）索引里面我特意去掉了age的值，这个过程InnoDB并不会去看age的值，只是按顺序把”name第一个字是’张‘“的记录一条条取出来回表。因此，需要回表4次。</p>
+<p>图4和图3的区别是，InnoDB在（name，age）索引内部就判断了age是否等于10，对于不等于10的记录，直接判断并跳过。在我们这个例子中，只需要对ID4、ID5这两条记录回表取数据判断，就只需要回表2次。</p>
+<h3 id="小结">小结</h3>
+<p>今天这篇文章，我和你继续讨论了数据库索引的概念，包括了覆盖索引、前缀索引、索引下推。你可以看到，在满足语句需求的情况下，尽量少地访问资源是数据库设计的重要原则之一。我们在使用数据库的时候，尤其是在设计表结构时，也要以减少资源消耗作为目标。</p>
+<p>接下来我们给你留一个问题吧。</p>
+<p>实际上主键索引也是可以使用多个字段的。DBA小吕在入职新公司的时候，就发现自己接手维护的库里面，有这么一个表，表结构定义类似这样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE TABLE &#96;geek&#96; (</span><br><span class="line">  &#96;a&#96; int(11) NOT NULL,</span><br><span class="line">  &#96;b&#96; int(11) NOT NULL,</span><br><span class="line">  &#96;c&#96; int(11) NOT NULL,</span><br><span class="line">  &#96;d&#96; int(11) NOT NULL,</span><br><span class="line">  PRIMARY KEY (&#96;a&#96;, &#96;b&#96;),</span><br><span class="line">  KEY &#96;c&#96; (&#96;c&#96;),</span><br><span class="line">  KEY &#96;ca&#96; (&#96;c&#96;, &#96;a&#96;),</span><br><span class="line">  KEY &#96;cb&#96; (&#96;c&#96;, &#96;b&#96;)</span><br><span class="line">) ENGINE&#x3D;InnoDB;</span><br></pre></td></tr></table></figure>
+<p>公司的同事告诉他说，由于历史原因，这个表需要a、b做联合主键，这个小吕理解了。</p>
+<p>但是，学过本章内容的小吕纳闷了，既然主键包含了a、b两个字段，那意味着单独在字段c上创建一个索引，就已经包含了三个字段了呀，为什么要创建"ca", "cb"这两个索引呢？</p>
+<p>同事告诉他，是因为他们的业务里面有这样的两种语句：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from geek where c&#x3D;N order by a limit 1;</span><br><span class="line">select * from geek where c&#x3D;N order by b limit 1;</span><br></pre></td></tr></table></figure>
+<p>我给你的问题是，这位同事的解释对吗，为了这两个查询模式，这两个索引是否都是必须的？为什么呢？</p>
+<p>"cb"是必须的，"ca"不是必须的。因为主键就是"ab"，在"c"这个索引上，已经是按照a的顺序排序的了。其实在MySQL的实现中，<strong>"ca"的主键部分只有b，所以和c索引是一模一样的</strong>，而"cb"要保留，因为"c"这个索引上没有按照"b"排序。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
