@@ -24,18 +24,22 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="参考  GeeksforGeeks  如果所有的顶点对之间都有一条路径，那么一个有向图就是强连通的。有向图的强连通分量（strongly connected component，SCC）是一个最大强连通子图。例如，下面的图中有3个SCC。  我们已经讨论过Kosaraju的强连通分量的算法。前面讨论的算法需要对一个Graph进行两次DFS遍历。在这篇文章中，我们将讨论Tarjan算法，它只需要一次">
+  <meta name="description" content="参考 GeeksforGeeks  如果所有的顶点对之间都有一条路径，那么一个有向图就是强连通的。有向图的强连通分量（strongly connected component，SCC）是一个最大强连通子图。例如，下面的图中有3个SCC。   我们已经讨论过Kosaraju的强连通分量的算法。前面讨论的算法需要对一个Graph进行两次DFS遍历。在这篇文章中，我们将讨论Tarjan算法，它只需要一次">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Tarjan寻找图的强连通分量算法">
 <meta property="og:url" content="https://hrz123.github.io/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="参考  GeeksforGeeks  如果所有的顶点对之间都有一条路径，那么一个有向图就是强连通的。有向图的强连通分量（strongly connected component，SCC）是一个最大强连通子图。例如，下面的图中有3个SCC。  我们已经讨论过Kosaraju的强连通分量的算法。前面讨论的算法需要对一个Graph进行两次DFS遍历。在这篇文章中，我们将讨论Tarjan算法，它只需要一次">
+<meta property="og:description" content="参考 GeeksforGeeks  如果所有的顶点对之间都有一条路径，那么一个有向图就是强连通的。有向图的强连通分量（strongly connected component，SCC）是一个最大强连通子图。例如，下面的图中有3个SCC。   我们已经讨论过Kosaraju的强连通分量的算法。前面讨论的算法需要对一个Graph进行两次DFS遍历。在这篇文章中，我们将讨论Tarjan算法，它只需要一次">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan1.jpg">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan2.png">
+<meta property="og:image" content="https://hrz123.github.io/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan3.jpg">
 <meta property="article:published_time" content="2020-08-31T08:36:36.000Z">
 <meta property="article:modified_time" content="2020-08-31T09:31:58.554Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="数据结构与算法">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hrz123.github.io/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan1.jpg">
 
 <link rel="canonical" href="https://hrz123.github.io/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/">
 
@@ -240,15 +244,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="参考">参考</h3>
-<ul>
+        <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvdGFyamFuLWFsZ29yaXRobS1maW5kLXN0cm9uZ2x5LWNvbm5lY3RlZC1jb21wb25lbnRzLw==">GeeksforGeeks<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 <p>如果所有的顶点对之间都有一条路径，那么一个有向图就是强连通的。有向图的强连通分量（strongly connected component，SCC）是一个最大强连通子图。例如，下面的图中有3个SCC。</p>
+<img data-src="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan1.jpg" class>
 
 <p>我们已经讨论过Kosaraju的强连通分量的算法。前面讨论的算法需要对一个Graph进行两次DFS遍历。在这篇文章中，我们将讨论Tarjan算法，它只需要一次DFS遍历。</p>
 <p>Tarjan算法基于以下事实：</p>
-<ol type="1">
+<ol>
 <li>DFS搜索会产生一个DFS树/森林；</li>
 <li>强连通分量构成DFS树的子树；</li>
 <li>如果我们能找到这种子树的头，就可以打印/存储该子树的所有结点（包括头），这将是一个SCC；</li>
@@ -256,11 +260,12 @@
 </ol>
 <p>为了找到一个SCC的头部，我们要计算disc和low数组（就像处理衔接点、桥、双连接组件一样）。如前几篇文章所讨论的，low[u]表示从以u为根的子树中可以到达的最早被访问的顶点（发现时间最短的顶点），如果disc[u]=low[u]，则节点u为头部。</p>
 <p>下图是该方法的说明：</p>
+<img data-src="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan2.png" class>
 
 <p>强连通分量只与有向图有关，但Disc和Low值与有向图和无向图都有关。</p>
 <p>在上图中，我们展示了一个图形和它的一颗DFS树（在同一个图形上可以有不同的DFS树，取决于边被遍历的顺序）。在DFS树中，连续的箭头是树的边，虚线的箭头是back edge</p>
 <p>图中每个节点的disc和low的值显示为disc/low</p>
-<p><strong>Disc:</strong> 是指在DFS遍历时，节点第1次被访问的时间。这是在DFS遍历时，一个节点第一次被访问的时间。对于DFS树中的节点A，B，C，...，J，Disc值为1，2，3，…，10。</p>
+<p><strong>Disc:</strong> 是指在DFS遍历时，节点第1次被访问的时间。这是在DFS遍历时，一个节点第一次被访问的时间。对于DFS树中的节点A，B，C，…，J，Disc值为1，2，3，…，10。</p>
 <p><strong>Low:</strong> 在DFS树中，树边带我们向前走，从祖先节点到它的一个子孙节点。例如，从节点C开始，树边可以带我们到节点G、节点I等。回溯边（back edge）带我们往后走，从一个子孙节点到它的一个祖先节点，例如，从节点G出发，back edge带我们到E或C。如果我们把树边和回溯边（back edge）一起看，那么我们可以看到，如果我们从一个节点开始遍历，我们可能会通过树边向下走，然后通过回溯边向上走。例如，从节点E开始，我们可以向下走到I或J，然后向上走到F。一个节点的Low值告诉了我们通过该节点的子树所能到达的最顶层祖先（最小可能的disc值）。所以对于任何一个节点，无论如何Low值都等于它的Disc值（一个节点是它自己的祖先）。然后我们查看它的子树，看看是否有任何节点可以带我们找到它的任何一个祖先。如果在子树中有多条回溯边可以带我们到不同的祖先，那么我们就选取Disc值最小的那条（即最上面的那条）。如果我们看一下节点F，它有两个子树。有节点G的子树，把我们带到E和C，另一个子树只把我们带回F。这里最顶层的祖先是F可以到达的C，所以F的Low值是3（C的Disc值）。</p>
 <p>根据上面的讨论，应该很清楚，B、C、D的Low值是1（因为A是B、C、D可以到达的最上面的节点）。同理，E、F、G的Low值为3，H、I、J的Low值为6。</p>
 <p>对于任何节点u，当DFS开始时，Low将会被设置为其Disc 1st。</p>
@@ -270,12 +275,12 @@
 <li>Case2（Back Edge）：当后代v已经被访问，那么low[u] = min(low[u], disc[v]);</li>
 </ul>
 <p>在第二种情况下，我们是否可以用low[v]代替DIsc[v]？答案是NO。如果你能想到为什么答案是NO，那么你大概明白Low和Disc的概念。（因为是有向图，low[v]是v能访问到的最小节点，u不一定能访问到，u能访问到v，说明disc[v]一定是可以取到的）</p>
+<img data-src="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan3.jpg" class>
 
 <p>相同的Low和Disc值有助于解决其他图的问题，如衔接点、桥和双连接分量。</p>
 <p>为了跟踪以头部为根的子树，我们可以使用栈（在访问时不断推送节点）。当发现一个头部节点时，从堆栈中弹出所有节点，直到从栈中得到头部。</p>
 <p>为了确保不考虑交叉边，当我们到达一个已经被访问过的节点时，只有当栈中存在被访问过的节点时，我们才应该对该节点进行处理，否则忽略该节点。</p>
-<h3 id="todo-写一个tarjan算法找到有向图的所有连通分量并打印出来">Todo: 写一个Tarjan算法找到有向图的所有连通分量并打印出来</h3>
-
+<h3 id="Todo-写一个Tarjan算法找到有向图的所有连通分量并打印出来"><a href="#Todo-写一个Tarjan算法找到有向图的所有连通分量并打印出来" class="headerlink" title="Todo: 写一个Tarjan算法找到有向图的所有连通分量并打印出来"></a>Todo: 写一个Tarjan算法找到有向图的所有连通分量并打印出来</h3>
     </div>
 
     
@@ -361,7 +366,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#todo-%E5%86%99%E4%B8%80%E4%B8%AAtarjan%E7%AE%97%E6%B3%95%E6%89%BE%E5%88%B0%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E6%89%80%E6%9C%89%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E5%B9%B6%E6%89%93%E5%8D%B0%E5%87%BA%E6%9D%A5"><span class="nav-number">2.</span> <span class="nav-text">Todo: 写一个Tarjan算法找到有向图的所有连通分量并打印出来</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Todo-%E5%86%99%E4%B8%80%E4%B8%AATarjan%E7%AE%97%E6%B3%95%E6%89%BE%E5%88%B0%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E6%89%80%E6%9C%89%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E5%B9%B6%E6%89%93%E5%8D%B0%E5%87%BA%E6%9D%A5"><span class="nav-number">2.</span> <span class="nav-text">Todo: 写一个Tarjan算法找到有向图的所有连通分量并打印出来</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
