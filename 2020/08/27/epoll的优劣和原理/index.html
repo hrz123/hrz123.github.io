@@ -33,7 +33,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hrz123.github.io/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/benchmark.png">
 <meta property="article:published_time" content="2020-08-27T14:28:19.000Z">
-<meta property="article:modified_time" content="2020-08-31T01:57:41.636Z">
+<meta property="article:modified_time" content="2020-08-31T02:34:34.144Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary">
@@ -220,7 +220,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-31 09:57:41" itemprop="dateModified" datetime="2020-08-31T09:57:41+08:00">2020-08-31</time>
+                <time title="修改时间：2020-08-31 10:34:34" itemprop="dateModified" datetime="2020-08-31T10:34:34+08:00">2020-08-31</time>
               </span>
 
           
@@ -272,7 +272,12 @@
 </ul>
 <p>以上，简单介绍了epoll的使用方法，它对我们理解nginx的事件驱动模型是有帮助的。</p>
 <h3 id="其他">其他</h3>
-<p>每一个nginx worker进程都有一个独立的ngx_cycle_t这样一个数据结构。有三个主要的数组，connections，read_events，write_events。分别代表预分配的连接、读事件和写事件。</p>
+<p>每一个nginx worker进程都有一个独立的ngx_cycle_t这样一个数据结构。有三个主要的数组，connections，read_events，write_events。分别代表预分配的连接、读事件和写事件。三个数组大小和配置是一模一样的，三个数组通过序号对应起来。</p>
+<p>每一个connection到底使用了多大的内存呢？连接使用的核心数据结构是ngx_connection_s，64位操作系统中，大约占用了232个字节，nginx版本不同可能有微小的差异，每一个ngx_connetion_s结构体对应着两个事件，一个读一个写，每一个时间对应的结构体，事件的核心数据结构是ngx_event_s，结构体占用的字节数是96字节。所以当我们使用一个连接的时候，它使用的字节大约是232+96*2，我们的worker connections配置得越大，那么初始化的时候就会预分配这么多内存。</p>
+<p>我们再来看ngx_event_s中有哪些成员，这里我们比较关注的是，有一个handler（ngx_event_gandler_pt）指针，这是一个回调方法，也就是很多第三方模块会把这个handler设为自己的实现；这里还有一个timer（ngx_rbtree_node_t），也就是说，当我们对http请求做读超时写超时等等设置的时候，其实是在操作它的读事件和写事件中的timer，这个timer就是inginx实现超时定时器，也就是基于rbtree就实现的这样一个结构体。那么红黑树中每个成员叫rbtree_node，那么这个timer就是它的node，用来指向我们的读事件是否超时、写事件是否超时，这些定时器其实也是可配的。</p>
+<p>比如client_header_timeout，默认是60s，也就是在我们刚刚某个连接上，在准备读取它的header时，我们在它的读事件上添加了一个60s的定时器。</p>
+<p>当多个事件形成队列的时候，可以用这个ngx_queue_t形成一个队列。</p>
+<p>我们再来简单的看一下，ngx_connection_s有一些什么样的成员。ngx_event_t read，ngx_event_t write分别是它的读写事件，这个刚刚已经说过了。recv和send是它抽象的操作系统的底层方法，怎么样发送和接收。这里还有一个比较有意思的变量，叫做sent，它的类型是off_t，大家可以把它理解成一个无符号的整型，表达的呢就是这个连接上我已经发送了多少字节，也就是，我们在配置中，会经常使用到的bytes_sent变量，那么我们可以先看一看bytes_sent变量到底有什么作用。还是打开ngx_http_core_module的官方文档，我们先找到它的内置变量。可以看到bytes_sent，它表示向客户端发送了多少字节。通常，在access_log记录nginx处理了哪些请求中，我们会记录这么一个变量，比如，在我们查看access_log时。现在我们打开了nginx_conf这个配置文件，在配置文件中，我们有一行log_format main，定义了access_log的日志格式。在日志格式，我们看到有一个 中括号，这个中括号的后半部分我们用了bytes_sent这个内置变量，用来表示我们发送了多少字节。我们看一下在日志中，这个bytes_sent会表现为什么样的形式。</p>
 <p>为什么nginx默认连接池的大小是256|512个字节，而默认请求池是4k个字节大小？为什么差距那么多呢？</p>
 <p>对于连接而言，它需要保存的上下文信息非常的少，它只需要帮助后面的请求读取最初一部分字节就可以了。而对于请求而言，我们需要保存大量的上下文信息，比如说所有读取到的url或者header，我需要一直保存下来，url通常还比较长，所以需要有4k这么样大小。当然官方文档中说请求池的大小对性能的影响比较小。</p>
 <h3 id="参考">参考</h3>
