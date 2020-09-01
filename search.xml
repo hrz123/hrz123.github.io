@@ -1166,52 +1166,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 363.矩形区域不超过K的最大数值和，通过此题好好了解前缀和的各种应用和变化</title>
-    <url>/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/</url>
-    <content><![CDATA[<h2 id="题目描述">题目描述</h2>
-<p>给定一个非空二维矩阵 matrix 和一个整数 k，找到这个矩阵内部不大于 k 的最大矩形和。</p>
-<p>示例:</p>
-<p>输入: matrix = [[1,0,1],[0,-2,3]], k = 2 输出: 2 解释: 矩形区域 [[0, 1], [-2, 3]] 的数值和是 2，且 2 是不超过 k 的最大数字（k = 2）。 说明：</p>
-<p>矩阵内的矩形区域面积必须大于 0。 如果行数远大于列数，你将如何解答呢？</p>
-<h2 id="思路">思路</h2>
-<p>这道题目的思路是固定左右边界，对行进行前缀和和二分查找。</p>
-<p>我们知道，前缀和可以让我们O(1)的时间复杂度知道任何区间和。</p>
-<p>前缀和的典型构建方法：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pre = [<span class="number">0</span>]</span><br><span class="line">p = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">    p += n</span><br><span class="line">    pre.append(p)</span><br></pre></td></tr></table></figure>
-<p>比如我们想知道i,j之间的区间和，包括i，j索引的话，我们的方法是pre[j+1] - pre[i]。</p>
-<p>通过前缀和的变种，我们可以解决一些新的问题。</p>
-<p>我们将前缀和变成hash set，就可以快速判断是否有一个区间和等于target。</p>
-<p>我们可以插入排序的方法替换掉单纯的append，使前缀和有序，这样就可以用二分查找找到最接近某个target的区间和。</p>
-<p>这道题目就利用了第二种想法。</p>
-<p>我们固定左右边界，left和right，先将left到right之间的每一行的所有数值累加。这样我们就有了一列数。通过固定所有这样的left和right我们也就枚举了矩形所有的左边界和右边界。接着我们用第二种方法，边构建前缀和，编计算最接近target的矩形面积。</p>
-<p>其大致代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pre = [<span class="number">0</span>]</span><br><span class="line">p = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> r <span class="keyword">in</span> total:</span><br><span class="line">    p += r</span><br><span class="line">    loc = bisect.bisect_left(pre, p - k)</span><br><span class="line">    <span class="keyword">if</span> loc != len(pre):</span><br><span class="line">        res = max(res, p - pre[loc])</span><br><span class="line">    bisect.insort(pre, p)</span><br></pre></td></tr></table></figure>
-<p>有了这段代码，再加上我们固定左右边界的代码，我们就可以解决这个问题。计算一下复杂度。</p>
-<p>固定左右边界需要O(n^2)的时间复杂度，n为矩形的列数。生成前缀和遍历需要O(m)，m为矩阵的行数，搜索是O(logm)的，但是插入是O(m)的。所以总体上还是O(n^2m^2)的。但是常数项比较低。</p>
-<h2 id="总体代码如下">总体代码如下</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxSumSubmatrix</span>(<span class="params">self, matrix: List[List[int]], k: int</span>) -&gt; int:</span></span><br><span class="line">        m, n = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        total = [<span class="number">0</span>] * m</span><br><span class="line">        res = float(<span class="string">&#x27;-inf&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> left <span class="keyword">in</span> range(n):</span><br><span class="line">            total[:] = [<span class="number">0</span>] * m</span><br><span class="line">            <span class="keyword">for</span> right <span class="keyword">in</span> range(left, n):</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">                    total[i] += matrix[i][right]</span><br><span class="line">                pre = [<span class="number">0</span>]</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">                <span class="keyword">for</span> r <span class="keyword">in</span> total:</span><br><span class="line">                    p += r</span><br><span class="line">                    loc = bisect.bisect_left(pre, p - k)</span><br><span class="line">                    <span class="keyword">if</span> loc != len(pre):</span><br><span class="line">                        res = max(res, p - pre[loc])</span><br><span class="line">                    bisect.insort(pre, p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-<h2 id="另一道相似题目">另一道相似题目</h2>
-<ol start="1546" type="1">
-<li>和为目标值的最大数目不重叠非空子数组数目</li>
-</ol>
-<p>给你一个数组 nums 和一个整数 target 。</p>
-<p>请你返回 非空不重叠 子数组的最大数目，且每个子数组中数字和都为 target 。</p>
-<p>示例 1：</p>
-<p>输入：nums = [1,1,1,1,1], target = 2 输出：2 解释：总共有 2 个不重叠子数组（加粗数字表示） [1,1,1,1,1] ，它们的和为目标值 2 。 示例 2：</p>
-<p>输入：nums = [-1,3,5,1,4,2,-9], target = 6 输出：2 解释：总共有 3 个子数组和为 6 。 ([5,1], [4,2], [3,5,1,4,2,-9]) 但只有前 2 个是不重叠的。 示例 3：</p>
-<p>输入：nums = [-2,6,6,3,5,4,1,2,8], target = 10 输出：3 示例 4：</p>
-<p>输入：nums = [0,0,0], target = 0 输出：3</p>
-<p>提示：</p>
-<p>1 &lt;= nums.length &lt;= 10^5 -10^4 &lt;= nums[i] &lt;= 10^4 0 &lt;= target &lt;= 10^6</p>
-<p>这道题目就是使用了第一种前缀和的变化，并应用了贪心的思想。</p>
-<p>一旦发现target在区间和中，我们就重新统计前缀和。示例代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxNonOverlapping</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; int:</span></span><br><span class="line">        pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">        p = <span class="number">0</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">            p += n</span><br><span class="line">            <span class="keyword">if</span> p - target <span class="keyword">in</span> pre:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">                pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                pre.add(p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 34.在排序数组中查找元素的第一个和最后一个位置</title>
     <url>/2020/08/10/leetcode-34-%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE/</url>
     <content><![CDATA[<h2 id="题目描述">题目描述</h2>
@@ -1253,6 +1207,52 @@
 <h2 id="示例代码">示例代码</h2>
 <p>这道题的解法如下，加上了不在数组的判断</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">searchRange</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; List[int]:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">            l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">            <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                    r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    l = mid + <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> l</span><br><span class="line"></span><br><span class="line">        left = binary_search(nums, target, <span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">if</span> left == len(nums) <span class="keyword">or</span> nums[left] != target:</span><br><span class="line">            <span class="keyword">return</span> [<span class="number">-1</span>, <span class="number">-1</span>]</span><br><span class="line">        <span class="keyword">return</span> [left, binary_search(nums, target, <span class="literal">False</span>) - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 363.矩形区域不超过K的最大数值和，通过此题好好了解前缀和的各种应用和变化</title>
+    <url>/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/</url>
+    <content><![CDATA[<h2 id="题目描述">题目描述</h2>
+<p>给定一个非空二维矩阵 matrix 和一个整数 k，找到这个矩阵内部不大于 k 的最大矩形和。</p>
+<p>示例:</p>
+<p>输入: matrix = [[1,0,1],[0,-2,3]], k = 2 输出: 2 解释: 矩形区域 [[0, 1], [-2, 3]] 的数值和是 2，且 2 是不超过 k 的最大数字（k = 2）。 说明：</p>
+<p>矩阵内的矩形区域面积必须大于 0。 如果行数远大于列数，你将如何解答呢？</p>
+<h2 id="思路">思路</h2>
+<p>这道题目的思路是固定左右边界，对行进行前缀和和二分查找。</p>
+<p>我们知道，前缀和可以让我们O(1)的时间复杂度知道任何区间和。</p>
+<p>前缀和的典型构建方法：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pre = [<span class="number">0</span>]</span><br><span class="line">p = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">    p += n</span><br><span class="line">    pre.append(p)</span><br></pre></td></tr></table></figure>
+<p>比如我们想知道i,j之间的区间和，包括i，j索引的话，我们的方法是pre[j+1] - pre[i]。</p>
+<p>通过前缀和的变种，我们可以解决一些新的问题。</p>
+<p>我们将前缀和变成hash set，就可以快速判断是否有一个区间和等于target。</p>
+<p>我们可以插入排序的方法替换掉单纯的append，使前缀和有序，这样就可以用二分查找找到最接近某个target的区间和。</p>
+<p>这道题目就利用了第二种想法。</p>
+<p>我们固定左右边界，left和right，先将left到right之间的每一行的所有数值累加。这样我们就有了一列数。通过固定所有这样的left和right我们也就枚举了矩形所有的左边界和右边界。接着我们用第二种方法，边构建前缀和，编计算最接近target的矩形面积。</p>
+<p>其大致代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pre = [<span class="number">0</span>]</span><br><span class="line">p = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> r <span class="keyword">in</span> total:</span><br><span class="line">    p += r</span><br><span class="line">    loc = bisect.bisect_left(pre, p - k)</span><br><span class="line">    <span class="keyword">if</span> loc != len(pre):</span><br><span class="line">        res = max(res, p - pre[loc])</span><br><span class="line">    bisect.insort(pre, p)</span><br></pre></td></tr></table></figure>
+<p>有了这段代码，再加上我们固定左右边界的代码，我们就可以解决这个问题。计算一下复杂度。</p>
+<p>固定左右边界需要O(n^2)的时间复杂度，n为矩形的列数。生成前缀和遍历需要O(m)，m为矩阵的行数，搜索是O(logm)的，但是插入是O(m)的。所以总体上还是O(n^2m^2)的。但是常数项比较低。</p>
+<h2 id="总体代码如下">总体代码如下</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxSumSubmatrix</span>(<span class="params">self, matrix: List[List[int]], k: int</span>) -&gt; int:</span></span><br><span class="line">        m, n = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        total = [<span class="number">0</span>] * m</span><br><span class="line">        res = float(<span class="string">&#x27;-inf&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> left <span class="keyword">in</span> range(n):</span><br><span class="line">            total[:] = [<span class="number">0</span>] * m</span><br><span class="line">            <span class="keyword">for</span> right <span class="keyword">in</span> range(left, n):</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">                    total[i] += matrix[i][right]</span><br><span class="line">                pre = [<span class="number">0</span>]</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">                <span class="keyword">for</span> r <span class="keyword">in</span> total:</span><br><span class="line">                    p += r</span><br><span class="line">                    loc = bisect.bisect_left(pre, p - k)</span><br><span class="line">                    <span class="keyword">if</span> loc != len(pre):</span><br><span class="line">                        res = max(res, p - pre[loc])</span><br><span class="line">                    bisect.insort(pre, p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h2 id="另一道相似题目">另一道相似题目</h2>
+<ol start="1546" type="1">
+<li>和为目标值的最大数目不重叠非空子数组数目</li>
+</ol>
+<p>给你一个数组 nums 和一个整数 target 。</p>
+<p>请你返回 非空不重叠 子数组的最大数目，且每个子数组中数字和都为 target 。</p>
+<p>示例 1：</p>
+<p>输入：nums = [1,1,1,1,1], target = 2 输出：2 解释：总共有 2 个不重叠子数组（加粗数字表示） [1,1,1,1,1] ，它们的和为目标值 2 。 示例 2：</p>
+<p>输入：nums = [-1,3,5,1,4,2,-9], target = 6 输出：2 解释：总共有 3 个子数组和为 6 。 ([5,1], [4,2], [3,5,1,4,2,-9]) 但只有前 2 个是不重叠的。 示例 3：</p>
+<p>输入：nums = [-2,6,6,3,5,4,1,2,8], target = 10 输出：3 示例 4：</p>
+<p>输入：nums = [0,0,0], target = 0 输出：3</p>
+<p>提示：</p>
+<p>1 &lt;= nums.length &lt;= 10^5 -10^4 &lt;= nums[i] &lt;= 10^4 0 &lt;= target &lt;= 10^6</p>
+<p>这道题目就是使用了第一种前缀和的变化，并应用了贪心的思想。</p>
+<p>一旦发现target在区间和中，我们就重新统计前缀和。示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxNonOverlapping</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; int:</span></span><br><span class="line">        pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">        p = <span class="number">0</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">            p += n</span><br><span class="line">            <span class="keyword">if</span> p - target <span class="keyword">in</span> pre:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">                pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                pre.add(p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -1512,37 +1512,6 @@
       </tags>
   </entry>
   <entry>
-    <title>今年值得纪念的事情</title>
-    <url>/2020/08/12/%E4%BB%8A%E5%B9%B4%E5%80%BC%E5%BE%97%E7%BA%AA%E5%BF%B5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
-    <content><![CDATA[<h2 id="数据结构与算法">数据结构与算法</h2>
-<ul>
-<li>leetcode刷到300题啦，继续加油啊！</li>
-<li>2020.08.22 第一次leetcode周赛全对，继续努力！</li>
-<li>2020.08.23 leetcode周赛进了前500，继续努力！</li>
-<li>2020.08.30 leetcode 204 周赛全国排名68，进入前100啦！世界排名239，进入前300啦！继续加油啊！</li>
-</ul>
-<h2 id="生活">生活</h2>
-<ul>
-<li>拔掉了最后两颗智齿，所有的智齿都没啦！</li>
-<li>看完了《七武士》</li>
-<li>读完了《被讨厌的勇气》 2020.8.26</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>了解java GC过程</title>
     <url>/2020/08/28/%E4%BA%86%E8%A7%A3java-GC%E8%BF%87%E7%A8%8B/</url>
     <content><![CDATA[<p>堆的空间是用来存储我们new出来的对象的。当new的对象填充满堆区的话，就会导致内存爆掉，我们的程序就会OOM。jvm 的 GC是清理堆上的对象的。</p>
@@ -1570,6 +1539,37 @@
 ]]></content>
       <tags>
         <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>今年值得纪念的事情</title>
+    <url>/2020/08/12/%E4%BB%8A%E5%B9%B4%E5%80%BC%E5%BE%97%E7%BA%AA%E5%BF%B5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
+    <content><![CDATA[<h2 id="数据结构与算法">数据结构与算法</h2>
+<ul>
+<li>leetcode刷到300题啦，继续加油啊！</li>
+<li>2020.08.22 第一次leetcode周赛全对，继续努力！</li>
+<li>2020.08.23 leetcode周赛进了前500，继续努力！</li>
+<li>2020.08.30 leetcode 204 周赛全国排名68，进入前100啦！世界排名239，进入前300啦！继续加油啊！</li>
+</ul>
+<h2 id="生活">生活</h2>
+<ul>
+<li>拔掉了最后两颗智齿，所有的智齿都没啦！</li>
+<li>看完了《七武士》</li>
+<li>读完了《被讨厌的勇气》 2020.8.26</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2378,6 +2378,7 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <li>change buffer</li>
 <li>普通索引和唯一索引尽量选择普通索引</li>
 <li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引，语句为count distinct。预先设定一个可以接受的损失比例。但是使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是你在选择是否使用前缀索引时需要考虑的一个因素。</li>
+<li>脏页和干净页，redo log中的脏页，刷进磁盘才会删除。这时候系统会停止所有更新操作，把 checkpoint 往前推进，redo log 留出空间可以继续写。write_pos， checkpoint</li>
 </ol>
 ]]></content>
       <tags>
@@ -2740,6 +2741,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>江湖再见</title>
+    <url>/2020/09/01/%E6%B1%9F%E6%B9%96%E5%86%8D%E8%A7%81/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>深入浅出索引</title>
     <url>/2020/08/31/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%B4%A2%E5%BC%95/</url>
     <content><![CDATA[<p>覆盖索引</p>
@@ -2798,15 +2808,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>江湖再见</title>
-    <url>/2020/09/01/%E6%B1%9F%E6%B9%96%E5%86%8D%E8%A7%81/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2970,6 +2971,12 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>背包问题泛型</title>
+    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
+    <content><![CDATA[
+]]></content>
+  </entry>
+  <entry>
     <title>自增id用完怎么办？</title>
     <url>/2020/08/29/%E8%87%AA%E5%A2%9Eid%E7%94%A8%E5%AE%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/</url>
     <content><![CDATA[<p>MySQL里有很多自增的id，每个自增id都是定义了初始值，然后不停地往上加步长。虽然自然数是没有上限的，但是在计算机里，只要定义了表示这个数的字节长度，那它就有上限。比如，无符号整型（unsigned int）是4个字节，上限就是2^32-1。</p>
@@ -3083,12 +3090,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>数据库</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>背包问题泛型</title>
-    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
   <entry>
     <title>蓄水池算法</title>
