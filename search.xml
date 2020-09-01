@@ -1280,17 +1280,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 818.赛车</title>
-    <url>/2020/08/12/leetcode-818-%E8%B5%9B%E8%BD%A6/</url>
-    <content><![CDATA[<h2 id="示例解法">示例解法</h2>
-<p>这道题目的dp要仔细分析。分析过程写在了注释中（个人习惯…）。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 我们来分析这个问题</span></span><br><span class="line"><span class="comment"># 我们定义f(i)为距离终点为i时所需的指令大小</span></span><br><span class="line"><span class="comment"># 如果i == 2 ** n - 1，指令的长度就为n</span></span><br><span class="line"><span class="comment"># 如果i != 2 ** n - 1，我们有两种走法</span></span><br><span class="line"><span class="comment"># 假设 2**(n-1) -1 &lt; i &lt; 2 **n - 1</span></span><br><span class="line"><span class="comment"># 这样n就等于i的bit_length</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** n - 1</span></span><br><span class="line"><span class="comment"># 我们的指令是A^nR，指令长度为n+1，我们到终点的距离是 j-i，一定小于i</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** (n-1) - 1, j &lt; i</span></span><br><span class="line"><span class="comment"># 然后我们又往回走了 p = 2 ** k - 1, 现在我们的位置是 2 ** (n-1) - 2 ** k</span></span><br><span class="line"><span class="comment"># 指令长度是 A^(n-1)RA^kR n+k+1，我们现在距离终点 i - 2 **(n-1) + 2 ** k ,是小于i的</span></span><br><span class="line"><span class="comment"># 这样我们就得出了我们的递推公式</span></span><br><span class="line"><span class="comment"># f(i) = n if i == 2 ** n - 1</span></span><br><span class="line"><span class="comment"># f(i) = min(f(2**n -1 - i)+n+1, f(i-2**(n-1)+2**k)+n+k+1 k &lt; n-1)</span></span><br><span class="line"><span class="comment"># 初始化和边界条件f(0) = 0，注意向会回走的k不会大于等于n-1，因为等于n-1时就走到0了</span></span><br><span class="line"><span class="comment"># 返回值f(target)</span></span><br><span class="line"><span class="comment"># 优化复杂度</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">racecar</span>(<span class="params">self, target: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [<span class="number">0</span>] + [float(<span class="string">&#x27;inf&#x27;</span>)] * target</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, target + <span class="number">1</span>):</span><br><span class="line">            n = i.bit_length()</span><br><span class="line">            <span class="keyword">if</span> i == (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>:</span><br><span class="line">                dp[i] = n</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dp[i] = dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span> - i] + n + <span class="number">1</span></span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> range(n - <span class="number">1</span>):</span><br><span class="line">                    dp[i] = min(dp[i],</span><br><span class="line">                                dp[i - (<span class="number">1</span> &lt;&lt; (n - <span class="number">1</span>)) + (<span class="number">1</span> &lt;&lt; k)] + n + k + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> dp[target]</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>__new__和__init__的区别</title>
     <url>/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
     <content><![CDATA[<p>先上代码</p>
@@ -1330,6 +1319,17 @@
 ]]></content>
       <tags>
         <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 818.赛车</title>
+    <url>/2020/08/12/leetcode-818-%E8%B5%9B%E8%BD%A6/</url>
+    <content><![CDATA[<h2 id="示例解法">示例解法</h2>
+<p>这道题目的dp要仔细分析。分析过程写在了注释中（个人习惯…）。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 我们来分析这个问题</span></span><br><span class="line"><span class="comment"># 我们定义f(i)为距离终点为i时所需的指令大小</span></span><br><span class="line"><span class="comment"># 如果i == 2 ** n - 1，指令的长度就为n</span></span><br><span class="line"><span class="comment"># 如果i != 2 ** n - 1，我们有两种走法</span></span><br><span class="line"><span class="comment"># 假设 2**(n-1) -1 &lt; i &lt; 2 **n - 1</span></span><br><span class="line"><span class="comment"># 这样n就等于i的bit_length</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** n - 1</span></span><br><span class="line"><span class="comment"># 我们的指令是A^nR，指令长度为n+1，我们到终点的距离是 j-i，一定小于i</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** (n-1) - 1, j &lt; i</span></span><br><span class="line"><span class="comment"># 然后我们又往回走了 p = 2 ** k - 1, 现在我们的位置是 2 ** (n-1) - 2 ** k</span></span><br><span class="line"><span class="comment"># 指令长度是 A^(n-1)RA^kR n+k+1，我们现在距离终点 i - 2 **(n-1) + 2 ** k ,是小于i的</span></span><br><span class="line"><span class="comment"># 这样我们就得出了我们的递推公式</span></span><br><span class="line"><span class="comment"># f(i) = n if i == 2 ** n - 1</span></span><br><span class="line"><span class="comment"># f(i) = min(f(2**n -1 - i)+n+1, f(i-2**(n-1)+2**k)+n+k+1 k &lt; n-1)</span></span><br><span class="line"><span class="comment"># 初始化和边界条件f(0) = 0，注意向会回走的k不会大于等于n-1，因为等于n-1时就走到0了</span></span><br><span class="line"><span class="comment"># 返回值f(target)</span></span><br><span class="line"><span class="comment"># 优化复杂度</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">racecar</span>(<span class="params">self, target: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [<span class="number">0</span>] + [float(<span class="string">&#x27;inf&#x27;</span>)] * target</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, target + <span class="number">1</span>):</span><br><span class="line">            n = i.bit_length()</span><br><span class="line">            <span class="keyword">if</span> i == (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>:</span><br><span class="line">                dp[i] = n</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dp[i] = dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span> - i] + n + <span class="number">1</span></span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> range(n - <span class="number">1</span>):</span><br><span class="line">                    dp[i] = min(dp[i],</span><br><span class="line">                                dp[i - (<span class="number">1</span> &lt;&lt; (n - <span class="number">1</span>)) + (<span class="number">1</span> &lt;&lt; k)] + n + k + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> dp[target]</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -1976,21 +1976,21 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>堆的实现(大顶堆、小顶堆)</title>
-    <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>学会承担责任</title>
     <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
     <content><![CDATA[
 ]]></content>
       <tags>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>堆的实现(大顶堆、小顶堆)</title>
+    <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -2186,76 +2186,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>总结：MySQL中的锁和MySQL的内部临时表</title>
-    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
-    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
-<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
-<p>高，并发度最低。</p>
-<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
-<p>低，并发度也最高。</p>
-<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
-<p>锁和行锁之间，并发度一般。</p>
-<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>读锁</th>
-<th>写锁</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>读锁</strong></td>
-<td>不互斥</td>
-<td>互斥</td>
-</tr>
-<tr class="even">
-<td><strong>写锁</strong></td>
-<td>互斥</td>
-<td>互斥</td>
-</tr>
-</tbody>
-</table>
-<h3 id="一些重要的锁">一些重要的锁：</h3>
-<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
-<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
-<p>属于表级锁。</p>
-<h4 id="间隙锁">间隙锁</h4>
-<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
-<h4 id="自增id锁">自增id锁</h4>
-<h4 id="trx_id锁">trx_id锁</h4>
-<p>涉及到竞争资源，很多处都有锁。</p>
-<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
-<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
-<ol type="1">
-<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
-<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
-<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
-</ol>
-<h3 id="mysql常用操作">MySQL常用操作</h3>
-<ol type="1">
-<li>explain查看命令优化器优化结果；</li>
-<li>show engine innodb status;</li>
-<li>show warnings，看优化器改写后的语句；</li>
-<li>show create table t; 查看t的建表语句；</li>
-</ol>
-<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
-<ol type="1">
-<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
-<li>redoLog，undoLog，binLog重要概念。</li>
-<li>WAL (write ahead log 技术)</li>
-<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
-<li>error log 错误日志，slow log慢查询日志</li>
-<li>change buffer</li>
-<li>普通索引和唯一索引尽量选择普通索引</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>怎么最快地复制一张表？</title>
     <url>/2020/08/28/%E6%80%8E%E4%B9%88%E6%9C%80%E5%BF%AB%E5%9C%B0%E5%A4%8D%E5%88%B6%E4%B8%80%E5%BC%A0%E8%A1%A8%EF%BC%9F/</url>
     <content><![CDATA[<p>我在上一篇文章最后，给你留下的问题是怎么在两张表中拷贝数据。如果可以控制对源表的扫描行数和加锁范围很小的话，我们简单地使用insert..select语句即可实现。</p>
@@ -2377,6 +2307,76 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>后两种都是逻辑备份的方式，是可以跨引擎使用的。</p>
 <p>最后，我给你留下一个思考题吧。</p>
 <p>我们前面介绍binlog_format=statement的时候，binlog记录的load data命令是带local的。既然这条命令是发送到备库去执行的，那么备库执行的时候也是本地执行，为什么需要这个local呢？如果写到binlog中的命令不带local，又会出现什么问题呢？</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>总结：MySQL中的锁和MySQL的内部临时表</title>
+    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
+    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
+<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
+<p>高，并发度最低。</p>
+<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
+<p>低，并发度也最高。</p>
+<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
+<p>锁和行锁之间，并发度一般。</p>
+<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>读锁</th>
+<th>写锁</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>读锁</strong></td>
+<td>不互斥</td>
+<td>互斥</td>
+</tr>
+<tr class="even">
+<td><strong>写锁</strong></td>
+<td>互斥</td>
+<td>互斥</td>
+</tr>
+</tbody>
+</table>
+<h3 id="一些重要的锁">一些重要的锁：</h3>
+<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
+<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
+<p>属于表级锁。</p>
+<h4 id="间隙锁">间隙锁</h4>
+<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
+<h4 id="自增id锁">自增id锁</h4>
+<h4 id="trx_id锁">trx_id锁</h4>
+<p>涉及到竞争资源，很多处都有锁。</p>
+<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
+<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
+<ol type="1">
+<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
+<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
+<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
+</ol>
+<h3 id="mysql常用操作">MySQL常用操作</h3>
+<ol type="1">
+<li>explain查看命令优化器优化结果；</li>
+<li>show engine innodb status;</li>
+<li>show warnings，看优化器改写后的语句；</li>
+<li>show create table t; 查看t的建表语句；</li>
+</ol>
+<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
+<ol type="1">
+<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
+<li>redoLog，undoLog，binLog重要概念。</li>
+<li>WAL (write ahead log 技术)</li>
+<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
+<li>error log 错误日志，slow log慢查询日志</li>
+<li>change buffer</li>
+<li>普通索引和唯一索引尽量选择普通索引</li>
+</ol>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -2593,37 +2593,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>旅行商问题（朴素和dp方法）</title>
-    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
-    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
-<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
-<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
-<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
-<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
-<p>以下是旅行商问题的不同解法。</p>
-<p><strong>朴素的解法：</strong></p>
-<ol type="1">
-<li>将城市1作为起点和终点</li>
-<li>生成所有（n-1）！城市的排列组合</li>
-<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
-<li>返回成本最小的排列组合</li>
-</ol>
-<p>时间复杂度：O(n!)</p>
-<p><strong>DP 动态递推</strong></p>
-<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
-<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
-<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
-<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
-<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
-<p><strong>参考：</strong></p>
-<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>普通索引和唯一索引的选择</title>
     <url>/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/</url>
     <content><![CDATA[<h3 id="mysql中尽量使用普通索引减少使用唯一索引">MySQL中尽量使用普通索引，减少使用唯一索引</h3>
@@ -2656,7 +2625,7 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>现在，我们要在表上执行这个语句：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql&gt; insert into t(id, k) values(id1, k1), (id2, k2);</span><br></pre></td></tr></table></figure>
 <p>这里，我们假设当前k索引树的状态，查找到位置后，k1所在的数据页在内存（InnoDB buffer pool）中，k2所在的数据页不在内存中。如果2所示是带change buffer的更新状态图。</p>
-
+<img data-src="/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/change_buffer1.png" class>
 <p>分析这条更新语句，你会发现它涉及了四个部分：内存、redo log（ib_log_fileX）、数据表空间（t.ibd）、系统表空间（ibdata1）。</p>
 <p>这条更新语句做了如下的操作（按照图中的数组顺序）：</p>
 <ol type="1">
@@ -2669,12 +2638,52 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>那么这之后的读请求，要怎么处理呢？</p>
 <p>比如，我们现在要执行select * from t where k in (k1, k2)。这里，我画了这两个请求的流程图。</p>
 <p>如果读语句发生在更新语句后不久，内存中的数据都还在，那么此时的这两个读操作就与系统表空间（ibdata1）和redo log（ib_log_fileX）无关了。</p>
+<img data-src="/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/change_buffer2.png" class>
+<p>图中可以看到：</p>
 <ol type="1">
-<li>读Page1的时候，直接从内存返回。WAL之后读数据，是不是一定要读盘，是不是一定要从redolog</li>
+<li>读Page1的时候，直接从内存返回。有同学之前问到，WAL之后读数据，是不是一定要读盘，是不是一定要从redo log里面把数据更新以后才可以返回？其实是不用的。你可以看一下图3的状态，虽然磁盘上还是之前的数据，但是这里直接从内存返回结果，结果是正确的。</li>
+<li>要读Page 2的时候，需要把Page 2从磁盘读入内存中，然后应用change buffer里面的操作日志，生成一个正确的版本并返回结果。</li>
+</ol>
+<p>可以看到，直到需要读Page 2的时候，这个数据页才会被读入内存。</p>
+<p>wal机制可以将数据按顺序写到redo log（减少随机写对io的消耗）对普通索引上的数据进行修改，通常是将修改动作记录到change buffer（减少随机读磁盘的消耗），待查询时如果数据页不在内存，先读取到内存，再将change buffer中的修改动作通过merge操作，合并数据。</p>
+<ol type="1">
+<li>如果业务要求有唯一键。业务正确性优先，文章的前提是业务代码已经保证不会写入重复数据，在这情况下，讨论性能问题。如果业务不能保证，或者业务就是要求数据库来做约束，那么没得选，必须创建唯一索引。这种下，如果碰上了大量插入数据慢、内存命中率低的时候，可以给你多提供一个排查思路。</li>
+<li>然后，在一些“归档库”的场景，你是可以考虑使用普通索引的。比如，线上数据只需要保留半年，然后历史数据保存在归档库。这时候，归档数据已经是确保没有唯一键冲突了。要提高归档效率，可以考虑把表里面的唯一索引改成普通索引。</li>
 </ol>
 ]]></content>
       <tags>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>旅行商问题（朴素和dp方法）</title>
+    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
+    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
+<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
+<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
+<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
+<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
+<p>以下是旅行商问题的不同解法。</p>
+<p><strong>朴素的解法：</strong></p>
+<ol type="1">
+<li>将城市1作为起点和终点</li>
+<li>生成所有（n-1）！城市的排列组合</li>
+<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
+<li>返回成本最小的排列组合</li>
+</ol>
+<p>时间复杂度：O(n!)</p>
+<p><strong>DP 动态递推</strong></p>
+<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
+<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
+<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
+<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
+<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
+<p><strong>参考：</strong></p>
+<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -2900,19 +2909,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>科比--曼巴精神永不逝去</title>
-    <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
-    <content><![CDATA[纪念老科 Tomorrow is not grante. Inspire yourself.
-<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
-<iframe src="//player.bilibili.com/player.html?aid=668058137&amp;bvid=BV1ua4y1i7ZK&amp;cid=186683490&amp;page=1" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;">
-</iframe>
-</div>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>社会文明程度很大程度上体现为对弱者的尊重</title>
     <url>/2020/08/22/%E7%A4%BE%E4%BC%9A%E6%96%87%E6%98%8E%E7%A8%8B%E5%BA%A6%E5%BE%88%E5%A4%A7%E7%A8%8B%E5%BA%A6%E4%B8%8A%E4%BD%93%E7%8E%B0%E4%B8%BA%E5%AF%B9%E5%BC%B1%E8%80%85%E7%9A%84%E5%B0%8A%E9%87%8D/</url>
     <content><![CDATA[<p>在现代社会，公众对艾滋病人的接纳，其实也是一个非常奢侈的话题。虽然每一年，我们都有一个专门的日子，我们来表达对艾滋病人的关心。但是，仅仅有这个日子是不够的。</p>
@@ -2924,6 +2920,19 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>社会</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>科比--曼巴精神永不逝去</title>
+    <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
+    <content><![CDATA[纪念老科 Tomorrow is not grante. Inspire yourself.
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+<iframe src="//player.bilibili.com/player.html?aid=668058137&amp;bvid=BV1ua4y1i7ZK&amp;cid=186683490&amp;page=1" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;">
+</iframe>
+</div>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
