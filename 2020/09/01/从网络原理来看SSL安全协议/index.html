@@ -24,18 +24,20 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="记录我的工作与生活，分享一些想法">
-<meta property="og:type" content="website">
-<meta property="og:title" content="侯瑞哲的博客">
-<meta property="og:url" content="https://hrz123.github.io/archives/page/7/index.html">
+  <meta name="description" content="网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。 SSL的全称是（secure sockets layer），而现在我们很多时候在使用TLS（transport layer security）。我们简单看一下它的发展过程。 SSL协议是由网景公司在1995年推出的，那么在3.0获得了一个非常大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从网络原理来看SSL安全协议">
+<meta property="og:url" content="https://hrz123.github.io/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="记录我的工作与生活，分享一些想法">
+<meta property="og:description" content="网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。 SSL的全称是（secure sockets layer），而现在我们很多时候在使用TLS（transport layer security）。我们简单看一下它的发展过程。 SSL协议是由网景公司在1995年推出的，那么在3.0获得了一个非常大">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-01T02:05:57.000Z">
+<meta property="article:modified_time" content="2020-09-01T02:46:12.618Z">
 <meta property="article:author" content="侯瑞哲">
-<meta property="article:tag" content="技术博客">
+<meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://hrz123.github.io/archives/page/7/">
+<link rel="canonical" href="https://hrz123.github.io/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/">
 
 
 <script id="page-configurations">
@@ -43,12 +45,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | 侯瑞哲的博客</title>
+  <title>从网络原理来看SSL安全协议 | 侯瑞哲的博客</title>
   
 
 
@@ -179,240 +181,127 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从网络原理来看SSL安全协议
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-01 10:05:57 / 修改时间：10:46:12" itemprop="dateCreated datePublished" datetime="2020-09-01T10:05:57+08:00">2020-09-01</time>
+            </span>
+
+          
   
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        
-        <span class="collection-header">很好! 目前共计 93 篇日志。 继续努力。</span>
-      </div>
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+        <p>网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。</p>
+<p>SSL的全称是（secure sockets layer），而现在我们很多时候在使用TLS（transport layer security）。我们简单看一下它的发展过程。</p>
+<p>SSL协议是由网景公司在1995年推出的，那么在3.0获得了一个非常大的一个发展，但是接下来，微软把它的ie浏览器捆绑windows，一起卖出以后呢。导致网景遇到了很大的一个困境，网景在把SSL协议交给IETF组织以后呢，在1999年，应微软的要求，IETF把SSL改名为TLS1.0。后面在06年、08年到18年，TLS分别发展了1.1，1.2，1.3协议。那么TLS协议，究竟是怎样保证HTTP的明文消息被加密的呢？我们可以看一下TLS的通用模型，在OSI七层模型中，应用层是HTTP协议，那么HTTP协议之下，我们的表示层，也就是SSL协议所发挥作用的这一层，它通过握手、交换密钥、告警、对称加密的方式，使HTTP层没有感知的情况下，做到了数据的安全加密。那么TLS究竟是怎样做到了数据的安全加密的呢？</p>
+<p>我们可以看一下TLS的安全密码套件。当我们抓包，或者观察服务器端的配置时，我们可以看到类似于这张图中的这样的一个配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</span><br></pre></td></tr></table></figure>
+
+<p>这个安全密码的配置呢，它决定了我们的TLS协议是怎样保证明文被加密的。</p>
+<p>这里大概有四个组成部分，第一个组成部分叫密钥交换，也就是ECDHE，这实际上是一个椭圆曲线加密算法的表达，密钥交换是为了解决浏览器和服务器之间是怎样各自独立的生成密钥，而最后生成的密钥，是相同的。接下来它们会用这个密钥去加密数据，那么在密钥交换这个过程中呢，我们需要去让各自双方去验证对方的身份，而验证身份，是需要一个算法，而这个算法叫RSA。它用于身份验证。接下来我们执行数据加密解密这样的通讯的时候呢，我们需要用到对称加密算法，而对称加密算法AES_128_GCM就是表达这样的一个对称加密算法，其中第一个部分AES它表达了是怎样一种算法，第二个部分128它表示了AES算法里支持了三种加密强度，那么我们使用了128位这样的一个加密强度。那么AES中，它有很多分组模式，其中GCM是比较新的一种分组模式，它可以提高多核CPU情况下加密和解密的一个性能。SSA256是一个摘要算法，它用来把不定长度的字符串，生成固定长度的更短的一个摘要。</p>
+<p>那么，以上是TLS算法的一个概要介绍。之后我们再来看一下对称加密算法和非对称加密算法有什么不同。</p>
+<p>在对称加密这样的一个场景中，是两个想要通信的人bob和alice共同持有同一把密钥，那么bob可以把原始明文的文档通过这一把密钥加密生成一个密文文档，而alice拿到这个密文文档以后呢，他用这把密钥还原，转化为原始的明文文档，而中间的任何人，如果没有持有这把密钥，即使他知道了对称加密的算法，他也没有办法把密文还原成原始文档，对称加密究竟是怎么实现的呢？</p>
+<p>我们可以以RC4这样一个对称加密的序列算法，来看一下。</p>
+<p>1010  密钥序列（共同持有密钥）</p>
+<p>异或</p>
+<p>0110  明文</p>
+<p>等于</p>
+<p>1100  密文</p>
+<p>异或有一个对称的特性。</p>
+<p>对称加密，性能非常的好，加密解密都只需要遍历一次。</p>
+<p>而非对称加密性能就会差很多。</p>
+<p>我们看一下非对称加密的算法，它根据一个数学原理啊，它会生成一对密钥。这一对密钥中，如果我们称其中的一个叫做公钥，那么另一个就叫做私钥，那么公钥和私钥有什么特性呢，就是同一份明文文档，如果用公钥加密，如果用公钥加密，那么只有用私钥才能解密，同样的道理，如果文档用私钥加密了，用公钥才能解密，可能大家有些疑惑。那么我们来说一下具体的场景。</p>
+<p>比如说alice他有一对公钥和私钥，那么他就可以把他的公钥发布给大家，比如bob是其中一个人，他拿到了alice的公钥，那么这个时候的加密操作是怎么做的呢？比如bob如果想传递一份原始文档给alice，那么bob就拿到alice的公钥，对于原始文档进行加密，把密文再发送给alice，alice拿他的私钥才能进行解密，其他人用了公钥以后都没有办法解密。那么公钥和私钥还有第二种用法，就是身份验证，比如现在有一段信息，alice用他的私钥，进行了加密，然后把密文发给了bob或者任何人，只要bob拿到了alice的公钥，因为公钥本身就是公开的，那么用公钥能成功的解开这段密文，就证明这段密文确实是由alice发出的，这为我们接下来TLS的密钥交换算法提供了基本的签名保障。 </p>
+<p>以上就是对称加密和非对称加密的基本原理。</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-08-01T11:59:34+08:00"
-              content="2020-08-01">
-          08-01
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/" itemprop="url">
-            <span itemprop="name">leetcode 329.矩阵中的最长递增路径</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-30T16:35:20+08:00"
-              content="2020-07-30">
-          07-30
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/" itemprop="url">
-            <span itemprop="name">树状数组Binary Indexed Tree</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-30T15:03:10+08:00"
-              content="2020-07-30">
-          07-30
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/" itemprop="url">
-            <span itemprop="name">区间树</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-30T11:54:36+08:00"
-              content="2020-07-30">
-          07-30
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/" itemprop="url">
-            <span itemprop="name">线段树</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-28T14:49:39+08:00"
-              content="2020-07-28">
-          07-28
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/" itemprop="url">
-            <span itemprop="name">The Humble Programmer by Edsger W. Dijkstra 伟大的 Dijkstra</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-27T09:26:23+08:00"
-              content="2020-07-27">
-          07-27
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/" itemprop="url">
-            <span itemprop="name">银行家算法</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-27T09:22:55+08:00"
-              content="2020-07-27">
-          07-27
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/" itemprop="url">
-            <span itemprop="name">猫抓老鼠的简单讨论</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-26T20:49:35+08:00"
-              content="2020-07-26">
-          07-26
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/26/%E5%8F%8C%E8%9B%8B%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E6%9B%B4%E4%B8%BB%E8%A6%81%E7%9A%84%E5%85%B6%E6%9B%B4%E9%80%9A%E7%94%A8%E5%8C%96%E4%B8%94%E6%9C%89%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3/" itemprop="url">
-            <span itemprop="name">双蛋问题以及更主要的其更通用化且有用的问题的解</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-26T17:45:34+08:00"
-              content="2020-07-26">
-          07-26
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/" itemprop="url">
-            <span itemprop="name">GC的三种基本实现方式和优缺点</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-26T00:58:10+08:00"
-              content="2020-07-26">
-          07-26
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/" itemprop="url">
-            <span itemprop="name">人要多读书</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
     </div>
   </div>
-  
-  
-  
 
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/01/%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5/" rel="prev" title="阻塞与非阻塞，同步与异步">
+      <i class="fa fa-chevron-left"></i> 阻塞与非阻塞，同步与异步
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
   
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/archives/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/10/">10</a><a class="extend next" rel="next" href="/archives/page/8/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
+  
+  
 
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -721,7 +610,7 @@ if (document.querySelectorAll('pre.mermaid').length) {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/archives/page/7/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/',]
       });
       });
   </script>

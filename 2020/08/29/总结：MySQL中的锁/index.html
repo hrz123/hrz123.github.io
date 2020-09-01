@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。 1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最 高，并发度最低。 2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最 低，并发度也最高。 3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表 锁和行锁之间，并发度一般。 按禁止的操作可分为读锁和写锁，其中，">
+  <meta name="description" content="按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。 1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最  高，并发度最低。 2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最  低，并发度也最高。 3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表  锁和行锁之间，并发度一般。 按禁止的操作可分为读锁和写锁，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="总结：MySQL中的锁和MySQL的内部临时表">
 <meta property="og:url" content="https://hrz123.github.io/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。 1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最 高，并发度最低。 2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最 低，并发度也最高。 3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表 锁和行锁之间，并发度一般。 按禁止的操作可分为读锁和写锁，其中，">
+<meta property="og:description" content="按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。 1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最  高，并发度最低。 2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最  低，并发度也最高。 3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表  锁和行锁之间，并发度一般。 按禁止的操作可分为读锁和写锁，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-08-29T04:33:27.000Z">
 <meta property="article:modified_time" content="2020-08-29T16:37:45.196Z">
@@ -247,59 +247,49 @@
 
       
         <p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
-<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
+<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最 </p>
 <p>高，并发度最低。</p>
-<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
+<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最 </p>
 <p>低，并发度也最高。</p>
-<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
+<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表 </p>
 <p>锁和行锁之间，并发度一般。</p>
 <p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th></th>
 <th>读锁</th>
 <th>写锁</th>
 </tr>
 </thead>
-<tbody>
-<tr class="odd">
+<tbody><tr>
 <td><strong>读锁</strong></td>
 <td>不互斥</td>
 <td>互斥</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>写锁</strong></td>
 <td>互斥</td>
 <td>互斥</td>
 </tr>
-</tbody>
-</table>
-<h3 id="一些重要的锁">一些重要的锁：</h3>
-<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
-<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
+</tbody></table>
+<h3 id="一些重要的锁："><a href="#一些重要的锁：" class="headerlink" title="一些重要的锁："></a>一些重要的锁：</h3><h4 id="MDL锁-metadata-lock-元数据锁"><a href="#MDL锁-metadata-lock-元数据锁" class="headerlink" title="MDL锁 metadata lock 元数据锁"></a>MDL锁 metadata lock 元数据锁</h4><p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
 <p>属于表级锁。</p>
-<h4 id="间隙锁">间隙锁</h4>
-<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
-<h4 id="自增id锁">自增id锁</h4>
-<h4 id="trx_id锁">trx_id锁</h4>
-<p>涉及到竞争资源，很多处都有锁。</p>
+<h4 id="间隙锁"><a href="#间隙锁" class="headerlink" title="间隙锁"></a>间隙锁</h4><p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
+<h4 id="自增id锁"><a href="#自增id锁" class="headerlink" title="自增id锁"></a>自增id锁</h4><h4 id="trx-id锁"><a href="#trx-id锁" class="headerlink" title="trx_id锁"></a>trx_id锁</h4><p>涉及到竞争资源，很多处都有锁。</p>
 <p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
-<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
-<ol type="1">
+<h3 id="MySQL什么时候会使用内部临时表？"><a href="#MySQL什么时候会使用内部临时表？" class="headerlink" title="MySQL什么时候会使用内部临时表？"></a>MySQL什么时候会使用内部临时表？</h3><ol>
 <li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
 <li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
 <li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
 </ol>
-<h3 id="mysql常用操作">MySQL常用操作</h3>
-<ol type="1">
+<h3 id="MySQL常用操作"><a href="#MySQL常用操作" class="headerlink" title="MySQL常用操作"></a>MySQL常用操作</h3><ol>
 <li>explain查看命令优化器优化结果；</li>
 <li>show engine innodb status;</li>
 <li>show warnings，看优化器改写后的语句；</li>
 <li>show create table t; 查看t的建表语句；</li>
 </ol>
-<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
-<ol type="1">
+<h3 id="MySQL中的重要概念"><a href="#MySQL中的重要概念" class="headerlink" title="MySQL中的重要概念"></a>MySQL中的重要概念</h3><ol>
 <li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
 <li>redoLog，undoLog，binLog重要概念。</li>
 <li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
@@ -394,7 +384,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%87%8D%E8%A6%81%E7%9A%84%E9%94%81"><span class="nav-number">1.</span> <span class="nav-text">一些重要的锁：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mdl%E9%94%81-metadata-lock-%E5%85%83%E6%95%B0%E6%8D%AE%E9%94%81"><span class="nav-number">1.1.</span> <span class="nav-text">MDL锁 metadata lock 元数据锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%97%B4%E9%9A%99%E9%94%81"><span class="nav-number">1.2.</span> <span class="nav-text">间隙锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%A2%9Eid%E9%94%81"><span class="nav-number">1.3.</span> <span class="nav-text">自增id锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#trx_id%E9%94%81"><span class="nav-number">1.4.</span> <span class="nav-text">trx_id锁</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E4%BD%BF%E7%94%A8%E5%86%85%E9%83%A8%E4%B8%B4%E6%97%B6%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">MySQL什么时候会使用内部临时表？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">MySQL常用操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql%E4%B8%AD%E7%9A%84%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5"><span class="nav-number">4.</span> <span class="nav-text">MySQL中的重要概念</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%87%8D%E8%A6%81%E7%9A%84%E9%94%81%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">一些重要的锁：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MDL%E9%94%81-metadata-lock-%E5%85%83%E6%95%B0%E6%8D%AE%E9%94%81"><span class="nav-number">1.1.</span> <span class="nav-text">MDL锁 metadata lock 元数据锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%97%B4%E9%9A%99%E9%94%81"><span class="nav-number">1.2.</span> <span class="nav-text">间隙锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%A2%9Eid%E9%94%81"><span class="nav-number">1.3.</span> <span class="nav-text">自增id锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#trx-id%E9%94%81"><span class="nav-number">1.4.</span> <span class="nav-text">trx_id锁</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E4%BD%BF%E7%94%A8%E5%86%85%E9%83%A8%E4%B8%B4%E6%97%B6%E8%A1%A8%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">MySQL什么时候会使用内部临时表？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">MySQL常用操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL%E4%B8%AD%E7%9A%84%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5"><span class="nav-number">4.</span> <span class="nav-text">MySQL中的重要概念</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -410,7 +400,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-count">93</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
