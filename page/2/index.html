@@ -858,7 +858,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-01 17:41:20" itemprop="dateModified" datetime="2020-09-01T17:41:20+08:00">2020-09-01</time>
+                <time title="修改时间：2020-09-01 17:42:24" itemprop="dateModified" datetime="2020-09-01T17:42:24+08:00">2020-09-01</time>
               </span>
 
           
@@ -947,7 +947,7 @@
 <li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
 <li>change buffer</li>
 <li>普通索引和唯一索引尽量选择普通索引</li>
-<li>对于字符串索引，可以用unique元素的百分比确定使用多长的字符串作为索引</li>
+<li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引。预先设定一个可以接受的损失比例</li>
 </ol>
 
       

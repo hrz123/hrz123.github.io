@@ -465,6 +465,43 @@
       </tags>
   </entry>
   <entry>
+    <title>Prim&#39;s最小生成树算法</title>
+    <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
+<p>在图论中，连接两组顶点的一组边被称为切边（cut）。所有，在Prim算法的每一步，我们都要要找到一个cut（关于这两个集合的，一个包含已经在MST中的顶点，另一个包含其余的顶点），从cut中挑选出最小权重的边，并将这个顶点包含到MST集合（包含已经在MST中的顶点）中。</p>
+<p><strong>Prim's Algorithm是如何工作的？</strong>Prim算法背后的思想很简单，一颗生成树意味着所有顶点必须是连接的。所以，两个不相干的顶点子集（上面讨论的）必须连接起来，才能组成一个生成树。而且它们必须用最小的权重边连接起来，才能使之成为一颗最小生成树。</p>
+<p><strong>算法：</strong></p>
+<ol type="1">
+<li>创建一个集合mstSet，用来跟踪已经包含在MST中的顶点。</li>
+<li>给输入图中的所有顶点分配一个键值。初始化所有的键值为infinity。为第一个顶点分配键值为0，这样它就会被首先选中。</li>
+<li>while mstSet不包含所有的顶点
+<ol type="1">
+<li>选取一个在mstSet中没有的顶点u，并且其键值最小。</li>
+<li>将u加入到mstSet中。</li>
+<li>更新u的所有相邻顶点的键值，更新键值时，要遍历所有相邻顶点。对于每一个相邻顶点v，如果边u-v的权重小于v的前一个键值，则更新键值为u-v的权重。</li>
+</ol></li>
+</ol>
+<p>使用键值的想法是为了从cut中挑选出最小权重的边。键值只用于尚未包含在MST中的顶点，这些顶点的键值表示连接它们与MST中包含的顶点集的最小权重边的权重。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim1.jpg" class>
+<p>集合mstSet开始的时候是空的，并且每个顶点键值时{0, INF, INF, INF, INF, INF, INF, INF}，INF表示无穷大。现在，选出一个拥有最小键值的顶点。顶点0被选出，将其放入mstSet。所以mstSet成为了{0}。在包括进mstSet之后，更新相邻顶点的键值。0的相邻顶点是1和7。1和7的键值被更新为4和8。下面的子图显示了顶点和它们的键值，只有有有限键值的顶点展示了出来。在MST中的顶点用绿颜色表示了出来。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim2.jpg" class>
+<p>选出有最小键值的顶点并且还没有被包括进MST（还不在mstSet）。顶点1被选出来，并且被加入mstSet。所以mstSet成为了{0, 1}。更新1的相邻顶点的键值。顶点2的键值变成了8。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim3.jpg" class>
+<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。我们可以选择顶点7或者2，我们让7被选中。所以mstSet现在变成了{0, 1, 7}。更新7的相邻顶点的键值，顶点6和8的键值变成了有限的（分别为1和7）。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim4.jpg" class>
+<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。顶点6被选中。所以mstSet现在为{0, 1, 7, 6}。更新6的相邻顶点的键值。5和8的键值被更新。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim5.jpg" class>
+<p>我们重复上面的步骤直到mstSet包含了给定图中所有的顶点。最终，我们得到了如下的图。</p>
+<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim6.jpg" class>
+<p><strong>如何实现上面的算法？</strong></p>
+<p>我们用一个布尔数组mstSet[]表示MST中包含的顶点集合。如果一个值mstSet[v]为true，那么顶点v就在MST中，否则就不是。数组key[]用来存储所有顶点的键值。另一个数组parent[]用来存储MST中父节点的索引。parent数组是输出数组，用来显示构建的MST。</p>
+<p>上面算法的时间复杂度为O(V^2)。如果使用邻接表表示输入图，那么在二叉堆的帮助下，Prim算法的时间复杂度可以降低到O（ElogV）。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Python----socket编程</title>
     <url>/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<h3 id="基于tcp的套接字编程">基于TCP的套接字编程：</h3>
@@ -583,43 +620,6 @@
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Prim&#39;s最小生成树算法</title>
-    <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
-<p>在图论中，连接两组顶点的一组边被称为切边（cut）。所有，在Prim算法的每一步，我们都要要找到一个cut（关于这两个集合的，一个包含已经在MST中的顶点，另一个包含其余的顶点），从cut中挑选出最小权重的边，并将这个顶点包含到MST集合（包含已经在MST中的顶点）中。</p>
-<p><strong>Prim's Algorithm是如何工作的？</strong>Prim算法背后的思想很简单，一颗生成树意味着所有顶点必须是连接的。所以，两个不相干的顶点子集（上面讨论的）必须连接起来，才能组成一个生成树。而且它们必须用最小的权重边连接起来，才能使之成为一颗最小生成树。</p>
-<p><strong>算法：</strong></p>
-<ol type="1">
-<li>创建一个集合mstSet，用来跟踪已经包含在MST中的顶点。</li>
-<li>给输入图中的所有顶点分配一个键值。初始化所有的键值为infinity。为第一个顶点分配键值为0，这样它就会被首先选中。</li>
-<li>while mstSet不包含所有的顶点
-<ol type="1">
-<li>选取一个在mstSet中没有的顶点u，并且其键值最小。</li>
-<li>将u加入到mstSet中。</li>
-<li>更新u的所有相邻顶点的键值，更新键值时，要遍历所有相邻顶点。对于每一个相邻顶点v，如果边u-v的权重小于v的前一个键值，则更新键值为u-v的权重。</li>
-</ol></li>
-</ol>
-<p>使用键值的想法是为了从cut中挑选出最小权重的边。键值只用于尚未包含在MST中的顶点，这些顶点的键值表示连接它们与MST中包含的顶点集的最小权重边的权重。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim1.jpg" class>
-<p>集合mstSet开始的时候是空的，并且每个顶点键值时{0, INF, INF, INF, INF, INF, INF, INF}，INF表示无穷大。现在，选出一个拥有最小键值的顶点。顶点0被选出，将其放入mstSet。所以mstSet成为了{0}。在包括进mstSet之后，更新相邻顶点的键值。0的相邻顶点是1和7。1和7的键值被更新为4和8。下面的子图显示了顶点和它们的键值，只有有有限键值的顶点展示了出来。在MST中的顶点用绿颜色表示了出来。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim2.jpg" class>
-<p>选出有最小键值的顶点并且还没有被包括进MST（还不在mstSet）。顶点1被选出来，并且被加入mstSet。所以mstSet成为了{0, 1}。更新1的相邻顶点的键值。顶点2的键值变成了8。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim3.jpg" class>
-<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。我们可以选择顶点7或者2，我们让7被选中。所以mstSet现在变成了{0, 1, 7}。更新7的相邻顶点的键值，顶点6和8的键值变成了有限的（分别为1和7）。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim4.jpg" class>
-<p>选出具有最小键值的顶点，并且还没有包含在MST中（不在mstSet中）。顶点6被选中。所以mstSet现在为{0, 1, 7, 6}。更新6的相邻顶点的键值。5和8的键值被更新。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim5.jpg" class>
-<p>我们重复上面的步骤直到mstSet包含了给定图中所有的顶点。最终，我们得到了如下的图。</p>
-<img data-src="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/Prim6.jpg" class>
-<p><strong>如何实现上面的算法？</strong></p>
-<p>我们用一个布尔数组mstSet[]表示MST中包含的顶点集合。如果一个值mstSet[v]为true，那么顶点v就在MST中，否则就不是。数组key[]用来存储所有顶点的键值。另一个数组parent[]用来存储MST中父节点的索引。parent数组是输出数组，用来显示构建的MST。</p>
-<p>上面算法的时间复杂度为O(V^2)。如果使用邻接表表示输入图，那么在二叉堆的帮助下，Prim算法的时间复杂度可以降低到O（ElogV）。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -2377,7 +2377,7 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
 <li>change buffer</li>
 <li>普通索引和唯一索引尽量选择普通索引</li>
-<li>对于字符串索引，可以用unique元素的百分比确定使用多长的字符串作为索引</li>
+<li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引。预先设定一个可以接受的损失比例</li>
 </ol>
 ]]></content>
       <tags>
@@ -2689,6 +2689,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>江湖再见</title>
+    <url>/2020/09/01/%E6%B1%9F%E6%B9%96%E5%86%8D%E8%A7%81/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>树状数组Binary Indexed Tree</title>
     <url>/2020/07/30/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84Binary-Indexed-Tree/</url>
     <content><![CDATA[<h2 id="参考">参考</h2>
@@ -2737,15 +2746,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>江湖再见</title>
-    <url>/2020/09/01/%E6%B1%9F%E6%B9%96%E5%86%8D%E8%A7%81/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2920,6 +2920,20 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>社会文明程度很大程度上体现为对弱者的尊重</title>
+    <url>/2020/08/22/%E7%A4%BE%E4%BC%9A%E6%96%87%E6%98%8E%E7%A8%8B%E5%BA%A6%E5%BE%88%E5%A4%A7%E7%A8%8B%E5%BA%A6%E4%B8%8A%E4%BD%93%E7%8E%B0%E4%B8%BA%E5%AF%B9%E5%BC%B1%E8%80%85%E7%9A%84%E5%B0%8A%E9%87%8D/</url>
+    <content><![CDATA[<p>在现代社会，公众对艾滋病人的接纳，其实也是一个非常奢侈的话题。虽然每一年，我们都有一个专门的日子，我们来表达对艾滋病人的关心。但是，仅仅有这个日子是不够的。</p>
+<p>人们对于疾病总是有一种本能的恐惧。不要说艾滋病了，甚至乙肝病毒携带者，甚至白血病，等等都在社会中备受歧视。新闻就曾经报道过，有些白血病的孩子入学，被拒绝。所以在这样一种背景下，各位可以想象，艾滋病患呢，也很难走出歧视，并因为这个歧视，可能他们滋生对社会的仇恨和苦毒。</p>
+<p>社会文明程度很大程度上它体现为对弱者的尊重。即便你跌入谷底，社会也应该为你提供基本的保障。当然话虽如此，同理心，始终是人们最匮乏的一种品质。</p>
+<p>对于每个个体，如果我们无法真正的接纳弱者，这不也是我们道德上的免疫缺陷吗？</p>
+<iframe src="//player.bilibili.com/player.html?aid=754134170&amp;bvid=BV1dk4y1m7oJ&amp;cid=224031902&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
+]]></content>
+      <tags>
+        <tag>社会</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>科比--曼巴精神永不逝去</title>
     <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
     <content><![CDATA[纪念老科 Tomorrow is not grante. Inspire yourself.
@@ -2933,18 +2947,10 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>社会文明程度很大程度上体现为对弱者的尊重</title>
-    <url>/2020/08/22/%E7%A4%BE%E4%BC%9A%E6%96%87%E6%98%8E%E7%A8%8B%E5%BA%A6%E5%BE%88%E5%A4%A7%E7%A8%8B%E5%BA%A6%E4%B8%8A%E4%BD%93%E7%8E%B0%E4%B8%BA%E5%AF%B9%E5%BC%B1%E8%80%85%E7%9A%84%E5%B0%8A%E9%87%8D/</url>
-    <content><![CDATA[<p>在现代社会，公众对艾滋病人的接纳，其实也是一个非常奢侈的话题。虽然每一年，我们都有一个专门的日子，我们来表达对艾滋病人的关心。但是，仅仅有这个日子是不够的。</p>
-<p>人们对于疾病总是有一种本能的恐惧。不要说艾滋病了，甚至乙肝病毒携带者，甚至白血病，等等都在社会中备受歧视。新闻就曾经报道过，有些白血病的孩子入学，被拒绝。所以在这样一种背景下，各位可以想象，艾滋病患呢，也很难走出歧视，并因为这个歧视，可能他们滋生对社会的仇恨和苦毒。</p>
-<p>社会文明程度很大程度上它体现为对弱者的尊重。即便你跌入谷底，社会也应该为你提供基本的保障。当然话虽如此，同理心，始终是人们最匮乏的一种品质。</p>
-<p>对于每个个体，如果我们无法真正的接纳弱者，这不也是我们道德上的免疫缺陷吗？</p>
-<iframe src="//player.bilibili.com/player.html?aid=754134170&amp;bvid=BV1dk4y1m7oJ&amp;cid=224031902&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
-</iframe>
+    <title>背包问题泛型</title>
+    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
+    <content><![CDATA[
 ]]></content>
-      <tags>
-        <tag>社会</tag>
-      </tags>
   </entry>
   <entry>
     <title>经典同步问题</title>
@@ -2968,12 +2974,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>操作系统</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>背包问题泛型</title>
-    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
   <entry>
     <title>自增id用完怎么办？</title>
