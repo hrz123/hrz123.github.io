@@ -877,7 +877,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-01 18:31:41" itemprop="dateModified" datetime="2020-09-01T18:31:41+08:00">2020-09-01</time>
+                <time title="修改时间：2020-09-01 18:40:27" itemprop="dateModified" datetime="2020-09-01T18:40:27+08:00">2020-09-01</time>
               </span>
 
           
@@ -951,7 +951,7 @@
 <h3 id="MySQL中的重要概念"><a href="#MySQL中的重要概念" class="headerlink" title="MySQL中的重要概念"></a>MySQL中的重要概念</h3><ol>
 <li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
 <li>redoLog，undoLog，binLog重要概念。</li>
-<li>WAL (write ahead log 技术)</li>
+<li>WAL (write ahead log 技术)，先将日志写在redolog中</li>
 <li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
 <li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
 <li>change buffer</li>
