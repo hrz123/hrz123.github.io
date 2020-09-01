@@ -185,6 +185,96 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/14/%E9%9D%92%E8%9B%99%E8%B7%B3%E8%8D%B7%E5%8F%B6%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/14/%E9%9D%92%E8%9B%99%E8%B7%B3%E8%8D%B7%E5%8F%B6%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">青蛙跳荷叶问题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-14 14:40:08" itemprop="dateCreated datePublished" datetime="2020-08-14T14:40:08+08:00">2020-08-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-18 18:10:37" itemprop="dateModified" datetime="2020-08-18T18:10:37+08:00">2020-08-18</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/14/%E9%9D%92%E8%9B%99%E8%B7%B3%E8%8D%B7%E5%8F%B6%E9%97%AE%E9%A2%98/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/14/%E9%9D%92%E8%9B%99%E8%B7%B3%E8%8D%B7%E5%8F%B6%E9%97%AE%E9%A2%98/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="问题">问题：</h2>
+<p>有一只青蛙，向右跳x步可以到达右边中点，向左边跳n-x步可以到达左边中点，问到达左边中点的概率。</p>
+<h2 id="求解方法">求解方法</h2>
+<p>我们定义f(x)为到达左边中点的概率。</p>
+<p>那么f(0) = 0，因为我们已经到达右边终点，f(n) = 1，因为我们已经到达左边终点。</p>
+<p>我们知道，f(x) 接下来有两种走法，f(x-1)和f(x+1)，所以有</p>
+<p>f(x) = 0.5 * f(x-1) + 0.5 * f(x+1)</p>
+<p>我们由此可得f(x+1) - f(x) = f(x) - f(x-1)。</p>
+<p>所以我们知道f(x)构成的序列是一个等差数列。</p>
+<p>因为f(0) = 0, f(n) = 1，所以f(1) = 1/n，f(2) = 2/n， f(x) = x/n，f(n-1) = (n-1)/n，f(n) = n/n</p>
+<p>所以，综上可得f(x) = x/n。</p>
+<p>也就是说，当向右走x步到达右边终点，向左n-x步到达左边终点时，我们最后到达左边终点的概率为x/n</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/13/Splay-Tree-II/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1032,164 +1122,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/07/leetcode-215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/07/leetcode-215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/" class="post-title-link" itemprop="url">leetcode 215. 数组中的第K个最大元素 </a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-08-07 14:27:36 / 修改时间：15:22:18" itemprop="dateCreated datePublished" datetime="2020-08-07T14:27:36+08:00">2020-08-07</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/07/leetcode-215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/07/leetcode-215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="借助本题深入了解快速排序中的随机选择和堆的堆化插入删除操作">借助本题深入了解快速排序中的随机选择，和堆的堆化、插入、删除操作</h2>
-<h2 id="题目">题目</h2>
-<h4 id="数组中的第k个最大元素"><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMva3RoLWxhcmdlc3QtZWxlbWVudC1pbi1hbi1hcnJheS8=">215. 数组中的第K个最大元素<i class="fa fa-external-link-alt"></i></span></h4>
-<p>在未排序的数组中找到第 <strong>k</strong> 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。</p>
-<p><strong>示例 1:</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [3,2,1,5,6,4] 和 k &#x3D; 2</span><br><span class="line">输出: 5</span><br></pre></td></tr></table></figure>
-<p><strong>示例 2:</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [3,2,3,1,2,4,5,5,6] 和 k &#x3D; 4</span><br><span class="line">输出: 4</span><br></pre></td></tr></table></figure>
-<p><strong>说明:</strong></p>
-<p>你可以假设 k 总是有效的，且 1 ≤ k ≤ 数组的长度。</p>
-<h3 id="思路">思路</h3>
-<ol type="1">
-<li>暴力解法</li>
-</ol>
-<p>题目要求我们找到”数组排序后的第k个最大的元素，而不是第k个不同的元素“。</p>
-<p>因此，升序排序以后，目标元素的索引是 len - k ，这是最简单的思路。</p>
-<ul>
-<li>最简单同时也一定是最容易编码的，编码成功的几率最高，可以用这个简单思路编码的结果和其他思路编码的结果进行比对，验证高级算法的正确性；</li>
-<li>在数据规模小、对时间复杂度、空间复杂度要求不高的时候，简单问题简单做；</li>
-<li>思路简单的算法考虑清楚了，有些时候能为实现高级算法铺路，这道题也是如此；</li>
-<li>低级算法往往容错性最好，即在输入不满足题目条件的时候，往往还能得到正确的答案，而高级算法对输入数据的要求就非常苛刻。</li>
-</ul>
-<p>复杂度分析：</p>
-<ul>
-<li>时间复杂度：O(nlogn)，这里n是数组的长度，主要是排序，语言内置的排序一般是优化的快排或者归并，O(nlogn)</li>
-<li>空间复杂度：O(1)</li>
-</ul>
-<ol start="2" type="1">
-<li><h3 id="借助-partition-操作定位到最终排定以后索引为-len---k-的那个元素特别注意随机化切分元素">借助 partition 操作定位到最终排定以后索引为 <code>len - k</code> 的那个元素（特别注意：随机化切分元素）</h3></li>
-</ol>
-<p>以下是注意事项，因为很重要，所以放在前面说：</p>
-<blockquote>
-<p>快速排序虽然快，但是如果实现得不好，在遇到特殊测试用例的时候，时间复杂度会变得很高。</p>
-</blockquote>
-<p>分析：我们在学习"快速排序"的时候，接触的第1个操作就是partition（切分），简单介绍如下：</p>
-<p>partition（切分）操作，使得：</p>
-<ul>
-<li>对于某个索引j，nums[j]已经排定，即nums[j]经过partition（切分）操作以后会放置在它“最终应该放置的地方”；</li>
-<li>nums[left]到nums[j - 1]中的所有元素都不大于nums[j]；</li>
-<li>nums[j + 1]到nums[right]中的所有元素都不小于nums[j]；</li>
-</ul>
-<p>partition（切分）操作总能排定一个元素，还能够知道这个元素它最终所在的位置，这样每经过一次partition（切分）操作就能缩小搜索的范围，这样的思想叫做“减而治之”（是分而治之的思想的特例）。</p>
-<p>切分过程可以不借助额外的数组空间，仅通过交换数组元素来实现。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">nums, l, r</span>):</span></span><br><span class="line">    pivot = r</span><br><span class="line">    right = l</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(l, r):</span><br><span class="line">        <span class="keyword">if</span> nums[i] &lt;= nums[pivot]:</span><br><span class="line">            nums[i], nums[right] = nums[right], nums[i]</span><br><span class="line">            right += <span class="number">1</span></span><br><span class="line">    nums[right], nums[pivot] = nums[pivot], nums[right]</span><br><span class="line">    <span class="keyword">return</span> right</span><br></pre></td></tr></table></figure>
-<p>复杂度分析：</p>
-<ul>
-<li>时间复杂度：O(N)，这里N是数组的长度，可以通过主定理证明。</li>
-<li>空间复杂度：O(1)</li>
-</ul>
-<blockquote>
-<p>注意：本地必须随机初始化pivot元素，否则通过时间会很慢，因为测试中有极端用例。</p>
-</blockquote>
-<ol type="1">
-<li>为了应对极端测试用例，使得递归树加深，可以在循环一开始的时候，随机交换第1个元素与它后面的任意1个元素的位置；</li>
-</ol>
-<p>说明：最极端的是顺序数组与倒序数组，此时递归树画出来是链表，时间复杂度退化为O(N^2)，根本达不到减治的效果。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">nums, l, r</span>):</span></span><br><span class="line">    rand = random.randint(l, r)</span><br><span class="line">    nums[r], nums[rand] = nums[rand], nums[r]</span><br><span class="line">    pivot = r</span><br><span class="line">    right = l</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(l, r):</span><br><span class="line">        <span class="keyword">if</span> nums[i] &lt;= nums[pivot]:</span><br><span class="line">            nums[i], nums[right] = nums[right], nums[i]</span><br><span class="line">            right += <span class="number">1</span></span><br><span class="line">    nums[right], nums[pivot] = nums[pivot], nums[right]</span><br><span class="line">    <span class="keyword">return</span> right</span><br></pre></td></tr></table></figure>
-<ol start="2" type="1">
-<li>使用双指针，将与pivot相等的元素等概率地分到pivot最终排定位置的两边。</li>
-</ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">nums, l, r</span>):</span></span><br><span class="line">    <span class="comment"># randint 是包括左右区间的</span></span><br><span class="line">    random_index = random.randint(l, r)</span><br><span class="line">    nums[random_index], nums[l] = nums[l], nums[random_index]</span><br><span class="line"></span><br><span class="line">    pivot = nums[l]</span><br><span class="line"></span><br><span class="line">    lt = l + <span class="number">1</span></span><br><span class="line">    rt = r</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">while</span> lt &lt;= rt <span class="keyword">and</span> nums[lt] &lt; pivot:</span><br><span class="line">            lt += <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> lt &lt;= rt <span class="keyword">and</span> nums[rt] &gt; pivot:</span><br><span class="line">            rt -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> lt &gt; rt:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        nums[lt], nums[rt] = nums[rt], nums[lt]</span><br><span class="line">        lt += <span class="number">1</span></span><br><span class="line">        rt -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    nums[l], nums[rt] = nums[rt], nums[l]</span><br><span class="line">    <span class="keyword">return</span> rt</span><br></pre></td></tr></table></figure>
-<p>完整快速选择实现：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">findKthLargest</span>(<span class="params">self, nums: List[int], k: int</span>) -&gt; int:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">nums, l, r</span>):</span></span><br><span class="line">            pivot = r</span><br><span class="line">            rand = random.randint(l, r)</span><br><span class="line">            nums[pivot], nums[rand] = nums[rand], nums[pivot]</span><br><span class="line">            right = l</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(l, r):</span><br><span class="line">                <span class="keyword">if</span> nums[i] &lt;= nums[pivot]:</span><br><span class="line">                    nums[i], nums[right] = nums[right], nums[i]</span><br><span class="line">                    right += <span class="number">1</span></span><br><span class="line">            nums[right], nums[pivot] = nums[pivot], nums[right]</span><br><span class="line">            <span class="keyword">return</span> right</span><br><span class="line"></span><br><span class="line">        l, r = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            pivot = partition(nums, l, r)</span><br><span class="line">            <span class="keyword">if</span> pivot == len(nums) - k:</span><br><span class="line">                <span class="keyword">return</span> nums[pivot]</span><br><span class="line">            <span class="keyword">if</span> pivot &lt; len(nums) - k:</span><br><span class="line">                l = pivot + <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                r = pivot - <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<ol start="3" type="1">
-<li>优先队列、堆</li>
-</ol>
-<p>优先队列的想法是很朴素的。</p>
-<p>我们可以维护大小为K的一个小顶堆：</p>
-<ol type="1">
-<li>如果当前堆不满，直接添加；</li>
-<li>堆满的时候，如果新读到的数小于等于堆顶，肯定不是我们要找的元素，大于堆顶，我们pop堆顶元素，插入新到的元素，让堆自己去调整内部结构。</li>
-</ol>
-<blockquote>
-<p>说明：这里最合适的操作其实是replace，即直接把新读进来的数放在堆顶，然后执行下沉操作（siftDown）操作。python中有heapq.heappushpop()操作。Java中的PriorityQueue没有提供这个操作，只好先poll()再offer()。</p>
-</blockquote>
-<p>堆的写法有很多，以下的写法大同小异，没有本质差别。</p>
-<p>假设数组有len个元素。</p>
-<p>思路1：把len个元素都放入一个小顶堆堆中，然后在pop()出len-k个元素，此时小顶堆只剩下k个元素，堆顶元素就是数组的第k大元素。</p>
-<p>思路2：把len个元素都放入一个大顶堆中，然后再pop出k-1个元素，因此前k-1大的元素都被弹出了，此时大顶堆的堆顶元素就是数组中的第k个最大元素。</p>
-<p>下面给出第2中思路的实现，这里改变了原数组，如果不能改变原数组，我们要另外使用堆的空间，可以为k规模的大小，也可以为len规模的大小。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">findKthLargest</span>(<span class="params">self, nums: List[int], k: int</span>) -&gt; int:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">            l = i * <span class="number">2</span> + <span class="number">1</span></span><br><span class="line">            r = i * <span class="number">2</span> + <span class="number">2</span></span><br><span class="line">            large = i</span><br><span class="line">            <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">                large = l</span><br><span class="line">            <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">                large = r</span><br><span class="line">            <span class="keyword">if</span> large != i:</span><br><span class="line">                nums[i], nums[large] = nums[large], nums[i]</span><br><span class="line">                maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">                maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line">        heapsize = len(nums)</span><br><span class="line">        buildheap(nums, heapsize)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(heapsize - <span class="number">1</span>, heapsize - k, <span class="number">-1</span>):</span><br><span class="line">            nums[<span class="number">0</span>], nums[i] = nums[i], nums[<span class="number">0</span>]</span><br><span class="line">            heapsize -= <span class="number">1</span></span><br><span class="line">            maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">        <span class="keyword">return</span> nums[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
-<h2 id="考察点">考察点</h2>
-<p>这道题目考查了快速选择（快速切分）操作的特性，时间复杂度的了解，和随机化保证时间复杂度不会退化得过于严重。</p>
-<p>堆的解法考查了堆化、插入、和删除的代码写法，是非常好的面试题目。</p>
-<h2 id="参考">参考</h2>
-<p>https://leetcode-cn.com/problems/kth-largest-element-in-an-array/solution/partitionfen-er-zhi-zhi-you-xian-dui-lie-java-dai-/</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1261,7 +1193,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">92</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
