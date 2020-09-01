@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="MySQL中尽量使用普通索引，减少使用唯一索引查询过程平均性能差异微乎其微。 更新过程change buffer当需要更新一个数据页时，如果数据页在内存中就直接更新，而如果这个数据页还没有在内存中的话，在不影响数据一致性的前提下，InnoDB会将这些更新操作缓存在change buffer中，这样就不需要从磁盘中读入这个数据页了。在下次查询需要访问这个数据页的时候，将数据页读入内存，然后执行cha">
+  <meta name="description" content="MySQL中尽量使用普通索引，减少使用唯一索引 查询过程 平均性能差异微乎其微。 更新过程 change buffer 当需要更新一个数据页时，如果数据页在内存中就直接更新，而如果这个数据页还没有在内存中的话，在不影响数据一致性的前提下，InnoDB会将这些更新操作缓存在change buffer中，这样就不需要从磁盘中读入这个数据页了。在下次查询需要访问这个数据页的时候，将数据页读入内存，然后执">
 <meta property="og:type" content="article">
 <meta property="og:title" content="普通索引和唯一索引的选择">
 <meta property="og:url" content="https://hrz123.github.io/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="MySQL中尽量使用普通索引，减少使用唯一索引查询过程平均性能差异微乎其微。 更新过程change buffer当需要更新一个数据页时，如果数据页在内存中就直接更新，而如果这个数据页还没有在内存中的话，在不影响数据一致性的前提下，InnoDB会将这些更新操作缓存在change buffer中，这样就不需要从磁盘中读入这个数据页了。在下次查询需要访问这个数据页的时候，将数据页读入内存，然后执行cha">
+<meta property="og:description" content="MySQL中尽量使用普通索引，减少使用唯一索引 查询过程 平均性能差异微乎其微。 更新过程 change buffer 当需要更新一个数据页时，如果数据页在内存中就直接更新，而如果这个数据页还没有在内存中的话，在不影响数据一致性的前提下，InnoDB会将这些更新操作缓存在change buffer中，这样就不需要从磁盘中读入这个数据页了。在下次查询需要访问这个数据页的时候，将数据页读入内存，然后执">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hrz123.github.io/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/change_buffer1.png">
 <meta property="og:image" content="https://hrz123.github.io/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/change_buffer2.png">
@@ -243,8 +243,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="MySQL中尽量使用普通索引，减少使用唯一索引"><a href="#MySQL中尽量使用普通索引，减少使用唯一索引" class="headerlink" title="MySQL中尽量使用普通索引，减少使用唯一索引"></a>MySQL中尽量使用普通索引，减少使用唯一索引</h3><h4 id="查询过程"><a href="#查询过程" class="headerlink" title="查询过程"></a>查询过程</h4><p>平均性能差异微乎其微。</p>
-<h4 id="更新过程"><a href="#更新过程" class="headerlink" title="更新过程"></a>更新过程</h4><h5 id="change-buffer"><a href="#change-buffer" class="headerlink" title="change buffer"></a>change buffer</h5><p>当需要更新一个数据页时，如果数据页在内存中就直接更新，而如果这个数据页还没有在内存中的话，在不影响数据一致性的前提下，InnoDB会将这些更新操作缓存在change buffer中，这样就不需要从磁盘中读入这个数据页了。在下次查询需要访问这个数据页的时候，将数据页读入内存，然后执行change buffer中与这个页有关的操作。通过这种方式就能保证这个数据逻辑的正确性。</p>
+        <h3 id="mysql中尽量使用普通索引减少使用唯一索引">MySQL中尽量使用普通索引，减少使用唯一索引</h3>
+<h4 id="查询过程">查询过程</h4>
+<p>平均性能差异微乎其微。</p>
+<h4 id="更新过程">更新过程</h4>
+<h5 id="change-buffer">change buffer</h5>
+<p>当需要更新一个数据页时，如果数据页在内存中就直接更新，而如果这个数据页还没有在内存中的话，在不影响数据一致性的前提下，InnoDB会将这些更新操作缓存在change buffer中，这样就不需要从磁盘中读入这个数据页了。在下次查询需要访问这个数据页的时候，将数据页读入内存，然后执行change buffer中与这个页有关的操作。通过这种方式就能保证这个数据逻辑的正确性。</p>
 <p>需要说明的是，虽然名字叫change buffer，实际上它是可以持久化的数据。也就是说，change buffer在内存中有拷贝，也会下被写入到磁盘上。</p>
 <p>将change buffer中的操作应用到原数据页，得到最新结果的过程称为merge。除了访问这个数据页会触发merge外，系统有后台线程会定期merge。在数据库正常关闭的（shutdown）的过程中，也会执行merge操作。</p>
 <p>显然，如果能够将更新操作先记录在change buffer，减少读磁盘，语句的执行速度会得到明显的提升。而且，数据读入内存是需要占用buffer pool的，所以这种方式还能后避免占用内存，提高内存利用率。</p>
@@ -255,23 +259,24 @@
 <p>现在，你已经理解了change buffer的机制，那么我们再一起来看看<strong>如果要在这张表中插入一个新纪录（4，400）的话，InnoDB的处理流程是怎样的。</strong></p>
 <p>第一种情况是，<strong>这个记录要更新的目标页在内存中</strong>。那么两者差不多。</p>
 <p>第二种情况是，这个记录要更新的目标页不在内存中。那么唯一索引要读入内存，涉及磁盘随机IO的访问，是成本最高的操作之一。</p>
-<h5 id="change-buffer的使用场景"><a href="#change-buffer的使用场景" class="headerlink" title="change buffer的使用场景"></a>change buffer的使用场景</h5><p>普通索引的所有场景，使用change buffer都可以起到加速作用吗？</p>
+<h5 id="change-buffer的使用场景">change buffer的使用场景</h5>
+<p>普通索引的所有场景，使用change buffer都可以起到加速作用吗？</p>
 <p>因为merge的时候是真正进行数据更新的时刻，而change buffer记录的变更越多（也就是这个页面上要更新的次数越多)，收益就越大。</p>
 <p>因此，对于写多读少的业务来说，页面在写完以后马上被访问到的概率比较小，此时change buffer的使用效果最好。这种业务模型常见的就是账单类、日志类的系统。（这类写入比较多的业务类型可以使用LSM树作为数据结构的数据库）。</p>
 <p>反过来，假设一个业务的更新模式是写入之后马上会做查询，那么即使满足了条件，将更新先记录在change buffer，但之后由于马上要访问这个数据页，会立即触发merge过程。这样随机访问IO的次数不会减少，反而增加了change buffer的维护代价。</p>
-<h3 id="索引该如何选择和实践呢？"><a href="#索引该如何选择和实践呢？" class="headerlink" title="索引该如何选择和实践呢？"></a>索引该如何选择和实践呢？</h3><p>普通索引和唯一索引应该如何选择。查询能力上没差别，主要考虑的是对更新性能的影响。所以，我建议你尽量选择普通索引。</p>
+<h3 id="索引该如何选择和实践呢">索引该如何选择和实践呢？</h3>
+<p>普通索引和唯一索引应该如何选择。查询能力上没差别，主要考虑的是对更新性能的影响。所以，我建议你尽量选择普通索引。</p>
 <p>如果所有的更新后面，都马上伴随着对这个记录的查询，那么你应该关闭change buffer。而在其他情况下，change buffer都能提升更新性能。</p>
 <p>在实际应用中，你会发现，普通索引和change buffer的配合使用，对于数据量大的表的更新优化还是很明显的。</p>
 <p>特别的，在使用机械硬盘时，change buffer这个机制的收效是非常显著的。所以，当你有一个类似”历史数据“的库，并且处于成本考虑用的是机械硬盘时，那你应该特别关注这些表里的索引，尽量使用普通索引，然后把change buffer尽量开大，以确保这个”历史数据“表的数据写入速度。</p>
-<h4 id="change-buffer和redo-log"><a href="#change-buffer和redo-log" class="headerlink" title="change buffer和redo log"></a>change buffer和redo log</h4><p>现在，我们要在表上执行这个语句：</p>
+<h4 id="change-buffer和redo-log">change buffer和redo log</h4>
+<p>现在，我们要在表上执行这个语句：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; insert into t(id, k) values(id1, k1), (id2, k2);</span><br></pre></td></tr></table></figure>
-
 <p>这里，我们假设当前k索引树的状态，查找到位置后，k1所在的数据页在内存（InnoDB buffer pool）中，k2所在的数据页不在内存中。如果2所示是带change buffer的更新状态图。</p>
 <img data-src="/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/change_buffer1.png" class>
-
 <p>分析这条更新语句，你会发现它涉及了四个部分：内存、redo log（ib_log_fileX）、数据表空间（t.ibd）、系统表空间（ibdata1）。</p>
 <p>这条更新语句做了如下的操作（按照图中的数组顺序）：</p>
-<ol>
+<ol type="1">
 <li>Page 1在内存中，直接更新内存；</li>
 <li>Page 2没有在内存中，就在内存的change buffer区域，记录下”我要往Page2插入一行“这个信息</li>
 <li>将上述两个动作记录到redo log中。</li>
@@ -282,15 +287,14 @@
 <p>比如，我们现在要执行select * from t where k in (k1, k2)。这里，我画了这两个请求的流程图。</p>
 <p>如果读语句发生在更新语句后不久，内存中的数据都还在，那么此时的这两个读操作就与系统表空间（ibdata1）和redo log（ib_log_fileX）无关了。</p>
 <img data-src="/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/change_buffer2.png" class>
-
 <p>图中可以看到：</p>
-<ol>
+<ol type="1">
 <li>读Page1的时候，直接从内存返回。有同学之前问到，WAL之后读数据，是不是一定要读盘，是不是一定要从redo log里面把数据更新以后才可以返回？其实是不用的。你可以看一下图3的状态，虽然磁盘上还是之前的数据，但是这里直接从内存返回结果，结果是正确的。</li>
 <li>要读Page 2的时候，需要把Page 2从磁盘读入内存中，然后应用change buffer里面的操作日志，生成一个正确的版本并返回结果。</li>
 </ol>
 <p>可以看到，直到需要读Page 2的时候，这个数据页才会被读入内存。</p>
 <p>wal机制可以将数据按顺序写到redo log（减少随机写对io的消耗）对普通索引上的数据进行修改，通常是将修改动作记录到change buffer（减少随机读磁盘的消耗），待查询时如果数据页不在内存，先读取到内存，再将change buffer中的修改动作通过merge操作，合并数据。</p>
-<ol>
+<ol type="1">
 <li>如果业务要求有唯一键。业务正确性优先，文章的前提是业务代码已经保证不会写入重复数据，在这情况下，讨论性能问题。如果业务不能保证，或者业务就是要求数据库来做约束，那么没得选，必须创建唯一索引。这种下，如果碰上了大量插入数据慢、内存命中率低的时候，可以给你多提供一个排查思路。</li>
 <li>然后，在一些“归档库”的场景，你是可以考虑使用普通索引的。比如，线上数据只需要保留半年，然后历史数据保存在归档库。这时候，归档数据已经是确保没有唯一键冲突了。要提高归档效率，可以考虑把表里面的唯一索引改成普通索引。</li>
 </ol>
@@ -383,7 +387,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL%E4%B8%AD%E5%B0%BD%E9%87%8F%E4%BD%BF%E7%94%A8%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%EF%BC%8C%E5%87%8F%E5%B0%91%E4%BD%BF%E7%94%A8%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95"><span class="nav-number">1.</span> <span class="nav-text">MySQL中尽量使用普通索引，减少使用唯一索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E8%BF%87%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">查询过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">更新过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#change-buffer"><span class="nav-number">1.2.1.</span> <span class="nav-text">change buffer</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#change-buffer%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.2.2.</span> <span class="nav-text">change buffer的使用场景</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E8%AF%A5%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E5%92%8C%E5%AE%9E%E8%B7%B5%E5%91%A2%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">索引该如何选择和实践呢？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#change-buffer%E5%92%8Credo-log"><span class="nav-number">2.1.</span> <span class="nav-text">change buffer和redo log</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql%E4%B8%AD%E5%B0%BD%E9%87%8F%E4%BD%BF%E7%94%A8%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%87%8F%E5%B0%91%E4%BD%BF%E7%94%A8%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95"><span class="nav-number">1.</span> <span class="nav-text">MySQL中尽量使用普通索引，减少使用唯一索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E8%BF%87%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">查询过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">更新过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#change-buffer"><span class="nav-number">1.2.1.</span> <span class="nav-text">change buffer</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#change-buffer%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.2.2.</span> <span class="nav-text">change buffer的使用场景</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E8%AF%A5%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E5%92%8C%E5%AE%9E%E8%B7%B5%E5%91%A2"><span class="nav-number">2.</span> <span class="nav-text">索引该如何选择和实践呢？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#change-buffer%E5%92%8Credo-log"><span class="nav-number">2.1.</span> <span class="nav-text">change buffer和redo log</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -399,7 +403,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-count">96</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
