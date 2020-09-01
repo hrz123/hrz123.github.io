@@ -108,6 +108,37 @@
       </tags>
   </entry>
   <entry>
+    <title>K个一组翻转链表</title>
+    <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
+<p>将pre指向开头</p>
+<p>循环开始，只要head不为nil</p>
+<p>令tail = pre</p>
+<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
+<p>nxt记录下tail.next，head即将走向的下一个结点</p>
+<p>反转head到tail中的节点，返回新的head和tail</p>
+<p>def reverse(head, tail):</p>
+<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
+<p>​ while prev != tail:</p>
+<p>​ nxt = cur.next</p>
+<p>​ cur.next = prev</p>
+<p>​ prev = cur</p>
+<p>​ cur = nxt</p>
+<p>​ return tail, head</p>
+<p>将pre的next指向新的head</p>
+<p>pre.next = head</p>
+<p>尾部已相连</p>
+<p>更新pre指向tail</p>
+<p>head指向nxt</p>
+<p>最终head为nil时退出循环</p>
+<p>返回dummy.next</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span>(<span class="params">self, head: ListNode, k: int</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span>(<span class="params">self, head, tail</span>):</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL中的锁</title>
     <url>/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
     <content><![CDATA[<h2 id="全局锁表锁行锁间隙锁">全局锁、表锁、行锁、间隙锁。</h2>
@@ -173,37 +204,6 @@
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>K个一组翻转链表</title>
-    <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
-    <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
-<p>将pre指向开头</p>
-<p>循环开始，只要head不为nil</p>
-<p>令tail = pre</p>
-<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
-<p>nxt记录下tail.next，head即将走向的下一个结点</p>
-<p>反转head到tail中的节点，返回新的head和tail</p>
-<p>def reverse(head, tail):</p>
-<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
-<p>​ while prev != tail:</p>
-<p>​ nxt = cur.next</p>
-<p>​ cur.next = prev</p>
-<p>​ prev = cur</p>
-<p>​ cur = nxt</p>
-<p>​ return tail, head</p>
-<p>将pre的next指向新的head</p>
-<p>pre.next = head</p>
-<p>尾部已相连</p>
-<p>更新pre指向tail</p>
-<p>head指向nxt</p>
-<p>最终head为nil时退出循环</p>
-<p>返回dummy.next</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span>(<span class="params">self, head: ListNode, k: int</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span>(<span class="params">self, head, tail</span>):</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -279,38 +279,6 @@
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> information_schema.innodb_trx <span class="keyword">where</span> TIME_TO_SEC(<span class="keyword">timediff</span>(<span class="keyword">now</span>(),trx_started))&gt;<span class="number">60</span></span><br></pre></td></tr></table></figure>
 <h2 id="小结">小结</h2>
 <p>这篇文章，主要介绍了MySQL的事务隔离级别的现象和实现，根据实现原理分析了长事务存在的风险，以及如何用正确的方式避免长事务，希望举的例子能够帮助你理解事务，并更好的使用MySQL的事务特性。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL如何正确地显示随机消息？ </title>
-    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论</p>
-<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
-<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
-<h3 id="正确的方法">正确的方法</h3>
-<p>下面这个流程：</p>
-<ol type="1">
-<li>取得整个表的行数，并记为C。</li>
-<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
-<li>再用limit Y，1 取得一行。</li>
-</ol>
-<p>下面这段代码，就是上面流程的执行语句的序列。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
-<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
-<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
-<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
-<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
-<ol type="1">
-<li>取得整个表的行数，即为C</li>
-<li>按照相同的随机方法得到Y1、Y2、Y3</li>
-<li>再执行三个limit Y, 1语句得到三行数据。</li>
-<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
-</ol>
-<h3 id="参考">参考</h3>
-<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -447,6 +415,38 @@
 <ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MDUzMQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL如何正确地显示随机消息？ </title>
+    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论</p>
+<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
+<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
+<h3 id="正确的方法">正确的方法</h3>
+<p>下面这个流程：</p>
+<ol type="1">
+<li>取得整个表的行数，并记为C。</li>
+<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
+<li>再用limit Y，1 取得一行。</li>
+</ol>
+<p>下面这段代码，就是上面流程的执行语句的序列。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
+<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
+<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
+<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
+<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
+<ol type="1">
+<li>取得整个表的行数，即为C</li>
+<li>按照相同的随机方法得到Y1、Y2、Y3</li>
+<li>再执行三个limit Y, 1语句得到三行数据。</li>
+<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
+</ol>
+<h3 id="参考">参考</h3>
+<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -1322,6 +1322,17 @@
       </tags>
   </entry>
   <entry>
+    <title>nginx所有worker进程协同工作的关键：共享内存</title>
+    <url>/2020/08/31/nginx%E6%89%80%E6%9C%89worker%E8%BF%9B%E7%A8%8B%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%85%B3%E9%94%AE%EF%BC%9A%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</url>
+    <content><![CDATA[<p>nginx是一个多进程程序，那么不同的worker进程之间，如果需要共享数据，那么只能通过共享内存。那么下面我们来看一看，nginx中的共享内存是怎么使用的。</p>
+<p>nginx的进程间的通讯方式，主要有两种，第一种是信号，那么之前我们在说如何管理nginx的过程中，已经比较详细的介绍过了，那么如果需要做数据的同步呢？那么只能通过共享内存，所谓共享内存，也就是说我们打开了一块内存，比如说10M，那么一整块0-10M之间，多个worker进程之间，可以同时的访问它，包括读取和写入。那么为了使用好这样一块共享内存，就会引入另外两个问题。第一个问题呢，就是锁，因为多个worker进程同时操作一块内存，一定会出现竞争关系，所以我们需要加锁，在nginx的锁中，在早期它还有基于信号量的锁，信号量是一种linux里比较久远的进程同步方式，它会导致你的进程进入了休眠状态，也就是发生了主动切换，而现在大多数操作系统版本中，nginx所使用的锁，都是自旋锁，而不会基于信号量，自旋锁，也就是说，当这个锁的条件没有满足，比如说这块内存现在被1号worker进程所使用，那么2号worker进程需要去获取锁的时候，只要1号进程没有释放锁，2号进程会一直在不停地去请求这个把锁，就好像，如果是基于信号量的早期的nginx锁，那么假设这把锁锁住了一扇门，如果worker进程1已经拿到了这把锁进到了屋里，那么worker进程2试图去拿锁，敲门，发现里面已经有人了，那么worker进程2就会就地休息，等待worker进程1从门里出来以后，通知它。而自选锁不一样，worker2进程2发现门里已经有worker进程1了，它就一直的持续的在敲门，所以，使用自旋锁，要求所有的nginx模块必须快速的使用共享内存，也就是快速的取得锁以后，快速的释放锁。一旦出现有第三方模块不遵守这样的规则，就可能导致出现死锁，或者说性能下降的问题。那么，有了这么一块共享内存，会引入第2个问题，因为一整块共享内存，往往是给许多对象同时使用的，如果我们在模块中手动去编写分配，把这些内存给到不同的对象，是非常繁琐的，所以，这个时候，我们使用了slab内存管理器。这个接下来我们会再说，那么nginx哪些模块使用了共享内存呢？我对官方的常用的nginx模块使用共享内存做了一个总结。那么使用共享内存，主要使用这两种数据结构，第一个是红黑树，比如我们想做限速或者流控等等场景时，我们是不同容忍在内存中做的，否则一个worker进程，对某一个用户，触发了流控，而其他worker进程还不知道，所以我们只能在共享内存中做，比如说，limit connection，比如说limit request（ngx_stream_limit_req_module），还有所有的http cache，做反向代理时用的，还有ssl，那么红黑树有一个特点，就是它的增删改查特别的快，当然也可以做遍历，所以这些模块都有一个特点，我需要做快速的插入和删除，比如我现在发现了一个客户端，我对它限速，那么限速如果达到了，我需要把这个客户端从我的限速数据结构容器中移出，都需要非常的快速。第二个常用的数据结构是单链表，也就是说我只要这些需要共享的元素都串起来就可以了。Ngx_http_upstream_zone_module或者Ngx_stream_upstream_zone_module，然后我们再来一个稍微复杂的例子，也就是ngx_http_lua_api，这个模块，实际上是openresty的核心模块，那么openresty在这个模块中定义了一个sdk，这个sdk叫lua_shared_dict，当这个指令出现的时候，它会分配一块共享内存，比如这个我们指定了10m，m就是我们的空间大小。那么这块共享内存会有一个名称，叫做dogs。接下来，我们在lua代码中，比如这一段content_by_lua_blocks，这对应这我们nginx收到了set这个url的时候需要做一些什么样的事情，我们首先从dogs共享内存中取出，然后设置了一个key value，然后向客户端返回，我已存储。然后在get请求中，我们把刚才存下的值取出来，返回给用户。那么在这一段代码中呢，我们同时使用了刚刚我们介绍中红黑树，以及链表。那么，这个lua_shared_dict dogs10m了。中间呢，使用红黑树来保存每一个key value，红黑树中的每一个节点就是它的key，它的value就是8，那么为什么我还需要一个链表呢，是因为这个10m是有限的，但我们的lua代码，涉及到了我们的应用业务代码，应用业务代码，很容易就超过了10m的限制，当我们超过10m的限制了呢，我们有很多种处理办法，比如让它写入失败，但是lua_shared_dict采用了另外一种处理方式，就是它用lru淘汰。也就是最早不用的节点，会被最早淘汰，当已经达到10m的最大值时。所以，这个lua_shared_dict中，它对共享内存的使用，同时满足了红黑树和链表。</p>
+<p>共享内存是nginx跨多个worker通讯的最有效的手段，只要我们需要让一段业务逻辑，在多个worker进程中，同时生效，比如许多在集群的流控上，那么必须使用共享内存，而不能在每一个worker内存中去操作。</p>
+]]></content>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python实现Trie(字典树、前缀树)</title>
     <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
     <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
@@ -1344,14 +1355,35 @@
       </tags>
   </entry>
   <entry>
-    <title>nginx所有worker进程协同工作的关键：共享内存</title>
-    <url>/2020/08/31/nginx%E6%89%80%E6%9C%89worker%E8%BF%9B%E7%A8%8B%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%85%B3%E9%94%AE%EF%BC%9A%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</url>
-    <content><![CDATA[<p>nginx是一个多进程程序，那么不同的worker进程之间，如果需要共享数据，那么只能通过共享内存。那么下面我们来看一看，nginx中的共享内存是怎么使用的。</p>
-<p>nginx的进程间的通讯方式，主要有两种，第一种是信号，那么之前我们在说如何管理nginx的过程中，已经比较详细的介绍过了，那么如果需要做数据的同步呢？那么只能通过共享内存，所谓共享内存，也就是说我们打开了一块内存，比如说10M，那么一整块0-10M之间，多个worker进程之间，可以同时的访问它，包括读取和写入。那么为了使用好这样一块共享内存，就会引入另外两个问题。第一个问题呢，就是锁，因为多个worker进程同时操作一块内存，一定会出现竞争关系，所以我们需要加锁，在nginx的锁中，在早期它还有基于信号量的锁，信号量是一种linux里比较久远的进程同步方式，它会导致你的进程进入了休眠状态，也就是发生了主动切换，而现在大多数操作系统版本中，nginx所使用的锁，都是自旋锁，而不会基于信号量，自旋锁，也就是说，当这个锁的条件没有满足，比如说这块内存现在被1号worker进程所使用，那么2号worker进程需要去获取锁的时候，只要1号进程没有释放锁，2号进程会一直在不停地去请求这个把锁，就好像，如果是基于信号量的早期的nginx锁，那么假设这把锁锁住了一扇门，如果worker进程1已经拿到了这把锁进到了屋里，那么worker进程2试图去拿锁，敲门，发现里面已经有人了，那么worker进程2就会就地休息，等待worker进程1从门里出来以后，通知它。而自选锁不一样，worker2进程2发现门里已经有worker进程1了，它就一直的持续的在敲门，所以，使用自旋锁，要求所有的nginx模块必须快速的使用共享内存，也就是快速的取得锁以后，快速的释放锁。一旦出现有第三方模块不遵守这样的规则，就可能导致出现死锁，或者说性能下降的问题。那么，有了这么一块共享内存，会引入第2个问题，因为一整块共享内存，往往是给许多对象同时使用的，如果我们在模块中手动去编写分配，把这些内存给到不同的对象，是非常繁琐的，所以，这个时候，我们使用了slab内存管理器。这个接下来我们会再说，那么nginx哪些模块使用了共享内存呢？我对官方的常用的nginx模块使用共享内存做了一个总结。那么使用共享内存，主要使用这两种数据结构，第一个是红黑树，比如我们想做限速或者流控等等场景时，我们是不同容忍在内存中做的，否则一个worker进程，对某一个用户，触发了流控，而其他worker进程还不知道，所以我们只能在共享内存中做，比如说，limit connection，比如说limit request（ngx_stream_limit_req_module），还有所有的http cache，做反向代理时用的，还有ssl，那么红黑树有一个特点，就是它的增删改查特别的快，当然也可以做遍历，所以这些模块都有一个特点，我需要做快速的插入和删除，比如我现在发现了一个客户端，我对它限速，那么限速如果达到了，我需要把这个客户端从我的限速数据结构容器中移出，都需要非常的快速。第二个常用的数据结构是单链表，也就是说我只要这些需要共享的元素都串起来就可以了。Ngx_http_upstream_zone_module或者Ngx_stream_upstream_zone_module，然后我们再来一个稍微复杂的例子，也就是ngx_http_lua_api，这个模块，实际上是openresty的核心模块，那么openresty在这个模块中定义了一个sdk，这个sdk叫lua_shared_dict，当这个指令出现的时候，它会分配一块共享内存，比如这个我们指定了10m，m就是我们的空间大小。那么这块共享内存会有一个名称，叫做dogs。接下来，我们在lua代码中，比如这一段content_by_lua_blocks，这对应这我们nginx收到了set这个url的时候需要做一些什么样的事情，我们首先从dogs共享内存中取出，然后设置了一个key value，然后向客户端返回，我已存储。然后在get请求中，我们把刚才存下的值取出来，返回给用户。那么在这一段代码中呢，我们同时使用了刚刚我们介绍中红黑树，以及链表。那么，这个lua_shared_dict dogs10m了。中间呢，使用红黑树来保存每一个key value，红黑树中的每一个节点就是它的key，它的value就是8，那么为什么我还需要一个链表呢，是因为这个10m是有限的，但我们的lua代码，涉及到了我们的应用业务代码，应用业务代码，很容易就超过了10m的限制，当我们超过10m的限制了呢，我们有很多种处理办法，比如让它写入失败，但是lua_shared_dict采用了另外一种处理方式，就是它用lru淘汰。也就是最早不用的节点，会被最早淘汰，当已经达到10m的最大值时。所以，这个lua_shared_dict中，它对共享内存的使用，同时满足了红黑树和链表。</p>
-<p>共享内存是nginx跨多个worker通讯的最有效的手段，只要我们需要让一段业务逻辑，在多个worker进程中，同时生效，比如许多在集群的流控上，那么必须使用共享内存，而不能在每一个worker内存中去操作。</p>
+    <title>python实现简单布隆过滤器</title>
+    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
+<p>布隆过滤器vshash table</p>
+<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
+<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
+<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
+<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
+<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
+<h2 id="案例">案例</h2>
+<ol type="1">
+<li>比特币网络</li>
+<li>分布式系统（Map-Reduce) - Hadoop、search engine
+<ol type="1">
+<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
+</ol></li>
+<li>Redis缓存</li>
+<li>垃圾邮件、评论等的过滤</li>
+</ol>
+<h2 id="简单实现示例">简单实现示例</h2>
+<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
+<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
+<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
+<p>search是search(s:str) -&gt;bool</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
-        <tag>nginx</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1410,38 +1442,6 @@
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMwNzU2OTkvYXJ0aWNsZS9kZXRhaWxzLzgwMzc5MjYz">https://blog.csdn.net/u013075699/article/details/80379263<i class="fa fa-external-link-alt"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N1bm1hb3hpYW5nL2FydGljbGUvZGV0YWlscy84MDk1OTMwMA==">https://blog.csdn.net/sunmaoxiang/article/details/80959300<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现简单布隆过滤器</title>
-    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
-<p>布隆过滤器vshash table</p>
-<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
-<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
-<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
-<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
-<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
-<h2 id="案例">案例</h2>
-<ol type="1">
-<li>比特币网络</li>
-<li>分布式系统（Map-Reduce) - Hadoop、search engine
-<ol type="1">
-<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
-</ol></li>
-<li>Redis缓存</li>
-<li>垃圾邮件、评论等的过滤</li>
-</ol>
-<h2 id="简单实现示例">简单实现示例</h2>
-<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
-<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
-<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
-<p>search是search(s:str) -&gt;bool</p>
-<p>示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -1615,6 +1615,98 @@
       </tags>
   </entry>
   <entry>
+    <title>全局锁和表锁：给表加个字段怎么有这么多阻碍？</title>
+    <url>/2020/08/31/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%81%EF%BC%9A%E7%BB%99%E8%A1%A8%E5%8A%A0%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%80%8E%E4%B9%88%E6%9C%89%E8%BF%99%E4%B9%88%E5%A4%9A%E9%98%BB%E7%A2%8D%EF%BC%9F/</url>
+    <content><![CDATA[<p>今天我要跟你聊聊MySQL的锁。数据库锁设计的初衷是处理并发问题。作为多用户共享的资源，当出现并发访问的时候，数据库需要合理地控制资源的访问规则。而锁就是用来实现这些访问规则的重要数据结构。</p>
+<p><strong>根据加锁的范围，MySQL里面的锁大致可以分成全局锁、表级锁和行锁三类。</strong>今天这篇文章，我会和你分享全局锁和表级锁。而关于行锁的内容，我会留着在下一篇文章中再和你详细介绍。</p>
+<p>这里需要说明的是，锁的设计比较复杂，这两篇文章不会涉及锁的具体实现细节，主要介绍的是碰到锁时的现象和其背后的原理。</p>
+<h3 id="全局锁">全局锁</h3>
+<p>顾名思义，全局锁就是对整个数据库实例加锁。MySQL提供了一个加全局读锁的方法，flush tables with read lock(FTWRL)。当你需要让整个库处于只读状态的时候，可以使用这个命令，之后其他线程的以下语句会被阻塞：数据更新语句（数据的增删改）、数据定义语句（包括建表、修改表结构等）和更新类事务的提交语句。</p>
+<p><strong>全局锁的典型使用场景，是做全局逻辑备份。</strong>也就是把整库每个表都select出来存成文本。</p>
+<p>以前有一种做法，是通过FTWRL确保不会有其他线程对数据库做更新，然后对整个库做备份。注意，在备份过程中整个库完全处于只读状态。</p>
+<p>但是让整库只读，听上去就很危险：</p>
+<ul>
+<li>如果你在主库上备份，那么在备份期间都不能执行更新，业务基本上就得停摆；</li>
+<li>如果你在从库上备份，那么备份期间从库不能执行主库同步过来的binlog，会导致主从延迟。</li>
+</ul>
+<p>看来加全局锁不大好。但是细想一下，备份为什么要加锁呢？我们来看一下不加锁会有什么问题。</p>
+<p>假设你现在要维护“极客时间”的购买系统，关注的是用户账户余额表和用户课程表。</p>
+<p>现在发起一个逻辑备份。假设逻辑备份期间，有一个用户，他购买了一个课程，业务逻辑里就要扣掉他的余额，然后往已购课程里面加上一门课。</p>
+<p>如果时间顺序上是先备份账户余额表（u_account），然后哦用户购买，然后备份用户课程表（u_course），会怎么样呢？你可以看一下这个图：</p>
+<img data-src="/2020/08/31/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%81%EF%BC%9A%E7%BB%99%E8%A1%A8%E5%8A%A0%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%80%8E%E4%B9%88%E6%9C%89%E8%BF%99%E4%B9%88%E5%A4%9A%E9%98%BB%E7%A2%8D%EF%BC%9F/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%811.png" class>
+<p>可以看到，这个备份结果里，用户A的数据状态是“账户余额没扣，但是用户课程表里面已经多了一门课”。如果后面用这个备份来恢复数据的话，用户A就发现，自己赚了。</p>
+<p>作为用户可别觉得这样可真好啊，你可以试想一下：如果备份表的顺序反过来，先备份用户课程表再备份账户余额表，有可能会出现什么结果？</p>
+<p>也就是说，不加锁的话，备份系统备份得到的库不是一个逻辑时间点，这个视图是逻辑不一致的。</p>
+<p>说到视图你肯定想起来了，我们在前面讲事务隔离的时候，其实是有一个方法能够拿到一致性视图的。</p>
+<p>是的，就是在可重复读隔离级别下开启一个事务。</p>
+<p>官方自带的逻辑备份工具是mysqldump。当mysqldump使用参数-single-transaction的时候，导数据之前就会启动一个事务，来确保拿到一致性视图。而由于MVCC的支持，这个过程中数据是可以正常更新的。</p>
+<p>你一定在疑惑，有了这个功能，为什么还需要FTWRL呢？<strong>一致性读是好，但前提是引擎要支持这个隔离级别。</strong>比如，对于MyISAM这种不支持事务的引擎，如果备份过程中有更新，总是只能取到最新的数据，那么就破坏了备份的一致性。这时，我们就需要使用FTWRL命令了。</p>
+<p>所以，<strong>single-transaction方法只适用于所有的表使用事务引擎的库</strong>。如果有的表使用了不支持事务的引擎，那么备份就只能通过FTWRL方法。这往往是DBA要求业务开发人员使用InnoDB替代MyISAM的原因之一。</p>
+<p>你也许会问，<strong>既然要全表只读，为什么不使用set global readonly=true的方式呢</strong>？确实readonly方式也可以让全库进入只读状态，但我还是建议你用FTWRL方式，主要有两个原因：</p>
+<ul>
+<li>一是，在有些系统中，readonly的值会被用来做其他逻辑，比如判断一个库是主库还是备库。因此，修改global变量的影响面更大，我不建议你使用。</li>
+<li>二是，在异常处理机制上有差异。如果执行FTWRL命令之后由于客户端发生异常断开，那么MySQL会自动释放这个全局锁，整个库回到可以正常更新的状态。而将整个库设置为readonly之后，如果客户端发生异常，则数据库就会一直保持readonly，这样会导致整个库长时间处于不可写状态，风险较高。</li>
+</ul>
+<p>业务的更新不只是增删改数据（DML），还有可能是加字段等修改表结构的操作（DDL）。不论是哪种方法，一个库被全局锁上以后，你要对里面的任何一个表做加字段操作，都是会被锁住的。</p>
+<p>但是，即使没有被全局锁住，加字段也不是就能一帆风顺的，因为你还会碰到接下来我们要介绍的表级锁。</p>
+<h3 id="表级锁">表级锁</h3>
+<p>MySQL里面表级别的锁有两种：一种是表锁，一种是元数据锁（meta data lock，MDL）。</p>
+<p><strong>表锁的语法是lock tables .. read/write。</strong>与FTWRL类似，可以用unlock tables主动释放锁，也可以在客户端断开的时候自动释放。需要注意，lock tables语法除了会限制别的线程读写外，也限定了本线程接下来的操作对象。</p>
+<p>举个例子，如果在某个线程A中执行lock tables t1 read, t2 write;这个语句，则其他线程写t1、读写t2的语句都会被阻塞。同时，线程A在执行unlock tables之前，也只能执行读t1、读写t2的操作。连写t1都不允许，自然也不能访问其他表。（可能还会本线程还是可以对表t1写。）</p>
+<p>在还没有出现更细粒度的锁的时候，表锁是最常用的处理并发的方式。而对于InnoDB这种支持行锁的引擎，一般不使用lock tables命令来控制并发，毕竟锁住整个表的影响面还是太大。</p>
+<p><strong>另一类表级的锁是MDL（metadata lock）。</strong>MDL不需要显示使用，在访问一个表的时候会被自动加上。MDL的作用是，保证读写的正确性。你可以想象一下，如果一个查询正在遍历一个表中的数据，而执行期间另一个线程对这个表结构做变更，删了一列，那么查询线程拿到的结果跟表结构对不上，肯定是不行的。</p>
+<p>因此，在MySQL 5.5 版本中引入了MDL，当对一个表做<strong>增删改查</strong>操作的时候，加MDL读锁；当要对<strong>表结构做变更操作</strong>的时候，加MDL写锁。</p>
+<ul>
+<li>读锁之间不互斥，因此你可以有多个线程同时对一张表增删改查。</li>
+<li>读写锁之间、写锁之间是互斥的，用来保证变更表结构操作的安全性。因此，如果有两个线程要同时给一个表加字段，其中一个要等另一个执行完才能开始执行。</li>
+</ul>
+<p>虽然MDL锁是系统默认会加的，但却是你不能忽略的一个机制。比如下面这个例子，我经常看到有人掉到这个坑里：给一个小表加个字段，导致整个库挂了。</p>
+<p>你肯定知道，给一个表加字段，或者修改字段，或者加索引，需要扫描全表的数据。在对大表操作的时候，你肯定会特别小心，以免对线上服务造成影响。而实际上，即使是小表，操作不慎也会出问题。我们来看一下下面的操作序列，假设表t是一个小表。</p>
+<blockquote>
+<p>备注：这里的实验环境是MySQL 5.6</p>
+</blockquote>
+<img data-src="/2020/08/31/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%81%EF%BC%9A%E7%BB%99%E8%A1%A8%E5%8A%A0%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%80%8E%E4%B9%88%E6%9C%89%E8%BF%99%E4%B9%88%E5%A4%9A%E9%98%BB%E7%A2%8D%EF%BC%9F/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%812.jpg" class>
+<p>我们可以看到session A先启动，这时候会对表t加一个MDL读锁。由于session B需要的也是MDL读锁，因此可以正常执行。</p>
+<p>之后session C会被blocked，是因为session A的MDL读锁还没有释放，而session C需要MDL写锁，因此只能被阻塞。</p>
+<p>如果只有session C自己被阻塞还没什么关系，但是之后所有要在表t上新申请MDL读锁的请求也会被session C阻塞。前面我们说了，所有对表的增删改查操作都需要先申请MDL读锁，就都被锁住，等于这个表现在完全不可读写了。</p>
+<p>如果某个表上的查询语句频繁，而且客户端有重试机制，也就是说超时后会再起一个新的session再请求的话，这个库的变成很快就会爆满。</p>
+<p>你现在应该知道了，事务中的MDL锁，在语句执行开始时申请，但是语句结束后并不会马上释放，而会等到整个事务提交后再释放。</p>
+<p>基于上面的分析，我们来讨论一个问题，<strong>如何安全地给小表加字段？</strong></p>
+<p>首先我们要解决长事务，事务不提交，就会一直占着MDL锁。在MySQL的information_schema库的innodb_trx表中，你可以查到当前执行中的事务。如果你要做DDL变更的表刚好有长事务在执行，要考虑先暂停DDL，或者kill掉这个长事务。</p>
+<p>但考虑一下这个场景。如果你要变更的表是一个热点表，虽然数据量不大，但是上面的请求很频繁，而你不得不加个字段，你改怎么做呢？</p>
+<p>这时候kill可能未必管用，因为新的请求马上就来了。比较理想的机制是，在alter table语句里面设定等待时间，如果在这个指定的等待时间里面能够拿到MDL写锁最好，拿不到也不要阻塞后面的业务语句，先放弃。之后开发人员或者DBA在通过重试命令重复这个过程。</p>
+<p>MariaDB已经合并了AliSQL的这个功能，所以这两个开源分支目前都支持DDL NOWAIT/WAIT n 这个语法。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tbl_name <span class="keyword">NOWAIT</span> <span class="keyword">add</span> <span class="keyword">column</span> ... </span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tbl_name <span class="keyword">WAIT</span> N <span class="keyword">add</span> <span class="keyword">column</span> ...</span><br></pre></td></tr></table></figure>
+<h3 id="小结">小结</h3>
+<p>今天，我跟你介绍了MySQL的全局锁和表级锁。</p>
+<p>全局锁主要用在逻辑备份过程中。对于全部是InnoDB引擎的库，我建议你选择使用mysqldump配合上 -single-transaction参数，利用InnoDB提供的一致性视图，对应用会更友好。如果没有InnoDB引擎，就只能FTWRL了。</p>
+<p>表锁一般是在数据库引擎不支持行锁的时候才会被用到。如果你发现你的应用程序里有lock tables这样的语句，你需要追查一下，比较可能的情况是：</p>
+<ul>
+<li>要么是你的系统现在还在用MyISAM这类不支持事务的引擎，那要安排升级换引擎；</li>
+<li>要么是你的引擎升级了，但是代码还没升级。我见过这样的情况，最后业务开发就是把lock tables和unlock tables改成begin和commit，问题就解决了。</li>
+</ul>
+<p>MDL会直到事务提交才释放，在做表结构变更的时候，你一定要小心不要导致锁住线上查询和更新。</p>
+<p>最后，我给你留一个问题吧。备份一般都会在备库上执行，你再用--single-tramnaction方法给备库做逻辑备份的过程中，如果主库上的一个小表做了一个DDL，比如给一个表加了一个列。这时候，从备库上会看到什么现象呢？</p>
+<p>假设这个DDL是针对表t1的，这里我把备份过程中几个关键的语句列出来：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Q1:  SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line">Q2: START TRANSACTION WITH CONSISTENT SNAPSHOT;</span><br><span class="line">&#x2F;* other tables *&#x2F;</span><br><span class="line">Q3: SAVEPOINT SP;</span><br><span class="line">&#x2F;* 时刻1 *&#x2F;</span><br><span class="line">Q4: show create table &#96;t1&#96;;</span><br><span class="line">&#x2F;* 时刻2 *&#x2F;</span><br><span class="line">Q5: SELECT * FROM &#96;t1&#96;;</span><br><span class="line">&#x2F;* 时刻3 *&#x2F;</span><br><span class="line">Q6: ROLLBACK TO SAVEDPOINT sp;</span><br><span class="line">&#x2F;* 时刻4 *&#x2F;</span><br><span class="line">&#x2F;* other tables *&#x2F;</span><br></pre></td></tr></table></figure>
+<p>在备份开始的时候，为了确保RR（可重复读）隔离级别，再设置一次RR隔离级别（Q1）；</p>
+<p>启动事务，这里用WITH CONSISTENT SNAPSHOT确保这个语句执行完就可以得到一个一致性视图（Q2）；</p>
+<p>设置一个保存点，这个很重要（Q3）；</p>
+<p>show create 是为了拿到表结构（Q4），然后正式导数据（Q5），回滚到SAVEPOINT sp，在这里的作用是释放t1的MDL锁（Q6）。当然这部分属于"超纲"。</p>
+<p>DDL从主库传过来的时间按照效果不同，我打了四个时刻。题目设定为小表，我们假定到达后，如果开始执行，则很快就能完成。</p>
+<p>参考答案如下：</p>
+<ol type="1">
+<li>如果在Q4语句执行之前到达，现象：没有影响，备份拿到的是DDL后的表结构。</li>
+<li>如果在”时刻2“到达，则表结构被改过，Q5执行的时候，报Table definition has changed, please retry transaction，现象：mysqldump终止；</li>
+<li>如果在”时刻2“和”时刻3“之间到达，mysqldump占着t1的MDL读锁，binlog被阻塞，现象：主从延迟，直到Q6执行完成。</li>
+<li>从”时刻4“开始，mysqldump释放了MDL读锁，现象：没有影响，备份拿到的是DDL前的表结构。</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
     <url>/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/</url>
     <content><![CDATA[<h2 id="问题描述">1. 问题描述</h2>
@@ -1714,98 +1806,6 @@
       </tags>
   </entry>
   <entry>
-    <title>全局锁和表锁：给表加个字段怎么有这么多阻碍？</title>
-    <url>/2020/08/31/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%81%EF%BC%9A%E7%BB%99%E8%A1%A8%E5%8A%A0%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%80%8E%E4%B9%88%E6%9C%89%E8%BF%99%E4%B9%88%E5%A4%9A%E9%98%BB%E7%A2%8D%EF%BC%9F/</url>
-    <content><![CDATA[<p>今天我要跟你聊聊MySQL的锁。数据库锁设计的初衷是处理并发问题。作为多用户共享的资源，当出现并发访问的时候，数据库需要合理地控制资源的访问规则。而锁就是用来实现这些访问规则的重要数据结构。</p>
-<p><strong>根据加锁的范围，MySQL里面的锁大致可以分成全局锁、表级锁和行锁三类。</strong>今天这篇文章，我会和你分享全局锁和表级锁。而关于行锁的内容，我会留着在下一篇文章中再和你详细介绍。</p>
-<p>这里需要说明的是，锁的设计比较复杂，这两篇文章不会涉及锁的具体实现细节，主要介绍的是碰到锁时的现象和其背后的原理。</p>
-<h3 id="全局锁">全局锁</h3>
-<p>顾名思义，全局锁就是对整个数据库实例加锁。MySQL提供了一个加全局读锁的方法，flush tables with read lock(FTWRL)。当你需要让整个库处于只读状态的时候，可以使用这个命令，之后其他线程的以下语句会被阻塞：数据更新语句（数据的增删改）、数据定义语句（包括建表、修改表结构等）和更新类事务的提交语句。</p>
-<p><strong>全局锁的典型使用场景，是做全局逻辑备份。</strong>也就是把整库每个表都select出来存成文本。</p>
-<p>以前有一种做法，是通过FTWRL确保不会有其他线程对数据库做更新，然后对整个库做备份。注意，在备份过程中整个库完全处于只读状态。</p>
-<p>但是让整库只读，听上去就很危险：</p>
-<ul>
-<li>如果你在主库上备份，那么在备份期间都不能执行更新，业务基本上就得停摆；</li>
-<li>如果你在从库上备份，那么备份期间从库不能执行主库同步过来的binlog，会导致主从延迟。</li>
-</ul>
-<p>看来加全局锁不大好。但是细想一下，备份为什么要加锁呢？我们来看一下不加锁会有什么问题。</p>
-<p>假设你现在要维护“极客时间”的购买系统，关注的是用户账户余额表和用户课程表。</p>
-<p>现在发起一个逻辑备份。假设逻辑备份期间，有一个用户，他购买了一个课程，业务逻辑里就要扣掉他的余额，然后往已购课程里面加上一门课。</p>
-<p>如果时间顺序上是先备份账户余额表（u_account），然后哦用户购买，然后备份用户课程表（u_course），会怎么样呢？你可以看一下这个图：</p>
-<img data-src="/2020/08/31/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%81%EF%BC%9A%E7%BB%99%E8%A1%A8%E5%8A%A0%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%80%8E%E4%B9%88%E6%9C%89%E8%BF%99%E4%B9%88%E5%A4%9A%E9%98%BB%E7%A2%8D%EF%BC%9F/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%811.png" class>
-<p>可以看到，这个备份结果里，用户A的数据状态是“账户余额没扣，但是用户课程表里面已经多了一门课”。如果后面用这个备份来恢复数据的话，用户A就发现，自己赚了。</p>
-<p>作为用户可别觉得这样可真好啊，你可以试想一下：如果备份表的顺序反过来，先备份用户课程表再备份账户余额表，有可能会出现什么结果？</p>
-<p>也就是说，不加锁的话，备份系统备份得到的库不是一个逻辑时间点，这个视图是逻辑不一致的。</p>
-<p>说到视图你肯定想起来了，我们在前面讲事务隔离的时候，其实是有一个方法能够拿到一致性视图的。</p>
-<p>是的，就是在可重复读隔离级别下开启一个事务。</p>
-<p>官方自带的逻辑备份工具是mysqldump。当mysqldump使用参数-single-transaction的时候，导数据之前就会启动一个事务，来确保拿到一致性视图。而由于MVCC的支持，这个过程中数据是可以正常更新的。</p>
-<p>你一定在疑惑，有了这个功能，为什么还需要FTWRL呢？<strong>一致性读是好，但前提是引擎要支持这个隔离级别。</strong>比如，对于MyISAM这种不支持事务的引擎，如果备份过程中有更新，总是只能取到最新的数据，那么就破坏了备份的一致性。这时，我们就需要使用FTWRL命令了。</p>
-<p>所以，<strong>single-transaction方法只适用于所有的表使用事务引擎的库</strong>。如果有的表使用了不支持事务的引擎，那么备份就只能通过FTWRL方法。这往往是DBA要求业务开发人员使用InnoDB替代MyISAM的原因之一。</p>
-<p>你也许会问，<strong>既然要全表只读，为什么不使用set global readonly=true的方式呢</strong>？确实readonly方式也可以让全库进入只读状态，但我还是建议你用FTWRL方式，主要有两个原因：</p>
-<ul>
-<li>一是，在有些系统中，readonly的值会被用来做其他逻辑，比如判断一个库是主库还是备库。因此，修改global变量的影响面更大，我不建议你使用。</li>
-<li>二是，在异常处理机制上有差异。如果执行FTWRL命令之后由于客户端发生异常断开，那么MySQL会自动释放这个全局锁，整个库回到可以正常更新的状态。而将整个库设置为readonly之后，如果客户端发生异常，则数据库就会一直保持readonly，这样会导致整个库长时间处于不可写状态，风险较高。</li>
-</ul>
-<p>业务的更新不只是增删改数据（DML），还有可能是加字段等修改表结构的操作（DDL）。不论是哪种方法，一个库被全局锁上以后，你要对里面的任何一个表做加字段操作，都是会被锁住的。</p>
-<p>但是，即使没有被全局锁住，加字段也不是就能一帆风顺的，因为你还会碰到接下来我们要介绍的表级锁。</p>
-<h3 id="表级锁">表级锁</h3>
-<p>MySQL里面表级别的锁有两种：一种是表锁，一种是元数据锁（meta data lock，MDL）。</p>
-<p><strong>表锁的语法是lock tables .. read/write。</strong>与FTWRL类似，可以用unlock tables主动释放锁，也可以在客户端断开的时候自动释放。需要注意，lock tables语法除了会限制别的线程读写外，也限定了本线程接下来的操作对象。</p>
-<p>举个例子，如果在某个线程A中执行lock tables t1 read, t2 write;这个语句，则其他线程写t1、读写t2的语句都会被阻塞。同时，线程A在执行unlock tables之前，也只能执行读t1、读写t2的操作。连写t1都不允许，自然也不能访问其他表。（可能还会本线程还是可以对表t1写。）</p>
-<p>在还没有出现更细粒度的锁的时候，表锁是最常用的处理并发的方式。而对于InnoDB这种支持行锁的引擎，一般不使用lock tables命令来控制并发，毕竟锁住整个表的影响面还是太大。</p>
-<p><strong>另一类表级的锁是MDL（metadata lock）。</strong>MDL不需要显示使用，在访问一个表的时候会被自动加上。MDL的作用是，保证读写的正确性。你可以想象一下，如果一个查询正在遍历一个表中的数据，而执行期间另一个线程对这个表结构做变更，删了一列，那么查询线程拿到的结果跟表结构对不上，肯定是不行的。</p>
-<p>因此，在MySQL 5.5 版本中引入了MDL，当对一个表做<strong>增删改查</strong>操作的时候，加MDL读锁；当要对<strong>表结构做变更操作</strong>的时候，加MDL写锁。</p>
-<ul>
-<li>读锁之间不互斥，因此你可以有多个线程同时对一张表增删改查。</li>
-<li>读写锁之间、写锁之间是互斥的，用来保证变更表结构操作的安全性。因此，如果有两个线程要同时给一个表加字段，其中一个要等另一个执行完才能开始执行。</li>
-</ul>
-<p>虽然MDL锁是系统默认会加的，但却是你不能忽略的一个机制。比如下面这个例子，我经常看到有人掉到这个坑里：给一个小表加个字段，导致整个库挂了。</p>
-<p>你肯定知道，给一个表加字段，或者修改字段，或者加索引，需要扫描全表的数据。在对大表操作的时候，你肯定会特别小心，以免对线上服务造成影响。而实际上，即使是小表，操作不慎也会出问题。我们来看一下下面的操作序列，假设表t是一个小表。</p>
-<blockquote>
-<p>备注：这里的实验环境是MySQL 5.6</p>
-</blockquote>
-<img data-src="/2020/08/31/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%81%EF%BC%9A%E7%BB%99%E8%A1%A8%E5%8A%A0%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%80%8E%E4%B9%88%E6%9C%89%E8%BF%99%E4%B9%88%E5%A4%9A%E9%98%BB%E7%A2%8D%EF%BC%9F/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%812.jpg" class>
-<p>我们可以看到session A先启动，这时候会对表t加一个MDL读锁。由于session B需要的也是MDL读锁，因此可以正常执行。</p>
-<p>之后session C会被blocked，是因为session A的MDL读锁还没有释放，而session C需要MDL写锁，因此只能被阻塞。</p>
-<p>如果只有session C自己被阻塞还没什么关系，但是之后所有要在表t上新申请MDL读锁的请求也会被session C阻塞。前面我们说了，所有对表的增删改查操作都需要先申请MDL读锁，就都被锁住，等于这个表现在完全不可读写了。</p>
-<p>如果某个表上的查询语句频繁，而且客户端有重试机制，也就是说超时后会再起一个新的session再请求的话，这个库的变成很快就会爆满。</p>
-<p>你现在应该知道了，事务中的MDL锁，在语句执行开始时申请，但是语句结束后并不会马上释放，而会等到整个事务提交后再释放。</p>
-<p>基于上面的分析，我们来讨论一个问题，<strong>如何安全地给小表加字段？</strong></p>
-<p>首先我们要解决长事务，事务不提交，就会一直占着MDL锁。在MySQL的information_schema库的innodb_trx表中，你可以查到当前执行中的事务。如果你要做DDL变更的表刚好有长事务在执行，要考虑先暂停DDL，或者kill掉这个长事务。</p>
-<p>但考虑一下这个场景。如果你要变更的表是一个热点表，虽然数据量不大，但是上面的请求很频繁，而你不得不加个字段，你改怎么做呢？</p>
-<p>这时候kill可能未必管用，因为新的请求马上就来了。比较理想的机制是，在alter table语句里面设定等待时间，如果在这个指定的等待时间里面能够拿到MDL写锁最好，拿不到也不要阻塞后面的业务语句，先放弃。之后开发人员或者DBA在通过重试命令重复这个过程。</p>
-<p>MariaDB已经合并了AliSQL的这个功能，所以这两个开源分支目前都支持DDL NOWAIT/WAIT n 这个语法。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tbl_name <span class="keyword">NOWAIT</span> <span class="keyword">add</span> <span class="keyword">column</span> ... </span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tbl_name <span class="keyword">WAIT</span> N <span class="keyword">add</span> <span class="keyword">column</span> ...</span><br></pre></td></tr></table></figure>
-<h3 id="小结">小结</h3>
-<p>今天，我跟你介绍了MySQL的全局锁和表级锁。</p>
-<p>全局锁主要用在逻辑备份过程中。对于全部是InnoDB引擎的库，我建议你选择使用mysqldump配合上 -single-transaction参数，利用InnoDB提供的一致性视图，对应用会更友好。如果没有InnoDB引擎，就只能FTWRL了。</p>
-<p>表锁一般是在数据库引擎不支持行锁的时候才会被用到。如果你发现你的应用程序里有lock tables这样的语句，你需要追查一下，比较可能的情况是：</p>
-<ul>
-<li>要么是你的系统现在还在用MyISAM这类不支持事务的引擎，那要安排升级换引擎；</li>
-<li>要么是你的引擎升级了，但是代码还没升级。我见过这样的情况，最后业务开发就是把lock tables和unlock tables改成begin和commit，问题就解决了。</li>
-</ul>
-<p>MDL会直到事务提交才释放，在做表结构变更的时候，你一定要小心不要导致锁住线上查询和更新。</p>
-<p>最后，我给你留一个问题吧。备份一般都会在备库上执行，你再用--single-tramnaction方法给备库做逻辑备份的过程中，如果主库上的一个小表做了一个DDL，比如给一个表加了一个列。这时候，从备库上会看到什么现象呢？</p>
-<p>假设这个DDL是针对表t1的，这里我把备份过程中几个关键的语句列出来：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Q1:  SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line">Q2: START TRANSACTION WITH CONSISTENT SNAPSHOT;</span><br><span class="line">&#x2F;* other tables *&#x2F;</span><br><span class="line">Q3: SAVEPOINT SP;</span><br><span class="line">&#x2F;* 时刻1 *&#x2F;</span><br><span class="line">Q4: show create table &#96;t1&#96;;</span><br><span class="line">&#x2F;* 时刻2 *&#x2F;</span><br><span class="line">Q5: SELECT * FROM &#96;t1&#96;;</span><br><span class="line">&#x2F;* 时刻3 *&#x2F;</span><br><span class="line">Q6: ROLLBACK TO SAVEDPOINT sp;</span><br><span class="line">&#x2F;* 时刻4 *&#x2F;</span><br><span class="line">&#x2F;* other tables *&#x2F;</span><br></pre></td></tr></table></figure>
-<p>在备份开始的时候，为了确保RR（可重复读）隔离级别，再设置一次RR隔离级别（Q1）；</p>
-<p>启动事务，这里用WITH CONSISTENT SNAPSHOT确保这个语句执行完就可以得到一个一致性视图（Q2）；</p>
-<p>设置一个保存点，这个很重要（Q3）；</p>
-<p>show create 是为了拿到表结构（Q4），然后正式导数据（Q5），回滚到SAVEPOINT sp，在这里的作用是释放t1的MDL锁（Q6）。当然这部分属于"超纲"。</p>
-<p>DDL从主库传过来的时间按照效果不同，我打了四个时刻。题目设定为小表，我们假定到达后，如果开始执行，则很快就能完成。</p>
-<p>参考答案如下：</p>
-<ol type="1">
-<li>如果在Q4语句执行之前到达，现象：没有影响，备份拿到的是DDL后的表结构。</li>
-<li>如果在”时刻2“到达，则表结构被改过，Q5执行的时候，报Table definition has changed, please retry transaction，现象：mysqldump终止；</li>
-<li>如果在”时刻2“和”时刻3“之间到达，mysqldump占着t1的MDL读锁，binlog被阻塞，现象：主从延迟，直到Q6执行完成。</li>
-<li>从”时刻4“开始，mysqldump释放了MDL读锁，现象：没有影响，备份拿到的是DDL前的表结构。</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>为什么rowid是6个字节</title>
     <url>/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/</url>
     <content><![CDATA[<p>首先官方文档是这么写的。参考<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnklMjBJbm5vREIlMjB0YWJsZSUyMGhhcyUyMGEsZm9yJTIwdGhlJTIwcm93cyUyMGlzJTIwc3RvcmVkLiZhbXA7dGV4dD1UaGUlMjByb3clMjBJRCUyMGlzJTIwYSxhcmUlMjBwaHlzaWNhbGx5JTIwaW4lMjBpbnNlcnRpb24lMjBvcmRlci4=">MySQL5.6 Ref manual<i class="fa fa-external-link-alt"></i></span>。</p>
@@ -1866,6 +1866,34 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>可不可以使用join</title>
+    <url>/2020/08/26/%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8join/</url>
+    <content><![CDATA[<ol type="1">
+<li><p>能不能使用join语句？</p>
+<ol type="1">
+<li>如果可以使用Index Nested-Loop Join算法，也就是说可以用上被驱动表上的索引，是没问题的。</li>
+<li>如果使用Block Nested_Loop Join算法，扫描行数就会过多。尤其是在大表上的join操作，这样可能要扫描被驱动表很多次，会占用大量的系统资源。所以这种join尽量不要用。</li>
+</ol></li>
+<li><p>如果要使用join，应该选择大表做驱动表还是选择小表做驱动表？</p>
+<ol type="1">
+<li>如果是Index Nested-Loop Join算法，应该选择小表做驱动表；</li>
+<li>如果是Block Nested-Loop Join算法：
+<ul>
+<li>在oin_buffer_size足够大的时候，是一样的；</li>
+<li>在join_buffer_size不够大的时候（这种情况更常见），应该选择小表做驱动表。</li>
+</ul></li>
+<li>所以总是选择小表做驱动表。</li>
+</ol></li>
+<li><p>什么叫做小表？</p>
+<p><strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是”小表“，应该作为驱动表。</strong></p></li>
+<li><p>总体来看，不论是在原表上加索引，还是用有索引的临时表，我们的思路都是让 join 语句能够用上被驱动表上的索引，来触发 BKA 算法，提升查询性能。</p></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -1945,34 +1973,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>可不可以使用join</title>
-    <url>/2020/08/26/%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8join/</url>
-    <content><![CDATA[<ol type="1">
-<li><p>能不能使用join语句？</p>
-<ol type="1">
-<li>如果可以使用Index Nested-Loop Join算法，也就是说可以用上被驱动表上的索引，是没问题的。</li>
-<li>如果使用Block Nested_Loop Join算法，扫描行数就会过多。尤其是在大表上的join操作，这样可能要扫描被驱动表很多次，会占用大量的系统资源。所以这种join尽量不要用。</li>
-</ol></li>
-<li><p>如果要使用join，应该选择大表做驱动表还是选择小表做驱动表？</p>
-<ol type="1">
-<li>如果是Index Nested-Loop Join算法，应该选择小表做驱动表；</li>
-<li>如果是Block Nested-Loop Join算法：
-<ul>
-<li>在oin_buffer_size足够大的时候，是一样的；</li>
-<li>在join_buffer_size不够大的时候（这种情况更常见），应该选择小表做驱动表。</li>
-</ul></li>
-<li>所以总是选择小表做驱动表。</li>
-</ol></li>
-<li><p>什么叫做小表？</p>
-<p><strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是”小表“，应该作为驱动表。</strong></p></li>
-<li><p>总体来看，不论是在原表上加索引，还是用有索引的临时表，我们的思路都是让 join 语句能够用上被驱动表上的索引，来触发 BKA 算法，提升查询性能。</p></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -2373,6 +2373,7 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <li>redoLog，undoLog，binLog重要概念。</li>
 <li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
 <li>error log 错误日志，slow log慢查询日志</li>
+<li>change buffer</li>
 </ol>
 ]]></content>
       <tags>
@@ -3249,24 +3250,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>软件=算法+数据结构+文档+数据？</title>
-    <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
-    <content><![CDATA[<p>软件的开始到后来...</p>
-<p>开始：</p>
-<p>软件=代码？</p>
-<p>软件=算法+数据结构？</p>
-<p>软件=算法+数据结构+文档？</p>
-<p>软件=算法+数据结构+文档+数据？</p>
-<p>后来：</p>
-<p>软件=算法+数据结构+文档+数据 + 单元测试 + workflow ？</p>
-<p>对自己的要求，至少要做到</p>
-<p>软件=算法+数据结构+文档。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>转：说一说这些好问题</title>
     <url>/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p>在我看来，能够帮我们扩展一个逻辑的边界的问题，就是好问题。因为通过解决这样的问题，<strong>能够加深我们对这个逻辑的理解，或者帮我们关联到另外一个知识点，进而可以帮助我们建立起自己的知识网络。</strong></p>
@@ -3413,6 +3396,24 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>软件=算法+数据结构+文档+数据？</title>
+    <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
+    <content><![CDATA[<p>软件的开始到后来...</p>
+<p>开始：</p>
+<p>软件=代码？</p>
+<p>软件=算法+数据结构？</p>
+<p>软件=算法+数据结构+文档？</p>
+<p>软件=算法+数据结构+文档+数据？</p>
+<p>后来：</p>
+<p>软件=算法+数据结构+文档+数据 + 单元测试 + workflow ？</p>
+<p>对自己的要求，至少要做到</p>
+<p>软件=算法+数据结构+文档。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
