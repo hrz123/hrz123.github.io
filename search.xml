@@ -813,6 +813,22 @@
       </tags>
   </entry>
   <entry>
+    <title>grant之后要跟着flush privileges吗？ </title>
+    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论：</p>
+<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
+<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
+<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
+<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
+<h3 id="小结">小结</h3>
+<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
+<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>insert语句的锁为什么这么多？</title>
     <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/</url>
     <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
@@ -905,22 +921,6 @@
 <p>你平时在两个表之间拷贝数据用的是什么方法，有什么注意事项吗？在你的应用场景里，这个方法，相较于其他方法的优势是什么呢？</p>
 <p>另外，insert..select执行期间，有其他线程操作原表，会导致逻辑错误。其实这是不会的，如果不加锁，就是快照读。</p>
 <p>一条语句执行期间，它的一致性视图是不会修改的，所以即使有其他事务修改了原表的数据，也不会影响这条语句看到的数据。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>grant之后要跟着flush privileges吗？ </title>
-    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论：</p>
-<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
-<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
-<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
-<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
-<h3 id="小结">小结</h3>
-<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
-<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -1572,15 +1572,6 @@
       </tags>
   </entry>
   <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>从网络原理来看SSL安全协议</title>
     <url>/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/</url>
     <content><![CDATA[<p>网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。</p>
@@ -1612,6 +1603,15 @@
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2186,6 +2186,76 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>总结：MySQL中的锁和MySQL的内部临时表</title>
+    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
+    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
+<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
+<p>高，并发度最低。</p>
+<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
+<p>低，并发度也最高。</p>
+<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
+<p>锁和行锁之间，并发度一般。</p>
+<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>读锁</th>
+<th>写锁</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>读锁</strong></td>
+<td>不互斥</td>
+<td>互斥</td>
+</tr>
+<tr class="even">
+<td><strong>写锁</strong></td>
+<td>互斥</td>
+<td>互斥</td>
+</tr>
+</tbody>
+</table>
+<h3 id="一些重要的锁">一些重要的锁：</h3>
+<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
+<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
+<p>属于表级锁。</p>
+<h4 id="间隙锁">间隙锁</h4>
+<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
+<h4 id="自增id锁">自增id锁</h4>
+<h4 id="trx_id锁">trx_id锁</h4>
+<p>涉及到竞争资源，很多处都有锁。</p>
+<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
+<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
+<ol type="1">
+<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
+<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
+<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
+</ol>
+<h3 id="mysql常用操作">MySQL常用操作</h3>
+<ol type="1">
+<li>explain查看命令优化器优化结果；</li>
+<li>show engine innodb status;</li>
+<li>show warnings，看优化器改写后的语句；</li>
+<li>show create table t; 查看t的建表语句；</li>
+</ol>
+<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
+<ol type="1">
+<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
+<li>redoLog，undoLog，binLog重要概念。</li>
+<li>WAL (write ahead log 技术)</li>
+<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
+<li>error log 错误日志，slow log慢查询日志</li>
+<li>change buffer</li>
+<li>普通索引和唯一索引尽量选择普通索引</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>怎么最快地复制一张表？</title>
     <url>/2020/08/28/%E6%80%8E%E4%B9%88%E6%9C%80%E5%BF%AB%E5%9C%B0%E5%A4%8D%E5%88%B6%E4%B8%80%E5%BC%A0%E8%A1%A8%EF%BC%9F/</url>
     <content><![CDATA[<p>我在上一篇文章最后，给你留下的问题是怎么在两张表中拷贝数据。如果可以控制对源表的扫描行数和加锁范围很小的话，我们简单地使用insert..select语句即可实现。</p>
@@ -2313,75 +2383,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>总结：MySQL中的锁和MySQL的内部临时表</title>
-    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
-    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
-<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
-<p>高，并发度最低。</p>
-<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
-<p>低，并发度也最高。</p>
-<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
-<p>锁和行锁之间，并发度一般。</p>
-<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>读锁</th>
-<th>写锁</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>读锁</strong></td>
-<td>不互斥</td>
-<td>互斥</td>
-</tr>
-<tr class="even">
-<td><strong>写锁</strong></td>
-<td>互斥</td>
-<td>互斥</td>
-</tr>
-</tbody>
-</table>
-<h3 id="一些重要的锁">一些重要的锁：</h3>
-<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
-<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
-<p>属于表级锁。</p>
-<h4 id="间隙锁">间隙锁</h4>
-<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
-<h4 id="自增id锁">自增id锁</h4>
-<h4 id="trx_id锁">trx_id锁</h4>
-<p>涉及到竞争资源，很多处都有锁。</p>
-<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
-<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
-<ol type="1">
-<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
-<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
-<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
-</ol>
-<h3 id="mysql常用操作">MySQL常用操作</h3>
-<ol type="1">
-<li>explain查看命令优化器优化结果；</li>
-<li>show engine innodb status;</li>
-<li>show warnings，看优化器改写后的语句；</li>
-<li>show create table t; 查看t的建表语句；</li>
-</ol>
-<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
-<ol type="1">
-<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
-<li>redoLog，undoLog，binLog重要概念。</li>
-<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
-<li>error log 错误日志，slow log慢查询日志</li>
-<li>change buffer</li>
-<li>普通索引和唯一索引尽量选择普通索引</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>我们唯一值得恐惧的就是恐惧本身</title>
     <url>/2020/08/31/%E6%88%91%E4%BB%AC%E5%94%AF%E4%B8%80%E5%80%BC%E5%BE%97%E6%81%90%E6%83%A7%E7%9A%84%E5%B0%B1%E6%98%AF%E6%81%90%E6%83%A7%E6%9C%AC%E8%BA%AB/</url>
     <content><![CDATA[<p>1933年，富兰克林·罗斯福首次总统就职演说</p>
@@ -2403,6 +2404,20 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>今生就是我们的哨岗，站好哨就可以了</title>
+    <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
+    <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
+<p>第一还是阅读，跟人类伟大的灵魂对话，因为你的困惑在两千多年前人类就已经有过这样的困惑。人类所有伟大的思想家都试图对抗这种困惑。</p>
+<p>但第二的话更重要的是去做，做一些事情，从身边的小事开始做起。每天都只是一个礼物，昨天的已经成为过去，明天还没有到来，我们唯一能够拥有的就是今天。所以今天是一个礼物，是一个gift，是一个present。所以我们做好每天该做的事情。<strong>今生就是我们的哨岗，站好哨就可以了。</strong></p>
+<p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
+<p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
+<p>感谢罗翔罗老师。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>拔智齿</title>
     <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
     <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
@@ -2412,20 +2427,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
 <p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
 <p>一切都是好兆头。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>今生就是我们的哨岗，站好哨就可以了</title>
-    <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
-    <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
-<p>第一还是阅读，跟人类伟大的灵魂对话，因为你的困惑在两千多年前人类就已经有过这样的困惑。人类所有伟大的思想家都试图对抗这种困惑。</p>
-<p>但第二的话更重要的是去做，做一些事情，从身边的小事开始做起。每天都只是一个礼物，昨天的已经成为过去，明天还没有到来，我们唯一能够拥有的就是今天。所以今天是一个礼物，是一个gift，是一个present。所以我们做好每天该做的事情。<strong>今生就是我们的哨岗，站好哨就可以了。</strong></p>
-<p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
-<p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
-<p>感谢罗翔罗老师。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -2620,6 +2621,60 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>普通索引和唯一索引的选择</title>
+    <url>/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/</url>
+    <content><![CDATA[<h3 id="mysql中尽量使用普通索引减少使用唯一索引">MySQL中尽量使用普通索引，减少使用唯一索引</h3>
+<h4 id="查询过程">查询过程</h4>
+<p>平均性能差异微乎其微。</p>
+<h4 id="更新过程">更新过程</h4>
+<h5 id="change-buffer">change buffer</h5>
+<p>当需要更新一个数据页时，如果数据页在内存中就直接更新，而如果这个数据页还没有在内存中的话，在不影响数据一致性的前提下，InnoDB会将这些更新操作缓存在change buffer中，这样就不需要从磁盘中读入这个数据页了。在下次查询需要访问这个数据页的时候，将数据页读入内存，然后执行change buffer中与这个页有关的操作。通过这种方式就能保证这个数据逻辑的正确性。</p>
+<p>需要说明的是，虽然名字叫change buffer，实际上它是可以持久化的数据。也就是说，change buffer在内存中有拷贝，也会下被写入到磁盘上。</p>
+<p>将change buffer中的操作应用到原数据页，得到最新结果的过程称为merge。除了访问这个数据页会触发merge外，系统有后台线程会定期merge。在数据库正常关闭的（shutdown）的过程中，也会执行merge操作。</p>
+<p>显然，如果能够将更新操作先记录在change buffer，减少读磁盘，语句的执行速度会得到明显的提升。而且，数据读入内存是需要占用buffer pool的，所以这种方式还能后避免占用内存，提高内存利用率。</p>
+<p>那么，<strong>什么条件下可以使用change buffer呢？</strong></p>
+<p>对于唯一索引来说，所有的更新操作都要先判断这个操作是否违反唯一性约束。比如，要插入（4，400）这个记录，就要先判断现在表中是否已经存在k=4的记录，而这必须要将数据页读入内存才能判断。如果都已经读入到内存了，那直接更新内存会更快，就没必要使用change buffer了。</p>
+<p>因此，唯一索引的更新就不能使用change buffer，实际上也只有普通索引可以使用。</p>
+<p>change buffer用的是buffer pool里的内存，因此不能无限增大。change buffer的大小，可以通过参数innodb_change_buffer_max_size来动态设置。这个参数设置为50的时候，表示change buffer的大小最多只能占用buffer pool的50%。</p>
+<p>现在，你已经理解了change buffer的机制，那么我们再一起来看看<strong>如果要在这张表中插入一个新纪录（4，400）的话，InnoDB的处理流程是怎样的。</strong></p>
+<p>第一种情况是，<strong>这个记录要更新的目标页在内存中</strong>。那么两者差不多。</p>
+<p>第二种情况是，这个记录要更新的目标页不在内存中。那么唯一索引要读入内存，涉及磁盘随机IO的访问，是成本最高的操作之一。</p>
+<h5 id="change-buffer的使用场景">change buffer的使用场景</h5>
+<p>普通索引的所有场景，使用change buffer都可以起到加速作用吗？</p>
+<p>因为merge的时候是真正进行数据更新的时刻，而change buffer记录的变更越多（也就是这个页面上要更新的次数越多)，收益就越大。</p>
+<p>因此，对于写多读少的业务来说，页面在写完以后马上被访问到的概率比较小，此时change buffer的使用效果最好。这种业务模型常见的就是账单类、日志类的系统。（这类写入比较多的业务类型可以使用LSM树作为数据结构的数据库）。</p>
+<p>反过来，假设一个业务的更新模式是写入之后马上会做查询，那么即使满足了条件，将更新先记录在change buffer，但之后由于马上要访问这个数据页，会立即触发merge过程。这样随机访问IO的次数不会减少，反而增加了change buffer的维护代价。</p>
+<h3 id="索引该如何选择和实践呢">索引该如何选择和实践呢？</h3>
+<p>普通索引和唯一索引应该如何选择。查询能力上没差别，主要考虑的是对更新性能的影响。所以，我建议你尽量选择普通索引。</p>
+<p>如果所有的更新后面，都马上伴随着对这个记录的查询，那么你应该关闭change buffer。而在其他情况下，change buffer都能提升更新性能。</p>
+<p>在实际应用中，你会发现，普通索引和change buffer的配合使用，对于数据量大的表的更新优化还是很明显的。</p>
+<p>特别的，在使用机械硬盘时，change buffer这个机制的收效是非常显著的。所以，当你有一个类似”历史数据“的库，并且处于成本考虑用的是机械硬盘时，那你应该特别关注这些表里的索引，尽量使用普通索引，然后把change buffer尽量开大，以确保这个”历史数据“表的数据写入速度。</p>
+<h4 id="change-buffer和redo-log">change buffer和redo log</h4>
+<p>现在，我们要在表上执行这个语句：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql&gt; insert into t(id, k) values(id1, k1), (id2, k2);</span><br></pre></td></tr></table></figure>
+<p>这里，我们假设当前k索引树的状态，查找到位置后，k1所在的数据页在内存（InnoDB buffer pool）中，k2所在的数据页不在内存中。如果2所示是带change buffer的更新状态图。</p>
+
+<p>分析这条更新语句，你会发现它涉及了四个部分：内存、redo log（ib_log_fileX）、数据表空间（t.ibd）、系统表空间（ibdata1）。</p>
+<p>这条更新语句做了如下的操作（按照图中的数组顺序）：</p>
+<ol type="1">
+<li>Page 1在内存中，直接更新内存；</li>
+<li>Page 2没有在内存中，就在内存的change buffer区域，记录下”我要往Page2插入一行“这个信息</li>
+<li>将上述两个动作记录到redo log中。</li>
+</ol>
+<p>做完上面这些，事务就可以完成了。所以，你会看到，执行这条更新语句的成本很低，就是写了两处内存，然后写了一处磁盘（两次操作合在一起写了一次磁盘），而且还是顺序写的。</p>
+<p>同时，图中的两个虚线箭头，是后台操作，不影响更新的响应时间。</p>
+<p>那么这之后的读请求，要怎么处理呢？</p>
+<p>比如，我们现在要执行select * from t where k in (k1, k2)。这里，我画了这两个请求的流程图。</p>
+<p>如果读语句发生在更新语句后不久，内存中的数据都还在，那么此时的这两个读操作就与系统表空间（ibdata1）和redo log（ib_log_fileX）无关了。</p>
+<ol type="1">
+<li>读Page1的时候，直接从内存返回。WAL之后读数据，是不是一定要读盘，是不是一定要从redolog</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -2845,6 +2900,19 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>科比--曼巴精神永不逝去</title>
+    <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
+    <content><![CDATA[纪念老科 Tomorrow is not grante. Inspire yourself.
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+<iframe src="//player.bilibili.com/player.html?aid=668058137&amp;bvid=BV1ua4y1i7ZK&amp;cid=186683490&amp;page=1" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;">
+</iframe>
+</div>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>社会文明程度很大程度上体现为对弱者的尊重</title>
     <url>/2020/08/22/%E7%A4%BE%E4%BC%9A%E6%96%87%E6%98%8E%E7%A8%8B%E5%BA%A6%E5%BE%88%E5%A4%A7%E7%A8%8B%E5%BA%A6%E4%B8%8A%E4%BD%93%E7%8E%B0%E4%B8%BA%E5%AF%B9%E5%BC%B1%E8%80%85%E7%9A%84%E5%B0%8A%E9%87%8D/</url>
     <content><![CDATA[<p>在现代社会，公众对艾滋病人的接纳，其实也是一个非常奢侈的话题。虽然每一年，我们都有一个专门的日子，我们来表达对艾滋病人的关心。但是，仅仅有这个日子是不够的。</p>
@@ -2856,19 +2924,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>社会</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>科比--曼巴精神永不逝去</title>
-    <url>/2020/01/30/%E7%A7%91%E6%AF%94-%E6%9B%BC%E5%B7%B4%E7%B2%BE%E7%A5%9E%E6%B0%B8%E4%B8%8D%E9%80%9D%E5%8E%BB/</url>
-    <content><![CDATA[纪念老科 Tomorrow is not grante. Inspire yourself.
-<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
-<iframe src="//player.bilibili.com/player.html?aid=668058137&amp;bvid=BV1ua4y1i7ZK&amp;cid=186683490&amp;page=1" style="position: absolute; width: 100%; height: 100%; left: 0; top: 0;">
-</iframe>
-</div>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2893,6 +2948,12 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>操作系统</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>背包问题泛型</title>
+    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
+    <content><![CDATA[
+]]></content>
   </entry>
   <entry>
     <title>自增id用完怎么办？</title>
@@ -3010,10 +3071,47 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>背包问题泛型</title>
-    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
-    <content><![CDATA[
+    <title>蓄水池算法</title>
+    <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="蓄水池采样算法reservoir-sampling">蓄水池采样算法（Reservoir Sampling）</h1>
+<p>蓄水池采样算法是非常常用的一种<strong>流式数据处理算法</strong>。</p>
+<h2 id="问题">问题</h2>
+<h3 id="大致描述">大致描述：</h3>
+<p>给出一个数据流，这个数据流的长度很大或未知，并且对该数据流中的数据只能访问一次。请写出一个随机选择算法，使得数据流中所有数据被选中的概率相等。</p>
+<h3 id="一些实际问题">一些实际问题</h3>
+<ol type="1">
+<li>从 100,000 分调查报告中抽取1000份进行统计。</li>
+<li>从一本很厚的电话簿中抽取1000人进行姓氏统计。</li>
+<li>从google搜索"Ken Thompson"，从中抽取100个结果查看哪些是今年的。</li>
+</ol>
+<p>这些都是很基本的采样问题。</p>
+<p>既然说的采样问题，最重要的就是做到公平，也就是保证每个元素被采样到的概率是相同的。</p>
+<p>对于第一个问题，我们已经知道数据的规模，通过算法生成[0, 100,000-1]间的随机数1000个，并且保证不重复即可。再取出对应的元素即可。</p>
+<p>但是对于第二和第三个问题，我们不知道数据的整体规模是多大。可能有人会想到，可以先对数据进行一次遍历，计算出数据的规模N，然后按照第一题的方法采样即可。这当然可以，但是并不好。因为这可能需要遍历两次，需要花两次的时间。也可以尝试估算数据的规模，但是这样得到的采样数据可能并不平均。</p>
+<h3 id="问题严格定义">问题严格定义</h3>
+<p>给你一个长度为N的链表。N很大，但你不知道N有多大。你的任务是从这N个元素中随机抽取k个元素。你只能遍历这个链表一次。你的算法必须保证取出的元素恰好有k个，且它们是完全随机的（出现概率相等的）。</p>
+<h2 id="解法">解法</h2>
+<h3 id="蓄水池算法">蓄水池算法：</h3>
+<p>蓄水池算法是针对从一个序列中随机抽取不重复的K个数，保证每个数被抽取到的概率都为K/N这个问题构建的。</p>
+<h3 id="做法">做法：</h3>
+<p>首先构造一个可以容纳k个元素的蓄水池（数组），将序列前k个元素直接放入蓄水池数组中。</p>
+<p>然后从第i = k+1个数据开始，以k/i（k&lt;i&lt;=n）的概率决定它是否进入到蓄水池中。蓄水池中的k个元素被替换出去的概率是相同的。</p>
+<p>当遍历完所有元素之后，数组中剩下的元素即为所需采取的样本。</p>
+<h2 id="证明">证明</h2>
+<p>对于第i个数（i &lt;= k）。在k步之前，被选中的概率为1。当走到第k+1步时，被k+1个元素替换的概率=第k+1个元素被选中的概率<em>i被替换的概率，即为 k/(k+1) </em> 1/k = 1/(k+1)。则不被第k+1个元素替换的概率为1 - 1/(k+1) = k/(k+1)。依次类推，不被K+2个元素替换的概率为1-k/(k+2) * 1/k = (k+1)/(k+2)。则运行到第n步时，第i个数仍保留的概率=被选中的概率<em>不被替换的概率，即： <span class="math display">\[
+1 \times \frac {k}{k+1}\times \frac {k+1}{k+2}\times \frac {k+2}{k+3}\times ...\times \frac {n-1}{n} = \frac {k}{n}
+\]</span> 对于第j个数（j&gt;k）。我们知道，在第j步被选中的概率为k/j。不被j+1个元素替换的概率为1 - k/(j+1) </em> 1/k = j/(j+1)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即： <span class="math display">\[
+\frac {k}{j}\times \frac {j}{j+1}\times \frac {j+1}{j+2}\times \frac {j+2}{j+3}\times ... \times \frac {n-1}{n} = \frac {k}{n}
+\]</span> 所以对于中每个元素，被保留的概率都为k/n。</p>
+<h2 id="实现">实现</h2>
+<p>python3版本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, node, k</span>):</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>(<span class="params">object</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span>(<span class="params">self</span>):</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="实战题目">实战题目</h2>
+<h4 id="链表随机节点"><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbGlua2VkLWxpc3QtcmFuZG9tLW5vZGUv">382. 链表随机节点<i class="fa fa-external-link-alt"></i></span></h4>
 ]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
   </entry>
   <entry>
     <title>被讨厌的勇气</title>
@@ -3076,49 +3174,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>蓄水池算法</title>
-    <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="蓄水池采样算法reservoir-sampling">蓄水池采样算法（Reservoir Sampling）</h1>
-<p>蓄水池采样算法是非常常用的一种<strong>流式数据处理算法</strong>。</p>
-<h2 id="问题">问题</h2>
-<h3 id="大致描述">大致描述：</h3>
-<p>给出一个数据流，这个数据流的长度很大或未知，并且对该数据流中的数据只能访问一次。请写出一个随机选择算法，使得数据流中所有数据被选中的概率相等。</p>
-<h3 id="一些实际问题">一些实际问题</h3>
-<ol type="1">
-<li>从 100,000 分调查报告中抽取1000份进行统计。</li>
-<li>从一本很厚的电话簿中抽取1000人进行姓氏统计。</li>
-<li>从google搜索"Ken Thompson"，从中抽取100个结果查看哪些是今年的。</li>
-</ol>
-<p>这些都是很基本的采样问题。</p>
-<p>既然说的采样问题，最重要的就是做到公平，也就是保证每个元素被采样到的概率是相同的。</p>
-<p>对于第一个问题，我们已经知道数据的规模，通过算法生成[0, 100,000-1]间的随机数1000个，并且保证不重复即可。再取出对应的元素即可。</p>
-<p>但是对于第二和第三个问题，我们不知道数据的整体规模是多大。可能有人会想到，可以先对数据进行一次遍历，计算出数据的规模N，然后按照第一题的方法采样即可。这当然可以，但是并不好。因为这可能需要遍历两次，需要花两次的时间。也可以尝试估算数据的规模，但是这样得到的采样数据可能并不平均。</p>
-<h3 id="问题严格定义">问题严格定义</h3>
-<p>给你一个长度为N的链表。N很大，但你不知道N有多大。你的任务是从这N个元素中随机抽取k个元素。你只能遍历这个链表一次。你的算法必须保证取出的元素恰好有k个，且它们是完全随机的（出现概率相等的）。</p>
-<h2 id="解法">解法</h2>
-<h3 id="蓄水池算法">蓄水池算法：</h3>
-<p>蓄水池算法是针对从一个序列中随机抽取不重复的K个数，保证每个数被抽取到的概率都为K/N这个问题构建的。</p>
-<h3 id="做法">做法：</h3>
-<p>首先构造一个可以容纳k个元素的蓄水池（数组），将序列前k个元素直接放入蓄水池数组中。</p>
-<p>然后从第i = k+1个数据开始，以k/i（k&lt;i&lt;=n）的概率决定它是否进入到蓄水池中。蓄水池中的k个元素被替换出去的概率是相同的。</p>
-<p>当遍历完所有元素之后，数组中剩下的元素即为所需采取的样本。</p>
-<h2 id="证明">证明</h2>
-<p>对于第i个数（i &lt;= k）。在k步之前，被选中的概率为1。当走到第k+1步时，被k+1个元素替换的概率=第k+1个元素被选中的概率<em>i被替换的概率，即为 k/(k+1) </em> 1/k = 1/(k+1)。则不被第k+1个元素替换的概率为1 - 1/(k+1) = k/(k+1)。依次类推，不被K+2个元素替换的概率为1-k/(k+2) * 1/k = (k+1)/(k+2)。则运行到第n步时，第i个数仍保留的概率=被选中的概率<em>不被替换的概率，即： <span class="math display">\[
-1 \times \frac {k}{k+1}\times \frac {k+1}{k+2}\times \frac {k+2}{k+3}\times ...\times \frac {n-1}{n} = \frac {k}{n}
-\]</span> 对于第j个数（j&gt;k）。我们知道，在第j步被选中的概率为k/j。不被j+1个元素替换的概率为1 - k/(j+1) </em> 1/k = j/(j+1)。则运行到第n步时，第i个数仍保留的概率=被选中的概率*不被替换的概率，即： <span class="math display">\[
-\frac {k}{j}\times \frac {j}{j+1}\times \frac {j+1}{j+2}\times \frac {j+2}{j+3}\times ... \times \frac {n-1}{n} = \frac {k}{n}
-\]</span> 所以对于中每个元素，被保留的概率都为k/n。</p>
-<h2 id="实现">实现</h2>
-<p>python3版本</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 蓄水池算法实现.py</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReservoirSampling</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sample</span>(<span class="params">self, node, k</span>):</span></span><br><span class="line">        data = []</span><br><span class="line">        <span class="comment"># 计数器</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> node:</span><br><span class="line">            counter += <span class="number">1</span></span><br><span class="line">            <span class="comment"># 前k个元素直接放入</span></span><br><span class="line">            <span class="keyword">if</span> counter &lt;= k:</span><br><span class="line">                data.append(node)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 判断第j个元素是否留下</span></span><br><span class="line">                <span class="keyword">if</span> random.randint(<span class="number">1</span>, counter) &lt;= k:</span><br><span class="line">                    <span class="comment"># 判断替换掉哪个元素</span></span><br><span class="line">                    removed_idx = random.randint(<span class="number">0</span>, k - <span class="number">1</span>)</span><br><span class="line">                    <span class="comment"># 替换该元素，放入新元素</span></span><br><span class="line">                    data[removed_idx] = node</span><br><span class="line">                <span class="comment"># 如果不留下，就继续</span></span><br><span class="line">            <span class="comment"># 访问下一个node</span></span><br><span class="line">            node = next(node)</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span>(<span class="params">object</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, val</span>):</span></span><br><span class="line">            self.val = val</span><br><span class="line">            self.next = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">__next__</span>(<span class="params">self</span>):</span></span><br><span class="line">            <span class="keyword">return</span> self.next</span><br><span class="line"></span><br><span class="line">    head = ListNode(<span class="number">0</span>)</span><br><span class="line">    cur = head</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        cur.next = ListNode(i)</span><br><span class="line">        cur = cur.next</span><br><span class="line">    rs = ReservoirSampling()</span><br><span class="line">    res = rs.sample(head, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">for</span> node <span class="keyword">in</span> res:</span><br><span class="line">        print(node.val)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="实战题目">实战题目</h2>
-<h4 id="链表随机节点"><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbGlua2VkLWxpc3QtcmFuZG9tLW5vZGUv">382. 链表随机节点<i class="fa fa-external-link-alt"></i></span></h4>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -3248,24 +3303,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>软件=算法+数据结构+文档+数据？</title>
-    <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
-    <content><![CDATA[<p>软件的开始到后来...</p>
-<p>开始：</p>
-<p>软件=代码？</p>
-<p>软件=算法+数据结构？</p>
-<p>软件=算法+数据结构+文档？</p>
-<p>软件=算法+数据结构+文档+数据？</p>
-<p>后来：</p>
-<p>软件=算法+数据结构+文档+数据 + 单元测试 + workflow ？</p>
-<p>对自己的要求，至少要做到</p>
-<p>软件=算法+数据结构+文档。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -3418,6 +3455,24 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>软件=算法+数据结构+文档+数据？</title>
+    <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
+    <content><![CDATA[<p>软件的开始到后来...</p>
+<p>开始：</p>
+<p>软件=代码？</p>
+<p>软件=算法+数据结构？</p>
+<p>软件=算法+数据结构+文档？</p>
+<p>软件=算法+数据结构+文档+数据？</p>
+<p>后来：</p>
+<p>软件=算法+数据结构+文档+数据 + 单元测试 + workflow ？</p>
+<p>对自己的要求，至少要做到</p>
+<p>软件=算法+数据结构+文档。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>郭德纲写给儿子郭麒麟的家书</title>
     <url>/2020/07/23/%E9%83%AD%E5%BE%B7%E7%BA%B2%E5%86%99%E7%BB%99%E5%84%BF%E5%AD%90%E9%83%AD%E9%BA%92%E9%BA%9F%E7%9A%84%E5%AE%B6%E4%B9%A6/</url>
     <content><![CDATA[<h3 id="人生的真谛要用自己一辈子去理解">人生的真谛要用自己一辈子去理解</h3>
@@ -3502,6 +3557,26 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>青蛙跳荷叶问题</title>
+    <url>/2020/08/14/%E9%9D%92%E8%9B%99%E8%B7%B3%E8%8D%B7%E5%8F%B6%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h2 id="问题">问题：</h2>
+<p>有一只青蛙，向右跳x步可以到达右边中点，向左边跳n-x步可以到达左边中点，问到达左边中点的概率。</p>
+<h2 id="求解方法">求解方法</h2>
+<p>我们定义f(x)为到达左边中点的概率。</p>
+<p>那么f(0) = 0，因为我们已经到达右边终点，f(n) = 1，因为我们已经到达左边终点。</p>
+<p>我们知道，f(x) 接下来有两种走法，f(x-1)和f(x+1)，所以有</p>
+<p>f(x) = 0.5 * f(x-1) + 0.5 * f(x+1)</p>
+<p>我们由此可得f(x+1) - f(x) = f(x) - f(x-1)。</p>
+<p>所以我们知道f(x)构成的序列是一个等差数列。</p>
+<p>因为f(0) = 0, f(n) = 1，所以f(1) = 1/n，f(2) = 2/n， f(x) = x/n，f(n-1) = (n-1)/n，f(n) = n/n</p>
+<p>所以，综上可得f(x) = x/n。</p>
+<p>也就是说，当向右走x步到达右边终点，向左n-x步到达左边终点时，我们最后到达左边终点的概率为x/n</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>阻塞与非阻塞，同步与异步</title>
     <url>/2020/09/01/%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5/</url>
     <content><![CDATA[<h3 id="阻塞与非阻塞">阻塞与非阻塞</h3>
@@ -3529,26 +3604,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>操作系统</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>青蛙跳荷叶问题</title>
-    <url>/2020/08/14/%E9%9D%92%E8%9B%99%E8%B7%B3%E8%8D%B7%E5%8F%B6%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h2 id="问题">问题：</h2>
-<p>有一只青蛙，向右跳x步可以到达右边中点，向左边跳n-x步可以到达左边中点，问到达左边中点的概率。</p>
-<h2 id="求解方法">求解方法</h2>
-<p>我们定义f(x)为到达左边中点的概率。</p>
-<p>那么f(0) = 0，因为我们已经到达右边终点，f(n) = 1，因为我们已经到达左边终点。</p>
-<p>我们知道，f(x) 接下来有两种走法，f(x-1)和f(x+1)，所以有</p>
-<p>f(x) = 0.5 * f(x-1) + 0.5 * f(x+1)</p>
-<p>我们由此可得f(x+1) - f(x) = f(x) - f(x-1)。</p>
-<p>所以我们知道f(x)构成的序列是一个等差数列。</p>
-<p>因为f(0) = 0, f(n) = 1，所以f(1) = 1/n，f(2) = 2/n， f(x) = x/n，f(n-1) = (n-1)/n，f(n) = n/n</p>
-<p>所以，综上可得f(x) = x/n。</p>
-<p>也就是说，当向右走x步到达右边终点，向左n-x步到达左边终点时，我们最后到达左边终点的概率为x/n</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
