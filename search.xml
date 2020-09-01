@@ -28,6 +28,37 @@
       </tags>
   </entry>
   <entry>
+    <title>K个一组翻转链表</title>
+    <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
+<p>将pre指向开头</p>
+<p>循环开始，只要head不为nil</p>
+<p>令tail = pre</p>
+<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
+<p>nxt记录下tail.next，head即将走向的下一个结点</p>
+<p>反转head到tail中的节点，返回新的head和tail</p>
+<p>def reverse(head, tail):</p>
+<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
+<p>​ while prev != tail:</p>
+<p>​ nxt = cur.next</p>
+<p>​ cur.next = prev</p>
+<p>​ prev = cur</p>
+<p>​ cur = nxt</p>
+<p>​ return tail, head</p>
+<p>将pre的next指向新的head</p>
+<p>pre.next = head</p>
+<p>尾部已相连</p>
+<p>更新pre指向tail</p>
+<p>head指向nxt</p>
+<p>最终head为nil时退出循环</p>
+<p>返回dummy.next</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span>(<span class="params">self, head: ListNode, k: int</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span>(<span class="params">self, head, tail</span>):</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>GC的三种基本实现方式和优缺点</title>
     <url>/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/</url>
     <content><![CDATA[<h3 id="参考">参考：</h3>
@@ -105,37 +136,6 @@
 ]]></content>
       <tags>
         <tag>高级编程语言</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>K个一组翻转链表</title>
-    <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
-    <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
-<p>将pre指向开头</p>
-<p>循环开始，只要head不为nil</p>
-<p>令tail = pre</p>
-<p>tail往下走k步，只要tail为nil，立即返回dummy.next</p>
-<p>nxt记录下tail.next，head即将走向的下一个结点</p>
-<p>反转head到tail中的节点，返回新的head和tail</p>
-<p>def reverse(head, tail):</p>
-<p>​ 反转代码，令pre指向tail.next，cur指向head</p>
-<p>​ while prev != tail:</p>
-<p>​ nxt = cur.next</p>
-<p>​ cur.next = prev</p>
-<p>​ prev = cur</p>
-<p>​ cur = nxt</p>
-<p>​ return tail, head</p>
-<p>将pre的next指向新的head</p>
-<p>pre.next = head</p>
-<p>尾部已相连</p>
-<p>更新pre指向tail</p>
-<p>head指向nxt</p>
-<p>最终head为nil时退出循环</p>
-<p>返回dummy.next</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverseKGroup</span>(<span class="params">self, head: ListNode, k: int</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        dummy.next = head</span><br><span class="line">        pre = dummy</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            tail = pre</span><br><span class="line">            <span class="comment"># 查看剩余部分长度是否大于k</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(k):</span><br><span class="line">                tail = tail.next</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> tail:</span><br><span class="line">                    <span class="keyword">return</span> dummy.next</span><br><span class="line">            nxt = tail.next</span><br><span class="line">            head, tail = self.reverse(head, tail)</span><br><span class="line">            <span class="comment"># 把子链表重新串联起来</span></span><br><span class="line">            pre.next = head</span><br><span class="line">            pre = tail</span><br><span class="line">            head = nxt</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reverse</span>(<span class="params">self, head, tail</span>):</span></span><br><span class="line">        prev = tail.next</span><br><span class="line">        cur = head</span><br><span class="line">        <span class="keyword">while</span> prev != tail:</span><br><span class="line">            cur.next, cur, prev = prev, cur.next, cur</span><br><span class="line">        <span class="keyword">return</span> tail, head</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -746,7 +746,7 @@
 <p>为了跟踪以头部为根的子树，我们可以使用栈（在访问时不断推送节点）。当发现一个头部节点时，从堆栈中弹出所有节点，直到从栈中得到头部。</p>
 <p>为了确保不考虑交叉边，当我们到达一个已经被访问过的节点时，只有当栈中存在被访问过的节点时，我们才应该对该节点进行处理，否则忽略该节点。</p>
 <h3 id="实现写一个tarjan算法找到有向图的所有连通分量并打印出来">实现：写一个Tarjan算法找到有向图的所有连通分量并打印出来</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># tarjan_scc.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.Time = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">scc_util</span>(<span class="params">self, u, low, disc, stack_member, stack: list</span>):</span></span><br><span class="line">        <span class="comment"># Initialize discovery time and low value</span></span><br><span class="line">        disc[u] = self.Time</span><br><span class="line">        low[u] = self.Time</span><br><span class="line">        self.Time += <span class="number">1</span></span><br><span class="line">        stack_member[u] = <span class="literal">True</span></span><br><span class="line">        stack.append(u)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Go through all vertices adjacent to this</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> self.graph[u]:</span><br><span class="line">            <span class="comment"># If v is not visited yet, then recur for it</span></span><br><span class="line">            <span class="keyword">if</span> disc[v] == <span class="number">-1</span>:</span><br><span class="line">                self.scc_util(v, low, disc, stack_member, stack)</span><br><span class="line">                <span class="comment"># check if the subtree rooted with v has a connection to</span></span><br><span class="line">                <span class="comment"># one of the ancestors of u</span></span><br><span class="line">                <span class="comment"># Case 1 (per above discussion on Disc and Low value)</span></span><br><span class="line">                low[u] = min(low[u], low[v])</span><br><span class="line">            <span class="keyword">elif</span> stack_member[v]:</span><br><span class="line">                <span class="comment"># Update low value of &#x27;u&#x27; only if &#x27;v&#x27; is still in stack</span></span><br><span class="line">                <span class="comment"># (i.e. it&#x27;s a back edge, not cross edge).</span></span><br><span class="line">                <span class="comment"># Case 2 (per above discussion on Disc and Low value)</span></span><br><span class="line">                low[u] = min(low[u], disc[v])</span><br><span class="line">        <span class="comment"># head node found, pop the stack and print an SCC</span></span><br><span class="line">        w = <span class="number">-1</span>  <span class="comment"># To store stack extracted vertices</span></span><br><span class="line">        <span class="keyword">if</span> low[u] == disc[u]:</span><br><span class="line">            <span class="keyword">while</span> w != u:</span><br><span class="line">                w = stack.pop()</span><br><span class="line">                print(w)</span><br><span class="line">                stack_member[w] = <span class="literal">False</span></span><br><span class="line">            print()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># The function to do DFS traversal</span></span><br><span class="line">    <span class="comment"># It uses recursive SCCUtil()1</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">scc</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="comment"># Mark all the vertices as not visited</span></span><br><span class="line">        <span class="comment"># and Initialize parent and visited,</span></span><br><span class="line">        <span class="comment"># and ap(articulation point) arrays</span></span><br><span class="line">        disc = [<span class="number">-1</span>] * self.V</span><br><span class="line">        low = [<span class="number">-1</span>] * self.V</span><br><span class="line">        stack_member = [<span class="literal">False</span>] * self.V</span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> disc[i] == <span class="number">-1</span>:</span><br><span class="line">                self.scc_util(i, low, disc, stack_member, stack)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g1 = Graph(<span class="number">5</span>)</span><br><span class="line">    g1.addEdge(<span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">    g1.addEdge(<span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line">    g1.addEdge(<span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">    g1.addEdge(<span class="number">0</span>, <span class="number">3</span>)</span><br><span class="line">    g1.addEdge(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in first graph&quot;</span>)</span><br><span class="line">    g1.scc()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.neigh = defaultdict(list)</span><br><span class="line">        self.Time = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, i, j</span>):</span></span><br><span class="line">        self.neigh[i].append(j)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">scc</span>(<span class="params">self</span>):</span></span><br><span class="line">        disc = [<span class="number">-1</span>] * self.V</span><br><span class="line">        low = [<span class="number">-1</span>] * self.V</span><br><span class="line">        visited = [<span class="literal">False</span>] * self.V</span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> disc[i] == <span class="number">-1</span>:</span><br><span class="line">                self.scc_util(i, low, disc, visited, stack)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">scc_util</span>(<span class="params">self, u, low, disc, visited, stack</span>):</span></span><br><span class="line">        disc[u] = self.Time</span><br><span class="line">        low[u] = self.Time</span><br><span class="line">        self.Time += <span class="number">1</span></span><br><span class="line">        visited[u] = <span class="literal">True</span></span><br><span class="line">        stack.append(u)</span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> self.neigh[u]:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> visited[v]:</span><br><span class="line">                self.scc_util(v, low, disc, visited, stack)</span><br><span class="line">                low[u] = min(low[u], low[v])</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                low[u] = min(low[u], disc[v])</span><br><span class="line">        w = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">if</span> low[u] == disc[u]:</span><br><span class="line">            <span class="keyword">while</span> w != u:</span><br><span class="line">                w = stack.pop()</span><br><span class="line">                print(w, end=<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">                visited[w] = <span class="literal">False</span></span><br><span class="line">            print()</span><br></pre></td></tr></table></figure>
 <p>时间复杂度：算法主要使用DFS，邻接表表示的图的DFS算法是O(V+E)复杂度的。</p>
 ]]></content>
       <tags>
@@ -1280,6 +1280,17 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 818.赛车</title>
+    <url>/2020/08/12/leetcode-818-%E8%B5%9B%E8%BD%A6/</url>
+    <content><![CDATA[<h2 id="示例解法">示例解法</h2>
+<p>这道题目的dp要仔细分析。分析过程写在了注释中（个人习惯…）。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 我们来分析这个问题</span></span><br><span class="line"><span class="comment"># 我们定义f(i)为距离终点为i时所需的指令大小</span></span><br><span class="line"><span class="comment"># 如果i == 2 ** n - 1，指令的长度就为n</span></span><br><span class="line"><span class="comment"># 如果i != 2 ** n - 1，我们有两种走法</span></span><br><span class="line"><span class="comment"># 假设 2**(n-1) -1 &lt; i &lt; 2 **n - 1</span></span><br><span class="line"><span class="comment"># 这样n就等于i的bit_length</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** n - 1</span></span><br><span class="line"><span class="comment"># 我们的指令是A^nR，指令长度为n+1，我们到终点的距离是 j-i，一定小于i</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** (n-1) - 1, j &lt; i</span></span><br><span class="line"><span class="comment"># 然后我们又往回走了 p = 2 ** k - 1, 现在我们的位置是 2 ** (n-1) - 2 ** k</span></span><br><span class="line"><span class="comment"># 指令长度是 A^(n-1)RA^kR n+k+1，我们现在距离终点 i - 2 **(n-1) + 2 ** k ,是小于i的</span></span><br><span class="line"><span class="comment"># 这样我们就得出了我们的递推公式</span></span><br><span class="line"><span class="comment"># f(i) = n if i == 2 ** n - 1</span></span><br><span class="line"><span class="comment"># f(i) = min(f(2**n -1 - i)+n+1, f(i-2**(n-1)+2**k)+n+k+1 k &lt; n-1)</span></span><br><span class="line"><span class="comment"># 初始化和边界条件f(0) = 0，注意向会回走的k不会大于等于n-1，因为等于n-1时就走到0了</span></span><br><span class="line"><span class="comment"># 返回值f(target)</span></span><br><span class="line"><span class="comment"># 优化复杂度</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">racecar</span>(<span class="params">self, target: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [<span class="number">0</span>] + [float(<span class="string">&#x27;inf&#x27;</span>)] * target</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, target + <span class="number">1</span>):</span><br><span class="line">            n = i.bit_length()</span><br><span class="line">            <span class="keyword">if</span> i == (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>:</span><br><span class="line">                dp[i] = n</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dp[i] = dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span> - i] + n + <span class="number">1</span></span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> range(n - <span class="number">1</span>):</span><br><span class="line">                    dp[i] = min(dp[i],</span><br><span class="line">                                dp[i - (<span class="number">1</span> &lt;&lt; (n - <span class="number">1</span>)) + (<span class="number">1</span> &lt;&lt; k)] + n + k + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> dp[target]</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>__new__和__init__的区别</title>
     <url>/2020/08/27/new-%E5%92%8C-init-%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
     <content><![CDATA[<p>先上代码</p>
@@ -1319,17 +1330,6 @@
 ]]></content>
       <tags>
         <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 818.赛车</title>
-    <url>/2020/08/12/leetcode-818-%E8%B5%9B%E8%BD%A6/</url>
-    <content><![CDATA[<h2 id="示例解法">示例解法</h2>
-<p>这道题目的dp要仔细分析。分析过程写在了注释中（个人习惯…）。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 我们来分析这个问题</span></span><br><span class="line"><span class="comment"># 我们定义f(i)为距离终点为i时所需的指令大小</span></span><br><span class="line"><span class="comment"># 如果i == 2 ** n - 1，指令的长度就为n</span></span><br><span class="line"><span class="comment"># 如果i != 2 ** n - 1，我们有两种走法</span></span><br><span class="line"><span class="comment"># 假设 2**(n-1) -1 &lt; i &lt; 2 **n - 1</span></span><br><span class="line"><span class="comment"># 这样n就等于i的bit_length</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** n - 1</span></span><br><span class="line"><span class="comment"># 我们的指令是A^nR，指令长度为n+1，我们到终点的距离是 j-i，一定小于i</span></span><br><span class="line"><span class="comment"># 一种是走到 j = 2 ** (n-1) - 1, j &lt; i</span></span><br><span class="line"><span class="comment"># 然后我们又往回走了 p = 2 ** k - 1, 现在我们的位置是 2 ** (n-1) - 2 ** k</span></span><br><span class="line"><span class="comment"># 指令长度是 A^(n-1)RA^kR n+k+1，我们现在距离终点 i - 2 **(n-1) + 2 ** k ,是小于i的</span></span><br><span class="line"><span class="comment"># 这样我们就得出了我们的递推公式</span></span><br><span class="line"><span class="comment"># f(i) = n if i == 2 ** n - 1</span></span><br><span class="line"><span class="comment"># f(i) = min(f(2**n -1 - i)+n+1, f(i-2**(n-1)+2**k)+n+k+1 k &lt; n-1)</span></span><br><span class="line"><span class="comment"># 初始化和边界条件f(0) = 0，注意向会回走的k不会大于等于n-1，因为等于n-1时就走到0了</span></span><br><span class="line"><span class="comment"># 返回值f(target)</span></span><br><span class="line"><span class="comment"># 优化复杂度</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">racecar</span>(<span class="params">self, target: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [<span class="number">0</span>] + [float(<span class="string">&#x27;inf&#x27;</span>)] * target</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, target + <span class="number">1</span>):</span><br><span class="line">            n = i.bit_length()</span><br><span class="line">            <span class="keyword">if</span> i == (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>:</span><br><span class="line">                dp[i] = n</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dp[i] = dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span> - i] + n + <span class="number">1</span></span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> range(n - <span class="number">1</span>):</span><br><span class="line">                    dp[i] = min(dp[i],</span><br><span class="line">                                dp[i - (<span class="number">1</span> &lt;&lt; (n - <span class="number">1</span>)) + (<span class="number">1</span> &lt;&lt; k)] + n + k + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> dp[target]</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -1976,21 +1976,21 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>学会承担责任</title>
-    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>堆的实现(大顶堆、小顶堆)</title>
     <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
     <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>学会承担责任</title>
+    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2313,7 +2313,7 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>总结：MySQL中的锁和MySQL的内部临时表</title>
+    <title>总结：MySQL中的重要概念（锁，内部临时表等）</title>
     <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
     <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
 <p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
@@ -2373,7 +2373,7 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <li>redoLog，undoLog，binLog重要概念。</li>
 <li>WAL (write ahead log 技术)</li>
 <li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
-<li>error log 错误日志，slow log慢查询日志</li>
+<li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
 <li>change buffer</li>
 <li>普通索引和唯一索引尽量选择普通索引</li>
 </ol>
@@ -2593,6 +2593,37 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>旅行商问题（朴素和dp方法）</title>
+    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
+    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
+<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
+<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
+<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
+<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
+<p>以下是旅行商问题的不同解法。</p>
+<p><strong>朴素的解法：</strong></p>
+<ol type="1">
+<li>将城市1作为起点和终点</li>
+<li>生成所有（n-1）！城市的排列组合</li>
+<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
+<li>返回成本最小的排列组合</li>
+</ol>
+<p>时间复杂度：O(n!)</p>
+<p><strong>DP 动态递推</strong></p>
+<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
+<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
+<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
+<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
+<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
+<p><strong>参考：</strong></p>
+<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>普通索引和唯一索引的选择</title>
     <url>/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/</url>
     <content><![CDATA[<h3 id="mysql中尽量使用普通索引减少使用唯一索引">MySQL中尽量使用普通索引，减少使用唯一索引</h3>
@@ -2653,37 +2684,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>旅行商问题（朴素和dp方法）</title>
-    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
-    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
-<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
-<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
-<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
-<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
-<p>以下是旅行商问题的不同解法。</p>
-<p><strong>朴素的解法：</strong></p>
-<ol type="1">
-<li>将城市1作为起点和终点</li>
-<li>生成所有（n-1）！城市的排列组合</li>
-<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
-<li>返回成本最小的排列组合</li>
-</ol>
-<p>时间复杂度：O(n!)</p>
-<p><strong>DP 动态递推</strong></p>
-<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
-<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
-<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
-<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
-<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
-<p><strong>参考：</strong></p>
-<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -3566,26 +3566,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>青蛙跳荷叶问题</title>
-    <url>/2020/08/14/%E9%9D%92%E8%9B%99%E8%B7%B3%E8%8D%B7%E5%8F%B6%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h2 id="问题">问题：</h2>
-<p>有一只青蛙，向右跳x步可以到达右边中点，向左边跳n-x步可以到达左边中点，问到达左边中点的概率。</p>
-<h2 id="求解方法">求解方法</h2>
-<p>我们定义f(x)为到达左边中点的概率。</p>
-<p>那么f(0) = 0，因为我们已经到达右边终点，f(n) = 1，因为我们已经到达左边终点。</p>
-<p>我们知道，f(x) 接下来有两种走法，f(x-1)和f(x+1)，所以有</p>
-<p>f(x) = 0.5 * f(x-1) + 0.5 * f(x+1)</p>
-<p>我们由此可得f(x+1) - f(x) = f(x) - f(x-1)。</p>
-<p>所以我们知道f(x)构成的序列是一个等差数列。</p>
-<p>因为f(0) = 0, f(n) = 1，所以f(1) = 1/n，f(2) = 2/n， f(x) = x/n，f(n-1) = (n-1)/n，f(n) = n/n</p>
-<p>所以，综上可得f(x) = x/n。</p>
-<p>也就是说，当向右走x步到达右边终点，向左n-x步到达左边终点时，我们最后到达左边终点的概率为x/n</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>阻塞与非阻塞，同步与异步</title>
     <url>/2020/09/01/%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5/</url>
     <content><![CDATA[<h3 id="阻塞与非阻塞">阻塞与非阻塞</h3>
@@ -3613,6 +3593,26 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>青蛙跳荷叶问题</title>
+    <url>/2020/08/14/%E9%9D%92%E8%9B%99%E8%B7%B3%E8%8D%B7%E5%8F%B6%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h2 id="问题">问题：</h2>
+<p>有一只青蛙，向右跳x步可以到达右边中点，向左边跳n-x步可以到达左边中点，问到达左边中点的概率。</p>
+<h2 id="求解方法">求解方法</h2>
+<p>我们定义f(x)为到达左边中点的概率。</p>
+<p>那么f(0) = 0，因为我们已经到达右边终点，f(n) = 1，因为我们已经到达左边终点。</p>
+<p>我们知道，f(x) 接下来有两种走法，f(x-1)和f(x+1)，所以有</p>
+<p>f(x) = 0.5 * f(x-1) + 0.5 * f(x+1)</p>
+<p>我们由此可得f(x+1) - f(x) = f(x) - f(x-1)。</p>
+<p>所以我们知道f(x)构成的序列是一个等差数列。</p>
+<p>因为f(0) = 0, f(n) = 1，所以f(1) = 1/n，f(2) = 2/n， f(x) = x/n，f(n-1) = (n-1)/n，f(n) = n/n</p>
+<p>所以，综上可得f(x) = x/n。</p>
+<p>也就是说，当向右走x步到达右边终点，向左n-x步到达左边终点时，我们最后到达左边终点的概率为x/n</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
