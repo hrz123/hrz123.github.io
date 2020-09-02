@@ -24,24 +24,20 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="全局锁、表锁、行锁、间隙锁。全局锁：flush tables with read lock表级锁： 表锁：lock tables … read&#x2F;write MDL（metadata lock）：server层，增删改查DML语句添加读锁，修改表结构定义DDL语句加写锁。更加详细的可以看这个链接https:&#x2F;&#x2F;blog.csdn.net&#x2F;q2878948&#x2F;article&#x2F;details&#x2F;964301">
+  <meta name="description" content="参考http:&#x2F;&#x2F;cenalulu.github.io&#x2F;python&#x2F;default-mutable-arguments&#x2F; 本文将介绍使用mutable对象作为Python函数参数默认值潜在的危害，以及其实现原理和设计目的 陷阱重现我们用实际的李演示一下我们今天所要讨论的主要内容。下面一段代码定义了一个名为generate_new_list_with的函数。该函数的本意是在每次都调用时都新建一个包">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL中的锁">
-<meta property="og:url" content="https://hrz123.github.io/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/index.html">
+<meta property="og:title" content="Python函数参数默认值的陷阱和原理深究">
+<meta property="og:url" content="https://hrz123.github.io/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="全局锁、表锁、行锁、间隙锁。全局锁：flush tables with read lock表级锁： 表锁：lock tables … read&#x2F;write MDL（metadata lock）：server层，增删改查DML语句添加读锁，修改表结构定义DDL语句加写锁。更加详细的可以看这个链接https:&#x2F;&#x2F;blog.csdn.net&#x2F;q2878948&#x2F;article&#x2F;details&#x2F;964301">
+<meta property="og:description" content="参考http:&#x2F;&#x2F;cenalulu.github.io&#x2F;python&#x2F;default-mutable-arguments&#x2F; 本文将介绍使用mutable对象作为Python函数参数默认值潜在的危害，以及其实现原理和设计目的 陷阱重现我们用实际的李演示一下我们今天所要讨论的主要内容。下面一段代码定义了一个名为generate_new_list_with的函数。该函数的本意是在每次都调用时都新建一个包">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hrz123.github.io/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/MySQL%E4%B8%AD%E7%9A%84%E9%94%81.png">
-<meta property="og:image" content="https://hrz123.github.io/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%812.png">
-<meta property="og:image" content="https://hrz123.github.io/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%813.png">
-<meta property="article:published_time" content="2020-08-22T10:18:26.000Z">
-<meta property="article:modified_time" content="2020-09-01T05:08:36.906Z">
+<meta property="article:published_time" content="2020-09-02T15:32:08.000Z">
+<meta property="article:modified_time" content="2020-09-02T16:09:57.662Z">
 <meta property="article:author" content="侯瑞哲">
-<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://hrz123.github.io/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/MySQL%E4%B8%AD%E7%9A%84%E9%94%81.png">
 
-<link rel="canonical" href="https://hrz123.github.io/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/">
+<link rel="canonical" href="https://hrz123.github.io/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/">
 
 
 <script id="page-configurations">
@@ -54,7 +50,7 @@
   };
 </script>
 
-  <title>MySQL中的锁 | 侯瑞哲的博客</title>
+  <title>Python函数参数默认值的陷阱和原理深究 | 侯瑞哲的博客</title>
   
 
 
@@ -192,7 +188,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -205,7 +201,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          MySQL中的锁
+          Python函数参数默认值的陷阱和原理深究
         </h1>
 
         <div class="post-meta">
@@ -215,14 +211,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-08-22 18:18:26" itemprop="dateCreated datePublished" datetime="2020-08-22T18:18:26+08:00">2020-08-22</time>
+              <time title="创建时间：2020-09-02 23:32:08" itemprop="dateCreated datePublished" datetime="2020-09-02T23:32:08+08:00">2020-09-02</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-01 13:08:36" itemprop="dateModified" datetime="2020-09-01T13:08:36+08:00">2020-09-01</time>
+                <time title="修改时间：2020-09-03 00:09:57" itemprop="dateModified" datetime="2020-09-03T00:09:57+08:00">2020-09-03</time>
               </span>
 
           
@@ -234,8 +230,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,65 +246,38 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="全局锁、表锁、行锁、间隙锁。"><a href="#全局锁、表锁、行锁、间隙锁。" class="headerlink" title="全局锁、表锁、行锁、间隙锁。"></a>全局锁、表锁、行锁、间隙锁。</h2><h4 id="全局锁：flush-tables-with-read-lock"><a href="#全局锁：flush-tables-with-read-lock" class="headerlink" title="全局锁：flush tables with read lock"></a>全局锁：flush tables with read lock</h4><h4 id="表级锁："><a href="#表级锁：" class="headerlink" title="表级锁："></a>表级锁：</h4><ol>
-<li>表锁：lock tables … read/write</li>
-<li>MDL（metadata lock）：server层，增删改查DML语句添加读锁，修改表结构定义DDL语句加写锁。更加详细的可以看这个链接<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3EyODc4OTQ4L2FydGljbGUvZGV0YWlscy85NjQzMDEyOQ==">https://blog.csdn.net/q2878948/article/details/96430129<i class="fa fa-external-link-alt"></i></span></li>
-</ol>
-<p>间隙锁为了解决幻读，比较不同。</p>
-<p>比如行锁，分成读锁（共享锁）和写锁（排他锁）。下图就是这两种类型行锁的冲突关系。</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/MySQL%E4%B8%AD%E7%9A%84%E9%94%81.png" class>
+        <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><span class="exturl" data-url="aHR0cDovL2NlbmFsdWx1LmdpdGh1Yi5pby9weXRob24vZGVmYXVsdC1tdXRhYmxlLWFyZ3VtZW50cy8=">http://cenalulu.github.io/python/default-mutable-arguments/<i class="fa fa-external-link-alt"></i></span></p>
+<p>本文将介绍使用mutable对象作为Python函数参数默认值潜在的危害，以及其实现原理和设计目的</p>
+<h3 id="陷阱重现"><a href="#陷阱重现" class="headerlink" title="陷阱重现"></a>陷阱重现</h3><p>我们用实际的李演示一下我们今天所要讨论的主要内容。下面一段代码定义了一个名为generate_new_list_with的函数。该函数的本意是在每次都调用时都新建一个包含有给定element值的list。而实际运行结果如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=[], element=None</span>):</span></span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    list1 = generate_new_list_with(element=<span class="number">1</span>)</span><br><span class="line">    print(list1)</span><br><span class="line">    <span class="comment"># [1]</span></span><br><span class="line">    list2 = generate_new_list_with(element=<span class="number">2</span>)</span><br><span class="line">    print(list2)</span><br><span class="line">    <span class="comment"># [1, 2]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
-<p>也就是说，跟行锁有冲突关系的是“另外一个行锁”。</p>
-<p>但是间隙锁不一样，<strong>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作</strong>。间隙锁之间都不存在冲突关系。</p>
-<p>这句话不太好理解，举个例子：</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%812.png" class>
+<p>可见代码运行结果并不和我们预期的一样。list_2在函数的第二次调用时并没有得到一个新的list并填入2，而是在第一次调用结果的基础上append了一个2。为什么会发生这样在其他编程语言中简直像bug一样的问题呢？</p>
+<h3 id="准备知识：Python变量的实质"><a href="#准备知识：Python变量的实质" class="headerlink" title="准备知识：Python变量的实质"></a>准备知识：Python变量的实质</h3><p>要了解这个问题的原因我们现需要一个准备知识，那就是：Python变量到底是如何实现的？Python变量区别与其他编程语言的声明&amp;赋值方式，采用的是创建&amp;指向的类似于指针的方式实现的。即Python中的变量实际上是对值或者对象的一个指针（简单的说他们是指的一个名字）。我们来看一个例子。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p = <span class="number">1</span></span><br><span class="line">p = p + <span class="number">1</span></span><br></pre></td></tr></table></figure>
 
-<p>这里session B并不会被堵住，因为表t里并没有c=7这个记录，因此session A加的是间隙锁（5，10）。而session B也是在这个间隙加的间隙锁。它们有共同的目标，即：保护这个间隙，不允许插入值。但，它们之间不是冲突的。</p>
-<p>间隙锁和行锁合称 next-key lock，每个 next-key lock 是前开后闭区间。也就是说，我们的表 t 初始化以后，如果用 select * from t for update 要把整个表所有记录锁起来，就形成了 7 个 next-key lock，分别是 (-∞,0]、(0,5]、(5,10]、(10,15]、(15,20]、(20, 25]、(25, +supremum]。</p>
+<p>对于传统语言，上面这段代码的执行方式将会是，现在内存中声明得到一个p的变量，然后将1存入变量p所在内存。执行家法操作的时候得到2的结果，将2这个数值再次存入到p所在内存地址中。可见整个执行活成中，<strong>变化的是变量p所在内存地址上的值。</strong></p>
+<p>上面这段代码中，Python实际上是现在执行内存中创建了一个1的对象，并将p指向了它。在执行加法操作的时候，实际上通过加法操作得到了一个2的新对象，并将p指向这个新的对象。<strong>可见整个执行过程中，变化的是p指向的内存地址。</strong></p>
+<h3 id="函数参数默认值陷阱的根本原因"><a href="#函数参数默认值陷阱的根本原因" class="headerlink" title="函数参数默认值陷阱的根本原因"></a>函数参数默认值陷阱的根本原因</h3><p>一句话来解释：Python函数的参数默认值，是在编译阶段就绑定的。</p>
+<p>现在，我们先从一段摘录来详细分析这个陷阱的原因。下面是一段从Python Common Gotchas中摘录的原因解释：</p>
 <blockquote>
-<p>备注：这篇文章中，如果没有特别说明，我们把间隙锁记为开区间，把 next-key lock 记为前开后闭区间。</p>
+<p>Python’s default arguments are evaluated once when the function is defined, not each time the function is called(like it is in say, Ruby). This means that if you use a mutable default argument and mutate it, you will and have mutated that object for all future calls to the function as well.</p>
 </blockquote>
-<p>你可能会问说，这个 supremum 从哪儿来的呢？</p>
-<p>这是因为 +∞是开区间。实现上，InnoDB 给每个索引加了一个不存在的最大值 supremum，这样才符合我们前面说的“都是前开后闭区间”。</p>
-<p><strong>间隙锁和next-key lock的引入，帮我们解决了幻读的问题，但同时也带来了一些“困扰”。</strong></p>
-<p>在前面的文章中，就用同学提到了这个问题。我把他的问题转述一下，对应到我们这个例子的表来说，业务逻辑是这样额：任意锁住一行，如果这一行不存在的话就插入，如果存在这一行就更新它的数据，代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">begin;</span><br><span class="line">select * from t where id&#x3D;N for update;</span><br><span class="line"></span><br><span class="line">&#x2F;*如果行不存在*&#x2F;</span><br><span class="line">insert into t values(N,N,N);</span><br><span class="line">&#x2F;*如果行存在*&#x2F;</span><br><span class="line">update t set d&#x3D;N set id&#x3D;N;</span><br><span class="line"></span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
+<p><strong>可见如果参数默认值是在函数编译compile阶段就已经被确定。之后所有的函数调用时，如果参数不显示的给予赋值，那么所谓的参数默认值不过是一个指向那个在compile阶段就已经存在的对象的指针。</strong>如果调用函数时，没有显示指定传入参数值的话。那么所有这种情况下的该参数都会作为编译时创建的那个对象的一种别名存在。如果参数的默认值是一个不可变（Immutable）数值，那么在函数体内如果修改了该参数，那么参数就会重新指向另一个新的不可变值，而如果参数默认值是和本文最开始的举例一样，是一个可变对象（Mutable），那么情况就比较糟糕了。所有函数体内对于该参数的修改，实际上都是对compile阶段就已经确定的那个对象的修改。对于这么一个陷阱在Python官方文档中也有特别提示：</p>
+<blockquote>
+<p>Important warning: The default value is evaluated only once. This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes.</p>
+</blockquote>
+<h3 id="如何避免这个陷阱带来不必要麻烦"><a href="#如何避免这个陷阱带来不必要麻烦" class="headerlink" title="如何避免这个陷阱带来不必要麻烦"></a>如何避免这个陷阱带来不必要麻烦</h3><p>当然最好的方式是不要使用可变对象作为函数默认值。如果非要这么用的话，下面是一种解决方案。还是以文章开头的需求为例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=None, element=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> my_list <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        my_list = []</span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br></pre></td></tr></table></figure>
 
-<p>可能你会说，这个不是insert ..  on duplicate key update 就能解决吗？但其实在有多个唯一键的时候，这个方法是不能满足这位提问同学的需求的。至于为什么，我会在后面的文章中再展开说明。</p>
-<p>现在，我们就只讨论这个逻辑。</p>
-<p>这个同学碰到的现象是，这个逻辑一旦有并发，就会碰到死锁。你一定也觉得奇怪，这个逻辑每次操作前用 for update 锁起来，已经是最严格的模式了，怎么还会有死锁呢？</p>
-<p>这里，我用两个 session 来模拟并发，并假设 N=9。</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%813.png" class>
-
-<p>你看到了，其实都不需要用到后面的update语句，就已经形成死锁了。我们按语句执行顺序来分析一下：</p>
-<ol>
-<li>session A执行select … for update 语句，由于id=9这一行并不存在，因此会加上间隙锁（5，10；</li>
-<li>session B执行select … for update 语句，同样会加上间隙锁（5，10），间隙锁之间不会冲突，因此这个语句可以执行成功；</li>
-<li>session B试图插入一行（9，9，9），被session A的间隙锁挡住了，只好进入等待；</li>
-<li>session A试图插入一行（9，9，9），被session B的间隙锁挡住了。</li>
-</ol>
-<p>至此，两个session进入互相等待的状态，形成死锁。当然，InnoDB的死锁检测马上就发现了这对死锁关系，让session A的insert语句返回了。</p>
-<p>你现在知道了，<strong>间隙锁的引入，可能会导致同样的语句锁住更大的范围，这其实是影响了并发度的</strong>。其实，这还只是一个简单的例子，在下一篇文章中我们还会碰到更多、更复杂的例子。</p>
-<p>你可能会说，为了解决幻读的问题，我们引入了这么一大串内容，有没有更简单一点的处理方法呢。</p>
-<p>今天和你分析的问题都是在可重复读隔离级别下的，间隙锁是在可重复读隔离级别下才会生效的。所以，你如果把隔离级别设置为读提交的话，就没有间隙锁了。但同时，你要解决可能出现的数据和日志不一致问题，需要把 binlog 格式设置为 row。这，也是现在不少公司使用的配置组合。</p>
-<p>比如说，大家都用读提交，可是逻辑备份的时候，mysqldump 为什么要把备份线程设置成可重复读呢？（这个我在前面的文章中已经解释过了，你可以再回顾下第 6 篇文章《全局锁和表锁 ：给表加个字段怎么有这么多阻碍？》的内容）</p>
-<p>然后，在备份期间，备份线程用的是可重复读，而业务线程用的是读提交。同时存在两种事务隔离级别，会不会有问题？</p>
-<p>进一步地，这两个不同的隔离级别现象有什么不一样的，关于我们的业务，“用读提交就够了”这个结论是怎么得到的？</p>
-<h2 id="加锁规则的经验总结"><a href="#加锁规则的经验总结" class="headerlink" title="加锁规则的经验总结"></a>加锁规则的经验总结</h2><p>首先说明一下，这些加锁规则我没在别的地方看到过有类似的总结，以前我自己判断的时候都是想着代码里面的实现来脑补的。这次为了总结成不看代码的同学也能理解的规则，是我又重新刷了代码临时总结出来的。所以，这个规则有以下两条前提说明：</p>
-<ol>
-<li>MySQL 后面的版本可能会改变加锁策略，所以这个规则只限于截止到现在的最新版本，即 5.x 系列 &lt;=5.7.24，8.0 系列 &lt;=8.0.13。</li>
-<li>如果大家在验证中有发现 bad case 的话，请提出来，我会再补充进这篇文章，使得一起学习本专栏的所有同学都能受益。</li>
-</ol>
-<p>因为间隙锁在可重复读隔离级别下才有效，所以本篇文章接下来的描述，若没有特殊说明，默认是可重复读隔离级别。</p>
-<p><strong>我总结的加锁规则里面，包含了两个“原则”、两个“优化”和一个“bug”。</strong></p>
-<ol>
-<li>原则 1：加锁的基本单位是 next-key lock。     next-key lock 是前开后闭区间。</li>
-<li>原则 2：查找过程中访问到的对象才会加锁。</li>
-<li>优化 1：索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。</li>
-<li>优化 2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</li>
-<li>一个 bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。</li>
-</ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>感谢丁奇老师的专栏，摘录部分，如有不妥，请通知我立即删除。<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">https://time.geekbang.org/column/article/75659<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="为什么Python要这么设计"><a href="#为什么Python要这么设计" class="headerlink" title="为什么Python要这么设计"></a>为什么Python要这么设计</h3><p>这个问题的答案在 STackOverFlow上可以找到答案。这里将得票数最多的答案最重要的部分摘录如下：</p>
+<blockquote>
+<p>Actually, this is not a design flaw, and it is not because of internals, or performance. It comes simply from the fact that functions in Python are first-class objects, and not only a piece of code. As soon as you get to think into this way, then it completely makes sense: a function is an object being evaluated on its definition; default parameters are kind of “member data” and therefore their state may change from one call to the other - exactly as in any other object. In any case, Effbot has a very nice explanation of the reasons for this behavior in Default Parameter Values in Python. I found is very clear, and I really suggest reading it for a better knowledge og how function objects work.</p>
+</blockquote>
+<p>在这个回答中，答者认为是出于Python编译器的实现方式考虑，函数是一个内部一级对象。而参数默认值是这个对象的属性。在其他任何语言中，对象属性都是在对象创建时做绑定的。因此，函数参数默认值是在编译时绑定就不足为奇了。然而，也有很多一些回答者不买账，认为即使是first-class object也可以使用closure的方式在执行绑定。</p>
+<blockquote>
+<p>This is not a design flaw. It is a design decision; perhaps a bad one, but not an accident. The state thing is just like any other closure: a closure is not a function, and a function with mutable default argument is not a function.</p>
+</blockquote>
+<p>甚至还有反驳这抛开实现逻辑，单纯从设计角度认为：只要有未被程序员基本思考逻辑的行为，都是设计缺陷。</p>
 
     </div>
 
@@ -318,7 +287,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
           </div>
 
         
@@ -332,13 +301,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/" rel="prev" title="Prim's最小生成树算法">
-      <i class="fa fa-chevron-left"></i> Prim's最小生成树算法
+    <a href="/2020/09/02/%E5%8A%A0%E6%B2%B9%E6%AD%A6%E6%B1%89%EF%BC%81/" rel="prev" title="加油武汉！">
+      <i class="fa fa-chevron-left"></i> 加油武汉！
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/08/22/%E7%A4%BE%E4%BC%9A%E6%96%87%E6%98%8E%E7%A8%8B%E5%BA%A6%E5%BE%88%E5%A4%A7%E7%A8%8B%E5%BA%A6%E4%B8%8A%E4%BD%93%E7%8E%B0%E4%B8%BA%E5%AF%B9%E5%BC%B1%E8%80%85%E7%9A%84%E5%B0%8A%E9%87%8D/" rel="next" title="社会文明程度很大程度上体现为对弱者的尊重">
-      社会文明程度很大程度上体现为对弱者的尊重 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -398,7 +364,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E9%94%81%E3%80%81%E8%A1%A8%E9%94%81%E3%80%81%E8%A1%8C%E9%94%81%E3%80%81%E9%97%B4%E9%9A%99%E9%94%81%E3%80%82"><span class="nav-number">1.</span> <span class="nav-text">全局锁、表锁、行锁、间隙锁。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E9%94%81%EF%BC%9Aflush-tables-with-read-lock"><span class="nav-number">1.0.1.</span> <span class="nav-text">全局锁：flush tables with read lock</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E7%BA%A7%E9%94%81%EF%BC%9A"><span class="nav-number">1.0.2.</span> <span class="nav-text">表级锁：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99%E7%9A%84%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">加锁规则的经验总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%B7%E9%98%B1%E9%87%8D%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">陷阱重现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E7%9F%A5%E8%AF%86%EF%BC%9APython%E5%8F%98%E9%87%8F%E7%9A%84%E5%AE%9E%E8%B4%A8"><span class="nav-number">3.</span> <span class="nav-text">准备知识：Python变量的实质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E9%99%B7%E9%98%B1%E7%9A%84%E6%A0%B9%E6%9C%AC%E5%8E%9F%E5%9B%A0"><span class="nav-number">4.</span> <span class="nav-text">函数参数默认值陷阱的根本原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E8%BF%99%E4%B8%AA%E9%99%B7%E9%98%B1%E5%B8%A6%E6%9D%A5%E4%B8%8D%E5%BF%85%E8%A6%81%E9%BA%BB%E7%83%A6"><span class="nav-number">5.</span> <span class="nav-text">如何避免这个陷阱带来不必要麻烦</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88Python%E8%A6%81%E8%BF%99%E4%B9%88%E8%AE%BE%E8%AE%A1"><span class="nav-number">6.</span> <span class="nav-text">为什么Python要这么设计</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -661,7 +627,7 @@ if (document.querySelectorAll('pre.mermaid').length) {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/',]
       });
       });
   </script>

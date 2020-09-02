@@ -1,32 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
-    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
-<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
-<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
-<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><ol>
-<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
-<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
-<li>while sptSet不包含所有的顶点：<ul>
-<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
-<li>将u加入到sptSet中。</li>
-<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
-</ul>
-</li>
-</ol>
-<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>GC的三种基本实现方式和优缺点</title>
     <url>/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/</url>
     <content><![CDATA[<h3 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h3><p><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xvbmd6dzAvYXJ0aWNsZS9kZXRhaWxzLzY2OTcwODMy">https://blog.csdn.net/longzw0/article/details/66970832<i class="fa fa-external-link-alt"></i></span></p>
@@ -104,6 +78,32 @@
 ]]></content>
       <tags>
         <tag>高级编程语言</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
+    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
+<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
+<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><ol>
+<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
+<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
+<li>while sptSet不包含所有的顶点：<ul>
+<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
+<li>将u加入到sptSet中。</li>
+<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
+</ul>
+</li>
+</ol>
+<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -643,6 +643,46 @@
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python函数参数默认值的陷阱和原理深究</title>
+    <url>/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/</url>
+    <content><![CDATA[<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><span class="exturl" data-url="aHR0cDovL2NlbmFsdWx1LmdpdGh1Yi5pby9weXRob24vZGVmYXVsdC1tdXRhYmxlLWFyZ3VtZW50cy8=">http://cenalulu.github.io/python/default-mutable-arguments/<i class="fa fa-external-link-alt"></i></span></p>
+<p>本文将介绍使用mutable对象作为Python函数参数默认值潜在的危害，以及其实现原理和设计目的</p>
+<h3 id="陷阱重现"><a href="#陷阱重现" class="headerlink" title="陷阱重现"></a>陷阱重现</h3><p>我们用实际的李演示一下我们今天所要讨论的主要内容。下面一段代码定义了一个名为generate_new_list_with的函数。该函数的本意是在每次都调用时都新建一个包含有给定element值的list。而实际运行结果如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=[], element=None</span>):</span></span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    list1 = generate_new_list_with(element=<span class="number">1</span>)</span><br><span class="line">    print(list1)</span><br><span class="line">    <span class="comment"># [1]</span></span><br><span class="line">    list2 = generate_new_list_with(element=<span class="number">2</span>)</span><br><span class="line">    print(list2)</span><br><span class="line">    <span class="comment"># [1, 2]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<p>可见代码运行结果并不和我们预期的一样。list_2在函数的第二次调用时并没有得到一个新的list并填入2，而是在第一次调用结果的基础上append了一个2。为什么会发生这样在其他编程语言中简直像bug一样的问题呢？</p>
+<h3 id="准备知识：Python变量的实质"><a href="#准备知识：Python变量的实质" class="headerlink" title="准备知识：Python变量的实质"></a>准备知识：Python变量的实质</h3><p>要了解这个问题的原因我们现需要一个准备知识，那就是：Python变量到底是如何实现的？Python变量区别与其他编程语言的声明&amp;赋值方式，采用的是创建&amp;指向的类似于指针的方式实现的。即Python中的变量实际上是对值或者对象的一个指针（简单的说他们是指的一个名字）。我们来看一个例子。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">p = <span class="number">1</span></span><br><span class="line">p = p + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>对于传统语言，上面这段代码的执行方式将会是，现在内存中声明得到一个p的变量，然后将1存入变量p所在内存。执行家法操作的时候得到2的结果，将2这个数值再次存入到p所在内存地址中。可见整个执行活成中，<strong>变化的是变量p所在内存地址上的值。</strong></p>
+<p>上面这段代码中，Python实际上是现在执行内存中创建了一个1的对象，并将p指向了它。在执行加法操作的时候，实际上通过加法操作得到了一个2的新对象，并将p指向这个新的对象。<strong>可见整个执行过程中，变化的是p指向的内存地址。</strong></p>
+<h3 id="函数参数默认值陷阱的根本原因"><a href="#函数参数默认值陷阱的根本原因" class="headerlink" title="函数参数默认值陷阱的根本原因"></a>函数参数默认值陷阱的根本原因</h3><p>一句话来解释：Python函数的参数默认值，是在编译阶段就绑定的。</p>
+<p>现在，我们先从一段摘录来详细分析这个陷阱的原因。下面是一段从Python Common Gotchas中摘录的原因解释：</p>
+<blockquote>
+<p>Python’s default arguments are evaluated once when the function is defined, not each time the function is called(like it is in say, Ruby). This means that if you use a mutable default argument and mutate it, you will and have mutated that object for all future calls to the function as well.</p>
+</blockquote>
+<p><strong>可见如果参数默认值是在函数编译compile阶段就已经被确定。之后所有的函数调用时，如果参数不显示的给予赋值，那么所谓的参数默认值不过是一个指向那个在compile阶段就已经存在的对象的指针。</strong>如果调用函数时，没有显示指定传入参数值的话。那么所有这种情况下的该参数都会作为编译时创建的那个对象的一种别名存在。如果参数的默认值是一个不可变（Immutable）数值，那么在函数体内如果修改了该参数，那么参数就会重新指向另一个新的不可变值，而如果参数默认值是和本文最开始的举例一样，是一个可变对象（Mutable），那么情况就比较糟糕了。所有函数体内对于该参数的修改，实际上都是对compile阶段就已经确定的那个对象的修改。对于这么一个陷阱在Python官方文档中也有特别提示：</p>
+<blockquote>
+<p>Important warning: The default value is evaluated only once. This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes.</p>
+</blockquote>
+<h3 id="如何避免这个陷阱带来不必要麻烦"><a href="#如何避免这个陷阱带来不必要麻烦" class="headerlink" title="如何避免这个陷阱带来不必要麻烦"></a>如何避免这个陷阱带来不必要麻烦</h3><p>当然最好的方式是不要使用可变对象作为函数默认值。如果非要这么用的话，下面是一种解决方案。还是以文章开头的需求为例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=None, element=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> my_list <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        my_list = []</span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br></pre></td></tr></table></figure>
+
+<h3 id="为什么Python要这么设计"><a href="#为什么Python要这么设计" class="headerlink" title="为什么Python要这么设计"></a>为什么Python要这么设计</h3><p>这个问题的答案在 STackOverFlow上可以找到答案。这里将得票数最多的答案最重要的部分摘录如下：</p>
+<blockquote>
+<p>Actually, this is not a design flaw, and it is not because of internals, or performance. It comes simply from the fact that functions in Python are first-class objects, and not only a piece of code. As soon as you get to think into this way, then it completely makes sense: a function is an object being evaluated on its definition; default parameters are kind of “member data” and therefore their state may change from one call to the other - exactly as in any other object. In any case, Effbot has a very nice explanation of the reasons for this behavior in Default Parameter Values in Python. I found is very clear, and I really suggest reading it for a better knowledge og how function objects work.</p>
+</blockquote>
+<p>在这个回答中，答者认为是出于Python编译器的实现方式考虑，函数是一个内部一级对象。而参数默认值是这个对象的属性。在其他任何语言中，对象属性都是在对象创建时做绑定的。因此，函数参数默认值是在编译时绑定就不足为奇了。然而，也有很多一些回答者不买账，认为即使是first-class object也可以使用closure的方式在执行绑定。</p>
+<blockquote>
+<p>This is not a design flaw. It is a design decision; perhaps a bad one, but not an accident. The state thing is just like any other closure: a closure is not a function, and a function with mutable default argument is not a function.</p>
+</blockquote>
+<p>甚至还有反驳这抛开实现逻辑，单纯从设计角度认为：只要有未被程序员基本思考逻辑的行为，都是设计缺陷。</p>
+]]></content>
+      <tags>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1352,17 +1392,6 @@
       </tags>
   </entry>
   <entry>
-    <title>nginx所有worker进程协同工作的关键：共享内存</title>
-    <url>/2020/08/31/nginx%E6%89%80%E6%9C%89worker%E8%BF%9B%E7%A8%8B%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%85%B3%E9%94%AE%EF%BC%9A%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</url>
-    <content><![CDATA[<p>nginx是一个多进程程序，那么不同的worker进程之间，如果需要共享数据，那么只能通过共享内存。那么下面我们来看一看，nginx中的共享内存是怎么使用的。</p>
-<p>nginx的进程间的通讯方式，主要有两种，第一种是信号，那么之前我们在说如何管理nginx的过程中，已经比较详细的介绍过了，那么如果需要做数据的同步呢？那么只能通过共享内存，所谓共享内存，也就是说我们打开了一块内存，比如说10M，那么一整块0-10M之间，多个worker进程之间，可以同时的访问它，包括读取和写入。那么为了使用好这样一块共享内存，就会引入另外两个问题。第一个问题呢，就是锁，因为多个worker进程同时操作一块内存，一定会出现竞争关系，所以我们需要加锁，在nginx的锁中，在早期它还有基于信号量的锁，信号量是一种linux里比较久远的进程同步方式，它会导致你的进程进入了休眠状态，也就是发生了主动切换，而现在大多数操作系统版本中，nginx所使用的锁，都是自旋锁，而不会基于信号量，自旋锁，也就是说，当这个锁的条件没有满足，比如说这块内存现在被1号worker进程所使用，那么2号worker进程需要去获取锁的时候，只要1号进程没有释放锁，2号进程会一直在不停地去请求这个把锁，就好像，如果是基于信号量的早期的nginx锁，那么假设这把锁锁住了一扇门，如果worker进程1已经拿到了这把锁进到了屋里，那么worker进程2试图去拿锁，敲门，发现里面已经有人了，那么worker进程2就会就地休息，等待worker进程1从门里出来以后，通知它。而自选锁不一样，worker2进程2发现门里已经有worker进程1了，它就一直的持续的在敲门，所以，使用自旋锁，要求所有的nginx模块必须快速的使用共享内存，也就是快速的取得锁以后，快速的释放锁。一旦出现有第三方模块不遵守这样的规则，就可能导致出现死锁，或者说性能下降的问题。那么，有了这么一块共享内存，会引入第2个问题，因为一整块共享内存，往往是给许多对象同时使用的，如果我们在模块中手动去编写分配，把这些内存给到不同的对象，是非常繁琐的，所以，这个时候，我们使用了slab内存管理器。这个接下来我们会再说，那么nginx哪些模块使用了共享内存呢？我对官方的常用的nginx模块使用共享内存做了一个总结。那么使用共享内存，主要使用这两种数据结构，第一个是红黑树，比如我们想做限速或者流控等等场景时，我们是不同容忍在内存中做的，否则一个worker进程，对某一个用户，触发了流控，而其他worker进程还不知道，所以我们只能在共享内存中做，比如说，limit connection，比如说limit request（ngx_stream_limit_req_module），还有所有的http cache，做反向代理时用的，还有ssl，那么红黑树有一个特点，就是它的增删改查特别的快，当然也可以做遍历，所以这些模块都有一个特点，我需要做快速的插入和删除，比如我现在发现了一个客户端，我对它限速，那么限速如果达到了，我需要把这个客户端从我的限速数据结构容器中移出，都需要非常的快速。第二个常用的数据结构是单链表，也就是说我只要这些需要共享的元素都串起来就可以了。Ngx_http_upstream_zone_module或者Ngx_stream_upstream_zone_module，然后我们再来一个稍微复杂的例子，也就是ngx_http_lua_api，这个模块，实际上是openresty的核心模块，那么openresty在这个模块中定义了一个sdk，这个sdk叫lua_shared_dict，当这个指令出现的时候，它会分配一块共享内存，比如这个我们指定了10m，m就是我们的空间大小。那么这块共享内存会有一个名称，叫做dogs。接下来，我们在lua代码中，比如这一段content_by_lua_blocks，这对应这我们nginx收到了set这个url的时候需要做一些什么样的事情，我们首先从dogs共享内存中取出，然后设置了一个key value，然后向客户端返回，我已存储。然后在get请求中，我们把刚才存下的值取出来，返回给用户。那么在这一段代码中呢，我们同时使用了刚刚我们介绍中红黑树，以及链表。那么，这个lua_shared_dict dogs10m了。中间呢，使用红黑树来保存每一个key value，红黑树中的每一个节点就是它的key，它的value就是8，那么为什么我还需要一个链表呢，是因为这个10m是有限的，但我们的lua代码，涉及到了我们的应用业务代码，应用业务代码，很容易就超过了10m的限制，当我们超过10m的限制了呢，我们有很多种处理办法，比如让它写入失败，但是lua_shared_dict采用了另外一种处理方式，就是它用lru淘汰。也就是最早不用的节点，会被最早淘汰，当已经达到10m的最大值时。所以，这个lua_shared_dict中，它对共享内存的使用，同时满足了红黑树和链表。</p>
-<p>共享内存是nginx跨多个worker通讯的最有效的手段，只要我们需要让一段业务逻辑，在多个worker进程中，同时生效，比如许多在集群的流控上，那么必须使用共享内存，而不能在每一个worker内存中去操作。</p>
-]]></content>
-      <tags>
-        <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>python实现Trie(字典树、前缀树)</title>
     <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
     <content><![CDATA[<h2 id="wiki-百科上的介绍："><a href="#wiki-百科上的介绍：" class="headerlink" title="wiki 百科上的介绍："></a>wiki 百科上的介绍：</h2><p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
@@ -1379,6 +1408,17 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx所有worker进程协同工作的关键：共享内存</title>
+    <url>/2020/08/31/nginx%E6%89%80%E6%9C%89worker%E8%BF%9B%E7%A8%8B%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%85%B3%E9%94%AE%EF%BC%9A%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</url>
+    <content><![CDATA[<p>nginx是一个多进程程序，那么不同的worker进程之间，如果需要共享数据，那么只能通过共享内存。那么下面我们来看一看，nginx中的共享内存是怎么使用的。</p>
+<p>nginx的进程间的通讯方式，主要有两种，第一种是信号，那么之前我们在说如何管理nginx的过程中，已经比较详细的介绍过了，那么如果需要做数据的同步呢？那么只能通过共享内存，所谓共享内存，也就是说我们打开了一块内存，比如说10M，那么一整块0-10M之间，多个worker进程之间，可以同时的访问它，包括读取和写入。那么为了使用好这样一块共享内存，就会引入另外两个问题。第一个问题呢，就是锁，因为多个worker进程同时操作一块内存，一定会出现竞争关系，所以我们需要加锁，在nginx的锁中，在早期它还有基于信号量的锁，信号量是一种linux里比较久远的进程同步方式，它会导致你的进程进入了休眠状态，也就是发生了主动切换，而现在大多数操作系统版本中，nginx所使用的锁，都是自旋锁，而不会基于信号量，自旋锁，也就是说，当这个锁的条件没有满足，比如说这块内存现在被1号worker进程所使用，那么2号worker进程需要去获取锁的时候，只要1号进程没有释放锁，2号进程会一直在不停地去请求这个把锁，就好像，如果是基于信号量的早期的nginx锁，那么假设这把锁锁住了一扇门，如果worker进程1已经拿到了这把锁进到了屋里，那么worker进程2试图去拿锁，敲门，发现里面已经有人了，那么worker进程2就会就地休息，等待worker进程1从门里出来以后，通知它。而自选锁不一样，worker2进程2发现门里已经有worker进程1了，它就一直的持续的在敲门，所以，使用自旋锁，要求所有的nginx模块必须快速的使用共享内存，也就是快速的取得锁以后，快速的释放锁。一旦出现有第三方模块不遵守这样的规则，就可能导致出现死锁，或者说性能下降的问题。那么，有了这么一块共享内存，会引入第2个问题，因为一整块共享内存，往往是给许多对象同时使用的，如果我们在模块中手动去编写分配，把这些内存给到不同的对象，是非常繁琐的，所以，这个时候，我们使用了slab内存管理器。这个接下来我们会再说，那么nginx哪些模块使用了共享内存呢？我对官方的常用的nginx模块使用共享内存做了一个总结。那么使用共享内存，主要使用这两种数据结构，第一个是红黑树，比如我们想做限速或者流控等等场景时，我们是不同容忍在内存中做的，否则一个worker进程，对某一个用户，触发了流控，而其他worker进程还不知道，所以我们只能在共享内存中做，比如说，limit connection，比如说limit request（ngx_stream_limit_req_module），还有所有的http cache，做反向代理时用的，还有ssl，那么红黑树有一个特点，就是它的增删改查特别的快，当然也可以做遍历，所以这些模块都有一个特点，我需要做快速的插入和删除，比如我现在发现了一个客户端，我对它限速，那么限速如果达到了，我需要把这个客户端从我的限速数据结构容器中移出，都需要非常的快速。第二个常用的数据结构是单链表，也就是说我只要这些需要共享的元素都串起来就可以了。Ngx_http_upstream_zone_module或者Ngx_stream_upstream_zone_module，然后我们再来一个稍微复杂的例子，也就是ngx_http_lua_api，这个模块，实际上是openresty的核心模块，那么openresty在这个模块中定义了一个sdk，这个sdk叫lua_shared_dict，当这个指令出现的时候，它会分配一块共享内存，比如这个我们指定了10m，m就是我们的空间大小。那么这块共享内存会有一个名称，叫做dogs。接下来，我们在lua代码中，比如这一段content_by_lua_blocks，这对应这我们nginx收到了set这个url的时候需要做一些什么样的事情，我们首先从dogs共享内存中取出，然后设置了一个key value，然后向客户端返回，我已存储。然后在get请求中，我们把刚才存下的值取出来，返回给用户。那么在这一段代码中呢，我们同时使用了刚刚我们介绍中红黑树，以及链表。那么，这个lua_shared_dict dogs10m了。中间呢，使用红黑树来保存每一个key value，红黑树中的每一个节点就是它的key，它的value就是8，那么为什么我还需要一个链表呢，是因为这个10m是有限的，但我们的lua代码，涉及到了我们的应用业务代码，应用业务代码，很容易就超过了10m的限制，当我们超过10m的限制了呢，我们有很多种处理办法，比如让它写入失败，但是lua_shared_dict采用了另外一种处理方式，就是它用lru淘汰。也就是最早不用的节点，会被最早淘汰，当已经达到10m的最大值时。所以，这个lua_shared_dict中，它对共享内存的使用，同时满足了红黑树和链表。</p>
+<p>共享内存是nginx跨多个worker通讯的最有效的手段，只要我们需要让一段业务逻辑，在多个worker进程中，同时生效，比如许多在集群的流控上，那么必须使用共享内存，而不能在每一个worker内存中去操作。</p>
+]]></content>
+      <tags>
+        <tag>nginx</tag>
       </tags>
   </entry>
   <entry>
@@ -1596,14 +1636,6 @@
       </tags>
   </entry>
   <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>从网络原理来看SSL安全协议</title>
     <url>/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/</url>
     <content><![CDATA[<p>网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。</p>
@@ -1636,6 +1668,14 @@
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2230,6 +2270,68 @@
       </tags>
   </entry>
   <entry>
+    <title>总结：MySQL中的重要概念（锁，内部临时表等）</title>
+    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
+    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
+<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最 </p>
+<p>高，并发度最低。</p>
+<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最 </p>
+<p>低，并发度也最高。</p>
+<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表 </p>
+<p>锁和行锁之间，并发度一般。</p>
+<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>读锁</th>
+<th>写锁</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>读锁</strong></td>
+<td>不互斥</td>
+<td>互斥</td>
+</tr>
+<tr>
+<td><strong>写锁</strong></td>
+<td>互斥</td>
+<td>互斥</td>
+</tr>
+</tbody></table>
+<h3 id="一些重要的锁："><a href="#一些重要的锁：" class="headerlink" title="一些重要的锁："></a>一些重要的锁：</h3><h4 id="MDL锁-metadata-lock-元数据锁"><a href="#MDL锁-metadata-lock-元数据锁" class="headerlink" title="MDL锁 metadata lock 元数据锁"></a>MDL锁 metadata lock 元数据锁</h4><p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
+<p>属于表级锁。</p>
+<h4 id="间隙锁"><a href="#间隙锁" class="headerlink" title="间隙锁"></a>间隙锁</h4><p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
+<h4 id="自增id锁"><a href="#自增id锁" class="headerlink" title="自增id锁"></a>自增id锁</h4><h4 id="trx-id锁"><a href="#trx-id锁" class="headerlink" title="trx_id锁"></a>trx_id锁</h4><p>涉及到竞争资源，很多处都有锁。</p>
+<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
+<h3 id="MySQL什么时候会使用内部临时表？"><a href="#MySQL什么时候会使用内部临时表？" class="headerlink" title="MySQL什么时候会使用内部临时表？"></a>MySQL什么时候会使用内部临时表？</h3><ol>
+<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
+<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
+<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
+</ol>
+<h3 id="MySQL常用操作"><a href="#MySQL常用操作" class="headerlink" title="MySQL常用操作"></a>MySQL常用操作</h3><ol>
+<li>explain查看命令优化器优化结果；</li>
+<li>show engine innodb status;</li>
+<li>show warnings，看优化器改写后的语句；</li>
+<li>show create table t; 查看t的建表语句；</li>
+</ol>
+<h3 id="MySQL中的重要概念"><a href="#MySQL中的重要概念" class="headerlink" title="MySQL中的重要概念"></a>MySQL中的重要概念</h3><ol>
+<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
+<li>redoLog，undoLog，binLog重要概念。</li>
+<li>WAL (write ahead log 技术)，先将日志写在redolog中</li>
+<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
+<li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
+<li>change buffer</li>
+<li>普通索引和唯一索引尽量选择普通索引</li>
+<li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引，语句为count distinct。预先设定一个可以接受的损失比例。但是使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是你在选择是否使用前缀索引时需要考虑的一个因素。</li>
+<li>脏页和干净页，redo log中的脏页，刷进磁盘才会删除。这时候系统会停止所有更新操作，把 checkpoint 往前推进，redo log 留出空间可以继续写。write_pos， checkpoint</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>怎么最快地复制一张表？</title>
     <url>/2020/08/28/%E6%80%8E%E4%B9%88%E6%9C%80%E5%BF%AB%E5%9C%B0%E5%A4%8D%E5%88%B6%E4%B8%80%E5%BC%A0%E8%A1%A8%EF%BC%9F/</url>
     <content><![CDATA[<p>我在上一篇文章最后，给你留下的问题是怎么在两张表中拷贝数据。如果可以控制对源表的扫描行数和加锁范围很小的话，我们简单地使用insert..select语句即可实现。</p>
@@ -2356,68 +2458,6 @@
 <p>后两种都是逻辑备份的方式，是可以跨引擎使用的。</p>
 <p>最后，我给你留下一个思考题吧。</p>
 <p>我们前面介绍binlog_format=statement的时候，binlog记录的load data命令是带local的。既然这条命令是发送到备库去执行的，那么备库执行的时候也是本地执行，为什么需要这个local呢？如果写到binlog中的命令不带local，又会出现什么问题呢？</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>总结：MySQL中的重要概念（锁，内部临时表等）</title>
-    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
-    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
-<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最 </p>
-<p>高，并发度最低。</p>
-<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最 </p>
-<p>低，并发度也最高。</p>
-<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表 </p>
-<p>锁和行锁之间，并发度一般。</p>
-<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>读锁</th>
-<th>写锁</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>读锁</strong></td>
-<td>不互斥</td>
-<td>互斥</td>
-</tr>
-<tr>
-<td><strong>写锁</strong></td>
-<td>互斥</td>
-<td>互斥</td>
-</tr>
-</tbody></table>
-<h3 id="一些重要的锁："><a href="#一些重要的锁：" class="headerlink" title="一些重要的锁："></a>一些重要的锁：</h3><h4 id="MDL锁-metadata-lock-元数据锁"><a href="#MDL锁-metadata-lock-元数据锁" class="headerlink" title="MDL锁 metadata lock 元数据锁"></a>MDL锁 metadata lock 元数据锁</h4><p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
-<p>属于表级锁。</p>
-<h4 id="间隙锁"><a href="#间隙锁" class="headerlink" title="间隙锁"></a>间隙锁</h4><p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
-<h4 id="自增id锁"><a href="#自增id锁" class="headerlink" title="自增id锁"></a>自增id锁</h4><h4 id="trx-id锁"><a href="#trx-id锁" class="headerlink" title="trx_id锁"></a>trx_id锁</h4><p>涉及到竞争资源，很多处都有锁。</p>
-<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
-<h3 id="MySQL什么时候会使用内部临时表？"><a href="#MySQL什么时候会使用内部临时表？" class="headerlink" title="MySQL什么时候会使用内部临时表？"></a>MySQL什么时候会使用内部临时表？</h3><ol>
-<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
-<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
-<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
-</ol>
-<h3 id="MySQL常用操作"><a href="#MySQL常用操作" class="headerlink" title="MySQL常用操作"></a>MySQL常用操作</h3><ol>
-<li>explain查看命令优化器优化结果；</li>
-<li>show engine innodb status;</li>
-<li>show warnings，看优化器改写后的语句；</li>
-<li>show create table t; 查看t的建表语句；</li>
-</ol>
-<h3 id="MySQL中的重要概念"><a href="#MySQL中的重要概念" class="headerlink" title="MySQL中的重要概念"></a>MySQL中的重要概念</h3><ol>
-<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
-<li>redoLog，undoLog，binLog重要概念。</li>
-<li>WAL (write ahead log 技术)，先将日志写在redolog中</li>
-<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
-<li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
-<li>change buffer</li>
-<li>普通索引和唯一索引尽量选择普通索引</li>
-<li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引，语句为count distinct。预先设定一个可以接受的损失比例。但是使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是你在选择是否使用前缀索引时需要考虑的一个因素。</li>
-<li>脏页和干净页，redo log中的脏页，刷进磁盘才会删除。这时候系统会停止所有更新操作，把 checkpoint 往前推进，redo log 留出空间可以继续写。write_pos， checkpoint</li>
-</ol>
 ]]></content>
       <tags>
         <tag>数据库</tag>
