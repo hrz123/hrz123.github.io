@@ -317,18 +317,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MySQL自增主键为什么不是连续的？</title>
     <url>/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/</url>
     <content><![CDATA[<p>为了便于说明，我们创建一个表t，其中id是自增主键字段、c是唯一索引。</p>
@@ -465,6 +453,18 @@
       </tags>
   </entry>
   <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Prim&#39;s最小生成树算法</title>
     <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
@@ -499,6 +499,49 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python函数参数默认值的陷阱和原理深究</title>
+    <url>/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/</url>
+    <content><![CDATA[<h3 id="参考">参考</h3>
+<p>http://cenalulu.github.io/python/default-mutable-arguments/</p>
+<p>本文将介绍使用mutable对象作为Python函数参数默认值潜在的危害，以及其实现原理和设计目的</p>
+<h3 id="陷阱重现">陷阱重现</h3>
+<p>我们用实际的例子演示一下我们今天所要讨论的主要内容。下面一段代码定义了一个名为generate_new_list_with的函数。该函数的本意是在每次都调用时都新建一个包含有给定element值的list。而实际运行结果如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=[], element=None</span>):</span></span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    list1 = generate_new_list_with(element=<span class="number">1</span>)</span><br><span class="line">    print(list1)</span><br><span class="line">    <span class="comment"># [1]</span></span><br><span class="line">    list2 = generate_new_list_with(element=<span class="number">2</span>)</span><br><span class="line">    print(list2)</span><br><span class="line">    <span class="comment"># [1, 2]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>可见代码运行结果并不和我们预期的一样。list_2在函数的第二次调用时并没有得到一个新的list并填入2，而是在第一次调用结果的基础上append了一个2。为什么会发生这样在其他编程语言中简直像bug一样的问题呢？</p>
+<h3 id="准备知识python变量的实质">准备知识：Python变量的实质</h3>
+<p>要了解这个问题的原因我们现需要一个准备知识，那就是：Python变量到底是如何实现的？Python变量区别与其他编程语言的声明&amp;赋值方式，采用的是创建&amp;指向的类似于指针的方式实现的。即Python中的变量实际上是对值或者对象的一个指针（简单的说他们是指的一个名字）。我们来看一个例子。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">p = <span class="number">1</span></span><br><span class="line">p = p + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>对于传统语言，上面这段代码的执行方式将会是，现在内存中声明得到一个p的变量，然后将1存入变量p所在内存。执行家法操作的时候得到2的结果，将2这个数值再次存入到p所在内存地址中。可见整个执行活成中，<strong>变化的是变量p所在内存地址上的值。</strong></p>
+<p>上面这段代码中，Python实际上是现在执行内存中创建了一个1的对象，并将p指向了它。在执行加法操作的时候，实际上通过加法操作得到了一个2的新对象，并将p指向这个新的对象。<strong>可见整个执行过程中，变化的是p指向的内存地址。</strong></p>
+<h3 id="函数参数默认值陷阱的根本原因">函数参数默认值陷阱的根本原因</h3>
+<p>一句话来解释：Python函数的参数默认值，是在编译阶段就绑定的。</p>
+<p>现在，我们先从一段摘录来详细分析这个陷阱的原因。下面是一段从Python Common Gotchas中摘录的原因解释：</p>
+<blockquote>
+<p>Python's default arguments are evaluated once when the function is defined, not each time the function is called(like it is in say, Ruby). This means that if you use a mutable default argument and mutate it, you will and have mutated that object for all future calls to the function as well.</p>
+</blockquote>
+<p><strong>可见如果参数默认值是在函数编译compile阶段就已经被确定。之后所有的函数调用时，如果参数不显示的给予赋值，那么所谓的参数默认值不过是一个指向那个在compile阶段就已经存在的对象的指针。</strong>如果调用函数时，没有显示指定传入参数值的话。那么所有这种情况下的该参数都会作为编译时创建的那个对象的一种别名存在。<strong>如果参数的默认值是一个不可变（Immutable）数值，那么在函数体内如果修改了该参数，那么参数就会重新指向另一个新的不可变值，而如果参数默认值是和本文最开始的举例一样，是一个可变对象（Mutable），那么情况就比较糟糕了。所有函数体内对于该参数的修改，实际上都是对compile阶段就已经确定的那个对象的修改。</strong>对于这么一个陷阱在Python官方文档中也有特别提示：</p>
+<blockquote>
+<p>Important warning: The default value is evaluated only once. This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes.</p>
+</blockquote>
+<h3 id="如何避免这个陷阱带来不必要麻烦">如何避免这个陷阱带来不必要麻烦</h3>
+<p>当然最好的方式是不要使用可变对象作为函数默认值。如果非要这么用的话，下面是一种解决方案。还是以文章开头的需求为例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=None, element=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> my_list <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        my_list = []</span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br></pre></td></tr></table></figure>
+<h3 id="为什么python要这么设计">为什么Python要这么设计</h3>
+<p>这个问题的答案在 STackOverFlow上可以找到答案。这里将得票数最多的答案最重要的部分摘录如下：</p>
+<blockquote>
+<p>Actually, this is not a design flaw, and it is not because of internals, or performance. It comes simply from the fact that functions in Python are first-class objects, and not only a piece of code. As soon as you get to think into this way, then it completely makes sense: a function is an object being evaluated on its definition; default parameters are kind of "member data" and therefore their state may change from one call to the other - exactly as in any other object. In any case, Effbot has a very nice explanation of the reasons for this behavior in Default Parameter Values in Python. I found is very clear, and I really suggest reading it for a better knowledge og how function objects work.</p>
+</blockquote>
+<p>在这个回答中，答者认为是出于Python编译器的实现方式考虑，函数是一个内部一级对象。而参数默认值是这个对象的属性。在其他任何语言中，对象属性都是在对象创建时做绑定的。因此，函数参数默认值是在编译时绑定就不足为奇了。然而，也有很多一些回答者不买账，认为即使是first-class object也可以使用closure的方式在执行绑定。</p>
+<blockquote>
+<p>This is not a design flaw. It is a design decision; perhaps a bad one, but not an accident. The state thing is just like any other closure: a closure is not a function, and a function with mutable default argument is not a function.</p>
+</blockquote>
+<p>甚至还有反驳这抛开实现逻辑，单纯从设计角度认为：只要有违背程序员基本思考逻辑的行为，都是设计缺陷。</p>
+]]></content>
+      <tags>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -620,49 +663,6 @@
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python函数参数默认值的陷阱和原理深究</title>
-    <url>/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/</url>
-    <content><![CDATA[<h3 id="参考">参考</h3>
-<p>http://cenalulu.github.io/python/default-mutable-arguments/</p>
-<p>本文将介绍使用mutable对象作为Python函数参数默认值潜在的危害，以及其实现原理和设计目的</p>
-<h3 id="陷阱重现">陷阱重现</h3>
-<p>我们用实际的例子演示一下我们今天所要讨论的主要内容。下面一段代码定义了一个名为generate_new_list_with的函数。该函数的本意是在每次都调用时都新建一个包含有给定element值的list。而实际运行结果如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=[], element=None</span>):</span></span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    list1 = generate_new_list_with(element=<span class="number">1</span>)</span><br><span class="line">    print(list1)</span><br><span class="line">    <span class="comment"># [1]</span></span><br><span class="line">    list2 = generate_new_list_with(element=<span class="number">2</span>)</span><br><span class="line">    print(list2)</span><br><span class="line">    <span class="comment"># [1, 2]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-<p>可见代码运行结果并不和我们预期的一样。list_2在函数的第二次调用时并没有得到一个新的list并填入2，而是在第一次调用结果的基础上append了一个2。为什么会发生这样在其他编程语言中简直像bug一样的问题呢？</p>
-<h3 id="准备知识python变量的实质">准备知识：Python变量的实质</h3>
-<p>要了解这个问题的原因我们现需要一个准备知识，那就是：Python变量到底是如何实现的？Python变量区别与其他编程语言的声明&amp;赋值方式，采用的是创建&amp;指向的类似于指针的方式实现的。即Python中的变量实际上是对值或者对象的一个指针（简单的说他们是指的一个名字）。我们来看一个例子。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">p = <span class="number">1</span></span><br><span class="line">p = p + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<p>对于传统语言，上面这段代码的执行方式将会是，现在内存中声明得到一个p的变量，然后将1存入变量p所在内存。执行家法操作的时候得到2的结果，将2这个数值再次存入到p所在内存地址中。可见整个执行活成中，<strong>变化的是变量p所在内存地址上的值。</strong></p>
-<p>上面这段代码中，Python实际上是现在执行内存中创建了一个1的对象，并将p指向了它。在执行加法操作的时候，实际上通过加法操作得到了一个2的新对象，并将p指向这个新的对象。<strong>可见整个执行过程中，变化的是p指向的内存地址。</strong></p>
-<h3 id="函数参数默认值陷阱的根本原因">函数参数默认值陷阱的根本原因</h3>
-<p>一句话来解释：Python函数的参数默认值，是在编译阶段就绑定的。</p>
-<p>现在，我们先从一段摘录来详细分析这个陷阱的原因。下面是一段从Python Common Gotchas中摘录的原因解释：</p>
-<blockquote>
-<p>Python's default arguments are evaluated once when the function is defined, not each time the function is called(like it is in say, Ruby). This means that if you use a mutable default argument and mutate it, you will and have mutated that object for all future calls to the function as well.</p>
-</blockquote>
-<p><strong>可见如果参数默认值是在函数编译compile阶段就已经被确定。之后所有的函数调用时，如果参数不显示的给予赋值，那么所谓的参数默认值不过是一个指向那个在compile阶段就已经存在的对象的指针。</strong>如果调用函数时，没有显示指定传入参数值的话。那么所有这种情况下的该参数都会作为编译时创建的那个对象的一种别名存在。<strong>如果参数的默认值是一个不可变（Immutable）数值，那么在函数体内如果修改了该参数，那么参数就会重新指向另一个新的不可变值，而如果参数默认值是和本文最开始的举例一样，是一个可变对象（Mutable），那么情况就比较糟糕了。所有函数体内对于该参数的修改，实际上都是对compile阶段就已经确定的那个对象的修改。</strong>对于这么一个陷阱在Python官方文档中也有特别提示：</p>
-<blockquote>
-<p>Important warning: The default value is evaluated only once. This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes.</p>
-</blockquote>
-<h3 id="如何避免这个陷阱带来不必要麻烦">如何避免这个陷阱带来不必要麻烦</h3>
-<p>当然最好的方式是不要使用可变对象作为函数默认值。如果非要这么用的话，下面是一种解决方案。还是以文章开头的需求为例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=None, element=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> my_list <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        my_list = []</span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br></pre></td></tr></table></figure>
-<h3 id="为什么python要这么设计">为什么Python要这么设计</h3>
-<p>这个问题的答案在 STackOverFlow上可以找到答案。这里将得票数最多的答案最重要的部分摘录如下：</p>
-<blockquote>
-<p>Actually, this is not a design flaw, and it is not because of internals, or performance. It comes simply from the fact that functions in Python are first-class objects, and not only a piece of code. As soon as you get to think into this way, then it completely makes sense: a function is an object being evaluated on its definition; default parameters are kind of "member data" and therefore their state may change from one call to the other - exactly as in any other object. In any case, Effbot has a very nice explanation of the reasons for this behavior in Default Parameter Values in Python. I found is very clear, and I really suggest reading it for a better knowledge og how function objects work.</p>
-</blockquote>
-<p>在这个回答中，答者认为是出于Python编译器的实现方式考虑，函数是一个内部一级对象。而参数默认值是这个对象的属性。在其他任何语言中，对象属性都是在对象创建时做绑定的。因此，函数参数默认值是在编译时绑定就不足为奇了。然而，也有很多一些回答者不买账，认为即使是first-class object也可以使用closure的方式在执行绑定。</p>
-<blockquote>
-<p>This is not a design flaw. It is a design decision; perhaps a bad one, but not an accident. The state thing is just like any other closure: a closure is not a function, and a function with mutable default argument is not a function.</p>
-</blockquote>
-<p>甚至还有反驳这抛开实现逻辑，单纯从设计角度认为：只要有违背程序员基本思考逻辑的行为，都是设计缺陷。</p>
-]]></content>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1155,6 +1155,31 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 329.矩阵中的最长递增路径</title>
+    <url>/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/</url>
+    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
+<p>https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix</p>
+<p>给定一个整数矩阵，找出最长递增路径的长度。</p>
+<p>对于每个单元格，你可以往上，下，左，右四个方向移动。 你不能在对角线方向上移动或移动到边界外（即不允许环绕）。</p>
+<p>示例 1:</p>
+<p>输入: nums = [ [9,9,4], [6,6,8], [2,1,1]] 输出: 4 解释: 最长递增路径为 [1, 2, 6, 9]。 示例 2:</p>
+<p>输入: nums = [ [3,4,5], [3,2,6], [2,2,1]] 输出: 4 解释: 最长递增路径是 [3, 4, 5, 6]。注意不允许在对角线方向上移动。</p>
+<h2 id="思路">思路</h2>
+<p>我们可以对每一个点求出最长递增路径的长度，这样当相邻的点比该点小的时候，我们将该点的最长递增路径的长度加1，就是这个相邻点的最长递增路径的可能值。</p>
+<p>这里面一定不会有重复访问的现象，因为是最长递增路径，不存在相同的值，我们可以放心的使用其他点已经求出的最长递增路径。</p>
+<p>那么这个函数的参数也就出来了，dfs(i, j)。i，j表示是哪个点，函数求出的结果是这点为起始的最长递增路径长度。这个函数怎么求呢？首先自身就是一条路径，也就是最少是1。然后我们往四个方向扩散，这里判断越界，并且要确定这四个方向的值比当前大，否则不能扩散，假设我们已经求出了其他几个方向（小于等于四）的最长递增路径，这些方向上的点的值都是比当前大的，那么这个点的最长递增路径长度就是，这几个方向的最长递增路径的最大值加1，最终要和1比较一下更大，因为可能所有方向的值都小于等于当前。</p>
+<p>最终我们可以加上记忆化，因为我们一旦算出来i，j的最长递增路径的长度之后，我们就可以重复的使用它，不会改变了。这可以节省时间。</p>
+<h2 id="示例代码">示例代码</h2>
+<p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = &#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> (i, j) <span class="keyword">in</span> memo:</span><br><span class="line">                <span class="keyword">return</span> memo[i, j]</span><br><span class="line">            memo[i, j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> di, dj <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + di, j + dj</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i, j] = max(memo[i, j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i, j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i <span class="keyword">in</span> range(h) <span class="keyword">for</span> j <span class="keyword">in</span> range(w))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>优化空间使用矩阵来记忆化搜索：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = [[<span class="number">0</span>] * w <span class="keyword">for</span> _ <span class="keyword">in</span> range(h)]</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> memo[i][j]:</span><br><span class="line">                <span class="keyword">return</span> memo[i][j]</span><br><span class="line">            memo[i][j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> dx, dy <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + dx, j + dy</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i][j] = max(memo[i][j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i][j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i, j <span class="keyword">in</span> itertools.product(range(h), range(w)))</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>leetcode 23.合并K个排序链表</title>
     <url>/2020/08/11/leetcode-23-%E5%90%88%E5%B9%B6K%E4%B8%AA%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/</url>
     <content><![CDATA[<p>合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。</p>
@@ -1187,31 +1212,6 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        cur = dummy</span><br><span class="line">        <span class="comment"># 这里的i为了排序</span></span><br><span class="line">        heap = [(l.val, i, l) <span class="keyword">for</span> i, l <span class="keyword">in</span> enumerate(lists) <span class="keyword">if</span> l]</span><br><span class="line">        heapq.heapify(heap)</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            val, ind, l = heapq.heappop(heap)</span><br><span class="line">            cur.next = l</span><br><span class="line">            <span class="keyword">if</span> l.next:</span><br><span class="line">                l = l.next</span><br><span class="line">                heapq.heappush(heap, (l.val, ind, l))</span><br><span class="line">            cur = cur.next</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
 <p>分支合并</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        n = len(lists)</span><br><span class="line">        <span class="keyword">return</span> self.merge(lists, <span class="number">0</span>, n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">merge</span>(<span class="params">self, lists, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span> lists[l]</span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        l1 = self.merge(lists, l, mid)</span><br><span class="line">        l2 = self.merge(lists, mid + <span class="number">1</span>, r)</span><br><span class="line">        <span class="keyword">return</span> self.mergeTwoLists(l1, l2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1, l2</span>):</span></span><br><span class="line">        dummy = cur = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val &lt;= l2.val:</span><br><span class="line">                cur.next = l1</span><br><span class="line">                l1 = l1.next</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur.next = l2</span><br><span class="line">                l2 = l2.next</span><br><span class="line">            cur = cur.next</span><br><span class="line">        cur.next = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 329.矩阵中的最长递增路径</title>
-    <url>/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/</url>
-    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
-<p>https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix</p>
-<p>给定一个整数矩阵，找出最长递增路径的长度。</p>
-<p>对于每个单元格，你可以往上，下，左，右四个方向移动。 你不能在对角线方向上移动或移动到边界外（即不允许环绕）。</p>
-<p>示例 1:</p>
-<p>输入: nums = [ [9,9,4], [6,6,8], [2,1,1]] 输出: 4 解释: 最长递增路径为 [1, 2, 6, 9]。 示例 2:</p>
-<p>输入: nums = [ [3,4,5], [3,2,6], [2,2,1]] 输出: 4 解释: 最长递增路径是 [3, 4, 5, 6]。注意不允许在对角线方向上移动。</p>
-<h2 id="思路">思路</h2>
-<p>我们可以对每一个点求出最长递增路径的长度，这样当相邻的点比该点小的时候，我们将该点的最长递增路径的长度加1，就是这个相邻点的最长递增路径的可能值。</p>
-<p>这里面一定不会有重复访问的现象，因为是最长递增路径，不存在相同的值，我们可以放心的使用其他点已经求出的最长递增路径。</p>
-<p>那么这个函数的参数也就出来了，dfs(i, j)。i，j表示是哪个点，函数求出的结果是这点为起始的最长递增路径长度。这个函数怎么求呢？首先自身就是一条路径，也就是最少是1。然后我们往四个方向扩散，这里判断越界，并且要确定这四个方向的值比当前大，否则不能扩散，假设我们已经求出了其他几个方向（小于等于四）的最长递增路径，这些方向上的点的值都是比当前大的，那么这个点的最长递增路径长度就是，这几个方向的最长递增路径的最大值加1，最终要和1比较一下更大，因为可能所有方向的值都小于等于当前。</p>
-<p>最终我们可以加上记忆化，因为我们一旦算出来i，j的最长递增路径的长度之后，我们就可以重复的使用它，不会改变了。这可以节省时间。</p>
-<h2 id="示例代码">示例代码</h2>
-<p>示例代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = &#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> (i, j) <span class="keyword">in</span> memo:</span><br><span class="line">                <span class="keyword">return</span> memo[i, j]</span><br><span class="line">            memo[i, j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> di, dj <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + di, j + dj</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i, j] = max(memo[i, j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i, j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i <span class="keyword">in</span> range(h) <span class="keyword">for</span> j <span class="keyword">in</span> range(w))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>优化空间使用矩阵来记忆化搜索：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = [[<span class="number">0</span>] * w <span class="keyword">for</span> _ <span class="keyword">in</span> range(h)]</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> memo[i][j]:</span><br><span class="line">                <span class="keyword">return</span> memo[i][j]</span><br><span class="line">            memo[i][j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> dx, dy <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + dx, j + dy</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i][j] = max(memo[i][j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i][j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i, j <span class="keyword">in</span> itertools.product(range(h), range(w)))</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -1558,6 +1558,15 @@
 <p>网上解释：文明的灿烂与否并不是以时间来衡量的，宁可获得短暂的灿烂文明，而不愿苟且偷生。</p>
 <p>我的理解是：努力创造出好的文明，来让岁月精彩，一旦文明终将走向衰败，不要强行延长它的寿命，让更好的文明来替代它，不要把这个文明变得丑陋，成为后来文明的障碍。</p>
 <p>重复一下，<strong>给时光以生命，给岁月以文明</strong>。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>中华民族的脊梁，不是被众人扶持起来的</title>
+    <url>/2020/09/03/%E4%B8%AD%E5%8D%8E%E6%B0%91%E6%97%8F%E7%9A%84%E8%84%8A%E6%A2%81%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%A2%AB%E4%BC%97%E4%BA%BA%E6%89%B6%E6%8C%81%E8%B5%B7%E6%9D%A5%E7%9A%84/</url>
+    <content><![CDATA[<p>中华民族的脊梁，不是被众人扶持起来的，就是我们有这样的英雄，这样的精英。我们的民族的脊梁今天才能挺立。--纪念杨靖宇</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -3762,6 +3771,12 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>非对称密码与RSA算法</title>
+    <url>/2020/09/03/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%B8%8ERSA%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[
+]]></content>
+  </entry>
+  <entry>
     <title>鲁迅语录</title>
     <url>/2020/09/01/%E9%B2%81%E8%BF%85%E8%AF%AD%E5%BD%95/</url>
     <content><![CDATA[<ol type="1">
@@ -4437,10 +4452,5 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>非对称密码与RSA算法</title>
-    <url>/2020/09/03/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%B8%8ERSA%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[]]></content>
   </entry>
 </search>
