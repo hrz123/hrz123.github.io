@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="分区表是什么？为了说明分区表的组织形式，我先创建一个表t； 1234567891011CREATE TABLE &#96;t&#96; (  &#96;ftime&#96; datetime NOT NULL,  &#96;c&#96; int(11) DEFAULT NULL,  KEY (&#96;ftime&#96;)) ENGINE&#x3D;InnoDB DEFAULT CHARSET&#x3D;latin1PARTITION BY RANGE (YEAR(ftime)">
+  <meta name="description" content="分区表是什么？ 为了说明分区表的组织形式，我先创建一个表t； 1234567891011CREATE TABLE &#96;t&#96; (  &#96;ftime&#96; datetime NOT NULL,  &#96;c&#96; int(11) DEFAULT NULL,  KEY (&#96;ftime&#96;)) ENGINE&#x3D;InnoDB DEFAULT CHARSET&#x3D;latin1PARTITION BY RANGE (YEAR(ftime">
 <meta property="og:type" content="article">
 <meta property="og:title" content="要不要使用分区表？">
 <meta property="og:url" content="https://hrz123.github.io/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="分区表是什么？为了说明分区表的组织形式，我先创建一个表t； 1234567891011CREATE TABLE &#96;t&#96; (  &#96;ftime&#96; datetime NOT NULL,  &#96;c&#96; int(11) DEFAULT NULL,  KEY (&#96;ftime&#96;)) ENGINE&#x3D;InnoDB DEFAULT CHARSET&#x3D;latin1PARTITION BY RANGE (YEAR(ftime)">
+<meta property="og:description" content="分区表是什么？ 为了说明分区表的组织形式，我先创建一个表t； 1234567891011CREATE TABLE &#96;t&#96; (  &#96;ftime&#96; datetime NOT NULL,  &#96;c&#96; int(11) DEFAULT NULL,  KEY (&#96;ftime&#96;)) ENGINE&#x3D;InnoDB DEFAULT CHARSET&#x3D;latin1PARTITION BY RANGE (YEAR(ftime">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hrz123.github.io/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A81.png">
 <meta property="og:image" content="https://hrz123.github.io/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A82.png">
@@ -250,38 +250,33 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="分区表是什么？"><a href="#分区表是什么？" class="headerlink" title="分区表是什么？"></a>分区表是什么？</h3><p>为了说明分区表的组织形式，我先创建一个表t；</p>
+        <h3 id="分区表是什么">分区表是什么？</h3>
+<p>为了说明分区表的组织形式，我先创建一个表t；</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`ftime`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="keyword">KEY</span> (<span class="string">`ftime`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"><span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="string">&#x27;2017-4-1&#x27;</span>,<span class="number">1</span>),(<span class="string">&#x27;2018-4-1&#x27;</span>,<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
 <img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A81.png" class>
-
 <p>我在表t初始化插入了两行记录，按照定义的分区规则，这两行记录分别落在p_2018和p_2019这两个分区上。</p>
 <p>可以看到，这个表包含了一个.frm文件和4个.ibd文件，每个分区对应一个.ibd文件。也就是说：</p>
-<ol>
+<ol type="1">
 <li>对于引擎层来说，这是4个表；</li>
 <li>对于Server层来说，这是1个表。</li>
 </ol>
 <p>你可能会觉得这两句话都是废话。其实不然，这两句话非常重要，可以帮我们理解分区变的执行逻辑。</p>
-<h3 id="分区表的引擎层行为"><a href="#分区表的引擎层行为" class="headerlink" title="分区表的引擎层行为"></a>分区表的引擎层行为</h3><p>我先给你举个在分区表加间隙锁的例子，目的是说明对于InnoDB来说，这是4个表。</p>
+<h3 id="分区表的引擎层行为">分区表的引擎层行为</h3>
+<p>我先给你举个在分区表加间隙锁的例子，目的是说明对于InnoDB来说，这是4个表。</p>
 <img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A82.png" class>
-
 <p>这里顺便复习一下，我在第21篇文章和你介绍的间隙锁加锁规则。</p>
 <p>我们初始化表t的时候，只插入了两行数据，ftime的值分别是，’2017-4-1‘和’2018-4-1‘。session A的select语句对索引ftime上这两个记录之间的间隙加了锁。如果是一个普通表的话，那么T1时刻，在表t的ftime索引上，间隙和加锁状态应该是图3这样的。</p>
 <img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A83.jpg" class>
-
-<p>也就是说，’2017-4-1’和’2018-4-1‘这两个记录之间的间隙是会被锁住的。那么，session B的两条插入语句应该都要进入锁等待状态。</p>
+<p>也就是说，'2017-4-1'和’2018-4-1‘这两个记录之间的间隙是会被锁住的。那么，session B的两条插入语句应该都要进入锁等待状态。</p>
 <p>但是，从上面的实验效果可以看出，session B的第一个insert语句是可以执行成功的。这是因为，对于引擎来说，p_2018和p_2019是两个不同的表，也就是说2017-4-1的下一个记录并不是2018-4-1，而是p_2018分区的supremum。所以T1时刻，在表t的ftime索引上，间隙和加锁的状态其实是图4这样的：</p>
 <img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A84.jpg" class>
-
 <p>由于分区表的规则，session A的select语句其实只操作了分区p_2018，因此加锁范围就是图4中深绿色的部分。</p>
 <p>所以，session B要写入一行ftime是2018-2-1的时候是可以成功的，而要写入2017-12-1这个记录，就要等session A的间隙锁。</p>
 <p>图5就是这时候的show engine innodb status的部分结果。</p>
 <img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A85.png" class>
-
 <p>看完InnoDB引擎的例子，我们再来一个MyISAM分区表的例子。</p>
 <p>我首先用alter table t engine=myisam，把表t改成MyISAM表；然后，我再用下面这个例子说明，对于MyISAM引擎来说，这是4个表。</p>
 <img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A86.png" class>
-
 <blockquote>
 <p>注：这是在用MyISAM的表锁验证，MyISAM引擎只支持表锁。</p>
 </blockquote>
@@ -294,10 +289,10 @@
 <p>分区表和手工分表，一个是有server层来决定使用哪个分区，一个是由应用层代码来决定使用哪个分表。因此，从引擎层看，这两种方式也是没有差别的。</p>
 <p>其实这两个方案的区别，主要是在server层上。从server层看，我们就不得不提到分区表一个被广为诟病的问题</p>
 <p>：打开表的行为。</p>
-<h3 id="分区策略"><a href="#分区策略" class="headerlink" title="分区策略"></a>分区策略</h3><p>每当第一次访问一个分区表的时候，MySQL需要把所有的分区都访问一遍。<strong>一个典型的报错情况</strong>是这样的：如果一个分区表的分区很多，比如超过了1000个，而MySQL启动的时候，open_files_limit参数使用的是默认值1024，那么就会在访问这个表的时候，由于需要打开所有的文件，导致打开表文件的个数超过了上限而报错。</p>
+<h3 id="分区策略">分区策略</h3>
+<p>每当第一次访问一个分区表的时候，MySQL需要把所有的分区都访问一遍。<strong>一个典型的报错情况</strong>是这样的：如果一个分区表的分区很多，比如超过了1000个，而MySQL启动的时候，open_files_limit参数使用的是默认值1024，那么就会在访问这个表的时候，由于需要打开所有的文件，导致打开表文件的个数超过了上限而报错。</p>
 <p>下图就是我创建的一个包含了很多分区的表t_myisam，执行一条插入语句后报错的情况。</p>
 <img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A87.png" class>
-
 <p>可以看到，这条insert语句，明显只需要访问一个分区，但语句却无法执行。</p>
 <p>这时，你一定从表名猜到了，这个表我用的是MyISAM引擎。是的，因为使用InnoDB引擎的话，并不会出现这个问题。</p>
 <p>MyISAM分区表使用的分区策略，我们称为<strong>通用分区策略</strong>（generic partitioning），每次访问分区都由server层控制。通用分区策略，是MySQL一开始支持分区表的时候就存在的代码，在文件管理、表管理的实现上很粗糙，因此有比较严重的性能问题。</p>
@@ -305,32 +300,33 @@
 <p>MySQL从5.7.17开始，将MyISAM分区表标记为即将弃用（deprecated），意思是”从这个版本开始不建议这么使用，请使用替代方案。在将来的版本中会废弃这个功能“。</p>
 <p>从MySQL8.0版本开始，就不允许创建MyISAM分区表了，只允许创建已经实现了本地分区策略的引擎。目前来看，只有InnoDB和NDB这两个引擎支持了本地分区策略。</p>
 <p>接下来，我们再看一下分区表在server层的行为。</p>
-<h3 id="分区表的server层行为"><a href="#分区表的server层行为" class="headerlink" title="分区表的server层行为"></a>分区表的server层行为</h3><p>如果从server层看的话，一个分区表就只是一个表。</p>
+<h3 id="分区表的server层行为">分区表的server层行为</h3>
+<p>如果从server层看的话，一个分区表就只是一个表。</p>
 <p>这句话是什么意思呢？接下来，我就用下面这个例子来和你说明。如图8和如图9所示，分别是这个例子的操作序列和执行结果图。</p>
 <img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A88.png" class>
-
 <img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A89.png" class>
-
 <p>可以看到，虽然session B只需要操作p_2017这个分区，但是由于session A持有整个表t的MDL锁，就导致了session B的alter语句被堵住。</p>
 <p>这也是DBA同学经常说的，分区表，在做DDL的时候，影响会更大。如果你使用的是普通分表，那么当你在truncate一个分表的时候，肯定不会跟另外一个分表上的查询语句，出现MDL锁冲突。</p>
 <p>到这里我们小结一下：</p>
-<ol>
+<ol type="1">
 <li>MySQL在第一次打开分区表的时候，需要访问所有的分区；</li>
 <li>在server层，认为这是同一张表，因此所有分区共用同一个MDL锁；</li>
 <li>在引擎层，认为这是不同的表，因此MDL锁之后的执行过程，会根据分区表规则，只访问必要的分区。</li>
 </ol>
 <p>而关于”必要的分区“的判断，就是根据SQL语句中的where条件，结合分区规则来实现的。比如我们上面的例子中，where ftime=’2018-4-1‘，根据分区规则year函数算出来的值是2018，那么就会落在p_2019这个分区。</p>
-<p>但是，如果这个where条件改成where ftime&gt;=’2018-4-1’，虽然查询结果相同，但是这时候根据where条件，就要访问p_2019和p_others这两个分区。</p>
+<p>但是，如果这个where条件改成where ftime&gt;='2018-4-1'，虽然查询结果相同，但是这时候根据where条件，就要访问p_2019和p_others这两个分区。</p>
 <p>如果查询语句的where条件中没有分区key，那就只能访问所有分区了。当然，这并不是分区表的问题。即使是使用业务分表的方式，where条件中没有使用分表的key，也必须访问所有的分表。</p>
 <p>我们已经理解了分区表的概念，那么什么场景下适合使用分区表呢？</p>
-<h3 id="分区表的应用场景"><a href="#分区表的应用场景" class="headerlink" title="分区表的应用场景"></a>分区表的应用场景</h3><p>分区表的一个显而易见的优势是对业务透明，相对于用户分表来说，使用分区表的业务代码更简洁。还有，分区表可以很方便的清理历史数据。</p>
-<p>如果一项业务跑的时间足够长，往往就会有根据时间删除历史数组的需求。这时候，按照时间分区的分区表，就可以直接通过alter table t drop partition…这个语法删掉分区，从而删掉过期的历史数据。</p>
-<p>这个alter table t drop partition…操作是直接删除分区文件，效果跟drop普通表类似。与使用delete语句删除数据相比，优势是速度快、对系统影响小。</p>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>这篇文章，我主要和你介绍的是server层和引擎层对分区表的处理方式。我希望通过这些介绍，你能够对是否选择使用分区表，有更清晰的想法。</p>
+<h3 id="分区表的应用场景">分区表的应用场景</h3>
+<p>分区表的一个显而易见的优势是对业务透明，相对于用户分表来说，使用分区表的业务代码更简洁。还有，分区表可以很方便的清理历史数据。</p>
+<p>如果一项业务跑的时间足够长，往往就会有根据时间删除历史数组的需求。这时候，按照时间分区的分区表，就可以直接通过alter table t drop partition...这个语法删掉分区，从而删掉过期的历史数据。</p>
+<p>这个alter table t drop partition...操作是直接删除分区文件，效果跟drop普通表类似。与使用delete语句删除数据相比，优势是速度快、对系统影响小。</p>
+<h3 id="小结">小结</h3>
+<p>这篇文章，我主要和你介绍的是server层和引擎层对分区表的处理方式。我希望通过这些介绍，你能够对是否选择使用分区表，有更清晰的想法。</p>
 <p>需要注意的是，我是以范围分区（range）为例和你介绍的。实际上，MySQL还支持hash分区、list分区等分区方法。你可以在需要用到的时候，再翻翻<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vOC4wL2VuL3BhcnRpdGlvbmluZy10eXBlcy5odG1s">手册<i class="fa fa-external-link-alt"></i></span>。</p>
 <p>实际使用时，分区表跟用户分表比起来，有两个绕不开的问题：一个是第一次访问的时候需要访问所有分区，另一个是共用MDL锁。</p>
 <p>因此，如果要使用分区表，就不要创建太多的分区。我见过一个用户做了按天分区策略，然后预先创建了10年的分区。这种情况下，访问分区表的性能自然是不好的。这里有两个问题需要注意：</p>
-<ol>
+<ol type="1">
 <li>分区并不是越细越好。实际上，单表或者单分区的数据到1千万行，只要没有特别大的索引，对于现在的硬件能力来说已经算是小表了。</li>
 <li>分区也不要提前预留太多，在使用之前预先创建即可。比如，如果是按月分区，每年年底时再把下一年度的12个分区创建上即可。对于没有数据的历史分区，要及时的drop掉。</li>
 </ol>
@@ -343,14 +339,11 @@
 <p>这时候就有两种可选：一种是（ftime, id），另一种是（id, ftime）。</p>
 <p>如果从利用率上来看，应该使用（ftime, id）这种模式。因为用ftime做分区key，说明大多数语句都是包含ftime的，使用这种模式，可以利用前缀索引的规则，减少一个索引。</p>
 <p>这时的建表语句是：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">    <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">    <span class="string">`ftime`</span> datatime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">    PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>, <span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=MyISAM <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = MyISAM);</span><br></pre></td></tr></table></figure>
-
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line"> <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"> <span class="string">`ftime`</span> datatime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line"> PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>, <span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=MyISAM <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = MyISAM);</span><br></pre></td></tr></table></figure>
 <p>当然，我的建议是你要尽量使用InnoDB引擎。InnoDB表要求至少有一个索引，以自增字段作为第一个字段，所以需要一个id的单独索引。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`ftime`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>,<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`id`</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>);</span><br></pre></td></tr></table></figure>
-
 <p>当然把字段反过来，创建成：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PRIMARY KEY (`id`,`ftime`),</span><br><span class="line">KEY `id` (`ftime`)</span><br></pre></td></tr></table></figure>
-
 <p>也是可以的。</p>
 
     </div>
@@ -441,7 +434,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E8%A1%A8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">分区表是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E8%A1%A8%E7%9A%84%E5%BC%95%E6%93%8E%E5%B1%82%E8%A1%8C%E4%B8%BA"><span class="nav-number">2.</span> <span class="nav-text">分区表的引擎层行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E7%AD%96%E7%95%A5"><span class="nav-number">3.</span> <span class="nav-text">分区策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E8%A1%A8%E7%9A%84server%E5%B1%82%E8%A1%8C%E4%B8%BA"><span class="nav-number">4.</span> <span class="nav-text">分区表的server层行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E8%A1%A8%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.</span> <span class="nav-text">分区表的应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E8%A1%A8%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">分区表是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E8%A1%A8%E7%9A%84%E5%BC%95%E6%93%8E%E5%B1%82%E8%A1%8C%E4%B8%BA"><span class="nav-number">2.</span> <span class="nav-text">分区表的引擎层行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E7%AD%96%E7%95%A5"><span class="nav-number">3.</span> <span class="nav-text">分区策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E8%A1%A8%E7%9A%84server%E5%B1%82%E8%A1%8C%E4%B8%BA"><span class="nav-number">4.</span> <span class="nav-text">分区表的server层行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E8%A1%A8%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.</span> <span class="nav-text">分区表的应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -457,7 +450,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-count">102</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
