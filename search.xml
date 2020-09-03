@@ -317,6 +317,18 @@
       </tags>
   </entry>
   <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL自增主键为什么不是连续的？</title>
     <url>/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/</url>
     <content><![CDATA[<p>为了便于说明，我们创建一个表t，其中id是自增主键字段、c是唯一索引。</p>
@@ -450,18 +462,6 @@
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -668,8 +668,25 @@
   <entry>
     <title>Python实现重试机制</title>
     <url>/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/</url>
-    <content><![CDATA[
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># retry_decorator.py</span></span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">interval, max_retries=<span class="number">3</span>, exceptions=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    res = func(*args, **kwargs)</span><br><span class="line">                    <span class="keyword">return</span> res</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            res = func(*args, **kwargs)</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">max_retries=<span class="number">3</span>, exceptions=None, interval=<span class="number">0</span></span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">            <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@retry(interval=0.5)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_func</span>():</span></span><br><span class="line">    <span class="keyword">global</span> i</span><br><span class="line">    i += <span class="number">1</span></span><br><span class="line">    print(i)</span><br><span class="line">    <span class="keyword">raise</span> Exception</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    my_func()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 ]]></content>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python的方法解析顺序(MRO)</title>
+    <url>/2020/08/30/Python%E7%9A%84%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F-MRO/</url>
+    <content><![CDATA[<h3 id="参考">参考</h3>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oYW5qaWFud2VpLmNvbS8yMDEzLzA3LzI1L3B5dGhvbi1tcm8vIzp+OnRleHQ9JUU1JUFGJUI5JUU0JUJBJThFJUU2JTk0JUFGJUU2JThDJTgxJUU3JUJCJUE3JUU2JTg5JUJGJUU3JTlBJTg0JUU3JUJDJTk2JUU3JUE4JThCLFJlc29sdXRpb24lMjBPcmRlciVFRiVCQyU4QyVFNiU4OCU5Nk1STyVFRiVCQyU4OSVFMyU4MCU4Mg==">链接<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>对于支持继承的编程语言来说，其方法（属性）可能定义在当前类，也可能来自于基类，所以在方法调用时就需要对当前类和基类进行搜索以确定方法所在的位置。而搜索的顺序就是所谓的「方法解析顺序」（Method Resolution Order，或MRO）。对于只支持单继承的语言来说，MRO 一般比较简单；而对于 Python 这种支持多继承的语言来说，MRO 就复杂很多。</p>
+<p>先看一个「菱形继承」的例子：</p>
+]]></content>
+      <tags>
+        <tag>Python</tag>
+      </tags>
   </entry>
   <entry>
     <title>Splay Tree-II</title>
@@ -694,20 +711,6 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python的方法解析顺序(MRO)</title>
-    <url>/2020/08/30/Python%E7%9A%84%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F-MRO/</url>
-    <content><![CDATA[<h3 id="参考">参考</h3>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly9oYW5qaWFud2VpLmNvbS8yMDEzLzA3LzI1L3B5dGhvbi1tcm8vIzp+OnRleHQ9JUU1JUFGJUI5JUU0JUJBJThFJUU2JTk0JUFGJUU2JThDJTgxJUU3JUJCJUE3JUU2JTg5JUJGJUU3JTlBJTg0JUU3JUJDJTk2JUU3JUE4JThCLFJlc29sdXRpb24lMjBPcmRlciVFRiVCQyU4QyVFNiU4OCU5Nk1STyVFRiVCQyU4OSVFMyU4MCU4Mg==">链接<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-<p>对于支持继承的编程语言来说，其方法（属性）可能定义在当前类，也可能来自于基类，所以在方法调用时就需要对当前类和基类进行搜索以确定方法所在的位置。而搜索的顺序就是所谓的「方法解析顺序」（Method Resolution Order，或MRO）。对于只支持单继承的语言来说，MRO 一般比较简单；而对于 Python 这种支持多继承的语言来说，MRO 就复杂很多。</p>
-<p>先看一个「菱形继承」的例子：</p>
-]]></content>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1546,16 +1549,6 @@
       </tags>
   </entry>
   <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>给时光以生命，给岁月以文明</title>
     <url>/2020/08/26/%E4%B8%8D%E6%98%AF%E7%BB%99%E6%96%87%E6%98%8E%E4%BB%A5%E5%B2%81%E6%9C%88%EF%BC%8C%E8%80%8C%E6%98%AF%E7%BB%99%E5%B2%81%E6%9C%88%E4%BB%A5%E6%96%87%E6%98%8E/</url>
     <content><![CDATA[<p><strong>给时光以生命，而不是给生命以时光。</strong>（这句话出自帕斯卡，To the time to life, rather than to life in time.老帕之所以有此言论，大概和他的生命状态有很大关系。帕斯卡从小体质虚弱，又因过度劳累而使疾病缠身。他只活到三十九岁，但一生辉煌，活得虽短却很精彩。正是这短暂的一生让他更清楚的看到生命的本质，福祸相依，这正是上帝的公平，或者说是概率的公平。他还说过一句非常有名的话：“人只不过是一根芦苇，是自然界最脆弱的东西，但他是一根能思想的芦苇。”）</p>
@@ -1598,6 +1591,16 @@
 ]]></content>
       <tags>
         <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1887,6 +1890,16 @@
       </tags>
   </entry>
   <entry>
+    <title>加油武汉！</title>
+    <url>/2020/09/02/%E5%8A%A0%E6%B2%B9%E6%AD%A6%E6%B1%89%EF%BC%81/</url>
+    <content><![CDATA[<iframe src="//player.bilibili.com/player.html?aid=926934688&amp;bvid=BV1mT4y1L7hL&amp;cid=231563117&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>区间树</title>
     <url>/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/</url>
     <content><![CDATA[<h2 id="参考">参考：</h2>
@@ -1916,16 +1929,6 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>加油武汉！</title>
-    <url>/2020/09/02/%E5%8A%A0%E6%B2%B9%E6%AD%A6%E6%B1%89%EF%BC%81/</url>
-    <content><![CDATA[<iframe src="//player.bilibili.com/player.html?aid=926934688&amp;bvid=BV1mT4y1L7hL&amp;cid=231563117&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
-</iframe>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
