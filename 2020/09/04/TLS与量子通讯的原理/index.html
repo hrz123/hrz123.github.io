@@ -32,7 +32,7 @@
 <meta property="og:description" content="TLS保证安全性的最大难题在于如何传递后续对称加密时，所使用的密钥，那么目前所使用的DH或者DHCE协议呢，都存在被快速运算的计算机所破解的一个可能性。那么，接下来将介绍量子通讯协议。当然这里的量子通讯与我们在物理学中所了解到的那个量子力学一点关系都没有，只是借用了其中一些理念而已。 我们首先来看一下量子通讯的理论基础。 TLS密码学回顾  通讯双方在身份验证的基础上，协商出一次性的、随机的密钥（">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-04T02:15:58.000Z">
-<meta property="article:modified_time" content="2020-09-04T02:47:53.757Z">
+<meta property="article:modified_time" content="2020-09-04T03:29:28.721Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary">
@@ -212,7 +212,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-09-04 10:15:58 / 修改时间：10:47:53" itemprop="dateCreated datePublished" datetime="2020-09-04T10:15:58+08:00">2020-09-04</time>
+              <time title="创建时间：2020-09-04 10:15:58 / 修改时间：11:29:28" itemprop="dateCreated datePublished" datetime="2020-09-04T10:15:58+08:00">2020-09-04</time>
             </span>
 
           
@@ -283,8 +283,21 @@
 <li><p>由Charles <strong>Bennett</strong>与Giles <strong>Brassard</strong>在<strong>1984</strong>年发表</p>
 <p>2017年中国发射的墨子号量子通讯卫星，所使用的量子通讯协议，只是一个BB84协议的升级版。所以我们理解最先出现的BB84协议，对我们理解当下正在快速发展中的量子通讯是非常有意义的。</p>
 <h5 id="section"></h5>
-<p>图中呢，我们画出了两种不同的光栅，这两种光栅呢，一种是垂直的，一种是倾斜45°的。这两种光栅把它称为基或者叫basis，那么这种光栅下只能通过两种不同方向的光波。那么我们把向上的这种光波理解为</p></li>
+<p>图中呢，我们画出了两种不同的光栅，这两种光栅呢，一种是垂直的，一种是倾斜45°的。这两种光栅把它称为基或者叫basis，那么这种光栅下只能通过两种不同方向的光波。那么我们把向上的这种光波理解为二进制中的1，水平的是0，还有一种是45°的光栅，在这种光栅下呢，我们把斜向上的我们称为0，斜向下的我们称为1。那么现在有个问题，如果是一个横向的垂直的光波，通过这样一个X状的，斜着45°的状的这样的一个光栅时，究竟会能不能通过呢？可以通过。它有一些会被反射为这样的0，有一些会被反射为1，就是完全是随机的。</p>
+<p>我们来看一个具体的例子。比如Alice现在想给Bob来传递我们后续对称加密所要使用的这样的密钥，那么它要传递的一个数字信息呢是10110011001110，那么它首先自己会有一个光栅，也就是我们所谓的basis。它的basis究竟是采用斜的还是垂直的Bob是不知道的。而Alice使用当中它也是随机产生的。那么每一个1或者0它都会采用不同的光栅，发射出去的光波是这样的，有的是垂直的有的是斜的，根据它的0和1信息，而Bob检测的时候呢，它也要使用一个光栅，那么他也在随机的选用一个叉或者是一个垂直的加号作为光栅，这个时候呢根据我们刚刚所介绍的光波的一个原理，它能够获得到的信息是这样的。那么这个信息和实际Alice要发射的信息，如果信息量足够大的话，它的正确率是多少呢？正确率是75%。或者我们这样去看，它的错误率是25%。为什么是25%呢？首先，Bob的光栅和Alice的光栅完全一致的概率是50%，那么在完全一致的情况下，它们的数据肯定是完全是正确的，那么还有一种我不一致的时候也不一定是完全错误的，因为我不一致的时候其实是有一半的几率正确，一半的几率错误，虽然我是不一致的光栅的方向。所以我们的错误率是25%，那么我们的正确率自然就是75%，如果中间有一个人，开始做中间人，监听了以后，再反射到Bob的话呢。其实中间人这块它的正确率是75%，那么Bob这一块呢就是75%*75%，大概是55%。因为我们的BB84协议呢最后是需要Bob把他所检测到的这个10010011000100这段信息发送给Alice，Alice根据它的一个错误率或者说正确率来判定中间有没有中间人在监听。如果没有中间人在监听呢，那么他还会重新一个叫密钥纠错的这样的一个阶段呢，告诉Bob，你用的那些光栅的方向是对的，那么你只取这些光栅方向是对的这样的一个数据，作为我们后续的通讯的密钥，这样就可以了。可能上述的流程有一些抽象，我们可以看一个实际的例子：</p>
+<p>Alice's bit 01101001</p>
+<p>Alice's basis ++x+xxx+</p>
+<p>Alice's polariztion ↑→↖↑↖↗↗→</p>
+<p>Bob's basis +xxx+x++</p>
+<p>Bob's measurement ↑↗↖↗→↗→→</p>
+<p>Public discussion</p>
+<p>Shared Secret key 0-1--0-1</p></li>
 </ul>
+<p>Alice 要给Bob传递 01101001 这段信息。Alice的basis光栅是随机的，但是Alice非常清楚，每传递的一个数据所对应的光栅到底是什么方向，她自己是很清楚的，所以这时候Alice所传出来的光波的方向是已经确定下来了，那么Bob在接收这些光波的时候呢，他所采用的这样的一个光栅呢，有时候是与Alice一致的有时候是不一致的。Bob他所检测到的这个光波的方向是换算成01肯定是有一定的错误率的。Bob就会把他换算出来的数据，以及他所使用的方向，都发给Alice。那么Alice根据这个错误率或者说正确的概率，判定没有中间人，那么Alice就可以告诉Bob，哪些光栅的方向与我的方向是完全一致的，这样的相应对应的数据就可以拿来做我们后续加密时所使用的对称加密的这样的一个密钥。那么这样的话我们就把QKD中的密钥分发中密钥纠错和隐私增强也介绍了。</p>
+<h5 id="tlsssl协议小结">TLS/SSL协议小结</h5>
+<p>我们首先使用到了对称加密所使用到的一些技术，尤其我们重点介绍了AES算法，以及GCM分组工作模式，那么接下来我们介绍了非对称加密算法的两种应用。首先是在PKI证书体系，其次是在DH或者DHCE密钥交换协议中得到了大量广泛的使用。我们也介绍了TLS1.3协议，那么在未来TLS1.3协议将会得到大量广泛的使用，我们必须清楚TLS1.3协议究竟做了哪些改进，和优化。</p>
+<p>TLS协议的安全性受限于当下最快的计算机的运行速度，所以呢，我们也介绍了理论上绝对安全的量子通讯方式来传递密钥。</p>
+<p>那么之后我们将介绍TLS层次下的传输层协议（TLS属于表示层协议），我们将重点介绍TCP协议的设计原则和众多特性。</p>
 
     </div>
 
@@ -374,7 +387,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#tls%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%9E%E9%A1%BE"><span class="nav-number">1.</span> <span class="nav-text">TLS密码学回顾</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#bb84%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">BB84协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#section"><span class="nav-number">4.</span> <span class="nav-text"></span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#tls%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%9E%E9%A1%BE"><span class="nav-number">1.</span> <span class="nav-text">TLS密码学回顾</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#bb84%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">BB84协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#section"><span class="nav-number">4.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#tlsssl%E5%8D%8F%E8%AE%AE%E5%B0%8F%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">TLS&#x2F;SSL协议小结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -390,13 +403,13 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-count">108</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

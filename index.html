@@ -185,6 +185,220 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/04/%E4%BB%8E%E4%BA%94%E7%A7%8D%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC%E6%8E%A8%E5%AF%BC%E5%87%BAHTTP%E7%9A%84REST%E6%9E%B6%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/04/%E4%BB%8E%E4%BA%94%E7%A7%8D%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC%E6%8E%A8%E5%AF%BC%E5%87%BAHTTP%E7%9A%84REST%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">从五种架构风格推导出HTTP的REST架构</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-04 16:12:31 / 修改时间：17:32:33" itemprop="dateCreated datePublished" datetime="2020-09-04T16:12:31+08:00">2020-09-04</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/04/%E4%BB%8E%E4%BA%94%E7%A7%8D%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC%E6%8E%A8%E5%AF%BC%E5%87%BAHTTP%E7%9A%84REST%E6%9E%B6%E6%9E%84/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/04/%E4%BB%8E%E4%BA%94%E7%A7%8D%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC%E6%8E%A8%E5%AF%BC%E5%87%BAHTTP%E7%9A%84REST%E6%9E%B6%E6%9E%84/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在分布式的Web架构中呢，有5类架构风格。那么什么叫架构风格呢？我们在日常编程中可能会有习惯用法，再高一级在面向对象语言中呢，可能会有设计模式，那么再往上更大粒度的抽象我们可以用到架构。而架构风格是指某一类架构它们具有相同的或者说类似的一些约束，我们把它归纳为一类架构风格。那么我们rest架构，也就是HTTP设计所遵循的这样的架构会使用到我们下面的，或者说参考我们下列5类架构风格中的其中一些架构。</p>
+<p>那么这5类架构风格呢，主要包括：</p>
+<ol type="1">
+<li>数据流风格 Data-flow Styles（协议的分层，nginx）
+<ul>
+<li>优点：简单性、可进化性、可扩展性、可配置性、可重用性</li>
+</ul></li>
+<li>复制风格 Replication Styles
+<ul>
+<li>优点：用户可察觉的性能、可伸缩性、网络效率、可靠性也可以得到提升</li>
+</ul></li>
+<li>分层风格 Hierarchical Styles
+<ul>
+<li>优点：简单性、可进化性、可伸缩性</li>
+</ul></li>
+<li>移动代码风格 Mobile Code Styles
+<ul>
+<li>优点：可移植性、可扩展性、网络效率</li>
+</ul></li>
+<li>点对点风格 Peer-to-Peer Styles
+<ul>
+<li>优点：可进化性、可重用性、可扩展性、可配置性</li>
+</ul></li>
+</ol>
+<h3 id="数据流风格data-flow-styles">数据流风格Data-flow Styles</h3>
+<ul>
+<li>管道和过滤器Pipe And Filter，PF
+<ul>
+<li>每个Filter都有输入端和输出端，只能从输入端读取数据，处理后再从输出端产生数据（协议，TCP-ip-数据链路层协议，只能从输入端到输出端）</li>
+</ul></li>
+<li>统一接口的管道与过滤器 Uniform Pipe And Filter, UPF
+<ul>
+<li>在PF上增加了统一接口的约束，所有Filter过滤器必须具备同样的接口</li>
+</ul></li>
+</ul>
+<p>主要这种数据流风格会对简单性上有所体现，特别是UPF以后简单性会有很大的提升，我们每一个模块每一个Filter都可以独自的去升级进化不影响。那么我们再增加一个新的功能，比如说增加一个新的协议层，或者说nginx增加一个新的模块，都是很容易的，所以可扩展性也是非常好的。那么可配置性也是一样的，我们可以通过配置文件灵活的去增加我们的Filter或者说我们的协议层级，而在我们的可重用性上面也是非常好的。每一个Filter我们会独立的拿下来以后给新的这样的一种架构去使用。</p>
+<h3 id="复制风格replication-styles">复制风格Replication Styles</h3>
+<ul>
+<li>复制仓库Replicated Repository，RR
+<ul>
+<li>多个进程提供相同的服务，通过反向代理对外提供集中服务（MySQL冷热备份，Web app同时提供很多服务、使用nginx反向代理）</li>
+</ul></li>
+<li>缓存$
+<ul>
+<li>RR的变体，通过复制请求的结果，为后续请求复用</li>
+</ul></li>
+</ul>
+<p>复制仓库与缓存这两种架构，对于用户可察觉的网络性能，RR和$风格因为都会对用户能够觉察到的性能有一个提升。缓存风格呢，因为直接减少了网络的传输量，所以网络效率会更高一些，那scalability呢，可伸缩性，因为有很多可以复制的进程或者可以复制的数据，也会导致我们scalability更好。简单性上，缓存风格也会表现更好一些。因为我有多个进程多个服务，所以可靠性上也会更好一些。</p>
+<h3 id="分层风格hierarchical-styles">分层风格Hierarchical Styles</h3>
+<ul>
+<li>客户端服务器Client-Server, CS（HTTP）
+<ul>
+<li>由Client触发请求，Server监听到请求后产生响应，Client一直等待收到响应后，会话结束</li>
+<li>分离关注点隐藏细节，良好的简单性、可伸缩性、可进化性（Server只关注资源的响应的生成，资源的管理，Client就关注于网络和结果可视化的渲染。向对方都隐藏了各自的细节，所以它们的简单性相对比较好，我们只关注中间的协议，而不关注可视化或者说数据库的管理。可伸缩性：比如Server在不停地增加更多的服务的节点，我们就可以为client提供更高可用性的服务。可进化性，意味着我们client和server都可以独立的进行进展）</li>
+</ul></li>
+<li>分层系统Layered System, LS
+<ul>
+<li>每一层为其上的层服务，并使用在其之下的层所提供的服务，例如TCP/IP，OSI</li>
+</ul></li>
+<li>分层客户端服务器Layered Client-Server, LCS
+<ul>
+<li>LS+CS，例如正向代理和反向代理，从空间上分为外部层与内部层（正向代理，客户端和整个网络环境分离，反向代理把企业内网和整个企业外面的Internet网络进行了分层</li>
+</ul></li>
+<li>无状态、客户端服务器Client-Stateless-Server CSS
+<ul>
+<li>基于CS，服务器上不允许有session state会话状态</li>
+<li>提升了可见性、可伸缩性、可靠性，但重复数据导致降低网络性能（HTTP 2.0的很多升级都体现在这几个方面，HTTP2.0中不希望重复的传递HTTP的头部，因为HTTP的头部特别是Cookie占用了网络资源，就是HTTP2.0已经做不到无状态了，所以它的重复数据相对比较少，网络性能更高，但是可见性、可伸缩性、可靠性上，相对较差一些。</li>
+</ul></li>
+<li>缓存、无状态、客户端服务器Client-Cache-Stateless-Server-C$SS
+<ul>
+<li>提升性能（因为有重复数据，因为反复传递相同的header，环节可能导致的问题）</li>
+</ul></li>
+<li>分层、缓存、无状态、客户端服务器Layered-Client-Cache-Stateless-Server, LC$SS</li>
+</ul>
+<p>client connector, client+cache, server connector, server+cache</p>
+<ul>
+<li>远程会话Remote Session, RS
+<ul>
+<li>CS变体，服务器保存Application State应用状态（FTP）</li>
+<li>可伸缩性（不可能任意扩充服务器而对客户端没有影响）、可见性差（因为我单独的抓取一个报文，分析一个报文是没有办法得到完整的请求信息的）</li>
+</ul></li>
+<li>远程数据访问Remote Data Access, RDA
+<ul>
+<li>CS变体，Application state应用状态同时分布在客户端与服务器（SQL访问，因为我们的查询集可能包含几百万条数据，所以我们必须要用到游标cursor，反复的一页一页地获取数据，也就是使得我们的客户端保存了一个应用的状态，我当前查询到第几页，而服务器端也需要为游标来保存这样的相应的数据）</li>
+<li>巨大的数据集有可能通过迭代而减少整个数据集</li>
+<li>简单性、可伸缩性差（我们传统的关系型数据库很少能够支持这种高可用性，基于数据仓库的多个热备份的分布式架构，是很难达到的）</li>
+</ul></li>
+</ul>
+<p>由服务器来保存客户端的架构都会导致scalability很差，所以我们HTTP协议所依赖的Rest架构不使用这两种方式。特别是加入分层，加入CS架构以后，scalability是非常优秀的，简单性也是因为我们加入分层统一无状态以后，得到了很大的提升。可进化性因为所有基于client server这种分离关注点的情况下，我们的可进化性都是比较优秀的。而在可重复使用上，特别是基于分层属性后，都会有很大的一个提升。而在可见性上，因为我加入了一个stateless，无状态，无状态的情况下每一条请求都携带了全部的信息，所以我的可见性会更好。那么可移植性，也是基于分层以后可移植性有了很大的提升。可靠性呢，因为我们有了无状态有了缓存以后，我们的可靠性也得到了提升。</p>
+<h3 id="移动代码风格mobile-code-styles">移动代码风格Mobile Code Styles</h3>
+<p>（表示实际程序要执行的那个代码是可以任意的从客户端到服务器端移动的）</p>
+<ul>
+<li><p>虚拟机Virtual Machibe, VM</p>
+<ul>
+<li>分离指令与实现（公有云、基于KVM，Java的虚拟机）</li>
+</ul></li>
+<li><p>远程求值Remote Evaluation, REV</p>
+<ul>
+<li>基于CS的VM，将代码发送至服务器执行</li>
+</ul></li>
+<li><p>按需代码Code on Demand，COD</p>
+<ul>
+<li>服务器在响应中发回处理代码，在客户端执行（JS脚本）</li>
+<li>优秀的可扩展性和可配置性，提升用户可察觉性能和网络效率</li>
+</ul></li>
+<li><p>分层、按需代码、缓存、无状态、客户端服务器</p>
+<p>Layered-Code-on-Demand-Client-Cache-Stateless-Server, LCODC$SS</p>
+<ul>
+<li>LC$SS+COD</li>
+</ul></li>
+<li><p>移动代理Mobile Agent，MA</p>
+<ul>
+<li>相当于REV+COD</li>
+</ul></li>
+</ul>
+<p>REV的安全性风险太大</p>
+<p>统一接口的LC$SS+COD的架构</p>
+<p>用户可察觉的网络性能，网络性能，可伸缩性，可进化型，可扩展性，可配置性，可见性，可重用性</p>
+<h3 id="peer-to-peer-styles">Peer-to-Peer Styles</h3>
+<ul>
+<li><p>Event-based Integration，EBI</p>
+<ul>
+<li>基于事件集成系统，如由类似kafka，Rabbit MQ这样的消息系统+分发订阅来消除耦合</li>
+<li>优秀的可重用性、可扩展性、可进化性</li>
+<li>缺乏可理解性</li>
+<li>由于消息广播等因素造成的消息风暴，可伸缩性差</li>
+</ul></li>
+<li><p>Chiron-2，C2</p>
+<p>参见论文《A Component-and Message-Based Architectual Style for GUI Software</p>
+<ul>
+<li>相当于EBI+LCS，控制了消息的方向</li>
+</ul></li>
+<li><p>Distruibuted Objects，DO</p>
+<ul>
+<li>组件结对交互</li>
+</ul></li>
+<li><p>Brokered Distributed Object，BDO</p>
+<ul>
+<li>引入名字解析组件来简化DO，例如CORBA</li>
+</ul></li>
+</ul>
+<h3 id="风格演化到rest">风格演化到rest</h3>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -285,7 +499,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-09-04 10:15:58 / 修改时间：10:47:53" itemprop="dateCreated datePublished" datetime="2020-09-04T10:15:58+08:00">2020-09-04</time>
+              <time title="创建时间：2020-09-04 10:15:58 / 修改时间：11:29:28" itemprop="dateCreated datePublished" datetime="2020-09-04T10:15:58+08:00">2020-09-04</time>
             </span>
 
           
@@ -356,8 +570,21 @@
 <li><p>由Charles <strong>Bennett</strong>与Giles <strong>Brassard</strong>在<strong>1984</strong>年发表</p>
 <p>2017年中国发射的墨子号量子通讯卫星，所使用的量子通讯协议，只是一个BB84协议的升级版。所以我们理解最先出现的BB84协议，对我们理解当下正在快速发展中的量子通讯是非常有意义的。</p>
 <h5 id="section"></h5>
-<p>图中呢，我们画出了两种不同的光栅，这两种光栅呢，一种是垂直的，一种是倾斜45°的。这两种光栅把它称为基或者叫basis，那么这种光栅下只能通过两种不同方向的光波。那么我们把向上的这种光波理解为</p></li>
+<p>图中呢，我们画出了两种不同的光栅，这两种光栅呢，一种是垂直的，一种是倾斜45°的。这两种光栅把它称为基或者叫basis，那么这种光栅下只能通过两种不同方向的光波。那么我们把向上的这种光波理解为二进制中的1，水平的是0，还有一种是45°的光栅，在这种光栅下呢，我们把斜向上的我们称为0，斜向下的我们称为1。那么现在有个问题，如果是一个横向的垂直的光波，通过这样一个X状的，斜着45°的状的这样的一个光栅时，究竟会能不能通过呢？可以通过。它有一些会被反射为这样的0，有一些会被反射为1，就是完全是随机的。</p>
+<p>我们来看一个具体的例子。比如Alice现在想给Bob来传递我们后续对称加密所要使用的这样的密钥，那么它要传递的一个数字信息呢是10110011001110，那么它首先自己会有一个光栅，也就是我们所谓的basis。它的basis究竟是采用斜的还是垂直的Bob是不知道的。而Alice使用当中它也是随机产生的。那么每一个1或者0它都会采用不同的光栅，发射出去的光波是这样的，有的是垂直的有的是斜的，根据它的0和1信息，而Bob检测的时候呢，它也要使用一个光栅，那么他也在随机的选用一个叉或者是一个垂直的加号作为光栅，这个时候呢根据我们刚刚所介绍的光波的一个原理，它能够获得到的信息是这样的。那么这个信息和实际Alice要发射的信息，如果信息量足够大的话，它的正确率是多少呢？正确率是75%。或者我们这样去看，它的错误率是25%。为什么是25%呢？首先，Bob的光栅和Alice的光栅完全一致的概率是50%，那么在完全一致的情况下，它们的数据肯定是完全是正确的，那么还有一种我不一致的时候也不一定是完全错误的，因为我不一致的时候其实是有一半的几率正确，一半的几率错误，虽然我是不一致的光栅的方向。所以我们的错误率是25%，那么我们的正确率自然就是75%，如果中间有一个人，开始做中间人，监听了以后，再反射到Bob的话呢。其实中间人这块它的正确率是75%，那么Bob这一块呢就是75%*75%，大概是55%。因为我们的BB84协议呢最后是需要Bob把他所检测到的这个10010011000100这段信息发送给Alice，Alice根据它的一个错误率或者说正确率来判定中间有没有中间人在监听。如果没有中间人在监听呢，那么他还会重新一个叫密钥纠错的这样的一个阶段呢，告诉Bob，你用的那些光栅的方向是对的，那么你只取这些光栅方向是对的这样的一个数据，作为我们后续的通讯的密钥，这样就可以了。可能上述的流程有一些抽象，我们可以看一个实际的例子：</p>
+<p>Alice's bit 01101001</p>
+<p>Alice's basis ++x+xxx+</p>
+<p>Alice's polariztion ↑→↖↑↖↗↗→</p>
+<p>Bob's basis +xxx+x++</p>
+<p>Bob's measurement ↑↗↖↗→↗→→</p>
+<p>Public discussion</p>
+<p>Shared Secret key 0-1--0-1</p></li>
 </ul>
+<p>Alice 要给Bob传递 01101001 这段信息。Alice的basis光栅是随机的，但是Alice非常清楚，每传递的一个数据所对应的光栅到底是什么方向，她自己是很清楚的，所以这时候Alice所传出来的光波的方向是已经确定下来了，那么Bob在接收这些光波的时候呢，他所采用的这样的一个光栅呢，有时候是与Alice一致的有时候是不一致的。Bob他所检测到的这个光波的方向是换算成01肯定是有一定的错误率的。Bob就会把他换算出来的数据，以及他所使用的方向，都发给Alice。那么Alice根据这个错误率或者说正确的概率，判定没有中间人，那么Alice就可以告诉Bob，哪些光栅的方向与我的方向是完全一致的，这样的相应对应的数据就可以拿来做我们后续加密时所使用的对称加密的这样的一个密钥。那么这样的话我们就把QKD中的密钥分发中密钥纠错和隐私增强也介绍了。</p>
+<h5 id="tlsssl协议小结">TLS/SSL协议小结</h5>
+<p>我们首先使用到了对称加密所使用到的一些技术，尤其我们重点介绍了AES算法，以及GCM分组工作模式，那么接下来我们介绍了非对称加密算法的两种应用。首先是在PKI证书体系，其次是在DH或者DHCE密钥交换协议中得到了大量广泛的使用。我们也介绍了TLS1.3协议，那么在未来TLS1.3协议将会得到大量广泛的使用，我们必须清楚TLS1.3协议究竟做了哪些改进，和优化。</p>
+<p>TLS协议的安全性受限于当下最快的计算机的运行速度，所以呢，我们也介绍了理论上绝对安全的量子通讯方式来传递密钥。</p>
+<p>那么之后我们将介绍TLS层次下的传输层协议（TLS属于表示层协议），我们将重点介绍TCP协议的设计原则和众多特性。</p>
 
       
     </div>
@@ -955,83 +1182,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%87%BD%E6%95%B0%E7%BC%96%E7%A8%8B%E4%B8%AD%E7%9A%84%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%87%BD%E6%95%B0%E7%BC%96%E7%A8%8B%E4%B8%AD%E7%9A%84%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">设计模式--函数编程中的装饰者模式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-09-02 00:06:10 / 修改时间：00:11:44" itemprop="dateCreated datePublished" datetime="2020-09-02T00:06:10+08:00">2020-09-02</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/09/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%87%BD%E6%95%B0%E7%BC%96%E7%A8%8B%E4%B8%AD%E7%9A%84%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%87%BD%E6%95%B0%E7%BC%96%E7%A8%8B%E4%B8%AD%E7%9A%84%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>假设我们想对一个函数进行它执行时间的打印，我们可以用函数式编程，完成一个装饰器。</p>
-<p>下面给出Python3和Go中的代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">timeSpent</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">    @functools.wraps(func)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">        start = time.perf_counter()</span><br><span class="line">        res = func(*args, **kwargs)</span><br><span class="line">        print(<span class="string">&quot;time sleep&quot;</span>, time.perf_counter() - start)</span><br><span class="line">        <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@timeSpent</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">x, y</span>):</span></span><br><span class="line">    time.sleep(<span class="number">0.1</span>)</span><br><span class="line">    <span class="keyword">return</span> x + y</span><br></pre></td></tr></table></figure>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">timeSpent</span><span class="params">(inner <span class="keyword">func</span>(op <span class="keyword">int</span>)</span> <span class="title">int</span>) <span class="title">func</span><span class="params">(op <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(n <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">     start := time.Now()</span><br><span class="line">       ret := inner(n)</span><br><span class="line">       fmt.Println(<span class="string">&quot;time spent:&quot;</span>, time.Since(start).Seconds())</span><br><span class="line">     <span class="keyword">return</span> ret</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">slowFunc</span><span class="params">(op <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    time.Sleep(time.Second * <span class="number">1</span>)</span><br><span class="line">   <span class="keyword">return</span> op</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestFn</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">  tsSF := timeSpent(slowFunc)</span><br><span class="line">   t.Log(tsSF(<span class="number">10</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样就可以对一个想要计算执行时间的函数，快速添加计算执行时间的代码。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1103,13 +1253,13 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-count">108</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
