@@ -24,20 +24,20 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="先说结论 如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。 在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。 正确的方法 下面这个流程：  取得整个表的行数，并记为C。 取得Y &#x3D; floor(C * ra">
+  <meta name="description" content="TLS保证安全性的最大难题在于如何传递后续对称加密时，所使用的密钥，那么目前所使用的DH或者DHCE协议呢，都存在被快速运算的计算机所破解的一个可能性。那么，接下来将介绍量子通讯协议。当然这里的量子通讯与我们在物理学中所了解到的那个量子力学一点关系都没有，只是借用了其中一些理念而已。 我们首先来看一下量子通讯的理论基础。 TLS密码学回顾  通讯双方在身份验证的基础上，协商出一次性的、随机的密钥（">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL如何正确地显示随机消息？ ">
-<meta property="og:url" content="https://hrz123.github.io/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/index.html">
+<meta property="og:title" content="TLS与量子通讯的原理">
+<meta property="og:url" content="https://hrz123.github.io/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="先说结论 如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。 在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。 正确的方法 下面这个流程：  取得整个表的行数，并记为C。 取得Y &#x3D; floor(C * ra">
+<meta property="og:description" content="TLS保证安全性的最大难题在于如何传递后续对称加密时，所使用的密钥，那么目前所使用的DH或者DHCE协议呢，都存在被快速运算的计算机所破解的一个可能性。那么，接下来将介绍量子通讯协议。当然这里的量子通讯与我们在物理学中所了解到的那个量子力学一点关系都没有，只是借用了其中一些理念而已。 我们首先来看一下量子通讯的理论基础。 TLS密码学回顾  通讯双方在身份验证的基础上，协商出一次性的、随机的密钥（">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-08-28T02:39:09.000Z">
-<meta property="article:modified_time" content="2020-08-28T08:24:29.397Z">
+<meta property="article:published_time" content="2020-09-04T02:15:58.000Z">
+<meta property="article:modified_time" content="2020-09-04T02:28:06.153Z">
 <meta property="article:author" content="侯瑞哲">
-<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://hrz123.github.io/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/">
+<link rel="canonical" href="https://hrz123.github.io/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/">
 
 
 <script id="page-configurations">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>MySQL如何正确地显示随机消息？  | 侯瑞哲的博客</title>
+  <title>TLS与量子通讯的原理 | 侯瑞哲的博客</title>
   
 
 
@@ -188,7 +188,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          MySQL如何正确地显示随机消息？ 
+          TLS与量子通讯的原理
         </h1>
 
         <div class="post-meta">
@@ -212,7 +212,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-28 10:39:09 / 修改时间：16:24:29" itemprop="dateCreated datePublished" datetime="2020-08-28T10:39:09+08:00">2020-08-28</time>
+              <time title="创建时间：2020-09-04 10:15:58 / 修改时间：10:28:06" itemprop="dateCreated datePublished" datetime="2020-09-04T10:15:58+08:00">2020-09-04</time>
             </span>
 
           
@@ -224,8 +224,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -240,30 +240,32 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>先说结论</p>
-<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
-<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
-<h3 id="正确的方法">正确的方法</h3>
-<p>下面这个流程：</p>
-<ol type="1">
-<li>取得整个表的行数，并记为C。</li>
-<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
-<li>再用limit Y，1 取得一行。</li>
-</ol>
-<p>下面这段代码，就是上面流程的执行语句的序列。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
-<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
-<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
-<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
-<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
-<ol type="1">
-<li>取得整个表的行数，即为C</li>
-<li>按照相同的随机方法得到Y1、Y2、Y3</li>
-<li>再执行三个limit Y, 1语句得到三行数据。</li>
-<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
-</ol>
-<h3 id="参考">参考</h3>
-<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
+        <p>TLS保证安全性的最大难题在于如何传递后续对称加密时，所使用的密钥，那么目前所使用的DH或者DHCE协议呢，都存在被快速运算的计算机所破解的一个可能性。那么，接下来将介绍量子通讯协议。当然这里的量子通讯与我们在物理学中所了解到的那个量子力学一点关系都没有，只是借用了其中一些理念而已。</p>
+<p>我们首先来看一下量子通讯的理论基础。</p>
+<h5 id="tls密码学回顾">TLS密码学回顾</h5>
+<ul>
+<li>通讯双方在<strong>身份验证</strong>的基础上，<strong>协商</strong>出<strong>一次性的</strong>、<strong>随机</strong>的密钥（我们上文中所介绍过的session id和session ticket还有0RTT都违反了一次性这个原则，所以呢我们也需要用时间来做限制，往往几个小时，或者几天之内必选要过期等等）（什么叫随机呢？我们使用DH系列协议的时候呢，生成的这个私钥必须基于硬件的或者说相对可靠的这样的一个随机算法，来生成随机的这样的一个私钥。那么后续才能够保证我们这个密钥是可靠的）
+<ul>
+<li>PKI公钥基础设施（身份验证）</li>
+<li>TLS中间件生成一次性的、随机的密钥参数</li>
+<li>DH系列协议基于非对称加密技术协商出密钥（协商）</li>
+</ul></li>
+<li>使用<strong>分组</strong>对称加密算法，基于有限长度的密钥将任意长度的明文加密传输
+<ul>
+<li>密钥位数</li>
+<li>分组工作模式（AES, GCM)</li>
+</ul></li>
+</ul>
+<p>香农曾经在信息论中证明过：</p>
+<ul>
+<li>证明one-time-pad(OTP)的绝对安全性
+<ul>
+<li>密钥是<strong>随机</strong>生成的</li>
+<li>密钥的长度<strong>大于等于</strong>明文长度</li>
+<li>相同的密钥只能使用一次（重放攻击，session id, session ticket等）</li>
+</ul></li>
+<li>如何传递密钥？</li>
+</ul>
 
     </div>
 
@@ -273,7 +275,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
           </div>
 
         
@@ -287,12 +289,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/" rel="prev" title="为什么rowid是6个字节">
-      <i class="fa fa-chevron-left"></i> 为什么rowid是6个字节
+    <a href="/2020/09/04/TLS%E6%8F%A1%E6%89%8B%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%9Asession%E7%BC%93%E5%AD%98%E3%80%81ticket%E7%A5%A8%E6%8D%AE%E5%8F%8ATLS1-3%E7%9A%840-RTT/" rel="prev" title="TLS握手的优化：session缓存、ticket票据及TLS1.3的0-RTT">
+      <i class="fa fa-chevron-left"></i> TLS握手的优化：session缓存、ticket票据及TLS1.3的0-RTT
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/08/28/%E8%AE%A8%E8%AE%BA%E5%B7%B2%E7%BB%8F%E5%88%B0%E8%BE%BE%E4%BA%86-%E6%B0%B4%E8%BE%B9-%EF%BC%8C%E6%98%AF%E5%90%A6%E5%96%9D%E6%B0%B4%E5%B0%B1%E7%9C%8B%E4%BD%A0%E7%9A%84%E5%86%B3%E5%BF%83%E4%BA%86/" rel="next" title="讨论已经到达了'水边'，是否喝水就看你的决心了">
-      讨论已经到达了'水边'，是否喝水就看你的决心了 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/" rel="next" title="避免熵增">
+      避免熵增 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -353,7 +355,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">正确的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#tls%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%9E%E9%A1%BE"><span class="nav-number">1.</span> <span class="nav-text">TLS密码学回顾</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -616,7 +618,7 @@ if (document.querySelectorAll('pre.mermaid').length) {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/',]
       });
       });
   </script>

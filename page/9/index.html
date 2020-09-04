@@ -185,6 +185,254 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/" class="post-title-link" itemprop="url">猫抓老鼠的简单讨论</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-27 09:22:55" itemprop="dateCreated datePublished" datetime="2020-07-27T09:22:55+08:00">2020-07-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-07-29 14:16:24" itemprop="dateModified" datetime="2020-07-29T14:16:24+08:00">2020-07-29</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="两个问题以及其解答">两个问题以及其解答</h2>
+<ol type="1">
+<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
+<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
+<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
+<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
+<p>答案是不能。</p>
+<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
+<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
+<p><span class="math display">\[
+\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
+\]</span></p>
+<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
+<p>根据猫的速度是老鼠的4倍，</p>
+<p><span class="math display">\[
+x = \frac{4-\pi}{4}r \approx0.2146r
+\]</span></p>
+<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
+<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/26/%E5%8F%8C%E8%9B%8B%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E6%9B%B4%E4%B8%BB%E8%A6%81%E7%9A%84%E5%85%B6%E6%9B%B4%E9%80%9A%E7%94%A8%E5%8C%96%E4%B8%94%E6%9C%89%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/26/%E5%8F%8C%E8%9B%8B%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E6%9B%B4%E4%B8%BB%E8%A6%81%E7%9A%84%E5%85%B6%E6%9B%B4%E9%80%9A%E7%94%A8%E5%8C%96%E4%B8%94%E6%9C%89%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3/" class="post-title-link" itemprop="url">双蛋问题以及更主要的其更通用化且有用的问题的解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-26 20:49:35" itemprop="dateCreated datePublished" datetime="2020-07-26T20:49:35+08:00">2020-07-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-13 14:08:10" itemprop="dateModified" datetime="2020-08-13T14:08:10+08:00">2020-08-13</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/07/26/%E5%8F%8C%E8%9B%8B%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E6%9B%B4%E4%B8%BB%E8%A6%81%E7%9A%84%E5%85%B6%E6%9B%B4%E9%80%9A%E7%94%A8%E5%8C%96%E4%B8%94%E6%9C%89%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/26/%E5%8F%8C%E8%9B%8B%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E6%9B%B4%E4%B8%BB%E8%A6%81%E7%9A%84%E5%85%B6%E6%9B%B4%E9%80%9A%E7%94%A8%E5%8C%96%E4%B8%94%E6%9C%89%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="题目leetcode-887.-鸡蛋掉落">题目：LeetCode <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc3VwZXItZWdnLWRyb3Av">887. 鸡蛋掉落<i class="fa fa-external-link-alt"></i></span></h2>
+<p>你将获得 K 个鸡蛋，并可以使用一栋从 1 到 N 共有 N 层楼的建筑。</p>
+<p>每个蛋的功能都是一样的，如果一个蛋碎了，你就不能再把它掉下去。</p>
+<p>你知道存在楼层 F ，满足 0 &lt;= F &lt;= N 任何从高于 F 的楼层落下的鸡蛋都会碎，从 F 楼层或比它低的楼层落下的鸡蛋都不会破。</p>
+<p>每次移动，你可以取一个鸡蛋（如果你有完整的鸡蛋）并把它从任一楼层 X 扔下（满足 1 &lt;= X &lt;= N）。</p>
+<p>你的目标是确切地知道 F 的值是多少。</p>
+<p>无论 F 的初始值如何，你确定 F 的值的最小移动次数是多少？</p>
+<p>示例 1：</p>
+<p>输入：K = 1, N = 2 输出：2 解释： 鸡蛋从 1 楼掉落。如果它碎了，我们肯定知道 F = 0 。 否则，鸡蛋从 2 楼掉落。如果它碎了，我们肯定知道 F = 1 。 如果它没碎，那么我们肯定知道 F = 2 。 因此，在最坏的情况下我们需要移动 2 次以确定 F 是多少。 示例 2：</p>
+<p>输入：K = 2, N = 6 输出：3 示例 3：</p>
+<p>输入：K = 3, N = 14 输出：4</p>
+<p>提示：</p>
+<p>1 &lt;= K &lt;= 100 1 &lt;= N &lt;= 10000</p>
+<h2 id="思路">思路</h2>
+<h3 id="基本想法">基本想法</h3>
+<p>首先，我们可以看到要得到较大的楼层和鸡蛋的答案，小的情况下的结果是有用的分析，这就导致了动态递推。</p>
+<p>定义子问题，也就是定义子状态。</p>
+<p>我们有两个变量</p>
+<ul>
+<li>还有多少可以扔的鸡蛋 i ，(0 &lt;= i &lt;= K)</li>
+<li>还剩下几层楼来测试 j ，(i &lt;= j &lt;= N)</li>
+</ul>
+<p>结果就是我们子问题</p>
+<p>dp[i][j]就是在还有i个鸡蛋，j层楼的时候，我们要得到这个目标楼层所用的最小次数。</p>
+<h3 id="dp方程">DP方程</h3>
+<p>初始化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dp[1][j] &#x3D; j, j &#x3D; 1...N # one egg, check each floor from 1 to j</span><br><span class="line">dp[i][0] &#x3D; 0, i &#x3D; 1...K # no floor, no drop needed to get the optimal floor</span><br><span class="line">dp[i][1] &#x3D; 1, i &#x3D; 1...K # one floor, only check once</span><br></pre></td></tr></table></figure>
+<p>递推方程</p>
+<p>为了得到递归关系，我们来考虑一个测试案例。3个鸡蛋和100层楼 对于写一次降落，我可以从1到100中选择楼层，比如我选择25。 这个掉落有2种可能的结果。</p>
+<ul>
+<li>蛋碎了，我现在有2个蛋，可以选择的楼层变成了1~24。</li>
+<li>鸡蛋仍然安全，我仍然有3个鸡蛋，要选择的楼层变成26~100。</li>
+</ul>
+<p>考虑最坏的情况，用上面的dp定义，我们可以把下一次选择楼层25的情况找目标楼层的情况描述成：</p>
+<p>dp[3][100] = 1 + max(dp[2][24], dp[3][75])</p>
+<p>除了第25层，对于下次抛下，我们也可以选择1到100层其他楼层。每一次抛下都类似于25层的情况。最终的结果将是所有这些可能的下次抛下的楼层的选择的最小值。</p>
+<p>dp[3] [100] = min(..., 1 + max(dp[2] [23], dp[3] [76]), 1 + max(dp[2] [24], dp[3] [75]), 1 + max(dp[2] [25], dp[3] [74]), ...) (拿24、25、26举例)</p>
+<p>最终的递推方程是： <span class="math display">\[
+dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
+\]</span></p>
+<h3 id="暴力解法">暴力解法：</h3>
+<p>有了刚才的递推公式，暴力解法应该是O(kn^2)时间复杂度</p>
+<p>示例代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">superEggDrop</span>(<span class="params">self, K: int, N: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [[float(<span class="string">&#x27;inf&#x27;</span>)] * (N + <span class="number">1</span>) <span class="keyword">for</span> _ <span class="keyword">in</span> range(K + <span class="number">1</span>)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, K + <span class="number">1</span>):</span><br><span class="line">            dp[i][<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">            dp[i][<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, N + <span class="number">1</span>):</span><br><span class="line">            dp[<span class="number">1</span>][j] = j</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, K + <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">2</span>, N + <span class="number">1</span>):</span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> range(<span class="number">1</span>, j + <span class="number">1</span>):</span><br><span class="line">                    dp[i][j] = min(dp[i][j],</span><br><span class="line">                                   <span class="number">1</span> + max(dp[i - <span class="number">1</span>][k - <span class="number">1</span>], dp[i][j - k]))</span><br><span class="line">        <span class="keyword">return</span> dp[K][N]</span><br></pre></td></tr></table></figure>
+<p>或者减少空间复杂度的下面代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">superEggDrop</span>(<span class="params">self, K: int, N: int</span>) -&gt; int:</span></span><br><span class="line">        dp = list(range(N + <span class="number">1</span>))</span><br><span class="line">        _dp = [<span class="number">0</span>] * (N + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> range(K - <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, N + <span class="number">1</span>):</span><br><span class="line">                _dp[j] = <span class="number">1</span> + min(max(dp[k - <span class="number">1</span>], _dp[j - k])</span><br><span class="line">                                 <span class="keyword">for</span> k <span class="keyword">in</span> range(<span class="number">1</span>, j + <span class="number">1</span>))</span><br><span class="line">            dp, _dp = _dp, dp</span><br><span class="line">        <span class="keyword">return</span> dp[N]</span><br></pre></td></tr></table></figure>
+<h3 id="优化1对每个dpi-j选择k">优化1，对每个dp[i] [j]选择k</h3>
+<p>我们的暴力解法在leetcode上超时了，提示我们要检查for循环中不必要的迭代。更具体的说，为了得到每次抛下最适合的k值，我们不需要遍历从i到j的所有楼层， dp[i] [k]是一个随k的升高而升高的函数。这意味着dp[i-1] [k-1]将会升高而dp[i] [j-k]将会降低，当k从1到j的时候。最优的k值将在中点这两个值相遇的时候。所以为了得到最优的k值，我们可以对k从1到j做一个二分搜索。</p>
+<p>这将使得第三个对k循环从O(n)的时间复杂度下降到O(logn)。总时间复杂度是O(knlogn)。使用二分搜索，我们只能做自底向上的dp，示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">superEggDrop</span>(<span class="params">self, K: int, N: int</span>) -&gt; int:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> i == <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> j</span><br><span class="line">            <span class="keyword">if</span> j == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">            <span class="keyword">if</span> j == <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> (i, j) <span class="keyword">in</span> d:</span><br><span class="line">                <span class="keyword">return</span> d[i, j]</span><br><span class="line">            lo, hi = <span class="number">0</span>, j</span><br><span class="line">            <span class="keyword">while</span> lo &lt; hi:</span><br><span class="line">                mid = (lo + hi) / <span class="number">2</span></span><br><span class="line">                left, right = dfs(i - <span class="number">1</span>, mid - <span class="number">1</span>), dfs(i, j - mid)</span><br><span class="line">                <span class="keyword">if</span> left &lt; right:</span><br><span class="line">                    lo = mid + <span class="number">1</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    hi = mid</span><br><span class="line">            res = <span class="number">1</span> + max(dfs(i - <span class="number">1</span>, lo - <span class="number">1</span>), dfs(i, j - lo))</span><br><span class="line">            d[i, j] = res</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">        d = &#123;&#125;</span><br><span class="line">        <span class="keyword">return</span> dfs(K, N)</span><br></pre></td></tr></table></figure>
+<h3 id="优化2为每个dpi-1..n-选择-k_1-..-k_n">优化2，为每个dp[i] [1..N] 选择 k_1 .. k_N</h3>
+<p>再进一步，到现在为止，我们仍然在为了每个dp[i] [j]寻找从1到j的最优层数k。事实上，我们可以看到，随着j的增加，每个dp[i] [j]的最优楼层k也在增加。这意味着一旦我们得到了dp[i] [j]的最优k，我们就可以保存当前k值，直接开始下一轮的for-loop，而不用再从0开始启动k。这样，在第三个for-loop中，由于j在第二个for-loop中从1到N，k只会从1到N一次，总的时间复杂度为O(kN)。代码如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">superEggDrop</span>(<span class="params">self, K: int, N: int</span>) -&gt; int:</span></span><br><span class="line">        dp = [[float(<span class="string">&#x27;inf&#x27;</span>)] * (N + <span class="number">1</span>) <span class="keyword">for</span> _ <span class="keyword">in</span> range(K + <span class="number">1</span>)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, K + <span class="number">1</span>):</span><br><span class="line">            dp[i][<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">            dp[i][<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, N + <span class="number">1</span>):</span><br><span class="line">            dp[<span class="number">1</span>][j] = j</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, K + <span class="number">1</span>):</span><br><span class="line">            k = <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">2</span>, N + <span class="number">1</span>):</span><br><span class="line">                <span class="keyword">while</span> k &lt; j + <span class="number">1</span> <span class="keyword">and</span> dp[i][j - k] &gt; dp[i - <span class="number">1</span>][k - <span class="number">1</span>]:</span><br><span class="line">                    k += <span class="number">1</span></span><br><span class="line">                dp[i][j] = <span class="number">1</span> + dp[i - <span class="number">1</span>][k - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">return</span> dp[K][N]</span><br></pre></td></tr></table></figure>
+<h3 id="优化3空间复杂度">优化3，空间复杂度</h3>
+<p>通常情况下，如果dp的递归关系是基于之前状态的恒定长度，我们可以节省一个维度的空间复杂度。在这里，当前行dp[i]是基于当前行和前行得到更新的，所以我们可以只记录这两行，并在迭代过程中进行更新，以节省一维的空间复杂度。最终时间复杂度O(kn)，空间复杂度O(n)。代码如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">superEggDrop</span>(<span class="params">self, K: int, N: int</span>) -&gt; int:</span></span><br><span class="line">        dp = range(N + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, K + <span class="number">1</span>):</span><br><span class="line">            k = <span class="number">1</span></span><br><span class="line">            ndp = [<span class="number">0</span>, <span class="number">1</span>] + [float(<span class="string">&#x27;inf&#x27;</span>)] * (N - <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">2</span>, N + <span class="number">1</span>):</span><br><span class="line">                <span class="keyword">while</span> k &lt; j + <span class="number">1</span> <span class="keyword">and</span> ndp[j - k] &gt; dp[k - <span class="number">1</span>]:</span><br><span class="line">                    k += <span class="number">1</span></span><br><span class="line">                ndp[j] = <span class="number">1</span> + dp[k - <span class="number">1</span>]</span><br><span class="line">            dp = ndp</span><br><span class="line">        <span class="keyword">return</span> dp[N]</span><br></pre></td></tr></table></figure>
+<p>优化代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># f(i, j)还剩i个鸡蛋，k层楼，最少需要的次数</span></span><br><span class="line"><span class="comment"># 距离f(2, 100) 2个鸡蛋100层楼</span></span><br><span class="line"><span class="comment"># 选了25层，碎了，没碎</span></span><br><span class="line"><span class="comment">#        max(f(i-1, k-1) , f(i, j-k))</span></span><br><span class="line"><span class="comment"># f(i, j) = min(max(f(i-1, k-1), f(i, j-k))) + 1 for k in 1..j</span></span><br><span class="line"><span class="comment"># 初始化和边界条件</span></span><br><span class="line"><span class="comment"># f(i,1) = 1,一层只需要一次，只要鸡蛋数大于等于1</span></span><br><span class="line"><span class="comment"># f(1,j) = j,一个鸡蛋只能从最低层一个一个实验</span></span><br><span class="line"><span class="comment"># 层数加上一个哨兵0，这样访问索引即是层数，并且当k等于1时，递推到f(i, 0)为0</span></span><br><span class="line"><span class="comment"># 在一层碎了，f(i, 0) = 0</span></span><br><span class="line"><span class="comment"># 返回值，f(K,N)</span></span><br><span class="line"><span class="comment"># 优化复杂度</span></span><br><span class="line"><span class="comment"># 我们的k不用从1开始，随着j的增加，最合适的k层也是在增加的，对于每一个i，我们都重新开始计k</span></span><br><span class="line"><span class="comment"># 在这一轮中，k从上一次最佳开始，最佳的时候f(i-1, k-1) &gt;= f(i, j-k)</span></span><br><span class="line"><span class="comment"># 我们取f(i-1, k-1)，更新f(i, j) = f(i-1,k-1)+1</span></span><br><span class="line"><span class="comment"># 可降低时间复杂度为O(KN)</span></span><br><span class="line"><span class="comment"># 空间复杂度，我们可以使用两个数组滚动</span></span><br><span class="line"><span class="comment"># 一个代表i-1个鸡蛋时，一个表示i个鸡蛋时</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">superEggDrop</span>(<span class="params">self, K: int, N: int</span>) -&gt; int:</span></span><br><span class="line">        dp = list(range(N + <span class="number">1</span>))</span><br><span class="line">        ndp = [<span class="number">0</span>] * (N + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, K + <span class="number">1</span>):</span><br><span class="line">            k = <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, N + <span class="number">1</span>):</span><br><span class="line">                <span class="keyword">while</span> k &lt;= j <span class="keyword">and</span> dp[k - <span class="number">1</span>] &lt; ndp[j - k]:</span><br><span class="line">                    k += <span class="number">1</span></span><br><span class="line">                ndp[j] = dp[k - <span class="number">1</span>] + <span class="number">1</span></span><br><span class="line">            dp, ndp = ndp, dp</span><br><span class="line">        <span class="keyword">return</span> dp[N]</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2>
+<p>我个人建议按照以下逻辑来思考这个问题。</p>
+<ol type="1">
+<li>为什么要用dp？在什么情况下我们应该用dp来解决问题？</li>
+<li>问题中描述一个状态的基本情况和递归关系是什么？</li>
+<li>根据以上分析，dp公式是什么？</li>
+<li>实现蛮力解决。</li>
+<li>优化：找到dp数组的模式，哪些迭代是不必要的，可以节省的？</li>
+<li>时间和空间复杂度是多少？有什么办法可以节省一个维度的空间复杂度？</li>
+</ol>
+<h2 id="转载感谢">转载感谢</h2>
+<p>感谢优秀题解</p>
+<p>https://leetcode.com/problems/super-egg-drop/discuss/159079/Python-DP-from-kn2-to-knlogn-to-kn</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1231,283 +1479,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">接口限流算法：漏桶算法 & 令牌桶算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-07-22 01:05:24 / 修改时间：11:14:34" itemprop="dateCreated datePublished" datetime="2020-07-22T01:05:24+08:00">2020-07-22</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="概念">概念</h2>
-<p>工作中对外提供的API接口设计都要考虑限流，如果不考虑限流，会造成系统的连锁反应，轻者响应缓慢，重者系统宕机，整个业务线崩溃，如何应对这种情况呢，我们可以对请求进行引流或者直接拒绝等操作，保持系统的可用性和稳定性，防止因流量暴增而导致的系统运行缓慢或宕机。</p>
-<p>在开发高并发系统时有三把利器用来保护系统：<strong>缓存、降级和限流</strong></p>
-<p><strong>缓存：</strong>缓存的目的是提升系统访问速度和增大系统处理容量</p>
-<p><strong>降级：</strong>降级是当服务器压力剧增的情况下，根据当前业务情况及流量对一些服务和页面有策略的降级，以此释放服务器资源以保证核心任务的正常运行</p>
-<p><strong>限流：</strong>限流的目的是通过对并发访问/请求进行限速，或者对一个时间窗口内的请求进行限速来保护系统，一旦达到限制速率则可以拒绝服务、排队或等待、降级等处理</p>
-<h2 id="限流算法">限流算法</h2>
-<p>常用的限流算法有<strong>令牌桶</strong>和<strong>漏桶</strong>，而Google开源项目Guava中的RateLimiter使用的就是令牌桶控制算法。</p>
-<h3 id="漏桶算法">漏桶算法</h3>
-<p>把请求比作是水，水来了都先放进桶里，并以限定的速度出水，当水来得过猛而水不够快时就会导致水直接溢出，即拒绝服务。</p>
-<img data-src="/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%951.png" class>
-<p>漏斗有一个进水口和一个出水口，出水口以一定速率出水，并且有一个最大出水率：</p>
-<p>在漏斗中没有水的时候，</p>
-<ul>
-<li>如果进水速率小于等于最大出水速率，那么，出水速率等于进水速率，此时，不会积水</li>
-<li>如果进水速率大于最大出水速率，那么，漏斗以最大速率出水，此时，多于的水会积在漏斗中</li>
-</ul>
-<p>在漏斗中有水的时候，</p>
-<ul>
-<li>出水口以最大速率出水</li>
-<li>如果漏斗未满，且有进水的话，那么这些水会积在漏斗中</li>
-<li>如果漏斗已满，且有进水的话，那么这些水会溢出到漏斗之外</li>
-</ul>
-<h3 id="令牌桶算法">令牌桶算法</h3>
-<p>对于很多应用场景来说，除了要求能够限制数据的平均传输速率外，还要求允许某种程度的突发传输。这时候漏桶算法可能就不合适了，令牌桶算法更为适合。</p>
-<p>令牌桶算法的原理是系统以恒定的速率产生令牌，然后把令牌放到令牌桶中，令牌桶有一个容量，当令牌桶满了的时候，再向其中放令牌，那么多余的令牌会被丢弃；当想要处理一个请求的时候，需要从令牌桶中取出一个令牌，如果此时令牌桶没有令牌，那么则拒绝该请求。</p>
-<img data-src="/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%952.png" class>
-<p>google guava实现了令牌桶限流算法：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dvb2dsZS9ndWF2YQ==">https://github.com/google/guava<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="令牌桶算法-vs-漏桶算法">令牌桶算法 vs 漏桶算法</h3>
-<p><strong>漏桶：</strong></p>
-<p>漏桶的出水速度是恒定的，那么意味着如果瞬时大流量的话，将有大部分请求被丢弃掉（也就是所谓的溢出）。</p>
-<p><strong>令牌桶：</strong></p>
-<p>生成令牌的速度时恒定的，而请求去哪令牌是没有速度限制的。这意味，面对瞬时大流量，该算法可以在短时间内请求拿到大量令牌，而且拿令牌的过程并不是消耗很大的事情。</p>
-<h2 id="最后">最后</h2>
-<p>不论是对于令牌桶拿不到令牌被拒绝，还是漏桶的水满了溢出，都是为了保证大部分流量的正常使用，而牺牲掉了少部分流量，这是合理的，如果因为极少部分流量需要保证的话，那么就可能导致系统达到极限而挂掉，得不偿失。</p>
-<p>本文讲的单机的限流，是JVM级别的限流，所有的令牌生成都是在内存中，在分布式环境下不能直接这么用，可以使用，可以使用redis限流</p>
-<h2 id="出处">出处</h2>
-<p>https://www.ymq.io/2018/08/11/RateLimiter/</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/" class="post-title-link" itemprop="url">平衡二叉搜索树、B树、B+树、B*树理解</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-07-21 13:59:21" itemprop="dateCreated datePublished" datetime="2020-07-21T13:59:21+08:00">2020-07-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-01 12:51:25" itemprop="dateModified" datetime="2020-08-01T12:51:25+08:00">2020-08-01</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="平衡二叉搜索树">平衡二叉搜索树</h2>
-<h3 id="概念">概念：</h3>
-<p>平衡二叉搜索是基于二分法的策略提高数据的查找速度的二叉树的数据结构；</p>
-<h3 id="特点">特点：</h3>
-<p>平衡二叉搜索树是采用二分法思维把数据按规则组装成一个树形结构的数据，用这个树形结构的数据减少物管数据的检索，大大提升了数据检索的速度；平衡二叉树的数据结构组转过程有以下规则。</p>
-<ol type="1">
-<li>非叶子节点只能允许最多两个子节点存在；</li>
-<li>每一个非叶子节点的左子树上所有结点都小于当前节点的值，右子树上所有结点都大于当前节点的值；</li>
-<li>树左右两边的层级数相差不会大于1；</li>
-<li>没有值相等重复的结点；</li>
-<li>左右子树也是平衡二查搜索树。</li>
-</ol>
-<h2 id="b树">B树</h2>
-<h3 id="概念-1">概念：</h3>
-<p>B树和二叉树稍有不同的是B树属于多叉树又名平衡多路搜索树（查找路径不只两个）。</p>
-<h3 id="规则">规则：</h3>
-<ol type="1">
-<li>排序方式：所有结点关键字是按递增次序排列，并遵循左小右大原则；</li>
-<li>子节点数：非叶子节点的子节点数&gt;1，且&lt;=M，且M&gt;=2，空树除外（注：M阶代表一个树节点最多有多少个查找路径，M=M路，当M=2是时二叉树，M=3时是三叉）；</li>
-<li>关键字数：枝结点的关键字数量大于等于ceil(M/2)-1 且小于等于M-1个（ceil是向正无穷方向取整的函数，如ceil(1.1) = 2）;</li>
-<li>所有叶子节点都在同一层、叶子节点除了包含了关键字和关键字记录的指针外，也有指向其子节点的指针，只不过其指针地址都为null，对应下图最后一层节点的空格子。</li>
-</ol>
-<p>最后我们用一个图和一个实际的例子来理解B树（这里为了理解方便我就直接用实际字母的大小来排列C&gt;B&gt;A）</p>
-<img data-src="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/B%E6%A0%91.jpg" class>
-<ul>
-<li><p>B树的查找流程</p>
-<p>如上图如果要从上图中找到E字母，查找流程如下</p>
-<ol type="1">
-<li>获取根节点的关键字进行比较，当前根节点关键字为M，E&lt;M（26个字母顺序），所以往左找到左边的子节点</li>
-<li>拿到关键字D和G，D&lt;E&lt;G所以直接找到D和G中间的节点。</li>
-<li>拿到E和F，因为E=E所以直接返回关键字和指针信息（如果树结构立面没有包含所要查找的节点则返回null)；</li>
-</ol></li>
-<li><p>B树的插入节点流程</p>
-<p>定义一个5阶树（平衡五路搜索树），现在我们要把3，8，31，11，23，29，50，28这些数字构建一个5阶树出来；</p>
-<p>遵循规则：</p>
-<ol type="1">
-<li>节点拆分规则：单签是要组成一个5路搜索树，那么此时m=5，关键字数必须&lt;=5-1（这里关键字数&gt;4就要进行节点拆分）；</li>
-<li>排序规则：满足节点本身比左子树左右节点大，比右子树所有节点小的排序规则。</li>
-</ol>
-<p>先插入3、8、31、11</p>
-<img data-src="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/B%E6%A0%912.jpg" class>
-<p>再插入23、29</p>
-<img data-src="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/B%E6%A0%913.png" class>
-<p>再插入50、28</p>
-<img data-src="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/B%E6%A0%914.png" class></li>
-<li><p>B树节点的删除</p>
-<p>规则：</p>
-<ol type="1">
-<li>节点合并规则：当前是要组成一个5路查找树，那么此时m=5，关键字数必须大于等于ceil(5/2)-1（这里就是关键字数&lt;2就要进行节点合并）</li>
-<li>满足节点本身比左子树所有结点大，比右子树所有结点小的排序规则；</li>
-<li>关键字数小于二时先从子节点取，子节点没有符合条件时就向父节点取，取中间值往父节点放；</li>
-</ol>
-<img data-src="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/B%E6%A0%915.png" class>
-<h3 id="特点-1">特点：</h3>
-<p>B树相对于平衡二叉树的不同是，每个节点包含的关键字增多了，特别是在B树应用到数据库中的时候，数据库充分利用了磁盘块的原理（磁盘数据存储是采用块的形式存储的，每个块的大小为4K，每次IO进行数据读取时，同一个磁盘块的数据可以一次性读取出来）把节点大小限制和充分使用在磁盘快大小范围；把树的节点关键字增多后树的层级比原来的二叉树少了，减少数据查找的次数和复杂度;</p></li>
-</ul>
-<h2 id="b树-1">B+树</h2>
-<h3 id="概念-2">概念：</h3>
-<p>B+树是B树的一个升级版，相对于B树来说B+树更充分的利用了节点的空间，让查询速度更加稳定，其速度完全接近于二分法查找。</p>
-<h3 id="规则-1">规则：</h3>
-<ol type="1">
-<li>B+跟B树不同B+树的<strong>非叶子</strong>节点不保存关键字记录的指针，只进行数据索引，这样使得B+树每个<strong>非叶子</strong>节点所能保存的关键字大大增加；</li>
-<li>B+树<strong>叶子</strong>节点保存了父节点的所有关键字记录的指针，所有数据地址必须要到叶子节点才能获取到。所以每次数据查询的次数都一样；</li>
-<li>B+树叶子节点的关键字从小到大有序排列，左边结尾数据都会保存右边节点开始数据的指针。</li>
-<li>非叶子节点的子节点数=关键字数（来源百度百科）（根据各种资料，这里有两种算法的实现方式，另一种为非叶节点的关键字数=子节点数-1（来源维基百科)，虽然他们数据排列结构不一样，但其原理还是一样的。Mysql 的B+树是用第一种方式实现）;</li>
-</ol>
-<img data-src="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/B%E6%A0%916.jpg" class>
-<img data-src="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/B%E6%A0%917.jpg" class>
-<h3 id="特点-2">特点：</h3>
-<ol type="1">
-<li>B+<strong>树的层级更少</strong>：相较于B树B+每个<strong>非叶子</strong>节点存储的关键字数更多，树的层级更少所以查询数据更快；</li>
-<li>B+<strong>树查询速度更稳定</strong>：B+所有关键字数据地址都存在<strong>叶子</strong>节点上，所以每次查找的次数都相同所以查询速度要比B树更稳定;</li>
-<li>B+<strong>树天然具备排序功能：</strong>B+树所有的<strong>叶子</strong>节点数据构成了一个有序链表，在查询大小区间的数据时候更方便，数据紧密性很高，缓存的命中率也会比B树高。</li>
-<li>B+<strong>树全节点遍历更快：</strong>B+树遍历整棵树只需要遍历所有的<strong>叶子</strong>节点即可，，而不需要像B树一样需要对每一层进行遍历，这有利于数据库做全表扫描。</li>
-</ol>
-<p><strong>B树</strong>相对于<strong>B+树</strong>的优点是，如果经常访问的数据离根节点很近，而<strong>B树</strong>的<strong>非叶子</strong>节点本身存有关键字其数据的地址，所以这种数据检索的时候会要比<strong>B+树</strong>快。</p>
-<h2 id="b树-2">B*树</h2>
-<h3 id="规则-2">规则：</h3>
-<p>B*树是B+树的变种，相对于B+树他们的不同之处如下：</p>
-<p>（1）首先是关键字个数限制问题，B+树初始化的关键字初始化个数是ceil(m/2)，b树的初始化个数为（ceil(2/3*m)</p>
-<p>（2）B+树节点满时就会分裂，而B*树节点满时会检查兄弟节点是否满（因为每个节点都有指向兄弟的指针），如果兄弟节点未满则向兄弟节点转移关键字，如果兄弟节点已满，则从当前节点和兄弟节点各拿出1/3的数据创建一个新的节点出来；</p>
-<h3 id="特点-3">特点：</h3>
-<p>在B+树的基础上因其初始化的容量变大，使得节点空间使用率更高，而又存有兄弟节点的指针，可以向兄弟节点转移关键字的特性使得B*树额外分解次数变得更少；</p>
-<img data-src="/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/B%E6%A0%918.jpg" class>
-<h2 id="总结">总结</h2>
-<p><strong>1、相同思想和策略</strong></p>
-<p>从平衡二叉树、B树、B+树、B*树总体来看它们的贯彻的思想是相同的，都是采用二分法和数据平衡策略来提升查找数据的速度；</p>
-<p><strong>2、不同的方式的磁盘空间利用</strong></p>
-<p>不同点是他们一个一个在演变的过程中通过IO从磁盘读取数据的原理进行一步步的演变，每一次演变都是为了让节点的空间更合理的运用起来，从而使树的层级减少达到快速查找数据的目的；</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1579,7 +1550,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-count">107</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

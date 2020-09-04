@@ -185,6 +185,176 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/" class="post-title-link" itemprop="url">避免熵增</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-04 10:28:33" itemprop="dateCreated datePublished" datetime="2020-09-04T10:28:33+08:00">2020-09-04</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">TLS与量子通讯的原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-04 10:15:58 / 修改时间：10:28:06" itemprop="dateCreated datePublished" datetime="2020-09-04T10:15:58+08:00">2020-09-04</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>TLS保证安全性的最大难题在于如何传递后续对称加密时，所使用的密钥，那么目前所使用的DH或者DHCE协议呢，都存在被快速运算的计算机所破解的一个可能性。那么，接下来将介绍量子通讯协议。当然这里的量子通讯与我们在物理学中所了解到的那个量子力学一点关系都没有，只是借用了其中一些理念而已。</p>
+<p>我们首先来看一下量子通讯的理论基础。</p>
+<h5 id="tls密码学回顾">TLS密码学回顾</h5>
+<ul>
+<li>通讯双方在<strong>身份验证</strong>的基础上，<strong>协商</strong>出<strong>一次性的</strong>、<strong>随机</strong>的密钥（我们上文中所介绍过的session id和session ticket还有0RTT都违反了一次性这个原则，所以呢我们也需要用时间来做限制，往往几个小时，或者几天之内必选要过期等等）（什么叫随机呢？我们使用DH系列协议的时候呢，生成的这个私钥必须基于硬件的或者说相对可靠的这样的一个随机算法，来生成随机的这样的一个私钥。那么后续才能够保证我们这个密钥是可靠的）
+<ul>
+<li>PKI公钥基础设施（身份验证）</li>
+<li>TLS中间件生成一次性的、随机的密钥参数</li>
+<li>DH系列协议基于非对称加密技术协商出密钥（协商）</li>
+</ul></li>
+<li>使用<strong>分组</strong>对称加密算法，基于有限长度的密钥将任意长度的明文加密传输
+<ul>
+<li>密钥位数</li>
+<li>分组工作模式（AES, GCM)</li>
+</ul></li>
+</ul>
+<p>香农曾经在信息论中证明过：</p>
+<ul>
+<li>证明one-time-pad(OTP)的绝对安全性
+<ul>
+<li>密钥是<strong>随机</strong>生成的</li>
+<li>密钥的长度<strong>大于等于</strong>明文长度</li>
+<li>相同的密钥只能使用一次（重放攻击，session id, session ticket等）</li>
+</ul></li>
+<li>如何传递密钥？</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/04/TLS%E6%8F%A1%E6%89%8B%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%9Asession%E7%BC%93%E5%AD%98%E3%80%81ticket%E7%A5%A8%E6%8D%AE%E5%8F%8ATLS1-3%E7%9A%840-RTT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -210,7 +380,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-09-04 09:11:14 / 修改时间：10:14:58" itemprop="dateCreated datePublished" datetime="2020-09-04T09:11:14+08:00">2020-09-04</time>
+              <time title="创建时间：2020-09-04 09:11:14 / 修改时间：10:15:56" itemprop="dateCreated datePublished" datetime="2020-09-04T09:11:14+08:00">2020-09-04</time>
             </span>
 
           
@@ -840,188 +1010,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/01/%E8%BD%AC%EF%BC%9A%E7%A8%BB%E7%9B%9B%E5%92%8C%E5%A4%AB%E3%80%8A%E6%B4%BB%E6%B3%95%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/01/%E8%BD%AC%EF%BC%9A%E7%A8%BB%E7%9B%9B%E5%92%8C%E5%A4%AB%E3%80%8A%E6%B4%BB%E6%B3%95%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">转：稻盛和夫《活法》读书笔记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-09-01 21:05:38 / 修改时间：21:06:26" itemprop="dateCreated datePublished" datetime="2020-09-01T21:05:38+08:00">2020-09-01</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/09/01/%E8%BD%AC%EF%BC%9A%E7%A8%BB%E7%9B%9B%E5%92%8C%E5%A4%AB%E3%80%8A%E6%B4%BB%E6%B3%95%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/01/%E8%BD%AC%EF%BC%9A%E7%A8%BB%E7%9B%9B%E5%92%8C%E5%A4%AB%E3%80%8A%E6%B4%BB%E6%B3%95%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>稻盛和夫《活法》读书笔记</p>
-<p>稻盛和夫《活法》，是讲我们该如何工作和生活。我们将以什么样的态度、方法去看问题、做事情。</p>
-<p>1、人生的意义是什么？</p>
-<p>人生的价值和意义是提升心性、磨炼灵魂。我们经历的悲欢离合，都是在磨练我们的灵魂。为了让我们在死去的时候，灵魂比刚出生时更加纯洁。</p>
-<p>我想，每个人对人生的意义理解不一样，人为什么活着？</p>
-<p>活着，为了实现心中的理想。这个理想，可能是爱，想让家人过得更好。也有可能是自我价值的实现，能给他人带来价值，从而实现自己的价值。或者去尽可能多地去体验生活，去感受人生的不同。</p>
-<p>如果人生的意义是磨练灵魂，那我们在看待成败得失时，内心就会更加平静，尤其是在我们遇到低谷、逆境时，我们知道那是老天爷来考验我们，为的是让我们在人生逆境之中，磨练我们脆弱的心，增强我们的抗压能力，激发我们的潜能。如果我们的人生都是一帆风顺，自然也体会不到平淡的生活才是幸福。经历了高低起伏，便丰富了我们对人生的看法。</p>
-<p>2、怎么提升人格？</p>
-<p>精进：拼命努力、心无旁骛、埋头眼前的工作。精进是提高人性、磨练人格最重要的，最有效的方法。稻盛和夫先生是提倡专心致志的工作，忘我的工作。他说劳动具有克制欲望、磨练心志、塑造人格的功效。</p>
-<p>想一想这个事情竟然这么简单，全身心投入工作就可以带来这么多好处，如果对工作心不在焉、马马虎虎，那我们也不可能有好的结果。</p>
-<p>3、怎样才能使人生更美好、更幸福？</p>
-<p>人生和工作的结果=思维方式<em>热情</em>能力</p>
-<p>能力：才能、智商</p>
-<p>热情：干劲，努力程度</p>
-<p>思维方式：心态、思想（有正负之分）</p>
-<p>如果一个人的能力90分，但他的热情只有30分，热情*能力最后得分2700分。</p>
-<p>如果一个人的能力60分，但他的热情有90分，热情*能力最后得分5400分。</p>
-<p>思维方式不变的情况下，一个能力一般，但却愿意付出很高热情的人，拿到的结果超过那些自恃聪明，却不愿意付出的人。</p>
-<p>所以作为能力平平的人，更应该投入更多的热情，往正确的思维方式上行动。你只能努力奔跑，才可能留在原地。</p>
-<p>4、“心想事成”是成功最简单的法则。</p>
-<p>只有主动追求的东西才能到手，“心不唤物，物不至”。要将不可能变为可能，首先需要达到“痴狂”程度的强烈愿望，坚信目标一定能实现并付出不懈的努力，朝着目标奋勇前进。不管是人生还是经营，这才是达到目的的唯一方法。</p>
-<p>心想事成，不是心里想想，事情就成功了。想的要足够频繁，时时想，常常想，想到你睡觉做梦都在想。想得要有深度，不断剖析，从表现现象找出事物的本质。</p>
-<p>李笑来有提到过中国的一个有钱人，刘益谦。他是实业家，收藏家，资产在300亿以上。</p>
-<p>有人问刘益谦：你为什么比我有钱？</p>
-<p>刘益谦想了想，很认真的问道：你想不想赚钱呢？</p>
-<p>对方说：我当然想啊！</p>
-<p>刘益谦说：那你每天花多长时间想赚钱呢？我每天都在想怎么赚钱，我每时每刻都在想，我早上起来在想，我坐在马桶上在想，你呢，你就是偶尔想想，然后去干别的了，想别的了。咱们在这件事上花的时间不一样，那怎么可能一样有钱呢？</p>
-<p>5、“喜欢”燃起热情</p>
-<p>物质有三种类型：</p>
-<p>1、点火就能燃烧的可燃性物质；</p>
-<p>2、点火也燃烧不起来的不燃性物质；</p>
-<p>3、靠自己就能燃烧的自燃性物质。</p>
-<p>人的类型也一样，有的人没有任何周围的督促，他自己就能熊熊燃烧。但还有一种人很冷漠，或者很麻木，即使给他能量他也绝不燃烧，属于不燃型的人。这种人往往有能力却缺乏激情，以致将自己的能力埋没。作为组织，不喜欢不燃烧的人，因为他们自己冷若冰霜不说，有时还会夺走周围人的热量。能做成事情的人，他们不仅自我燃烧，而且其能量还可与周围人分享。</p>
-<p>怎样才能成为自燃型的人？</p>
-<p>最好最有效的办法就是“喜欢自己的工作”。喜欢自己的工作，你就要全身心投入到工作中，投入你的激情、时间、智慧、能力，想尽一切办法去完成自己的工作。当你收获到了工作上带来的回报，你就会更加努力地投入工作，如此，这样正循环。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/01/%E9%B2%81%E8%BF%85%E8%AF%AD%E5%BD%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/01/%E9%B2%81%E8%BF%85%E8%AF%AD%E5%BD%95/" class="post-title-link" itemprop="url">鲁迅语录</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-09-01 20:01:34 / 修改时间：20:04:00" itemprop="dateCreated datePublished" datetime="2020-09-01T20:01:34+08:00">2020-09-01</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/09/01/%E9%B2%81%E8%BF%85%E8%AF%AD%E5%BD%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/01/%E9%B2%81%E8%BF%85%E8%AF%AD%E5%BD%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <ol type="1">
-<li>他们这群人，又想吃人，又是鬼鬼祟祟，想法子遮掩，不敢直截下手，真要令我笑死。我忍不住，便放声大笑起来，十分快活。自己晓得这笑声里面，有的是义勇和正气。 --鲁迅《狂人日记》</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1093,7 +1081,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-count">107</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
