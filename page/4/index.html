@@ -185,6 +185,197 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/" class="post-title-link" itemprop="url">Python----socket编程</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-28 23:55:34" itemprop="dateCreated datePublished" datetime="2020-08-28T23:55:34+08:00">2020-08-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-30 19:40:51" itemprop="dateModified" datetime="2020-08-30T19:40:51+08:00">2020-08-30</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="基于tcp的套接字编程">基于TCP的套接字编程：</h3>
+<p>socket层的位置：socket在传输层和应用层之间</p>
+<img data-src="/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/socket1.jpeg" class>
+<h3 id="socket是什么">socket是什么：</h3>
+<p>Socket是应用层与TCP/IP协议族通信的中间软件抽象层，它是一组接口。在设计模式中，Socket其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在Socket接口后面，对用户来说，一组简单的接口就是全部，让Socket去组织数据，以符合指定的协议。</p>
+<p>所以，我们无需深入理解tcp/udp协议，socket已经为我们封装好了，我们只需要遵循socket的规定去编程，写出的程序自然就是遵循tcp/udp标准的。</p>
+<p>socket的底层封装对文件描述符的读写。</p>
+<h3 id="套接字分类">套接字分类</h3>
+<ol type="1">
+<li>基于文件类型的套接字家族；套接字家族的名字：AF_UNIX</li>
+<li>基于网络类型的套接字家族；套接字家族的名字：AF_INET</li>
+</ol>
+<h3 id="套接字工作流程">套接字工作流程</h3>
+<img data-src="/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/socket2.jpeg" class>
+<p>先从服务端说起。服务端先初始化Socket，然后与端口绑定（bind），对端口进行监听（listen），调用accept阻塞，等待客户端连接。在这时如果有个客户端初始化一个Socket，然后连接服务器（connect），如果连接成功，这时客户端与服务端的连接就建立了。客户端发送数据请求，服务器端接受请求并处理请求，然后把回应数据发送给客户端，客户端读取数据，最后关闭连接，一次交互结束。</p>
+<h3 id="socket模块的应用">socket模块的应用：</h3>
+<h4 id="服务端套接字函数">服务端套接字函数</h4>
+<p>s.bind() 绑定（主机，端口号）到套接字、s.listen()开始TCP监听、s.accept()被动接受TCP客户的连接，（阻塞式）等待连接的到来。</p>
+<p>accept成功之后，会创建一个连接connection对象，以及客户端的ip_port信息。</p>
+<p>con.close()关闭这个连接。s.close()关闭服务器。</p>
+<p>代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line"><span class="comment"># 明确配置变量</span></span><br><span class="line">ip_port = (<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>)</span><br><span class="line">back_log = <span class="number">5</span></span><br><span class="line">buffer_size = <span class="number">1024</span></span><br><span class="line"><span class="comment"># 创建一个TCP套接字</span></span><br><span class="line">ser = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"><span class="comment"># 套接字类型AF_INET，socket.SOCK_STREAM, tcp协议，基于流式的协议</span></span><br><span class="line">ser.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, <span class="number">1</span>)</span><br><span class="line"><span class="comment"># 对socket的配置重用ip和端口号</span></span><br><span class="line"><span class="comment"># 绑定端口号</span></span><br><span class="line">ser.bind(ip_port)  <span class="comment"># 写哪个ip就要运行在哪台机器上</span></span><br><span class="line"><span class="comment"># 设置半连接池</span></span><br><span class="line">ser.listen(back_log)  <span class="comment"># 最多可以连接多少个客户端</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="comment"># 阻塞等待，创建连接</span></span><br><span class="line">    con, address = ser.accept()  <span class="comment"># 在这个位置进行等待，监听端口号</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="comment"># 接受套接字的大小，怎么发就怎么收</span></span><br><span class="line">            msg = con.recv(buffer_size)</span><br><span class="line">            <span class="keyword">if</span> msg.decode(<span class="string">&#x27;utf-8&#x27;</span>) == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">                <span class="comment"># 断开连接</span></span><br><span class="line">                con.close()</span><br><span class="line">            print(<span class="string">&#x27;服务器收到消息&#x27;</span>, msg.decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    con.close()</span><br><span class="line">    <span class="keyword">break</span></span><br><span class="line"><span class="comment"># 关闭服务器</span></span><br><span class="line">ser.close()</span><br></pre></td></tr></table></figure>
+<p>简化代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">ip_port = (<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>)</span><br><span class="line">backlog = <span class="number">5</span></span><br><span class="line">buffer_size = <span class="number">1024</span></span><br><span class="line">ser = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">ser.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, <span class="number">1</span>)</span><br><span class="line">ser.bind(ip_port)</span><br><span class="line">ser.listen(backlog)</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    con, addr = ser.accept()</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            msg = con.recv(buffer_size)</span><br><span class="line">            print(<span class="string">&quot;服务端收到的消息是&quot;</span>, msg.decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">            con.send(<span class="string">&quot;hello&quot;</span>.encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">            <span class="keyword">if</span> msg.decode(<span class="string">&#x27;utf-8&#x27;</span>) == <span class="string">&#x27;q&#x27;</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    con.close()</span><br><span class="line">    <span class="keyword">break</span></span><br><span class="line">ser.close()</span><br></pre></td></tr></table></figure>
+<p>socket.SOL_SOCKET设置这个让我们可以在套接字级别上设置选项。选项有一些常用取值，常用选项有：</p>
+<ul>
+<li><p>SO_BROADCAST广播消息的能力（只有udp支持广播，并且还必须是在支持广播消息的网络上（例如以太网，令牌环网等））、</p></li>
+<li><p>SO_DEBUG，仅由TCP支持。当给一个TCP套接字开启本选项时，内核将为TCP在该套接字发送和接受的所有分组保留详细跟踪信息。这些信息保存在内核的某个环形缓冲区中，并可使用trpt程序进行检查。</p></li>
+<li><p>SO_KEEPALIVE</p>
+<p>给一个TCP套接字设置保持存活选项后，如果2小时内在该套接字的任何一方向上都没有数据交换，TCP就自动给对端发送一个保持存活探测分节。这是一个对端必须相应的TCP分节，它会导致以下3种情况之一。</p>
+<p>（1）对端以期望的ACK响应。应用进程得不到通知（<strong>因为一切正常</strong>）。在又经过仍无动静的2小时后，TCP将发出另一个探测分节。</p>
+<p>（2）对端以RST响应，它告知本端TCP：<strong>对端已崩溃且已重新启动</strong>。该套接字的待处理错误被置为ECONNRESET，套接字本身则被关闭。</p>
+<p>（3）对端对保持存活探测分节没有任何响应。</p>
+<p><strong>如果根本没有对TCP的探测分节的响应，该套接字的待处理错误就被置为ETIMEOUT，套接字本身则被关闭</strong>。然而如果该套接字收到一个ICMP错误作为某个探测分节的响应，那就返回响应的错误，套接字本身也被关闭。</p>
+<p>本选项的功能是检测对端主机是否崩溃或变的不可达（譬如拨号调制解调器连接掉线，电源发生故障等等）。如果对端进程崩溃，它的TCP将跨连接发送一个FIN，这可以通过调用select很容易的检测到。</p>
+<p><strong>本选项一般由服务器使用，不过客户也可以使用</strong>。服务器使用本选项时因为他们花大部分时间阻塞在等待穿越TCP连接的输入上，也就是说在等待客户的请求。然而如果客户主机连接掉线，电源掉电或者系统崩溃，服务器进程将永远不会知道，并将继续等待永远不会到达的输入。我们称这种情况为半开连接。保持存活选项将检测出这些半开连接并终止他们。</p></li>
+<li><p>SO_LINGER</p>
+<p>本选项指定close函数对面向连接的协议（例如TCP和SCTP，但不是UDP）如何操作。默认操作是close立即返回，但是如果有数据残留在套接字发送缓冲区中，系统将试着把这些数据发送给对端。</p></li>
+<li><p>RCVBUF和SNDBUF接收和发送缓冲区</p></li>
+<li><p>RCVLOWAT和SNDLOWAT接收和发送低水位</p></li>
+<li><p>SO_RCVTIMEO 和 SO_SNDTIMEO套接字选项</p></li>
+<li><p>SO_REUSEADDR 和 SO_REUSEPORT 套接字选项</p>
+<p>SO_REUSEADDR所有的TCP服务器都应该指定本套接字选项，一个最重要的原因如下：</p>
+<ul>
+<li><p>SO_REUSEADDR允许启动一个监听服务器并捆绑其众所周知的端口，即使以前建立的将该端口用作他们的本地端口的连接仍存在。这个条件通常是这样碰到的：</p>
+<p>​ （a）启动一个监听服务器；</p>
+<p>​ （b）连接请求到达，派生一个子进程来处理这个客户；</p>
+<p>​ （c）监听服务器终止，但子进程继续为现有连接上的客户提供服务；</p>
+<p>​ （d）重启监听服务器。</p>
+<p>默认情况下，当监听服务器在步骤d通过调用socket，bind和listen重新启动时，由于他试图捆绑一个现有连接（即正由早先派生的那个子进程处理着的连接）上的端口，从而bind调用会失败。但是如果该服务器在socket和bind两个调用之间设置了SO_REUSEADDR套接字选项，那么将成功。所有TCP服务器都应该指定本套接字选项，以允许服务器在这种情况下被重新启动。</p></li>
+</ul></li>
+</ul>
+<p>这里关于套接字选项不做更多展开，附上链接参考，<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTAxNDQ4MDUvYXJ0aWNsZS9kZXRhaWxzLzc4NTc5Nzcx">https://blog.csdn.net/u010144805/article/details/78579771<i class="fa fa-external-link-alt"></i></span></p>
+<p>客户端：p.connect(ip地址，端口号) 连接服务器</p>
+<p>代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">p = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">p.connect((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">    msg = input(<span class="string">&#x27;please input: &#x27;</span>)</span><br><span class="line">    <span class="comment"># 防止输入空消息</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> msg:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    p.send(msg.encode(<span class="string">&#x27;utf-8&#x27;</span>))  <span class="comment"># 收发消息一定要二进制，记得编码</span></span><br><span class="line">    <span class="keyword">if</span> msg == <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+<p>简化代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">p = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">p.connect((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    msg = input(<span class="string">&#x27;please input: &#x27;</span>)</span><br><span class="line">    p.send(msg.encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    data = p.recv(<span class="number">1024</span>)</span><br><span class="line">    print(data.decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    <span class="keyword">if</span> msg == <span class="string">&#x27;q&#x27;</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>用户态：专门存放应用程序。内核态：专门存放操作系统的内核。</li>
+<li>在socket 里面 from socket import * 这样可以减少代码量。</li>
+<li>当发送回车换行，内容为空，没有必要发所以就会卡顿。当自己这一端 的内核态没东西会卡住recv()。加一个判断是否为空解决。</li>
+<li>按照socket数据---&gt;内核态-----&gt;网卡的顺序发送 send()()都是发送socket数据 send()和recv()都是往自己的内存里面收发。</li>
+</ul>
+<img data-src="/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/socket3.jpeg" class>
+<ul>
+<li>端口号+ip地址+mac地址 = 哪个应用程序+哪台电脑+哪个房间（一一对应） 标示互联网上唯一的一个程序</li>
+</ul>
+<h3 id="udp套接字">udp套接字</h3>
+<p>由于udp是无连接的所以比TCP更简洁。</p>
+<p>服务端：recvfrom()接受的结果是发送的信息，和发送方的IP和端口号。sendto（信息，目标主机IP和端口号）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">udp_ser = socket(AF_INET, SOCK_DGRAM)  <span class="comment"># 数据报式的套接字</span></span><br><span class="line">udp_ser.bind((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    data = udp_ser.recvfrom(<span class="number">1024</span>)</span><br><span class="line">    print(data)  <span class="comment"># (b&#x27;asd&#x27;, (&#x27;127.0.0.1&#x27;, 60606))</span></span><br><span class="line">    udp_ser.sendto(<span class="string">&#x27;data&#x27;</span>.encode(<span class="string">&#x27;utf-8&#x27;</span>), data[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># udp_ser.close()</span></span><br></pre></td></tr></table></figure>
+<p>简化代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">udp_ser = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">udp_ser.bind((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    data, addr = udp_ser.recvfrom(<span class="number">1024</span>)</span><br><span class="line">    print(data, addr)</span><br><span class="line">    udp_ser.sendto(<span class="string">&#x27;hello&#x27;</span>.encode(<span class="string">&#x27;utf-8&#x27;</span>), addr)</span><br><span class="line">    <span class="keyword">if</span> data.decode(<span class="string">&#x27;utf-8&#x27;</span>) == <span class="string">&#x27;q&#x27;</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">udp_ser.close()</span><br></pre></td></tr></table></figure>
+<p>客户端：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">s = socket(AF_INET, SOCK_DGRAM)</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    msg = input(<span class="string">&#x27;input-1: &#x27;</span>)</span><br><span class="line">    s.sendto(msg.encode(<span class="string">&#x27;utf-8&#x27;</span>), (<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line">    data, addr = s.recvfrom(<span class="number">1024</span>)</span><br><span class="line">    print(data.decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line"><span class="comment"># s.close()</span></span><br></pre></td></tr></table></figure>
+<p>简化代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">p = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    msg = input(<span class="string">&#x27;please input: &#x27;</span>)</span><br><span class="line">    p.sendto(msg.encode(<span class="string">&#x27;utf-8&#x27;</span>), (<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line">    data, addr = p.recvfrom(<span class="number">1024</span>)</span><br><span class="line">    print(data.decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    <span class="keyword">if</span> msg == <span class="string">&#x27;q&#x27;</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+<p>这里和tcp的socket区别可以看出，recv方法和recvfrom方法的一个区别</p>
+<ul>
+<li>recv在自己这端缓冲区为空时，阻塞。<br>
+</li>
+<li>而recvfrom在自己这端的缓冲区为空时，就收一个空。</li>
+</ul>
+<h3 id="用udp实现两个不同客户端的交流">用udp实现两个不同客户端的交流：</h3>
+<p>服务端：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">udp_ser = socket(AF_INET, SOCK_DGRAM)</span><br><span class="line">udp_ser.bind((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line">data_1, addr_1 = udp_ser.recvfrom(<span class="number">1024</span>)</span><br><span class="line">data_2, addr_2 = udp_ser.recvfrom(<span class="number">1024</span>)</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    data1 = udp_ser.recvfrom(<span class="number">1024</span>)</span><br><span class="line">    udp_ser.sendto(data1[<span class="number">0</span>], addr_2)</span><br><span class="line">    data2 = udp_ser.recvfrom(<span class="number">1024</span>)</span><br><span class="line">    udp_ser.sendto(data2[<span class="number">0</span>], addr_1)</span><br></pre></td></tr></table></figure>
+<p>客户端1：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">s = socket(AF_INET, SOCK_DGRAM)</span><br><span class="line">s.sendto(<span class="string">&#x27;hello&#x27;</span>.encode(<span class="string">&#x27;utf-8&#x27;</span>), (<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    msg = input(<span class="string">&#x27;input-1: &#x27;</span>)</span><br><span class="line">    s.sendto(msg.encode(<span class="string">&#x27;utf-8&#x27;</span>), (<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line">    data, addr = s.recvfrom(<span class="number">1024</span>)</span><br><span class="line">    print(data.decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<p>客户端2：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">s = socket(AF_INET, SOCK_DGRAM)</span><br><span class="line">s.sendto(<span class="string">&#x27;hello&#x27;</span>.encode(<span class="string">&#x27;utf-8&#x27;</span>), (<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    data, addr = s.recvfrom(<span class="number">1024</span>)</span><br><span class="line">    print(data.decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    msg = input(<span class="string">&#x27;input-2: &#x27;</span>)</span><br><span class="line">    s.sendto(msg.encode(<span class="string">&#x27;utf-8&#x27;</span>), (<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">8080</span>))</span><br></pre></td></tr></table></figure>
+<h3 id="http三次握手四次挥手">HTTP三次握手、四次挥手</h3>
+<img data-src="/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/socket4.jpeg" class>
+<p>三次握手（因为刚开始没有数据传输所以可以合并），四次挥手（因为客户端到服务端数据传完可以断开，但是服务端的数据不一定发完，所以不能一次性断开） 握手：</p>
+<ol type="1">
+<li>客户端发送连接请求（syn）</li>
+<li>服务器回应确认发送（ack），第一条客户端到服务器端的连接建好，并且向客户端发送连接请求（syn）</li>
+<li>客户端回应确认发送（ack），第二条服务器端到客户端的连接建好。</li>
+</ol>
+<p>挥手（谁先发完，谁就断开连接）：</p>
+<ol type="1">
+<li>客户端发送请求断开连接（seq）<br>
+</li>
+<li>服务端回应确认（ack）此时客户端到服务端的链接断开</li>
+<li>服务端发送请求断开连接（seq）</li>
+<li>客户端回应确认（ack） 此时服务端到客户端的链接断开</li>
+</ol>
+<p>至此双向连接都已断开。</p>
+<h3 id="http协议">HTTP协议</h3>
+<p>特点：无状态的协议、基于请求/响应的模式。</p>
+<p>POST方式有请求体，而GET方式没有请求体。在请求协议中，空行是用来和请求体分开。</p>
+<p>部分参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Accpect：接收类型  *&#x2F;* 代表全部接受，q&#x3D;0.8代表权重</span><br><span class="line">Accpect-Encoding  ：可接受压缩格式</span><br><span class="line">Accpect-Language：可接受的语言</span><br><span class="line">Refer：防盗链，从哪里过来的</span><br><span class="line">Connection： 3000毫秒的时间差</span><br><span class="line">Host：主机地址</span><br><span class="line">user-agent：请求头</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/28/%E4%BA%86%E8%A7%A3java-GC%E8%BF%87%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1287,120 +1478,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">epoll的优劣和原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-08-27 22:28:19" itemprop="dateCreated datePublished" datetime="2020-08-27T22:28:19+08:00">2020-08-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-31 11:10:23" itemprop="dateModified" datetime="2020-08-31T11:10:23+08:00">2020-08-31</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="epoll-网络事件收集器模型也有分发">epoll 网络事件收集器模型（也有分发）</h3>
-<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
-<p>首先，epoll 和 kqueue（mac os内核才有）随文件描述符（句柄数的增加，也表示并发连接数的增加）的增加，所消耗的时间几乎不变。而Poll和select所消耗的时间是急剧上升的。epoll基本与句柄数增加是无关的，所以它的性能会好很多，而且非常适合做大并发连接的处理。那么，为什么会这样呢？</p>
-<p>Benchmark显示：</p>
-<img data-src="/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/benchmark.png" class>
-<h3 id="前提">前提</h3>
-<p>高并发连接中，每次处理的活跃连接数量占比很小</p>
-<blockquote>
-<p>select 和 poll的实现是有问题的。每一次我去取操作系统的事件的时候，我都需要把这100万个连接通通地扔给操作系统，让它去依次地判断哪些连接上面有事件进来了，所以可以看到这里操作系统做了大量的无用功 ，它扫描了大量不活跃的连接。那么epoll就是用了这样的一个特性，因为每次处理的活跃连接的占比其实非常小，那么，它怎么实现的呢？其实非常简单，因为它维护了一个数据结构叫eventpoll。这里，它通过两个数据结构把这两件事分开了。也就是说，nginx每次取活跃连接的时候，我们只需要去遍历一个链表，这个链表里仅仅只有活跃的连接，这样我们的效率就很高。那么，我们还会经常做的操作是什么呢？比如说，nginx收到80端口建立连接的请求。那么，收到80端口建立连接成功以后呢，我们要添加一个读事件，这个读事件是用来读取HTTP消息的，那这时候呢，我可能会添加一个新的事件，或者写事件添加进来。这个时候添加呢，我只会放到这个红黑树中，这个二叉平衡树，它能保证我的插入效率值是logn。如果我现在不想再处理读事件或者写事件，我只需要从这个平衡二叉树中移除一个节点就可以了，同样是logn的时间复杂度。所以这个效率非常高。那么什么时候这个链表会有所增减呢。当我们读取一个事件的时候，链表中自然就没了。那么，当操作系统接收到网卡中发送来的一个报文的时候，那么这个链表就会增加一个新的元素，所以我们在使用epoll的时候，它的操作，添加修改删除，是非常快的，是logn复杂度的。而我们获取句柄的时候，只是去遍历这个rdllink，也就是ready准备好的所有的连接，是把它读取出来而已。那么，从内核态读取到用户态，只读这么一点东西，它的效率是非常高的。</p>
-</blockquote>
-<h3 id="实现">实现</h3>
-<ul>
-<li>红黑树</li>
-<li>链表</li>
-</ul>
-<h3 id="使用">使用</h3>
-<ul>
-<li>创建</li>
-<li>操作：添加/修改/删除</li>
-<li>获取句柄</li>
-<li>关闭</li>
-</ul>
-<p>以上，简单介绍了epoll的使用方法，它对我们理解nginx的事件驱动模型是有帮助的。</p>
-<h3 id="其他">其他</h3>
-<p>每一个nginx worker进程都有一个独立的ngx_cycle_t这样一个数据结构。有三个主要的数组，connections，read_events，write_events。分别代表预分配的连接、读事件和写事件。三个数组大小和配置是一模一样的，三个数组通过序号对应起来。</p>
-<p>每一个connection到底使用了多大的内存呢？连接使用的核心数据结构是ngx_connection_s，64位操作系统中，大约占用了232个字节，nginx版本不同可能有微小的差异，每一个ngx_connetion_s结构体对应着两个事件，一个读一个写，每一个时间对应的结构体，事件的核心数据结构是ngx_event_s，结构体占用的字节数是96字节。所以当我们使用一个连接的时候，它使用的字节大约是232+96*2，我们的worker connections配置得越大，那么初始化的时候就会预分配这么多内存。</p>
-<p>我们再来看ngx_event_s中有哪些成员，这里我们比较关注的是，有一个handler（ngx_event_gandler_pt）指针，这是一个回调方法，也就是很多第三方模块会把这个handler设为自己的实现；这里还有一个timer（ngx_rbtree_node_t），也就是说，当我们对http请求做读超时写超时等等设置的时候，其实是在操作它的读事件和写事件中的timer，这个timer就是inginx实现超时定时器，也就是基于rbtree就实现的这样一个结构体。那么红黑树中每个成员叫rbtree_node，那么这个timer就是它的node，用来指向我们的读事件是否超时、写事件是否超时，这些定时器其实也是可配的。</p>
-<p>比如client_header_timeout，默认是60s，也就是在我们刚刚某个连接上，在准备读取它的header时，我们在它的读事件上添加了一个60s的定时器。</p>
-<p>当多个事件形成队列的时候，可以用这个ngx_queue_t形成一个队列。</p>
-<p>我们再来简单的看一下，ngx_connection_s有一些什么样的成员。ngx_event_t read，ngx_event_t write分别是它的读写事件，这个刚刚已经说过了。recv和send是它抽象的操作系统的底层方法，怎么样发送和接收。这里还有一个比较有意思的变量，叫做sent，它的类型是off_t，大家可以把它理解成一个无符号的整型，表达的呢就是这个连接上我已经发送了多少字节，也就是，我们在配置中，会经常使用到的bytes_sent变量，那么我们可以先看一看bytes_sent变量到底有什么作用。还是打开ngx_http_core_module的官方文档，我们先找到它的内置变量。可以看到bytes_sent，它表示向客户端发送了多少字节。通常，在access_log记录nginx处理了哪些请求中，我们会记录这么一个变量，比如，在我们查看access_log时。现在我们打开了nginx_conf这个配置文件，在配置文件中，我们有一行log_format main，定义了access_log的日志格式。在日志格式，我们看到有一个 中括号，这个中括号的后半部分我们用了bytes_sent这个内置变量，用来表示我们发送了多少字节。我们看一下在日志中，这个bytes_sent会表现为什么样的形式。</p>
-<p>以上谈了nginx_connection_t和nginx_event连接和事件怎么样对应在一起的，当我们配置高并发的nginx时，必须把connections的数目配置到足够大，而每一个connection相对应两个event，都会消耗一定的内存，需要我们注意。还有nginx中像很多结构体中它们的一些成员和我们内置变量是可以对应起来的，比如说bytes_sent，还有一些比如说body_bytes_sent都是我们在access_log或者说在一些openresty lua写的代码中，我们获取到nginx内置的状态时，经常使用到的方法。</p>
-<p>如果你开发过nginx的第三方开发模块，虽然我们在写C语言代码，但是我们不需要关心内存的释放，那么如果你现在在配置一些比较罕见的nginx使用场景，你可能会需要去修改nginx在请求和连接上初始分配内存池大小。但是nginx官方可能会写着推荐通常不需要去该这样的配置。那么我们究竟要不要这些内存池的大小呢？下面，我们来看一看内存池究竟是怎么样运转的。</p>
-<p>ngx_connection_s这样的结构体中，有一个成员变量就是pool，ngx_pool_t，它对应着这个连接所使用的的内存池。这个内存池可以通过一个配置项叫connection_pool_size去定义。那么，我们为什么会需要内存池呢，如果我们有一些工具的话我们会发现，nginx它所产生的内存碎片其实是非常小的，这就是内存池的一个功了。那么，内存池呢，它会把内存提前分配好一批，而且，当我们使用小块内存的时候 ，它会用next指针一个个连接在一起，每次我们使用的东西比较少的时候呢，第二次再分配小块内存，会连接在一起去使用，这样就大大减少了我们的内存碎片。当然我们如果分配大块内存的时候，还是会走到操作系统的alloc去分配大块的内存。那么对于nginx有什么好处呢？因为它主要在处理web请求，web请求，特别对于http请求，它有两个非常明显的特点。每当我们有一个TCP连接的时候，那么，这个TCP连接上面可能会运行很多http请求，也就是所谓的http keepalive请求，连接没有关闭，执行完一条请求以后还负责执行另外一条请求。 那么有一些内存呢，我为连接分配一次就够了，比如说，我去读取每一个请求的前1k字节，那么在连接内存池上，我分配一次，只要这个连接不关闭，那么这段1k的内存，我永远不需要释放，什么时候需要释放呢？连接关闭的时候我再释放。没有任何问题。请求内存池呢？每一个http请求，我开始分配的时候，我不知道分配多大，但是http请求，特别是http1.1而言，通常我们会分配4k的大小的内存，因为我们的url或者header往往需要分配那么多，如果没有内存池呢，我们可能需要频繁的分配，小块的分配，而分配内存，其实是有代价的，如果我们一次分配，分配较多的内存呢，就没有这样的问题。而请求执行完毕以后，哪怕连接我们还可以复用，我们也可以把请求池销毁，而这样，所有nginx第三方模块开发者，他们就不必关注，内存什么时候会释放，它只要关注，我是从请求内存池里面，申请分配的内存，还是连接内存池里，申请分配的内存。只要这个逻辑讲得通，比如请求结束以后，连接仍然想继续使用，那么你可以在连接内存池里面分配。好我们看一下具体的例子。还是在nginx_http_core_module这个模块中，我们可以看到它有一个叫connection_pool_size，点开以后可以看到默认情况下，它大约是256或者512，这个跟我们的操作系统位数是有关的。那么内存池配置512，并不代表，在这里我只能分配512字节，当我们分配的内存超过预分配的大小的时候，还是可以继续分配的，这里只是说，因为我提前预分配了足够大小的空间，可以减少我分配内存的次数。那我们再来看，另一个配置，叫request pool size也就是我们每一个请求的内存池的大小，这里我们可以看到，它的默认大小是4k，为什么差距会那么大呢？之所以会差距8倍，是因为，对于连接而言，它需要保存的上下文信息非常的少，它只需要帮助后面的请求读取最初一部分字节就可以了，而对于请求而言，我们需要保存大量的上下文信息，比如说所有读取到的url或者header，我需要一直保存下来，url通常还比较长，所以我们需要有4k的大小。当然官方文档中说，它对性能的影响比较小，如果我们在极端场景下，如果你的url特别大，你可以考虑把这个分配得更大，或者说你是很小内存的，url非常小，header也非常少，你可以考虑request_pool_size把它降一降，这样或许nginx消耗的内存会小一些，那么也意味着你可以做更大并发量的请求。</p>
-<p>以上我们介绍了内存池的原理，以及请求内存池和连接内存池，它们的配置代表着怎样的意义。内存池对减少我们的内存碎片，对第三方模块的快速开发，是有很大意义的。可能有一些第三方模块不当使用了内存池，比如本该在请求内存池里分配内存，却在连接内存池分配内存，这可能会导致内存的延期释放，导致nginx的内存无谓的增加，这需要我们注意。</p>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyMDMwMS02ODM5NA==">Nginx核心知识100讲<i class="fa fa-external-link-alt"></i></span></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1472,7 +1549,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-count">109</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
