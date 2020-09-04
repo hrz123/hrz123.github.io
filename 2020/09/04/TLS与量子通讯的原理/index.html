@@ -32,7 +32,7 @@
 <meta property="og:description" content="TLS保证安全性的最大难题在于如何传递后续对称加密时，所使用的密钥，那么目前所使用的DH或者DHCE协议呢，都存在被快速运算的计算机所破解的一个可能性。那么，接下来将介绍量子通讯协议。当然这里的量子通讯与我们在物理学中所了解到的那个量子力学一点关系都没有，只是借用了其中一些理念而已。 我们首先来看一下量子通讯的理论基础。 TLS密码学回顾  通讯双方在身份验证的基础上，协商出一次性的、随机的密钥（">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-04T02:15:58.000Z">
-<meta property="article:modified_time" content="2020-09-04T02:28:06.153Z">
+<meta property="article:modified_time" content="2020-09-04T02:47:53.757Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary">
@@ -212,7 +212,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-09-04 10:15:58 / 修改时间：10:28:06" itemprop="dateCreated datePublished" datetime="2020-09-04T10:15:58+08:00">2020-09-04</time>
+              <time title="创建时间：2020-09-04 10:15:58 / 修改时间：10:47:53" itemprop="dateCreated datePublished" datetime="2020-09-04T10:15:58+08:00">2020-09-04</time>
             </span>
 
           
@@ -265,6 +265,25 @@
 <li>相同的密钥只能使用一次（重放攻击，session id, session ticket等）</li>
 </ul></li>
 <li>如何传递密钥？</li>
+</ul>
+<p>量子通讯可以解决这个问题：</p>
+<ul>
+<li><p>量子通讯有一个概念叫<strong>量子密钥分发</strong>quantum key distribution，简称QKD</p>
+<ul>
+<li><p>借用了量子力学中的一个概念：任何对量子系统的测量都会对系统产生干扰</p></li>
+<li><p>这个概念是怎样完成的呢？QKD：如果有第三方试图窃听密码，则通信的双方便会察觉（回顾一下中学中学过的光的波粒二象性，我们知道光有粒子的特性，它还有波的特性。波是有方向，比如说我们看下面这张图，黄色的是垂直的方向，通过一个光栅，会导致垂直方向的波可以通过光栅的，但是横着走的光波是没有办法通过光栅，<strong>也就是说，不同方向的光波通过光栅时，通过率是不同的。</strong>）</p>
+<p>（那么接下来要说的量子通讯就基于这样的一个原理。它的原理是，当双方进行通讯时，如果有第三方接收到我们的信息再进行转发的时候，通信的双方都可以察觉到。它们怎么察觉到呢？是基于概率来进行的。比如双方的通讯的时候，我们传递密钥的时候，它的正确率，信息正确率是75%。那么每增加一个中间第三方的环节就是75%*75%，数据的正确率大幅的下降了，通过这样的一种，我们就像量子系统一样，任何对其进行测量，或者说我们叫做窃听密码，通讯的双方都可以察觉到。）</p></li>
+</ul></li>
+</ul>
+<h5 id="小结">小结</h5>
+<p>量子通讯是基于光波来传递密钥的，那么它是借用了量子力学中的系统不可测的这样的一个原理，所以叫做量子通讯。那么，接下来我们将介绍BB84协议，它会跟我们演示如何根据通过量子通讯来传递密钥，而且我们也可以通过概率发现是否有第三方窃听数据。</p>
+<p>基于通过光栅时，不同方向的光波的通过率是不同的，那么我们将基于这一原理，来演示BB84协议是如何使量子通讯成为现实的。</p>
+<h5 id="bb84协议">BB84协议</h5>
+<ul>
+<li><p>由Charles <strong>Bennett</strong>与Giles <strong>Brassard</strong>在<strong>1984</strong>年发表</p>
+<p>2017年中国发射的墨子号量子通讯卫星，所使用的量子通讯协议，只是一个BB84协议的升级版。所以我们理解最先出现的BB84协议，对我们理解当下正在快速发展中的量子通讯是非常有意义的。</p>
+<h5 id="section"></h5>
+<p>图中呢，我们画出了两种不同的光栅，这两种光栅呢，一种是垂直的，一种是倾斜45°的。这两种光栅把它称为基或者叫basis，那么这种光栅下只能通过两种不同方向的光波。那么我们把向上的这种光波理解为</p></li>
 </ul>
 
     </div>
@@ -355,7 +374,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#tls%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%9E%E9%A1%BE"><span class="nav-number">1.</span> <span class="nav-text">TLS密码学回顾</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#tls%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9B%9E%E9%A1%BE"><span class="nav-number">1.</span> <span class="nav-text">TLS密码学回顾</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#bb84%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">BB84协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#section"><span class="nav-number">4.</span> <span class="nav-text"></span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
