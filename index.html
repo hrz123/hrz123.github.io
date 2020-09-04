@@ -210,7 +210,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-09-04 09:11:14 / 修改时间：09:20:27" itemprop="dateCreated datePublished" datetime="2020-09-04T09:11:14+08:00">2020-09-04</time>
+              <time title="创建时间：2020-09-04 09:11:14 / 修改时间：10:14:58" itemprop="dateCreated datePublished" datetime="2020-09-04T09:11:14+08:00">2020-09-04</time>
             </span>
 
           
@@ -243,6 +243,19 @@
 <p>session resume with session ID</p>
 <p>最常用的叫session 缓存</p>
 <p>第一次握手后，服务器会生成一个session ID，这个session ID会传给浏览器，或者说是client，当在一定的时间以内，比如说几个小时或者几天以内，浏览器或者客户端携带着这个session ID，再次访问服务器的时候，服务器这个时候它从它的内存或者说其他的缓存中，取到了这个session ID所对应的加密密钥，那么服务器就可以跟client说，我们就使用上一次所使用的加密密钥就可以了，没有必要使用DH或者DHCE密钥交换协议再次生成一个加密密钥，这样我们就减少了RTT。那么这里对于client和server都有要求。client需要在一定的时间内缓存住session ID以及它所对应的加密密钥，而服务器也需要在它的缓存中，为session ID缓存一定的时间。</p>
+<p>第二次访问的时候，Client Hello中是有一个session ID的，当然，第一次访问的时候是没有这样的一个数字的。有了这样的一个session ID以后呢，Server Hello返回了Change Cipher Spec Message，而没有发送Server Key Exchange，就是我们DHCE中必须要发送公钥这么的一个步骤。Change Cipher Spec中说了些什么呢？我们可以看到，[Expert Info (Note/Sequence): This session reuses previously negotiated key (Session resumption)]，我们使用上一次所协商过的key就可以了。服务器就使用了内存所缓存的session id所对应的密钥。接下来所有的通讯都是基于我们上一次所使用的密钥进行加密的。</p>
+<p>session ID缓存往往会有两个问题：</p>
+<ol type="1">
+<li>server 往往是在内存中存放session id以及对应的密钥信息的，所以位于不同的主机上的server它们是没有办法去分享它们的session id以及对应的密钥信息，然而实际上我们的服务往往都是服务于成千上万个用户，所以要通过反向代理负载均衡等通过一个ip或者一个域名，来为很多个用户服务，所以我们会有很多台server，这些server中如何去共享这些个session id呢，比如说server A为同一个用户所生成的session id当下一次用户来访问的时候，很可能通过负载均衡，访问到了server b，那么server b又需要重新进行握手了，这是第一个问题。</li>
+<li>第二个问题，server在内存中存储session id是有内存消耗的。那么到底缓存多长时间，过短和过长都不合适。</li>
+</ol>
+<p>这个时候就可以考虑session ticket，session ticket处理方式与session 缓存是完全不同的，那首先我们的每一台server不需要再耗费内存去存放每一个session中所需要的信息，而是基于它所独有一个密码，那么这个密码呢是整个集群中所共同分享的一个密码，基于这个密码把相关的加密信息进行加密，发送给客户端，那么当客户端下一次需要握手的时候呢，把这个相关的加密后的信息发送给服务器，而只有这个集群内的服务器才知道这个密码，那么它基于这个密码解密之后，就获取到上一次握手成功后所需要的密钥，我们就可以基于这个密钥，与client中所缓存的这个密钥进行加密数据的一个通讯。这样我们就解决了session缓存所具有的上面的问题了。</p>
+<h3 id="tls1.3的0rtt握手">TLS1.3的0RTT握手</h3>
+<p>我们知道TLS1.3中只需要一次RTT完成握手。所谓的0RTT是指，第一次握手的时候就携带我们相关的数据，比如说我们有一个Get请求，第一次就发送，那么在一个RTT后呢，我们就可以收到response，所以它实现握手没有占用任何的RTT。我们叫它0RTT。那么它们是怎么实现的呢？实际上，它们是第二次握手才可以完成的，因为当我们第一次握手的时候，我们的client和服务器呢会把相关的密钥信息缓存下来，那么第二次握手的时候我们基于上一次缓存的一定时间内有效的信息，对我们的Get请求进行加密，那么发送给server，如果server也认为这个上一次的密钥相关信息没有过期的话，那么它就可以解密到了，也可以把基于同样的密钥，把相应的response发给client。</p>
+<p>当然，无论是session ID缓存或者是session ticket或者TLS1.3中的0RTT，它们其实都面临着同样一种攻击叫做重放攻击。那么什么叫重放攻击呢？比如说我们的client现在发送了一个post请求，那么这个post请求呢使用上一次中所使用到的密钥进行加密，所以这其实是一个报文，一个packet，这个packet发送给server呢，server是认的，因为它马上利用它所没有过期的密钥进行解密，并处理，通常一个post请求很有可能是改变我们的用户的数据状态的，那么就改变了我们的数据库。如果这个报文被我们的一个中间人在某个路由器或者某一个代理服务器中把这个报文保存下来了，那么它就可以在随后的过程中，不需要去解密相关的信息，我只要这个packet不停地重新地再发送，就可以不停地去改变我们的数据库的状态。这就是一个重放攻击。</p>
+<p>所以我们的0RTT，或者说我们session id、ticket reuse都是需要设定一个合适的合理的过期时间的。</p>
+<h3 id="小结">小结</h3>
+<p>本片文章主要介绍了TLS为了提升握手速度，而进行的性能优化手段，而TLS中所面临的另外一个问题，就是它的安全性，非常依赖于当前最快速的计算机的运行速度。那么有没有一劳永逸的绝对安全的这样的一种通讯手段呢？那么量子通讯可以带给大家全新的思考。</p>
 
       
     </div>
@@ -293,7 +306,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-04 09:28:46" itemprop="dateModified" datetime="2020-09-04T09:28:46+08:00">2020-09-04</time>
+                <time title="修改时间：2020-09-04 09:35:12" itemprop="dateModified" datetime="2020-09-04T09:35:12+08:00">2020-09-04</time>
               </span>
 
           
