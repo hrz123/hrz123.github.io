@@ -185,6 +185,90 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/" class="post-title-link" itemprop="url">leetcode 1519. 子树中标签相同的节点数</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-01 22:42:15 / 修改时间：22:47:59" itemprop="dateCreated datePublished" datetime="2020-08-01T22:42:15+08:00">2020-08-01</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="原题链接">原题链接</h3>
+<p>https://leetcode-cn.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/</p>
+<h3 id="原题简要描述">原题简要描述</h3>
+<p>给你一棵树（即，一个连通的无环无向图），这棵树由编号从 <code>0</code> 到 <code>n - 1</code> 的 n 个节点组成，且恰好有 <code>n - 1</code> 条 <code>edges</code> 。树的根节点为节点 <code>0</code> ，树上的每一个节点都有一个标签，也就是字符串 <code>labels</code> 中的一个小写字符（编号为 <code>i</code> 的 节点的标签就是 <code>labels[i]</code> ）</p>
+<p>边数组 <code>edges</code> 以 <code>edges[i] = [ai, bi]</code> 的形式给出，该格式表示节点 <code>ai</code> 和 <code>bi</code> 之间存在一条边。</p>
+<p>返回一个大小为 <em><code>n</code></em> 的数组，其中 <code>ans[i]</code> 表示第 <code>i</code> 个节点的子树中与节点 <code>i</code> 标签相同的节点数。</p>
+<p>树 <code>T</code> 中的子树是由 <code>T</code> 中的某个节点及其所有后代节点组成的树。</p>
+<p>这道题目问题的描述有点绕，我第一遍没有读明白，后来才明白。</p>
+<p>其实就是将树变成无环无向图，有一个顶点。所有的边都给你了，顶点用数字表示，数字对应一个字符串的索引，让你写出每个数字的子树上（包括这个数字的顶点本身），有多少个和这个数字对应索引的字符相同的。</p>
+<h3 id="代码">代码</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义一个子函数</span></span><br><span class="line"><span class="comment"># 这个函数计算每一个节点为根的子树，所有标记的计数</span></span><br><span class="line"><span class="comment"># 因为用邻接表表示的边，我们为了防止边的重复访问，需要记录访问节点</span></span><br><span class="line"><span class="comment"># 因为没有环，所以我们只要记住前一个节点，在访问下一个节点的相邻节点的时候</span></span><br><span class="line"><span class="comment"># 不访问这个节点就可以了</span></span><br><span class="line"><span class="comment"># 参数为dfs(i, pre)， i就是这个节点的编号，pre就是前一个节点的编号</span></span><br><span class="line"><span class="comment"># 终止条件就是这个点的相邻节点都访问过了</span></span><br><span class="line"><span class="comment"># 这样我们在全局的一个数组变量中，更新相应的i的值即可</span></span><br><span class="line"><span class="comment"># 最后我们返回这个数组变量就是所求</span></span><br><span class="line"><span class="comment"># 利用了python中Counter有加法的api</span></span><br><span class="line"><span class="comment"># 我们可以简化代码</span></span><br><span class="line"><span class="comment"># 否则我们如果用字典，我们要遍历字典，把存在于本层的加上，不存在于本层的添加进来即可</span></span><br><span class="line"><span class="comment"># 稍微麻烦点</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = &#123;labels[i]: <span class="number">1</span>&#125;</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    <span class="keyword">for</span> k, v <span class="keyword">in</span> dfs(nxt, i).items():</span><br><span class="line">                        <span class="keyword">if</span> k <span class="keyword">in</span> data:</span><br><span class="line">                            data[k] += v</span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            data[k] = v</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = Counter(&#123;labels[i]: <span class="number">1</span>&#125;)</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    data += dfs(nxt, i)</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1260,80 +1344,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/" class="post-title-link" itemprop="url">人要多读书</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-07-26 00:58:10 / 修改时间：01:07:30" itemprop="dateCreated datePublished" datetime="2020-07-26T00:58:10+08:00">2020-07-26</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1405,7 +1415,7 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">113</span>
+          <span class="site-state-item-count">114</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
