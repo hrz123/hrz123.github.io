@@ -114,6 +114,39 @@
       </tags>
   </entry>
   <entry>
+    <title>HTTP的正确响应码</title>
+    <url>/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/</url>
+    <content><![CDATA[<p>100，200，300系列表示成功的响应码</p>
+<ul>
+<li>响应码规范：RFC6585（2012.4）、RFC7231（2014.6）</li>
+<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持
+<ul>
+<li>100 Continue：上传大文件前使用
+<ul>
+<li>由客户端发起请求中携带Expect 100-continue头部触发</li>
+</ul></li>
+<li>101 Switch Protocols：协议升级使用
+<ul>
+<li>由客户端发起请求中携带Upgrade：头部触发，如升级websocket或者http/2.0</li>
+</ul></li>
+<li>102 Processing：WebDAV请求可能包含许多涉及文件操作的子请求，需要很长时间才能完成请求。该代码表示服务器已经收到并正在处理请求，但无响应可用。这样可以防止客户端超时，并假设请求丢失</li>
+</ul></li>
+<li>2xx：成功处理请求
+<ul>
+<li>200 OK：成功返回了响应</li>
+<li>201 Created：有新资源在服务器端被成功创建</li>
+<li>202 Accepted：服务端接受并开始处理请求；但请求未处理完成。这样一个模糊的概念是有意如此设计，可以覆盖更多的场景。<strong>例如异步、需要长时间处理的任务。</strong>先给客户端返回202 Accept，而由异步的任务继续去处理这个任务。</li>
+<li>203 Non-Authoritative Information：当代理服务器修改了origin server的原始响应包体时（例如更换了HTML中的元素值），代理服务器可以通过修改200为203的方式告知客户端这一事实，方便客户端为这一行为做出相应的处理。203响应可以被缓存。203这个规范并不被广为接受。</li>
+<li>204 No Content：成功执行了请求且不携带响应包体，并暗示客户端无需更新当前的页面视图。</li>
+<li>205 Reset Content：成功执行了请求且不携带响应包体，同时指明客户端需要更新当前页面视图。</li>
+</ul></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>K个一组翻转链表</title>
     <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
     <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
@@ -681,6 +714,20 @@
       </tags>
   </entry>
   <entry>
+    <title>Python的方法解析顺序(MRO)</title>
+    <url>/2020/08/30/Python%E7%9A%84%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F-MRO/</url>
+    <content><![CDATA[<h3 id="参考">参考</h3>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oYW5qaWFud2VpLmNvbS8yMDEzLzA3LzI1L3B5dGhvbi1tcm8vIzp+OnRleHQ9JUU1JUFGJUI5JUU0JUJBJThFJUU2JTk0JUFGJUU2JThDJTgxJUU3JUJCJUE3JUU2JTg5JUJGJUU3JTlBJTg0JUU3JUJDJTk2JUU3JUE4JThCLFJlc29sdXRpb24lMjBPcmRlciVFRiVCQyU4QyVFNiU4OCU5Nk1STyVFRiVCQyU4OSVFMyU4MCU4Mg==">链接<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>对于支持继承的编程语言来说，其方法（属性）可能定义在当前类，也可能来自于基类，所以在方法调用时就需要对当前类和基类进行搜索以确定方法所在的位置。而搜索的顺序就是所谓的「方法解析顺序」（Method Resolution Order，或MRO）。对于只支持单继承的语言来说，MRO 一般比较简单；而对于 Python 这种支持多继承的语言来说，MRO 就复杂很多。</p>
+<p>先看一个「菱形继承」的例子：</p>
+]]></content>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Splay Tree-II</title>
     <url>/2020/08/13/Splay-Tree-II/</url>
     <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
@@ -703,20 +750,6 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python的方法解析顺序(MRO)</title>
-    <url>/2020/08/30/Python%E7%9A%84%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F-MRO/</url>
-    <content><![CDATA[<h3 id="参考">参考</h3>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly9oYW5qaWFud2VpLmNvbS8yMDEzLzA3LzI1L3B5dGhvbi1tcm8vIzp+OnRleHQ9JUU1JUFGJUI5JUU0JUJBJThFJUU2JTk0JUFGJUU2JThDJTgxJUU3JUJCJUE3JUU2JTg5JUJGJUU3JTlBJTg0JUU3JUJDJTk2JUU3JUE4JThCLFJlc29sdXRpb24lMjBPcmRlciVFRiVCQyU4QyVFNiU4OCU5Nk1STyVFRiVCQyU4OSVFMyU4MCU4Mg==">链接<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-<p>对于支持继承的编程语言来说，其方法（属性）可能定义在当前类，也可能来自于基类，所以在方法调用时就需要对当前类和基类进行搜索以确定方法所在的位置。而搜索的顺序就是所谓的「方法解析顺序」（Method Resolution Order，或MRO）。对于只支持单继承的语言来说，MRO 一般比较简单；而对于 Python 这种支持多继承的语言来说，MRO 就复杂很多。</p>
-<p>先看一个「菱形继承」的例子：</p>
-]]></content>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1918,6 +1951,15 @@
       </tags>
   </entry>
   <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>位运算解决全部其余所有数出现k次，找出唯一出现p次的数的题目</title>
     <url>/2020/07/22/%E4%BD%8D%E8%BF%90%E7%AE%97%E8%A7%A3%E5%86%B3%E5%85%A8%E9%83%A8%E5%85%B6%E4%BD%99%E6%89%80%E6%9C%89%E6%95%B0%E5%87%BA%E7%8E%B0k%E6%AC%A1%EF%BC%8C%E6%89%BE%E5%87%BA%E5%94%AF%E4%B8%80%E5%87%BA%E7%8E%B0p%E6%AC%A1%E7%9A%84%E6%95%B0%E7%9A%84%E9%A2%98%E7%9B%AE/</url>
     <content><![CDATA[<h2 id="问题描述">1. 问题描述</h2>
@@ -1973,15 +2015,6 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2298,21 +2331,21 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>堆的实现(大顶堆、小顶堆)</title>
-    <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>学会承担责任</title>
     <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
     <content><![CDATA[
 ]]></content>
       <tags>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>堆的实现(大顶堆、小顶堆)</title>
+    <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -2742,6 +2775,17 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>拔智齿</title>
     <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
     <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
@@ -2751,17 +2795,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
 <p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
 <p>一切都是好兆头。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -4019,8 +4052,15 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 </ul>
 ]]></content>
       <tags>
-        <tag>生活 电影</tag>
+        <tag>生活</tag>
+        <tag>电影</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>非对称密码与RSA算法</title>
+    <url>/2020/09/03/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%B8%8ERSA%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[
+]]></content>
   </entry>
   <entry>
     <title>青蛙跳荷叶问题</title>
@@ -4041,12 +4081,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>非对称密码与RSA算法</title>
-    <url>/2020/09/03/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%B8%8ERSA%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
   <entry>
     <title>鲁迅语录</title>

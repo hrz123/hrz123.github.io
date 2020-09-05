@@ -185,6 +185,103 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/" class="post-title-link" itemprop="url">HTTP的正确响应码</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-04 22:37:43 / 修改时间：23:01:52" itemprop="dateCreated datePublished" datetime="2020-09-04T22:37:43+08:00">2020-09-04</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>100，200，300系列表示成功的响应码</p>
+<ul>
+<li>响应码规范：RFC6585（2012.4）、RFC7231（2014.6）</li>
+<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持
+<ul>
+<li>100 Continue：上传大文件前使用
+<ul>
+<li>由客户端发起请求中携带Expect 100-continue头部触发</li>
+</ul></li>
+<li>101 Switch Protocols：协议升级使用
+<ul>
+<li>由客户端发起请求中携带Upgrade：头部触发，如升级websocket或者http/2.0</li>
+</ul></li>
+<li>102 Processing：WebDAV请求可能包含许多涉及文件操作的子请求，需要很长时间才能完成请求。该代码表示服务器已经收到并正在处理请求，但无响应可用。这样可以防止客户端超时，并假设请求丢失</li>
+</ul></li>
+<li>2xx：成功处理请求
+<ul>
+<li>200 OK：成功返回了响应</li>
+<li>201 Created：有新资源在服务器端被成功创建</li>
+<li>202 Accepted：服务端接受并开始处理请求；但请求未处理完成。这样一个模糊的概念是有意如此设计，可以覆盖更多的场景。<strong>例如异步、需要长时间处理的任务。</strong>先给客户端返回202 Accept，而由异步的任务继续去处理这个任务。</li>
+<li>203 Non-Authoritative Information：当代理服务器修改了origin server的原始响应包体时（例如更换了HTML中的元素值），代理服务器可以通过修改200为203的方式告知客户端这一事实，方便客户端为这一行为做出相应的处理。203响应可以被缓存。203这个规范并不被广为接受。</li>
+<li>204 No Content：成功执行了请求且不携带响应包体，并暗示客户端无需更新当前的页面视图。</li>
+<li>205 Reset Content：成功执行了请求且不携带响应包体，同时指明客户端需要更新当前页面视图。</li>
+</ul></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/04/%E9%98%BF%E7%94%98%E6%AD%A3%E4%BC%A0%E7%BB%8F%E5%85%B8%E5%8F%B0%E8%AF%8D-you-have-to-do-the-best-with-what-God-gave-you/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -208,10 +305,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-09-04 18:28:19 / 修改时间：18:30:22" itemprop="dateCreated datePublished" datetime="2020-09-04T18:28:19+08:00">2020-09-04</time>
+              <time title="创建时间：2020-09-04 18:28:19" itemprop="dateCreated datePublished" datetime="2020-09-04T18:28:19+08:00">2020-09-04</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-05 09:50:58" itemprop="dateModified" datetime="2020-09-05T09:50:58+08:00">2020-09-05</time>
+              </span>
 
           
   
@@ -1069,83 +1172,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">Python实现重试机制</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-09-03 13:56:56 / 修改时间：17:54:09" itemprop="dateCreated datePublished" datetime="2020-09-03T13:56:56+08:00">2020-09-03</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># retry_decorator.py</span></span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">interval, max_retries=<span class="number">3</span>, exceptions=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    res = func(*args, **kwargs)</span><br><span class="line">                    <span class="keyword">return</span> res</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            res = func(*args, **kwargs)</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">max_retries=<span class="number">3</span>, exceptions=None, interval=<span class="number">0</span></span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">            <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@retry(interval=0.5)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_func</span>():</span></span><br><span class="line">    <span class="keyword">global</span> i</span><br><span class="line">    i += <span class="number">1</span></span><br><span class="line">    print(i)</span><br><span class="line">    <span class="keyword">raise</span> Exception</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    my_func()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1213,7 +1243,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-count">111</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

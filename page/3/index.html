@@ -185,6 +185,122 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">Tarjan寻找图的强连通分量算法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-31 16:36:36" itemprop="dateCreated datePublished" datetime="2020-08-31T16:36:36+08:00">2020-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-01 18:16:44" itemprop="dateModified" datetime="2020-09-01T18:16:44+08:00">2020-09-01</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="参考">参考</h3>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvdGFyamFuLWFsZ29yaXRobS1maW5kLXN0cm9uZ2x5LWNvbm5lY3RlZC1jb21wb25lbnRzLw==">GeeksforGeeks<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>如果所有的顶点对之间都有一条路径，那么一个有向图就是强连通的。有向图的强连通分量（strongly connected component，SCC）是一个最大强连通子图。例如，下面的图中有3个SCC。</p>
+<img data-src="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan1.jpg" class>
+<p>我们已经讨论过Kosaraju的强连通分量的算法。前面讨论的算法需要对一个Graph进行两次DFS遍历。在这篇文章中，我们将讨论Tarjan算法，它只需要一次DFS遍历。</p>
+<p>Tarjan算法基于以下事实：</p>
+<ol type="1">
+<li>DFS搜索会产生一个DFS树/森林；</li>
+<li>强连通分量构成DFS树的子树；</li>
+<li>如果我们能找到这种子树的头，就可以打印/存储该子树的所有结点（包括头），这将是一个SCC；</li>
+<li>从一个SCC到另一个SCC没有回溯边（back edge）（可以有交叉边，但在处理图的时候不会用到交叉边）。</li>
+</ol>
+<p>为了找到一个SCC的头部，我们要计算disc和low数组（就像处理衔接点、桥、双连接组件一样）。如前几篇文章所讨论的，low[u]表示从以u为根的子树中可以到达的最早被访问的顶点（发现时间最短的顶点），如果disc[u]=low[u]，则节点u为头部。</p>
+<p>下图是该方法的说明：</p>
+<img data-src="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan2.png" class>
+<p>强连通分量只与有向图有关，但Disc和Low值与有向图和无向图都有关。</p>
+<p>在上图中，我们展示了一个图形和它的一颗DFS树（在同一个图形上可以有不同的DFS树，取决于边被遍历的顺序）。在DFS树中，连续的箭头是树的边，虚线的箭头是back edge</p>
+<p>图中每个节点的disc和low的值显示为disc/low</p>
+<p><strong>Disc:</strong> 是指在DFS遍历时，节点第1次被访问的时间。这是在DFS遍历时，一个节点第一次被访问的时间。对于DFS树中的节点A，B，C，...，J，Disc值为1，2，3，…，10。</p>
+<p><strong>Low:</strong> 在DFS树中，树边带我们向前走，从祖先节点到它的一个子孙节点。例如，从节点C开始，树边可以带我们到节点G、节点I等。回溯边（back edge）带我们往后走，从一个子孙节点到它的一个祖先节点，例如，从节点G出发，back edge带我们到E或C。如果我们把树边和回溯边（back edge）一起看，那么我们可以看到，如果我们从一个节点开始遍历，我们可能会通过树边向下走，然后通过回溯边向上走。例如，从节点E开始，我们可以向下走到I或J，然后向上走到F。一个节点的Low值告诉了我们通过该节点的子树所能到达的最顶层祖先（最小可能的disc值）。所以对于任何一个节点，无论如何Low值都等于它的Disc值（一个节点是它自己的祖先）。然后我们查看它的子树，看看是否有任何节点可以带我们找到它的任何一个祖先。如果在子树中有多条回溯边可以带我们到不同的祖先，那么我们就选取Disc值最小的那条（即最上面的那条）。如果我们看一下节点F，它有两个子树。有节点G的子树，把我们带到E和C，另一个子树只把我们带回F。这里最顶层的祖先是F可以到达的C，所以F的Low值是3（C的Disc值）。</p>
+<p>根据上面的讨论，应该很清楚，B、C、D的Low值是1（因为A是B、C、D可以到达的最上面的节点）。同理，E、F、G的Low值为3，H、I、J的Low值为6。</p>
+<p>对于任何节点u，当DFS开始时，Low将会被设置为其Disc 1st。</p>
+<p>然后对它的每一个子节点v依次进行DFS，u的Low值可以在两种情况下改变：</p>
+<ul>
+<li>Case1（Tree Edge）：如果节点v还没有被访问，那么在v的DFS完成后，low[u] = min(low[u], low[v])</li>
+<li>Case2（Back Edge）：当后代v已经被访问，那么low[u] = min(low[u], disc[v]);</li>
+</ul>
+<p>在第二种情况下，我们是否可以用low[v]代替DIsc[v]？答案是NO。如果你能想到为什么答案是NO，那么你大概明白Low和Disc的概念。（因为是有向图，low[v]是v能访问到的最小节点，u不一定能访问到，u能访问到v，说明disc[v]一定是可以取到的）</p>
+<img data-src="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan3.jpg" class>
+<p>相同的Low和Disc值有助于解决其他图的问题，如衔接点、桥和双连接分量。</p>
+<p>为了跟踪以头部为根的子树，我们可以使用栈（在访问时不断推送节点）。当发现一个头部节点时，从堆栈中弹出所有节点，直到从栈中得到头部。</p>
+<p>为了确保不考虑交叉边，当我们到达一个已经被访问过的节点时，只有当栈中存在被访问过的节点时，我们才应该对该节点进行处理，否则忽略该节点。</p>
+<h3 id="实现写一个tarjan算法找到有向图的所有连通分量并打印出来">实现：写一个Tarjan算法找到有向图的所有连通分量并打印出来</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.neigh = defaultdict(list)</span><br><span class="line">        self.Time = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, x, y</span>):</span></span><br><span class="line">        self.neigh[x].append(y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">scc</span>(<span class="params">self</span>):</span></span><br><span class="line">        disc = [<span class="number">-1</span>] * self.V</span><br><span class="line">        low = [<span class="number">-1</span>] * self.V</span><br><span class="line">        visited = [<span class="literal">False</span>] * self.V</span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> disc[i] == <span class="number">-1</span>:</span><br><span class="line">                self.scc_util(i, low, disc, visited, stack)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">scc_util</span>(<span class="params">self, u, low, disc, visited, stack</span>):</span></span><br><span class="line">        disc[u] = self.Time</span><br><span class="line">        low[u] = self.Time</span><br><span class="line">        self.Time += <span class="number">1</span></span><br><span class="line">        visited[u] = <span class="literal">True</span></span><br><span class="line">        stack.append(u)</span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> self.neigh[u]:</span><br><span class="line">            <span class="keyword">if</span> disc[v] == <span class="number">-1</span>:</span><br><span class="line">                self.scc_util(v, low, disc, visited, stack)</span><br><span class="line">                low[u] = min(low[u], low[v])</span><br><span class="line">            <span class="keyword">elif</span> visited[v]:</span><br><span class="line">                low[u] = min(low[u], disc[v])</span><br><span class="line">        w = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">if</span> disc[u] == low[u]:</span><br><span class="line">            <span class="keyword">while</span> w != u:</span><br><span class="line">                w = stack.pop()</span><br><span class="line">                print(w, end=<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">                visited[w] = <span class="literal">False</span></span><br><span class="line">            print()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g1 = Graph(<span class="number">5</span>)</span><br><span class="line">    g1.addEdge(<span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">    g1.addEdge(<span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line">    g1.addEdge(<span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">    g1.addEdge(<span class="number">0</span>, <span class="number">3</span>)</span><br><span class="line">    g1.addEdge(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in first graph&quot;</span>)</span><br><span class="line">    g1.scc()</span><br><span class="line"></span><br><span class="line">    g2 = Graph(<span class="number">4</span>)</span><br><span class="line">    g2.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g2.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g2.addEdge(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in second graph&quot;</span>)</span><br><span class="line">    g2.scc()</span><br><span class="line"></span><br><span class="line">    g3 = Graph(<span class="number">7</span>)</span><br><span class="line">    g3.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g3.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g3.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    g3.addEdge(<span class="number">1</span>, <span class="number">3</span>)</span><br><span class="line">    g3.addEdge(<span class="number">1</span>, <span class="number">4</span>)</span><br><span class="line">    g3.addEdge(<span class="number">1</span>, <span class="number">6</span>)</span><br><span class="line">    g3.addEdge(<span class="number">3</span>, <span class="number">5</span>)</span><br><span class="line">    g3.addEdge(<span class="number">4</span>, <span class="number">5</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in third graph&quot;</span>)</span><br><span class="line">    g3.scc()</span><br><span class="line"></span><br><span class="line">    g4 = Graph(<span class="number">11</span>)</span><br><span class="line">    g4.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g4.addEdge(<span class="number">0</span>, <span class="number">3</span>)</span><br><span class="line">    g4.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g4.addEdge(<span class="number">1</span>, <span class="number">4</span>)</span><br><span class="line">    g4.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    g4.addEdge(<span class="number">2</span>, <span class="number">6</span>)</span><br><span class="line">    g4.addEdge(<span class="number">3</span>, <span class="number">2</span>)</span><br><span class="line">    g4.addEdge(<span class="number">4</span>, <span class="number">5</span>)</span><br><span class="line">    g4.addEdge(<span class="number">4</span>, <span class="number">6</span>)</span><br><span class="line">    g4.addEdge(<span class="number">5</span>, <span class="number">6</span>)</span><br><span class="line">    g4.addEdge(<span class="number">5</span>, <span class="number">7</span>)</span><br><span class="line">    g4.addEdge(<span class="number">5</span>, <span class="number">7</span>)</span><br><span class="line">    g4.addEdge(<span class="number">5</span>, <span class="number">8</span>)</span><br><span class="line">    g4.addEdge(<span class="number">5</span>, <span class="number">9</span>)</span><br><span class="line">    g4.addEdge(<span class="number">6</span>, <span class="number">4</span>)</span><br><span class="line">    g4.addEdge(<span class="number">7</span>, <span class="number">9</span>)</span><br><span class="line">    g4.addEdge(<span class="number">8</span>, <span class="number">9</span>)</span><br><span class="line">    g4.addEdge(<span class="number">9</span>, <span class="number">8</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in forth graph&quot;</span>)</span><br><span class="line">    g4.scc()</span><br><span class="line"></span><br><span class="line">    g5 = Graph(<span class="number">5</span>)</span><br><span class="line">    g5.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g5.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g5.addEdge(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">    g5.addEdge(<span class="number">2</span>, <span class="number">4</span>)</span><br><span class="line">    g5.addEdge(<span class="number">3</span>, <span class="number">0</span>)</span><br><span class="line">    g5.addEdge(<span class="number">4</span>, <span class="number">2</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in fifth graph&quot;</span>)</span><br><span class="line">    g5.scc()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># Output</span><br><span class="line">SCC in first graph</span><br><span class="line">4 </span><br><span class="line">3 </span><br><span class="line">1 2 0 </span><br><span class="line">SCC in second graph</span><br><span class="line">3 </span><br><span class="line">2 </span><br><span class="line">1 </span><br><span class="line">0 </span><br><span class="line">SCC in third graph</span><br><span class="line">5 </span><br><span class="line">3 </span><br><span class="line">4 </span><br><span class="line">6 </span><br><span class="line">2 1 0 </span><br><span class="line">SCC in forth graph</span><br><span class="line">8 9 </span><br><span class="line">7 </span><br><span class="line">5 4 6 </span><br><span class="line">3 2 1 0 </span><br><span class="line">10 </span><br><span class="line">SCC in fifth graph</span><br><span class="line">4 3 2 1 0 </span><br></pre></td></tr></table></figure>
+<p>时间复杂度：算法主要使用DFS，邻接表表示的图的DFS算法是O(V+E)复杂度的。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/31/%E6%88%91%E4%BB%AC%E5%94%AF%E4%B8%80%E5%80%BC%E5%BE%97%E6%81%90%E6%83%A7%E7%9A%84%E5%B0%B1%E6%98%AF%E6%81%90%E6%83%A7%E6%9C%AC%E8%BA%AB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1490,177 +1606,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/" class="post-title-link" itemprop="url">要不要使用分区表？</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-08-29 11:23:02 / 修改时间：20:14:23" itemprop="dateCreated datePublished" datetime="2020-08-29T11:23:02+08:00">2020-08-29</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="分区表是什么">分区表是什么？</h3>
-<p>为了说明分区表的组织形式，我先创建一个表t；</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`ftime`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="keyword">KEY</span> (<span class="string">`ftime`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"><span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="string">&#x27;2017-4-1&#x27;</span>,<span class="number">1</span>),(<span class="string">&#x27;2018-4-1&#x27;</span>,<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A81.png" class>
-<p>我在表t初始化插入了两行记录，按照定义的分区规则，这两行记录分别落在p_2018和p_2019这两个分区上。</p>
-<p>可以看到，这个表包含了一个.frm文件和4个.ibd文件，每个分区对应一个.ibd文件。也就是说：</p>
-<ol type="1">
-<li>对于引擎层来说，这是4个表；</li>
-<li>对于Server层来说，这是1个表。</li>
-</ol>
-<p>你可能会觉得这两句话都是废话。其实不然，这两句话非常重要，可以帮我们理解分区变的执行逻辑。</p>
-<h3 id="分区表的引擎层行为">分区表的引擎层行为</h3>
-<p>我先给你举个在分区表加间隙锁的例子，目的是说明对于InnoDB来说，这是4个表。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A82.png" class>
-<p>这里顺便复习一下，我在第21篇文章和你介绍的间隙锁加锁规则。</p>
-<p>我们初始化表t的时候，只插入了两行数据，ftime的值分别是，’2017-4-1‘和’2018-4-1‘。session A的select语句对索引ftime上这两个记录之间的间隙加了锁。如果是一个普通表的话，那么T1时刻，在表t的ftime索引上，间隙和加锁状态应该是图3这样的。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A83.jpg" class>
-<p>也就是说，'2017-4-1'和’2018-4-1‘这两个记录之间的间隙是会被锁住的。那么，session B的两条插入语句应该都要进入锁等待状态。</p>
-<p>但是，从上面的实验效果可以看出，session B的第一个insert语句是可以执行成功的。这是因为，对于引擎来说，p_2018和p_2019是两个不同的表，也就是说2017-4-1的下一个记录并不是2018-4-1，而是p_2018分区的supremum。所以T1时刻，在表t的ftime索引上，间隙和加锁的状态其实是图4这样的：</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A84.jpg" class>
-<p>由于分区表的规则，session A的select语句其实只操作了分区p_2018，因此加锁范围就是图4中深绿色的部分。</p>
-<p>所以，session B要写入一行ftime是2018-2-1的时候是可以成功的，而要写入2017-12-1这个记录，就要等session A的间隙锁。</p>
-<p>图5就是这时候的show engine innodb status的部分结果。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A85.png" class>
-<p>看完InnoDB引擎的例子，我们再来一个MyISAM分区表的例子。</p>
-<p>我首先用alter table t engine=myisam，把表t改成MyISAM表；然后，我再用下面这个例子说明，对于MyISAM引擎来说，这是4个表。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A86.png" class>
-<blockquote>
-<p>注：这是在用MyISAM的表锁验证，MyISAM引擎只支持表锁。</p>
-</blockquote>
-<p>在session A里面，我用sleep(100)将这条语句的执行时间设置为100秒。由于MyISAM引擎只支持表锁，所以这条update语句会锁住整个表t上的读。</p>
-<p>但我们看到的结果是，session B的第一条查询语句是可以正常执行的，第二条语句才进入锁等待状态。</p>
-<p>这正是因为MyISAM的表锁是在引擎层实现的，session A加的表锁，其实是锁在分区p_2018上。因此，只会堵住在这个分区上执行的查询，落到其他分区的查询是不受影响的。</p>
-<p>看到这里，你可能会说，分区表看来还不错嘛，为什么不让用呢？我们使用分区表的一个重要原因就是单表过大。那么，如果不使用分区表的话，我们就是要使用手动分表的方式。</p>
-<p>接下来，我们一起看看手动分表和分区表有什么区别。</p>
-<p>比如，按照年份来划分，我们就分别创建普通表t_2017、t_2018、t_2019等等。手工分表的逻辑，也是找到需要更新的所有分表，然后依次执行更新。在性能上，这和分区表并没有实质的差别。</p>
-<p>分区表和手工分表，一个是有server层来决定使用哪个分区，一个是由应用层代码来决定使用哪个分表。因此，从引擎层看，这两种方式也是没有差别的。</p>
-<p>其实这两个方案的区别，主要是在server层上。从server层看，我们就不得不提到分区表一个被广为诟病的问题</p>
-<p>：打开表的行为。</p>
-<h3 id="分区策略">分区策略</h3>
-<p>每当第一次访问一个分区表的时候，MySQL需要把所有的分区都访问一遍。<strong>一个典型的报错情况</strong>是这样的：如果一个分区表的分区很多，比如超过了1000个，而MySQL启动的时候，open_files_limit参数使用的是默认值1024，那么就会在访问这个表的时候，由于需要打开所有的文件，导致打开表文件的个数超过了上限而报错。</p>
-<p>下图就是我创建的一个包含了很多分区的表t_myisam，执行一条插入语句后报错的情况。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A87.png" class>
-<p>可以看到，这条insert语句，明显只需要访问一个分区，但语句却无法执行。</p>
-<p>这时，你一定从表名猜到了，这个表我用的是MyISAM引擎。是的，因为使用InnoDB引擎的话，并不会出现这个问题。</p>
-<p>MyISAM分区表使用的分区策略，我们称为<strong>通用分区策略</strong>（generic partitioning），每次访问分区都由server层控制。通用分区策略，是MySQL一开始支持分区表的时候就存在的代码，在文件管理、表管理的实现上很粗糙，因此有比较严重的性能问题。</p>
-<p>从MySQL 5.7.9开始，InnoDB引擎引入了<strong>本地分区策略</strong>（native partitioning）。这个策略是在InnoDB内部自己管理打开分区的行为。</p>
-<p>MySQL从5.7.17开始，将MyISAM分区表标记为即将弃用（deprecated），意思是”从这个版本开始不建议这么使用，请使用替代方案。在将来的版本中会废弃这个功能“。</p>
-<p>从MySQL8.0版本开始，就不允许创建MyISAM分区表了，只允许创建已经实现了本地分区策略的引擎。目前来看，只有InnoDB和NDB这两个引擎支持了本地分区策略。</p>
-<p>接下来，我们再看一下分区表在server层的行为。</p>
-<h3 id="分区表的server层行为">分区表的server层行为</h3>
-<p>如果从server层看的话，一个分区表就只是一个表。</p>
-<p>这句话是什么意思呢？接下来，我就用下面这个例子来和你说明。如图8和如图9所示，分别是这个例子的操作序列和执行结果图。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A88.png" class>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A89.png" class>
-<p>可以看到，虽然session B只需要操作p_2017这个分区，但是由于session A持有整个表t的MDL锁，就导致了session B的alter语句被堵住。</p>
-<p>这也是DBA同学经常说的，分区表，在做DDL的时候，影响会更大。如果你使用的是普通分表，那么当你在truncate一个分表的时候，肯定不会跟另外一个分表上的查询语句，出现MDL锁冲突。</p>
-<p>到这里我们小结一下：</p>
-<ol type="1">
-<li>MySQL在第一次打开分区表的时候，需要访问所有的分区；</li>
-<li>在server层，认为这是同一张表，因此所有分区共用同一个MDL锁；</li>
-<li>在引擎层，认为这是不同的表，因此MDL锁之后的执行过程，会根据分区表规则，只访问必要的分区。</li>
-</ol>
-<p>而关于”必要的分区“的判断，就是根据SQL语句中的where条件，结合分区规则来实现的。比如我们上面的例子中，where ftime=’2018-4-1‘，根据分区规则year函数算出来的值是2018，那么就会落在p_2019这个分区。</p>
-<p>但是，如果这个where条件改成where ftime&gt;='2018-4-1'，虽然查询结果相同，但是这时候根据where条件，就要访问p_2019和p_others这两个分区。</p>
-<p>如果查询语句的where条件中没有分区key，那就只能访问所有分区了。当然，这并不是分区表的问题。即使是使用业务分表的方式，where条件中没有使用分表的key，也必须访问所有的分表。</p>
-<p>我们已经理解了分区表的概念，那么什么场景下适合使用分区表呢？</p>
-<h3 id="分区表的应用场景">分区表的应用场景</h3>
-<p>分区表的一个显而易见的优势是对业务透明，相对于用户分表来说，使用分区表的业务代码更简洁。还有，分区表可以很方便的清理历史数据。</p>
-<p>如果一项业务跑的时间足够长，往往就会有根据时间删除历史数组的需求。这时候，按照时间分区的分区表，就可以直接通过alter table t drop partition...这个语法删掉分区，从而删掉过期的历史数据。</p>
-<p>这个alter table t drop partition...操作是直接删除分区文件，效果跟drop普通表类似。与使用delete语句删除数据相比，优势是速度快、对系统影响小。</p>
-<h3 id="小结">小结</h3>
-<p>这篇文章，我主要和你介绍的是server层和引擎层对分区表的处理方式。我希望通过这些介绍，你能够对是否选择使用分区表，有更清晰的想法。</p>
-<p>需要注意的是，我是以范围分区（range）为例和你介绍的。实际上，MySQL还支持hash分区、list分区等分区方法。你可以在需要用到的时候，再翻翻<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vOC4wL2VuL3BhcnRpdGlvbmluZy10eXBlcy5odG1s">手册<i class="fa fa-external-link-alt"></i></span>。</p>
-<p>实际使用时，分区表跟用户分表比起来，有两个绕不开的问题：一个是第一次访问的时候需要访问所有分区，另一个是共用MDL锁。</p>
-<p>因此，如果要使用分区表，就不要创建太多的分区。我见过一个用户做了按天分区策略，然后预先创建了10年的分区。这种情况下，访问分区表的性能自然是不好的。这里有两个问题需要注意：</p>
-<ol type="1">
-<li>分区并不是越细越好。实际上，单表或者单分区的数据到1千万行，只要没有特别大的索引，对于现在的硬件能力来说已经算是小表了。</li>
-<li>分区也不要提前预留太多，在使用之前预先创建即可。比如，如果是按月分区，每年年底时再把下一年度的12个分区创建上即可。对于没有数据的历史分区，要及时的drop掉。</li>
-</ol>
-<p>至于分区表的其他问题，比如查询需要跨多个分区取数据，查询性能就会比较慢，基本上就不是分区表本身的问题，而是数据量的问题，或者说是使用方式的问题了。</p>
-<p>当然，如果你的团队已经维护了一个成熟的分库分表中间件，用业务分表，对业务开发同学来说，并没有额外的复杂性，对DBA也更直观，自然是更好的。</p>
-<p>最后，我给你留一个思考题吧。</p>
-<p>我们举例的表中，没有用到自增主键，假如现在要创建一个自增字段id。MySQL要求分区表中的主键必须包含分区字段。如果要在表t的基础上做修改，你会怎么定义这个表的主键呢？为什么这么定义呢？</p>
-<p>解答：</p>
-<p>上期的问题是，怎么给分区表t创建自增主键。由于MySQL要求主键包含所有的分区字段，所以肯定是要创建联合主键的。</p>
-<p>这时候就有两种可选：一种是（ftime, id），另一种是（id, ftime）。</p>
-<p>如果从利用率上来看，应该使用（ftime, id）这种模式。因为用ftime做分区key，说明大多数语句都是包含ftime的，使用这种模式，可以利用前缀索引的规则，减少一个索引。</p>
-<p>这时的建表语句是：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line"> <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"> <span class="string">`ftime`</span> datatime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line"> PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>, <span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=MyISAM <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = MyISAM);</span><br></pre></td></tr></table></figure>
-<p>当然，我的建议是你要尽量使用InnoDB引擎。InnoDB表要求至少有一个索引，以自增字段作为第一个字段，所以需要一个id的单独索引。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`ftime`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>,<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`id`</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>);</span><br></pre></td></tr></table></figure>
-<p>当然把字段反过来，创建成：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PRIMARY KEY (`id`,`ftime`),</span><br><span class="line">KEY `id` (`ftime`)</span><br></pre></td></tr></table></figure>
-<p>也是可以的。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1728,7 +1677,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">110</span>
+          <span class="site-state-item-count">111</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
