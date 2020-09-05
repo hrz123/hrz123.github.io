@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>ABNF严格定义</title>
-    <url>/2020/09/04/ABNF%E4%B8%A5%E6%A0%BC%E5%AE%9A%E4%B9%89/</url>
-    <content><![CDATA[
-]]></content>
-  </entry>
-  <entry>
     <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
     <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h2 id="问题描述">问题描述</h2>
@@ -32,6 +26,12 @@
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>ABNF严格定义</title>
+    <url>/2020/09/04/ABNF%E4%B8%A5%E6%A0%BC%E5%AE%9A%E4%B9%89/</url>
+    <content><![CDATA[
+]]></content>
   </entry>
   <entry>
     <title>GC的三种基本实现方式和优缺点</title>
@@ -392,6 +392,38 @@
       </tags>
   </entry>
   <entry>
+    <title>MySQL如何正确地显示随机消息？ </title>
+    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论</p>
+<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
+<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
+<h3 id="正确的方法">正确的方法</h3>
+<p>下面这个流程：</p>
+<ol type="1">
+<li>取得整个表的行数，并记为C。</li>
+<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
+<li>再用limit Y，1 取得一行。</li>
+</ol>
+<p>下面这段代码，就是上面流程的执行语句的序列。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
+<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
+<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
+<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
+<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
+<ol type="1">
+<li>取得整个表的行数，即为C</li>
+<li>按照相同的随机方法得到Y1、Y2、Y3</li>
+<li>再执行三个limit Y, 1语句得到三行数据。</li>
+<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
+</ol>
+<h3 id="参考">参考</h3>
+<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL自增主键为什么不是连续的？</title>
     <url>/2020/08/28/MySQL%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E6%98%AF%E8%BF%9E%E7%BB%AD%E7%9A%84%EF%BC%9F/</url>
     <content><![CDATA[<p>为了便于说明，我们创建一个表t，其中id是自增主键字段、c是唯一索引。</p>
@@ -522,38 +554,6 @@
 <ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MDUzMQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL如何正确地显示随机消息？ </title>
-    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论</p>
-<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
-<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
-<h3 id="正确的方法">正确的方法</h3>
-<p>下面这个流程：</p>
-<ol type="1">
-<li>取得整个表的行数，并记为C。</li>
-<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
-<li>再用limit Y，1 取得一行。</li>
-</ol>
-<p>下面这段代码，就是上面流程的执行语句的序列。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
-<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
-<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
-<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
-<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
-<ol type="1">
-<li>取得整个表的行数，即为C</li>
-<li>按照相同的随机方法得到Y1、Y2、Y3</li>
-<li>再执行三个limit Y, 1语句得到三行数据。</li>
-<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
-</ol>
-<h3 id="参考">参考</h3>
-<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -868,32 +868,6 @@
       </tags>
   </entry>
   <entry>
-    <title>TLS握手的优化：session缓存、ticket票据及TLS1.3的0-RTT</title>
-    <url>/2020/09/04/TLS%E6%8F%A1%E6%89%8B%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%9Asession%E7%BC%93%E5%AD%98%E3%80%81ticket%E7%A5%A8%E6%8D%AE%E5%8F%8ATLS1-3%E7%9A%840-RTT/</url>
-    <content><![CDATA[<p>TLS握手中所消耗的一个或者两个RTT的时间，是用于安全性，对于我们应用层的信息传递而言并没有意义。所以TLS提供了许多种手段，比如缓存，ticket等等，用于减少我们TLS握手中所消耗的RTT的时间。接下来简要介绍常用的一些手段，以及它们所存在的问题。</p>
-<h3 id="session缓存以服务器生成的session-id为依据">session缓存：以服务器生成的session ID为依据</h3>
-<p>session resume with session ID</p>
-<p>最常用的叫session 缓存</p>
-<p>第一次握手后，服务器会生成一个session ID，这个session ID会传给浏览器，或者说是client，当在一定的时间以内，比如说几个小时或者几天以内，浏览器或者客户端携带着这个session ID，再次访问服务器的时候，服务器这个时候它从它的内存或者说其他的缓存中，取到了这个session ID所对应的加密密钥，那么服务器就可以跟client说，我们就使用上一次所使用的加密密钥就可以了，没有必要使用DH或者DHCE密钥交换协议再次生成一个加密密钥，这样我们就减少了RTT。那么这里对于client和server都有要求。client需要在一定的时间内缓存住session ID以及它所对应的加密密钥，而服务器也需要在它的缓存中，为session ID缓存一定的时间。</p>
-<p>第二次访问的时候，Client Hello中是有一个session ID的，当然，第一次访问的时候是没有这样的一个数字的。有了这样的一个session ID以后呢，Server Hello返回了Change Cipher Spec Message，而没有发送Server Key Exchange，就是我们DHCE中必须要发送公钥这么的一个步骤。Change Cipher Spec中说了些什么呢？我们可以看到，[Expert Info (Note/Sequence): This session reuses previously negotiated key (Session resumption)]，我们使用上一次所协商过的key就可以了。服务器就使用了内存所缓存的session id所对应的密钥。接下来所有的通讯都是基于我们上一次所使用的密钥进行加密的。</p>
-<p>session ID缓存往往会有两个问题：</p>
-<ol type="1">
-<li>server 往往是在内存中存放session id以及对应的密钥信息的，所以位于不同的主机上的server它们是没有办法去分享它们的session id以及对应的密钥信息，然而实际上我们的服务往往都是服务于成千上万个用户，所以要通过反向代理负载均衡等通过一个ip或者一个域名，来为很多个用户服务，所以我们会有很多台server，这些server中如何去共享这些个session id呢，比如说server A为同一个用户所生成的session id当下一次用户来访问的时候，很可能通过负载均衡，访问到了server b，那么server b又需要重新进行握手了，这是第一个问题。</li>
-<li>第二个问题，server在内存中存储session id是有内存消耗的。那么到底缓存多长时间，过短和过长都不合适。</li>
-</ol>
-<p>这个时候就可以考虑session ticket，session ticket处理方式与session 缓存是完全不同的，那首先我们的每一台server不需要再耗费内存去存放每一个session中所需要的信息，而是基于它所独有一个密码，那么这个密码呢是整个集群中所共同分享的一个密码，基于这个密码把相关的加密信息进行加密，发送给客户端，那么当客户端下一次需要握手的时候呢，把这个相关的加密后的信息发送给服务器，而只有这个集群内的服务器才知道这个密码，那么它基于这个密码解密之后，就获取到上一次握手成功后所需要的密钥，我们就可以基于这个密钥，与client中所缓存的这个密钥进行加密数据的一个通讯。这样我们就解决了session缓存所具有的上面的问题了。</p>
-<h3 id="tls1.3的0rtt握手">TLS1.3的0RTT握手</h3>
-<p>我们知道TLS1.3中只需要一次RTT完成握手。所谓的0RTT是指，第一次握手的时候就携带我们相关的数据，比如说我们有一个Get请求，第一次就发送，那么在一个RTT后呢，我们就可以收到response，所以它实现握手没有占用任何的RTT。我们叫它0RTT。那么它们是怎么实现的呢？实际上，它们是第二次握手才可以完成的，因为当我们第一次握手的时候，我们的client和服务器呢会把相关的密钥信息缓存下来，那么第二次握手的时候我们基于上一次缓存的一定时间内有效的信息，对我们的Get请求进行加密，那么发送给server，如果server也认为这个上一次的密钥相关信息没有过期的话，那么它就可以解密到了，也可以把基于同样的密钥，把相应的response发给client。</p>
-<p>当然，无论是session ID缓存或者是session ticket或者TLS1.3中的0RTT，它们其实都面临着同样一种攻击叫做重放攻击。那么什么叫重放攻击呢？比如说我们的client现在发送了一个post请求，那么这个post请求呢使用上一次中所使用到的密钥进行加密，所以这其实是一个报文，一个packet，这个packet发送给server呢，server是认的，因为它马上利用它所没有过期的密钥进行解密，并处理，通常一个post请求很有可能是改变我们的用户的数据状态的，那么就改变了我们的数据库。如果这个报文被我们的一个中间人在某个路由器或者某一个代理服务器中把这个报文保存下来了，那么它就可以在随后的过程中，不需要去解密相关的信息，我只要这个packet不停地重新地再发送，就可以不停地去改变我们的数据库的状态。这就是一个重放攻击。</p>
-<p>所以我们的0RTT，或者说我们session id、ticket reuse都是需要设定一个合适的合理的过期时间的。</p>
-<h3 id="小结">小结</h3>
-<p>本片文章主要介绍了TLS为了提升握手速度，而进行的性能优化手段，而TLS中所面临的另外一个问题，就是它的安全性，非常依赖于当前最快速的计算机的运行速度。那么有没有一劳永逸的绝对安全的这样的一种通讯手段呢？那么量子通讯可以带给大家全新的思考。</p>
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>TLS与量子通讯的原理</title>
     <url>/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/</url>
     <content><![CDATA[<p>TLS保证安全性的最大难题在于如何传递后续对称加密时，所使用的密钥，那么目前所使用的DH或者DHCE协议呢，都存在被快速运算的计算机所破解的一个可能性。那么，接下来将介绍量子通讯协议。当然这里的量子通讯与我们在物理学中所了解到的那个量子力学一点关系都没有，只是借用了其中一些理念而已。</p>
@@ -954,6 +928,32 @@
 <p>我们首先使用到了对称加密所使用到的一些技术，尤其我们重点介绍了AES算法，以及GCM分组工作模式，那么接下来我们介绍了非对称加密算法的两种应用。首先是在PKI证书体系，其次是在DH或者DHCE密钥交换协议中得到了大量广泛的使用。我们也介绍了TLS1.3协议，那么在未来TLS1.3协议将会得到大量广泛的使用，我们必须清楚TLS1.3协议究竟做了哪些改进，和优化。</p>
 <p>TLS协议的安全性受限于当下最快的计算机的运行速度，所以呢，我们也介绍了理论上绝对安全的量子通讯方式来传递密钥。</p>
 <p>那么之后我们将介绍TLS层次下的传输层协议（TLS属于表示层协议），我们将重点介绍TCP协议的设计原则和众多特性。</p>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TLS握手的优化：session缓存、ticket票据及TLS1.3的0-RTT</title>
+    <url>/2020/09/04/TLS%E6%8F%A1%E6%89%8B%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%9Asession%E7%BC%93%E5%AD%98%E3%80%81ticket%E7%A5%A8%E6%8D%AE%E5%8F%8ATLS1-3%E7%9A%840-RTT/</url>
+    <content><![CDATA[<p>TLS握手中所消耗的一个或者两个RTT的时间，是用于安全性，对于我们应用层的信息传递而言并没有意义。所以TLS提供了许多种手段，比如缓存，ticket等等，用于减少我们TLS握手中所消耗的RTT的时间。接下来简要介绍常用的一些手段，以及它们所存在的问题。</p>
+<h3 id="session缓存以服务器生成的session-id为依据">session缓存：以服务器生成的session ID为依据</h3>
+<p>session resume with session ID</p>
+<p>最常用的叫session 缓存</p>
+<p>第一次握手后，服务器会生成一个session ID，这个session ID会传给浏览器，或者说是client，当在一定的时间以内，比如说几个小时或者几天以内，浏览器或者客户端携带着这个session ID，再次访问服务器的时候，服务器这个时候它从它的内存或者说其他的缓存中，取到了这个session ID所对应的加密密钥，那么服务器就可以跟client说，我们就使用上一次所使用的加密密钥就可以了，没有必要使用DH或者DHCE密钥交换协议再次生成一个加密密钥，这样我们就减少了RTT。那么这里对于client和server都有要求。client需要在一定的时间内缓存住session ID以及它所对应的加密密钥，而服务器也需要在它的缓存中，为session ID缓存一定的时间。</p>
+<p>第二次访问的时候，Client Hello中是有一个session ID的，当然，第一次访问的时候是没有这样的一个数字的。有了这样的一个session ID以后呢，Server Hello返回了Change Cipher Spec Message，而没有发送Server Key Exchange，就是我们DHCE中必须要发送公钥这么的一个步骤。Change Cipher Spec中说了些什么呢？我们可以看到，[Expert Info (Note/Sequence): This session reuses previously negotiated key (Session resumption)]，我们使用上一次所协商过的key就可以了。服务器就使用了内存所缓存的session id所对应的密钥。接下来所有的通讯都是基于我们上一次所使用的密钥进行加密的。</p>
+<p>session ID缓存往往会有两个问题：</p>
+<ol type="1">
+<li>server 往往是在内存中存放session id以及对应的密钥信息的，所以位于不同的主机上的server它们是没有办法去分享它们的session id以及对应的密钥信息，然而实际上我们的服务往往都是服务于成千上万个用户，所以要通过反向代理负载均衡等通过一个ip或者一个域名，来为很多个用户服务，所以我们会有很多台server，这些server中如何去共享这些个session id呢，比如说server A为同一个用户所生成的session id当下一次用户来访问的时候，很可能通过负载均衡，访问到了server b，那么server b又需要重新进行握手了，这是第一个问题。</li>
+<li>第二个问题，server在内存中存储session id是有内存消耗的。那么到底缓存多长时间，过短和过长都不合适。</li>
+</ol>
+<p>这个时候就可以考虑session ticket，session ticket处理方式与session 缓存是完全不同的，那首先我们的每一台server不需要再耗费内存去存放每一个session中所需要的信息，而是基于它所独有一个密码，那么这个密码呢是整个集群中所共同分享的一个密码，基于这个密码把相关的加密信息进行加密，发送给客户端，那么当客户端下一次需要握手的时候呢，把这个相关的加密后的信息发送给服务器，而只有这个集群内的服务器才知道这个密码，那么它基于这个密码解密之后，就获取到上一次握手成功后所需要的密钥，我们就可以基于这个密钥，与client中所缓存的这个密钥进行加密数据的一个通讯。这样我们就解决了session缓存所具有的上面的问题了。</p>
+<h3 id="tls1.3的0rtt握手">TLS1.3的0RTT握手</h3>
+<p>我们知道TLS1.3中只需要一次RTT完成握手。所谓的0RTT是指，第一次握手的时候就携带我们相关的数据，比如说我们有一个Get请求，第一次就发送，那么在一个RTT后呢，我们就可以收到response，所以它实现握手没有占用任何的RTT。我们叫它0RTT。那么它们是怎么实现的呢？实际上，它们是第二次握手才可以完成的，因为当我们第一次握手的时候，我们的client和服务器呢会把相关的密钥信息缓存下来，那么第二次握手的时候我们基于上一次缓存的一定时间内有效的信息，对我们的Get请求进行加密，那么发送给server，如果server也认为这个上一次的密钥相关信息没有过期的话，那么它就可以解密到了，也可以把基于同样的密钥，把相应的response发给client。</p>
+<p>当然，无论是session ID缓存或者是session ticket或者TLS1.3中的0RTT，它们其实都面临着同样一种攻击叫做重放攻击。那么什么叫重放攻击呢？比如说我们的client现在发送了一个post请求，那么这个post请求呢使用上一次中所使用到的密钥进行加密，所以这其实是一个报文，一个packet，这个packet发送给server呢，server是认的，因为它马上利用它所没有过期的密钥进行解密，并处理，通常一个post请求很有可能是改变我们的用户的数据状态的，那么就改变了我们的数据库。如果这个报文被我们的一个中间人在某个路由器或者某一个代理服务器中把这个报文保存下来了，那么它就可以在随后的过程中，不需要去解密相关的信息，我只要这个packet不停地重新地再发送，就可以不停地去改变我们的数据库的状态。这就是一个重放攻击。</p>
+<p>所以我们的0RTT，或者说我们session id、ticket reuse都是需要设定一个合适的合理的过期时间的。</p>
+<h3 id="小结">小结</h3>
+<p>本片文章主要介绍了TLS为了提升握手速度，而进行的性能优化手段，而TLS中所面临的另外一个问题，就是它的安全性，非常依赖于当前最快速的计算机的运行速度。那么有没有一劳永逸的绝对安全的这样的一种通讯手段呢？那么量子通讯可以带给大家全新的思考。</p>
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
@@ -1231,15 +1231,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 207.课程表</title>
-    <url>/2020/08/04/leetcode-207-%E8%AF%BE%E7%A8%8B%E8%A1%A8/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 本题可约化为： 课程安排图是否是 有向无环图(DAG)。</span></span><br><span class="line"><span class="comment"># 即课程间规定了前置条件，但不能构成任何环路，否则课程前置条件将不成立。</span></span><br><span class="line"><span class="comment"># 思路是通过 拓扑排序 判断此课程安排图是否是 有向无环图(DAG) 。</span></span><br><span class="line"><span class="comment"># 拓扑排序原理： 对 DAG 的顶点进行排序，使得对每一条有向边 (u,v)，</span></span><br><span class="line"><span class="comment"># 均有 u（在排序记录中）比 v 先出现。</span></span><br><span class="line"><span class="comment"># 亦可理解为对某点 v 而言，只有当 v 的所有源点均出现了，v 才能出现。</span></span><br><span class="line"><span class="comment"># 通过课程前置条件列表 prerequisites 可以得到课程安排图的 邻接表 adjacency，</span></span><br><span class="line"><span class="comment"># 以降低算法时间复杂度，以下两种方法都会用到邻接表。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1.统计课程安排图中弄每个节点的入度，生成入度表indegrees</span></span><br><span class="line"><span class="comment"># 2.借助一个队列queue，将所有入度为0的节点入队。</span></span><br><span class="line"><span class="comment"># 3.当queue非空时，依次将队首节点出队，在课程安排图中删除此节点pre：</span></span><br><span class="line"><span class="comment">#    并不是真正从邻接表中删除此节点pre，而是将此节点对应所有邻接节点cur的入度-1</span></span><br><span class="line"><span class="comment">#    即indegrees[cur] -= 1.</span></span><br><span class="line"><span class="comment">#    当入度-1后邻接节点cur的入度为0，说明cur所有的前驱节点已经被&quot;删除&quot;，此时将cur入队。</span></span><br><span class="line"><span class="comment"># 4.在每次pre出队时，执行numCourses--;</span></span><br><span class="line"><span class="comment">#    若整个课程安排图是有向无环图（即可以安排），则所有节点一定都入队并出队过，即完成拓扑排序。</span></span><br><span class="line"><span class="comment">#    换个角度说，若课程安排图中存在环，一定有节点的入度始终不为0。</span></span><br><span class="line"><span class="comment">#    因此，拓扑排序出队次数等于课程个数，返回numCourses==0判断课程是否可以成功安排</span></span><br><span class="line"><span class="comment"># 时间复杂度 O(N+M)： 遍历一个图需要访问所有节点和所有临边，N 和 M 分别为节点数量和临边数量；</span></span><br><span class="line"><span class="comment"># 空间复杂度 O(N+M)： 为建立邻接表所需额外空间，adjacency 长度为 N ，并存储 M 条临边的数据。</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        indegrees = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        queue = deque()</span><br><span class="line">        <span class="comment"># Get the indegree and adjacency of every course.</span></span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            indegrees[cur] += <span class="number">1</span></span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="comment"># Get all the courses with the indegree of 0.</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(indegrees)):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> indegrees[i]:</span><br><span class="line">                queue.append(i)</span><br><span class="line">        <span class="comment"># BFS TopSort.</span></span><br><span class="line">        <span class="keyword">while</span> queue:</span><br><span class="line">            pre = queue.popleft()</span><br><span class="line">            numCourses -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> cur <span class="keyword">in</span> adjacency[pre]:</span><br><span class="line">                indegrees[cur] -= <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> indegrees[cur]:</span><br><span class="line">                    queue.append(cur)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> numCourses</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 原理是通过DFS判断图中是否有环</span></span><br><span class="line"><span class="comment"># 算法流程</span></span><br><span class="line"><span class="comment"># 1.借助一个标志列表flags，用于判断每个节点i（课程）的状态：</span></span><br><span class="line"><span class="comment">#    1.未被DFS访问：i==0</span></span><br><span class="line"><span class="comment">#    2.已被其他节点启动的DFS访问：i==-1</span></span><br><span class="line"><span class="comment">#    3.已被当前节点启动的DFS访问：i==1。</span></span><br><span class="line"><span class="comment"># 2.对numCourses个节点一次执行DFS，判断每个节点起步DFS是否存在换，若存在直接放回False</span></span><br><span class="line"><span class="comment">#    DFS流程</span></span><br><span class="line"><span class="comment">#    1.终止条件：</span></span><br><span class="line"><span class="comment">#      当flag[i] == -1，说明当前访问节点已被其他节点启动的DFS访问，</span></span><br><span class="line"><span class="comment">#      无需再重复搜索，直接返回True</span></span><br><span class="line"><span class="comment">#      当flag[i] == 1，说明在本轮DFS搜索中节点i被第2次访问，即课程安排图有环，直接返回False</span></span><br><span class="line"><span class="comment">#    2.将当前访问节点i对应flag[i]置1，即标记其本轮被DFS访问过；</span></span><br><span class="line"><span class="comment">#    3.递归访问当前节点i的所有邻接节点j，当发现环直接返回False；</span></span><br><span class="line"><span class="comment">#    4.当前节点所有邻接节点已被遍历，并没有发现环，则将当前节点flag置为-1并返回True</span></span><br><span class="line"><span class="comment"># 3.若整个图DFS结束并未发现环，返回True</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, adjacency, flags</span>):</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">-1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> adjacency[i]:</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> dfs(j, adjacency, flags):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">-1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        flags = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(numCourses):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> dfs(i, adjacency, flags):</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 1519. 子树中标签相同的节点数</title>
     <url>/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/</url>
     <content><![CDATA[<h3 id="原题链接">原题链接</h3>
@@ -1254,6 +1245,15 @@
 <h3 id="代码">代码</h3>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义一个子函数</span></span><br><span class="line"><span class="comment"># 这个函数计算每一个节点为根的子树，所有标记的计数</span></span><br><span class="line"><span class="comment"># 因为用邻接表表示的边，我们为了防止边的重复访问，需要记录访问节点</span></span><br><span class="line"><span class="comment"># 因为没有环，所以我们只要记住前一个节点，在访问下一个节点的相邻节点的时候</span></span><br><span class="line"><span class="comment"># 不访问这个节点就可以了</span></span><br><span class="line"><span class="comment"># 参数为dfs(i, pre)， i就是这个节点的编号，pre就是前一个节点的编号</span></span><br><span class="line"><span class="comment"># 终止条件就是这个点的相邻节点都访问过了</span></span><br><span class="line"><span class="comment"># 这样我们在全局的一个数组变量中，更新相应的i的值即可</span></span><br><span class="line"><span class="comment"># 最后我们返回这个数组变量就是所求</span></span><br><span class="line"><span class="comment"># 利用了python中Counter有加法的api</span></span><br><span class="line"><span class="comment"># 我们可以简化代码</span></span><br><span class="line"><span class="comment"># 否则我们如果用字典，我们要遍历字典，把存在于本层的加上，不存在于本层的添加进来即可</span></span><br><span class="line"><span class="comment"># 稍微麻烦点</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = &#123;labels[i]: <span class="number">1</span>&#125;</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    <span class="keyword">for</span> k, v <span class="keyword">in</span> dfs(nxt, i).items():</span><br><span class="line">                        <span class="keyword">if</span> k <span class="keyword">in</span> data:</span><br><span class="line">                            data[k] += v</span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            data[k] = v</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = Counter(&#123;labels[i]: <span class="number">1</span>&#125;)</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    data += dfs(nxt, i)</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 207.课程表</title>
+    <url>/2020/08/04/leetcode-207-%E8%AF%BE%E7%A8%8B%E8%A1%A8/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 本题可约化为： 课程安排图是否是 有向无环图(DAG)。</span></span><br><span class="line"><span class="comment"># 即课程间规定了前置条件，但不能构成任何环路，否则课程前置条件将不成立。</span></span><br><span class="line"><span class="comment"># 思路是通过 拓扑排序 判断此课程安排图是否是 有向无环图(DAG) 。</span></span><br><span class="line"><span class="comment"># 拓扑排序原理： 对 DAG 的顶点进行排序，使得对每一条有向边 (u,v)，</span></span><br><span class="line"><span class="comment"># 均有 u（在排序记录中）比 v 先出现。</span></span><br><span class="line"><span class="comment"># 亦可理解为对某点 v 而言，只有当 v 的所有源点均出现了，v 才能出现。</span></span><br><span class="line"><span class="comment"># 通过课程前置条件列表 prerequisites 可以得到课程安排图的 邻接表 adjacency，</span></span><br><span class="line"><span class="comment"># 以降低算法时间复杂度，以下两种方法都会用到邻接表。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1.统计课程安排图中弄每个节点的入度，生成入度表indegrees</span></span><br><span class="line"><span class="comment"># 2.借助一个队列queue，将所有入度为0的节点入队。</span></span><br><span class="line"><span class="comment"># 3.当queue非空时，依次将队首节点出队，在课程安排图中删除此节点pre：</span></span><br><span class="line"><span class="comment">#    并不是真正从邻接表中删除此节点pre，而是将此节点对应所有邻接节点cur的入度-1</span></span><br><span class="line"><span class="comment">#    即indegrees[cur] -= 1.</span></span><br><span class="line"><span class="comment">#    当入度-1后邻接节点cur的入度为0，说明cur所有的前驱节点已经被&quot;删除&quot;，此时将cur入队。</span></span><br><span class="line"><span class="comment"># 4.在每次pre出队时，执行numCourses--;</span></span><br><span class="line"><span class="comment">#    若整个课程安排图是有向无环图（即可以安排），则所有节点一定都入队并出队过，即完成拓扑排序。</span></span><br><span class="line"><span class="comment">#    换个角度说，若课程安排图中存在环，一定有节点的入度始终不为0。</span></span><br><span class="line"><span class="comment">#    因此，拓扑排序出队次数等于课程个数，返回numCourses==0判断课程是否可以成功安排</span></span><br><span class="line"><span class="comment"># 时间复杂度 O(N+M)： 遍历一个图需要访问所有节点和所有临边，N 和 M 分别为节点数量和临边数量；</span></span><br><span class="line"><span class="comment"># 空间复杂度 O(N+M)： 为建立邻接表所需额外空间，adjacency 长度为 N ，并存储 M 条临边的数据。</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        indegrees = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        queue = deque()</span><br><span class="line">        <span class="comment"># Get the indegree and adjacency of every course.</span></span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            indegrees[cur] += <span class="number">1</span></span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="comment"># Get all the courses with the indegree of 0.</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(indegrees)):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> indegrees[i]:</span><br><span class="line">                queue.append(i)</span><br><span class="line">        <span class="comment"># BFS TopSort.</span></span><br><span class="line">        <span class="keyword">while</span> queue:</span><br><span class="line">            pre = queue.popleft()</span><br><span class="line">            numCourses -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> cur <span class="keyword">in</span> adjacency[pre]:</span><br><span class="line">                indegrees[cur] -= <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> indegrees[cur]:</span><br><span class="line">                    queue.append(cur)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">not</span> numCourses</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 原理是通过DFS判断图中是否有环</span></span><br><span class="line"><span class="comment"># 算法流程</span></span><br><span class="line"><span class="comment"># 1.借助一个标志列表flags，用于判断每个节点i（课程）的状态：</span></span><br><span class="line"><span class="comment">#    1.未被DFS访问：i==0</span></span><br><span class="line"><span class="comment">#    2.已被其他节点启动的DFS访问：i==-1</span></span><br><span class="line"><span class="comment">#    3.已被当前节点启动的DFS访问：i==1。</span></span><br><span class="line"><span class="comment"># 2.对numCourses个节点一次执行DFS，判断每个节点起步DFS是否存在换，若存在直接放回False</span></span><br><span class="line"><span class="comment">#    DFS流程</span></span><br><span class="line"><span class="comment">#    1.终止条件：</span></span><br><span class="line"><span class="comment">#      当flag[i] == -1，说明当前访问节点已被其他节点启动的DFS访问，</span></span><br><span class="line"><span class="comment">#      无需再重复搜索，直接返回True</span></span><br><span class="line"><span class="comment">#      当flag[i] == 1，说明在本轮DFS搜索中节点i被第2次访问，即课程安排图有环，直接返回False</span></span><br><span class="line"><span class="comment">#    2.将当前访问节点i对应flag[i]置1，即标记其本轮被DFS访问过；</span></span><br><span class="line"><span class="comment">#    3.递归访问当前节点i的所有邻接节点j，当发现环直接返回False；</span></span><br><span class="line"><span class="comment">#    4.当前节点所有邻接节点已被遍历，并没有发现环，则将当前节点flag置为-1并返回True</span></span><br><span class="line"><span class="comment"># 3.若整个图DFS结束并未发现环，返回True</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">canFinish</span>(<span class="params">self, numCourses: int,</span></span></span><br><span class="line"><span class="function"><span class="params">                  prerequisites: List[List[int]]</span>) -&gt; bool:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, adjacency, flags</span>):</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">-1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">if</span> flags[i] == <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">1</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> adjacency[i]:</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> dfs(j, adjacency, flags):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            flags[i] = <span class="number">-1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">        adjacency = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        flags = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> range(numCourses)]</span><br><span class="line">        <span class="keyword">for</span> cur, pre <span class="keyword">in</span> prerequisites:</span><br><span class="line">            adjacency[pre].append(cur)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(numCourses):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> dfs(i, adjacency, flags):</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -2401,9 +2401,9 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
   <entry>
     <title>向查德维克·博斯曼致敬</title>
     <url>/2020/09/05/%E5%90%91%E6%9F%A5%E5%BE%B7%E7%BB%B4%E5%85%8B-%E5%8D%9A%E6%96%AF%E6%9B%BC%E8%87%B4%E6%95%AC/</url>
-    <content><![CDATA[<iframe src="//player.bilibili.com/player.html?aid=456881063&amp;bvid=BV145411h7r9&amp;cid=231278018&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+    <content><![CDATA[<p>向所有在为弱势群体发声、为众人谋幸福的人们致敬。</p>
+<iframe src="//player.bilibili.com/player.html?aid=456881063&amp;bvid=BV145411h7r9&amp;cid=231278018&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
 </iframe>
-<p>向所有在为弱势群体发生、为众人谋幸福的人们致敬。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -2923,6 +2923,20 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>今生就是我们的哨岗，站好哨就可以了</title>
+    <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
+    <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
+<p>第一还是阅读，跟人类伟大的灵魂对话，因为你的困惑在两千多年前人类就已经有过这样的困惑。人类所有伟大的思想家都试图对抗这种困惑。</p>
+<p>但第二的话更重要的是去做，做一些事情，从身边的小事开始做起。每天都只是一个礼物，昨天的已经成为过去，明天还没有到来，我们唯一能够拥有的就是今天。所以今天是一个礼物，是一个gift，是一个present。所以我们做好每天该做的事情。<strong>今生就是我们的哨岗，站好哨就可以了。</strong></p>
+<p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
+<p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
+<p>感谢罗翔罗老师。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>我们唯一值得恐惧的就是恐惧本身</title>
     <url>/2020/08/31/%E6%88%91%E4%BB%AC%E5%94%AF%E4%B8%80%E5%80%BC%E5%BE%97%E6%81%90%E6%83%A7%E7%9A%84%E5%B0%B1%E6%98%AF%E6%81%90%E6%83%A7%E6%9C%AC%E8%BA%AB/</url>
     <content><![CDATA[<p>1933年，富兰克林·罗斯福首次总统就职演说</p>
@@ -2941,20 +2955,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>名人名言录</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>今生就是我们的哨岗，站好哨就可以了</title>
-    <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
-    <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
-<p>第一还是阅读，跟人类伟大的灵魂对话，因为你的困惑在两千多年前人类就已经有过这样的困惑。人类所有伟大的思想家都试图对抗这种困惑。</p>
-<p>但第二的话更重要的是去做，做一些事情，从身边的小事开始做起。每天都只是一个礼物，昨天的已经成为过去，明天还没有到来，我们唯一能够拥有的就是今天。所以今天是一个礼物，是一个gift，是一个present。所以我们做好每天该做的事情。<strong>今生就是我们的哨岗，站好哨就可以了。</strong></p>
-<p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
-<p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
-<p>感谢罗翔罗老师。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
