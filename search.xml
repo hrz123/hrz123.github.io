@@ -34,6 +34,31 @@
       </tags>
   </entry>
   <entry>
+    <title>HTTP消息在服务器端的路由</title>
+    <url>/2020/09/05/HTTP%E6%B6%88%E6%81%AF%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E7%9A%84%E8%B7%AF%E7%94%B1/</url>
+    <content><![CDATA[<p>在上一篇文章中，我们介绍了客户端如何与服务器建立起连接，那么这篇文章中，将介绍服务器接收到连接以后，又怎样把HTTP消息进行路由和处理的常规流程。这里重点将介绍HOST这个请求头部。</p>
+<h3 id="host头部">HOST头部</h3>
+<ul>
+<li>HOST = uri-host [":" port] （ABNF对它的定义）
+<ul>
+<li>HTTP/1.1规范要求，不传递Host头部则返回400错误响应码（为什么HTTP/1.1规范要加入这样一个要求呢？因为在HTTP/1.0这个版本中，是没有HOST头部的。因为HTTP/1.0所在的上世纪90年代中，域名相对是比较少的，每一个服务器的ip地址仅对应一个域名，所以当用户已经对你的服务器建立起连接以后，你是不需要考虑匹配那个域名对应的服务的。但是后来我们发现，HTTP域名众多，但是ip地址相对比较少，所以我们引入了HOST头部。）</li>
+<li>为防止HTTP/1.0时代的陈旧的代理服务器还在我们的网络中，发向正向代理的请求<strong>request-target</strong>必须以<strong>absolute-form</strong>形式出现
+<ul>
+<li>request-line = method SP <strong>request-target</strong> SP HTTP-version CRLF</li>
+<li>absolute-form = absolute-URI
+<ul>
+<li>absolute-URI = scheme ":" hier-part ["?" query ]</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+        <tag>HTTP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>GC的三种基本实现方式和优缺点</title>
     <url>/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/</url>
     <content><![CDATA[<h3 id="参考">参考：</h3>
@@ -111,26 +136,6 @@
 ]]></content>
       <tags>
         <tag>高级编程语言</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HTTP消息在服务器端的路由</title>
-    <url>/2020/09/05/HTTP%E6%B6%88%E6%81%AF%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E7%9A%84%E8%B7%AF%E7%94%B1/</url>
-    <content><![CDATA[<p>在上一篇文章中，我们介绍了客户端如何与服务器建立起连接，那么这篇文章中，将介绍服务器接收到连接以后，又怎样把HTTP消息进行路由和处理的常规流程。这里重点将介绍HOST这个请求头部。</p>
-<h3 id="host头部">HOST头部</h3>
-<ul>
-<li>HOST = uri-host [":" port] （ABNF对它的定义）
-<ul>
-<li>HTTP/1.1规范要求，不传递Host头部则返回400错误响应码（为什么HTTP/1.1规范要加入这样一个要求呢？因为在HTTP/1.0这个版本中，是没有HOST头部的。因为HTTP/1.0所在的上世纪90年代中，域名相对是比较少的，每一个服务器的ip地址仅对应一个域名，所以当用户已经对你的服务器建立起连接以后，你是不需要考虑匹配那个域名对应的服务的。但是后来我们发现，HTTP域名众多，但是ip地址相对比较少，所以我们引入了HOST头部。）</li>
-<li>为防止HTTP/1.0时代的陈旧的代理服务器还在我们的网络中，发向正向代理的请求&lt;style=color:red&gt;request-target
-
-必须以absolute-form形式出现</li>
-</ul></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
-        <tag>HTTP</tag>
       </tags>
   </entry>
   <entry>
@@ -1085,6 +1090,50 @@
       </tags>
   </entry>
   <entry>
+    <title>grant之后要跟着flush privileges吗？ </title>
+    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论：</p>
+<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
+<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
+<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
+<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
+<h3 id="小结">小结</h3>
+<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
+<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>insert语句的锁为什么这么多？</title>
+    <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F_%E5%89%AF%E6%9C%AC/</url>
+    <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
+<p>因此，insert语句是一个很轻量的操作。不过，这个结论是对于“普通的insert语句”才有效。也就是说，还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
+<p>那么，今天这篇文章，我们就一起来聊聊这个话题。</p>
+<h3 id="insert...select语句">1. insert...select语句</h3>
+<p>我们先从上一篇文章的话题说起吧。表t1和t2的表结构、初始化数据语句如下，今天的例子我们还是针对这两个表展开。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">3</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t2 <span class="keyword">like</span> t</span><br></pre></td></tr></table></figure>
+<p>现在，我们一起来看看为什么在可重复读隔离级别下，binlog_format=statement时执行：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> iinto t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
+<p>这个语句时需要对表t的所有行和间隙加锁呢？</p>
+<p>其实，这个问题我们需要考虑的还是日志和数据的一致性。我们看下这个执行序列：</p>
+
+<p>实际的执行效果是，如果session B先执行，由于这个语句对表t主键索引加了（-∞，1]这个next-key lock，会在语句执行完成后，才允许session A的insert语句执行。</p>
+<p>但如果没有锁的话，就可能出现session B的insert语句先执行，但是后写入binlog的情况。于是，在binlog_format=statement的情况下，binlog里面就记录了这样的语句序列：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
+<p>这个语句到了备库执行，就会把id=-1这一行也写到表t2中，出现主备不一致。</p>
+<h3 id="insert循环写入">2. insert循环写入</h3>
+<p>当然了，之心吧insert...select的时候，对目标表也不是锁全表，而是只锁住需要访问的资源。</p>
+<p>如果现在有这么一个需求：要往表t2中插入一行数据，这一行的c值是表t中c值的最大值加1。</p>
+<p>此时，我们可以这么写这条SQL语句：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>insert语句的锁为什么这么多？</title>
     <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/</url>
     <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
@@ -1177,50 +1226,6 @@
 <p>你平时在两个表之间拷贝数据用的是什么方法，有什么注意事项吗？在你的应用场景里，这个方法，相较于其他方法的优势是什么呢？</p>
 <p>另外，insert..select执行期间，有其他线程操作原表，会导致逻辑错误。其实这是不会的，如果不加锁，就是快照读。</p>
 <p>一条语句执行期间，它的一致性视图是不会修改的，所以即使有其他事务修改了原表的数据，也不会影响这条语句看到的数据。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>grant之后要跟着flush privileges吗？ </title>
-    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论：</p>
-<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
-<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
-<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
-<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
-<h3 id="小结">小结</h3>
-<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
-<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>insert语句的锁为什么这么多？</title>
-    <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F_%E5%89%AF%E6%9C%AC/</url>
-    <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
-<p>因此，insert语句是一个很轻量的操作。不过，这个结论是对于“普通的insert语句”才有效。也就是说，还有些insert语句是属于“特殊情况”的，在执行过程中需要给其他资源加锁，或者无法在申请到自增id以后就立马释放自增锁。</p>
-<p>那么，今天这篇文章，我们就一起来聊聊这个话题。</p>
-<h3 id="insert...select语句">1. insert...select语句</h3>
-<p>我们先从上一篇文章的话题说起吧。表t1和t2的表结构、初始化数据语句如下，今天的例子我们还是针对这两个表展开。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`d`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`c`</span> (<span class="string">`c`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">3</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>, <span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t2 <span class="keyword">like</span> t</span><br></pre></td></tr></table></figure>
-<p>现在，我们一起来看看为什么在可重复读隔离级别下，binlog_format=statement时执行：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> iinto t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>这个语句时需要对表t的所有行和间隙加锁呢？</p>
-<p>其实，这个问题我们需要考虑的还是日志和数据的一致性。我们看下这个执行序列：</p>
-
-<p>实际的执行效果是，如果session B先执行，由于这个语句对表t主键索引加了（-∞，1]这个next-key lock，会在语句执行完成后，才允许session A的insert语句执行。</p>
-<p>但如果没有锁的话，就可能出现session B的insert语句先执行，但是后写入binlog的情况。于是，在binlog_format=statement的情况下，binlog里面就记录了这样的语句序列：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t2(c, d) <span class="keyword">select</span> c, d <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>这个语句到了备库执行，就会把id=-1这一行也写到表t2中，出现主备不一致。</p>
-<h3 id="insert循环写入">2. insert循环写入</h3>
-<p>当然了，之心吧insert...select的时候，对目标表也不是锁全表，而是只锁住需要访问的资源。</p>
-<p>如果现在有这么一个需求：要往表t2中插入一行数据，这一行的c值是表t中c值的最大值加1。</p>
-<p>此时，我们可以这么写这条SQL语句：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -1594,17 +1599,6 @@
       </tags>
   </entry>
   <entry>
-    <title>nginx所有worker进程协同工作的关键：共享内存</title>
-    <url>/2020/08/31/nginx%E6%89%80%E6%9C%89worker%E8%BF%9B%E7%A8%8B%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%85%B3%E9%94%AE%EF%BC%9A%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</url>
-    <content><![CDATA[<p>nginx是一个多进程程序，那么不同的worker进程之间，如果需要共享数据，那么只能通过共享内存。那么下面我们来看一看，nginx中的共享内存是怎么使用的。</p>
-<p>nginx的进程间的通讯方式，主要有两种，第一种是信号，那么之前我们在说如何管理nginx的过程中，已经比较详细的介绍过了，那么如果需要做数据的同步呢？那么只能通过共享内存，所谓共享内存，也就是说我们打开了一块内存，比如说10M，那么一整块0-10M之间，多个worker进程之间，可以同时的访问它，包括读取和写入。那么为了使用好这样一块共享内存，就会引入另外两个问题。第一个问题呢，就是锁，因为多个worker进程同时操作一块内存，一定会出现竞争关系，所以我们需要加锁，在nginx的锁中，在早期它还有基于信号量的锁，信号量是一种linux里比较久远的进程同步方式，它会导致你的进程进入了休眠状态，也就是发生了主动切换，而现在大多数操作系统版本中，nginx所使用的锁，都是自旋锁，而不会基于信号量，自旋锁，也就是说，当这个锁的条件没有满足，比如说这块内存现在被1号worker进程所使用，那么2号worker进程需要去获取锁的时候，只要1号进程没有释放锁，2号进程会一直在不停地去请求这个把锁，就好像，如果是基于信号量的早期的nginx锁，那么假设这把锁锁住了一扇门，如果worker进程1已经拿到了这把锁进到了屋里，那么worker进程2试图去拿锁，敲门，发现里面已经有人了，那么worker进程2就会就地休息，等待worker进程1从门里出来以后，通知它。而自选锁不一样，worker2进程2发现门里已经有worker进程1了，它就一直的持续的在敲门，所以，使用自旋锁，要求所有的nginx模块必须快速的使用共享内存，也就是快速的取得锁以后，快速的释放锁。一旦出现有第三方模块不遵守这样的规则，就可能导致出现死锁，或者说性能下降的问题。那么，有了这么一块共享内存，会引入第2个问题，因为一整块共享内存，往往是给许多对象同时使用的，如果我们在模块中手动去编写分配，把这些内存给到不同的对象，是非常繁琐的，所以，这个时候，我们使用了slab内存管理器。这个接下来我们会再说，那么nginx哪些模块使用了共享内存呢？我对官方的常用的nginx模块使用共享内存做了一个总结。那么使用共享内存，主要使用这两种数据结构，第一个是红黑树，比如我们想做限速或者流控等等场景时，我们是不同容忍在内存中做的，否则一个worker进程，对某一个用户，触发了流控，而其他worker进程还不知道，所以我们只能在共享内存中做，比如说，limit connection，比如说limit request（ngx_stream_limit_req_module），还有所有的http cache，做反向代理时用的，还有ssl，那么红黑树有一个特点，就是它的增删改查特别的快，当然也可以做遍历，所以这些模块都有一个特点，我需要做快速的插入和删除，比如我现在发现了一个客户端，我对它限速，那么限速如果达到了，我需要把这个客户端从我的限速数据结构容器中移出，都需要非常的快速。第二个常用的数据结构是单链表，也就是说我只要这些需要共享的元素都串起来就可以了。Ngx_http_upstream_zone_module或者Ngx_stream_upstream_zone_module，然后我们再来一个稍微复杂的例子，也就是ngx_http_lua_api，这个模块，实际上是openresty的核心模块，那么openresty在这个模块中定义了一个sdk，这个sdk叫lua_shared_dict，当这个指令出现的时候，它会分配一块共享内存，比如这个我们指定了10m，m就是我们的空间大小。那么这块共享内存会有一个名称，叫做dogs。接下来，我们在lua代码中，比如这一段content_by_lua_blocks，这对应这我们nginx收到了set这个url的时候需要做一些什么样的事情，我们首先从dogs共享内存中取出，然后设置了一个key value，然后向客户端返回，我已存储。然后在get请求中，我们把刚才存下的值取出来，返回给用户。那么在这一段代码中呢，我们同时使用了刚刚我们介绍中红黑树，以及链表。那么，这个lua_shared_dict dogs10m了。中间呢，使用红黑树来保存每一个key value，红黑树中的每一个节点就是它的key，它的value就是8，那么为什么我还需要一个链表呢，是因为这个10m是有限的，但我们的lua代码，涉及到了我们的应用业务代码，应用业务代码，很容易就超过了10m的限制，当我们超过10m的限制了呢，我们有很多种处理办法，比如让它写入失败，但是lua_shared_dict采用了另外一种处理方式，就是它用lru淘汰。也就是最早不用的节点，会被最早淘汰，当已经达到10m的最大值时。所以，这个lua_shared_dict中，它对共享内存的使用，同时满足了红黑树和链表。</p>
-<p>共享内存是nginx跨多个worker通讯的最有效的手段，只要我们需要让一段业务逻辑，在多个worker进程中，同时生效，比如许多在集群的流控上，那么必须使用共享内存，而不能在每一个worker内存中去操作。</p>
-]]></content>
-      <tags>
-        <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>python实现Trie(字典树、前缀树)</title>
     <url>/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/</url>
     <content><![CDATA[<h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
@@ -1624,6 +1618,17 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx所有worker进程协同工作的关键：共享内存</title>
+    <url>/2020/08/31/nginx%E6%89%80%E6%9C%89worker%E8%BF%9B%E7%A8%8B%E5%8D%8F%E5%90%8C%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%85%B3%E9%94%AE%EF%BC%9A%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</url>
+    <content><![CDATA[<p>nginx是一个多进程程序，那么不同的worker进程之间，如果需要共享数据，那么只能通过共享内存。那么下面我们来看一看，nginx中的共享内存是怎么使用的。</p>
+<p>nginx的进程间的通讯方式，主要有两种，第一种是信号，那么之前我们在说如何管理nginx的过程中，已经比较详细的介绍过了，那么如果需要做数据的同步呢？那么只能通过共享内存，所谓共享内存，也就是说我们打开了一块内存，比如说10M，那么一整块0-10M之间，多个worker进程之间，可以同时的访问它，包括读取和写入。那么为了使用好这样一块共享内存，就会引入另外两个问题。第一个问题呢，就是锁，因为多个worker进程同时操作一块内存，一定会出现竞争关系，所以我们需要加锁，在nginx的锁中，在早期它还有基于信号量的锁，信号量是一种linux里比较久远的进程同步方式，它会导致你的进程进入了休眠状态，也就是发生了主动切换，而现在大多数操作系统版本中，nginx所使用的锁，都是自旋锁，而不会基于信号量，自旋锁，也就是说，当这个锁的条件没有满足，比如说这块内存现在被1号worker进程所使用，那么2号worker进程需要去获取锁的时候，只要1号进程没有释放锁，2号进程会一直在不停地去请求这个把锁，就好像，如果是基于信号量的早期的nginx锁，那么假设这把锁锁住了一扇门，如果worker进程1已经拿到了这把锁进到了屋里，那么worker进程2试图去拿锁，敲门，发现里面已经有人了，那么worker进程2就会就地休息，等待worker进程1从门里出来以后，通知它。而自选锁不一样，worker2进程2发现门里已经有worker进程1了，它就一直的持续的在敲门，所以，使用自旋锁，要求所有的nginx模块必须快速的使用共享内存，也就是快速的取得锁以后，快速的释放锁。一旦出现有第三方模块不遵守这样的规则，就可能导致出现死锁，或者说性能下降的问题。那么，有了这么一块共享内存，会引入第2个问题，因为一整块共享内存，往往是给许多对象同时使用的，如果我们在模块中手动去编写分配，把这些内存给到不同的对象，是非常繁琐的，所以，这个时候，我们使用了slab内存管理器。这个接下来我们会再说，那么nginx哪些模块使用了共享内存呢？我对官方的常用的nginx模块使用共享内存做了一个总结。那么使用共享内存，主要使用这两种数据结构，第一个是红黑树，比如我们想做限速或者流控等等场景时，我们是不同容忍在内存中做的，否则一个worker进程，对某一个用户，触发了流控，而其他worker进程还不知道，所以我们只能在共享内存中做，比如说，limit connection，比如说limit request（ngx_stream_limit_req_module），还有所有的http cache，做反向代理时用的，还有ssl，那么红黑树有一个特点，就是它的增删改查特别的快，当然也可以做遍历，所以这些模块都有一个特点，我需要做快速的插入和删除，比如我现在发现了一个客户端，我对它限速，那么限速如果达到了，我需要把这个客户端从我的限速数据结构容器中移出，都需要非常的快速。第二个常用的数据结构是单链表，也就是说我只要这些需要共享的元素都串起来就可以了。Ngx_http_upstream_zone_module或者Ngx_stream_upstream_zone_module，然后我们再来一个稍微复杂的例子，也就是ngx_http_lua_api，这个模块，实际上是openresty的核心模块，那么openresty在这个模块中定义了一个sdk，这个sdk叫lua_shared_dict，当这个指令出现的时候，它会分配一块共享内存，比如这个我们指定了10m，m就是我们的空间大小。那么这块共享内存会有一个名称，叫做dogs。接下来，我们在lua代码中，比如这一段content_by_lua_blocks，这对应这我们nginx收到了set这个url的时候需要做一些什么样的事情，我们首先从dogs共享内存中取出，然后设置了一个key value，然后向客户端返回，我已存储。然后在get请求中，我们把刚才存下的值取出来，返回给用户。那么在这一段代码中呢，我们同时使用了刚刚我们介绍中红黑树，以及链表。那么，这个lua_shared_dict dogs10m了。中间呢，使用红黑树来保存每一个key value，红黑树中的每一个节点就是它的key，它的value就是8，那么为什么我还需要一个链表呢，是因为这个10m是有限的，但我们的lua代码，涉及到了我们的应用业务代码，应用业务代码，很容易就超过了10m的限制，当我们超过10m的限制了呢，我们有很多种处理办法，比如让它写入失败，但是lua_shared_dict采用了另外一种处理方式，就是它用lru淘汰。也就是最早不用的节点，会被最早淘汰，当已经达到10m的最大值时。所以，这个lua_shared_dict中，它对共享内存的使用，同时满足了红黑树和链表。</p>
+<p>共享内存是nginx跨多个worker通讯的最有效的手段，只要我们需要让一段业务逻辑，在多个worker进程中，同时生效，比如许多在集群的流控上，那么必须使用共享内存，而不能在每一个worker内存中去操作。</p>
+]]></content>
+      <tags>
+        <tag>nginx</tag>
       </tags>
   </entry>
   <entry>
@@ -1720,6 +1725,30 @@
       </tags>
   </entry>
   <entry>
+    <title>一次犯罪不过是污染了水流，而一次不公正的司法却污染了水源</title>
+    <url>/2020/08/08/%E4%B8%80%E6%AC%A1%E7%8A%AF%E7%BD%AA%E4%B8%8D%E8%BF%87%E6%98%AF%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%B5%81%EF%BC%8C%E8%80%8C%E4%B8%80%E6%AC%A1%E4%B8%8D%E5%85%AC%E6%AD%A3%E7%9A%84%E5%8F%B8%E6%B3%95%E5%8D%B4%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%BA%90/</url>
+    <content><![CDATA[<p>张玉环事件有感</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>给时光以生命，给岁月以文明</title>
+    <url>/2020/08/26/%E4%B8%8D%E6%98%AF%E7%BB%99%E6%96%87%E6%98%8E%E4%BB%A5%E5%B2%81%E6%9C%88%EF%BC%8C%E8%80%8C%E6%98%AF%E7%BB%99%E5%B2%81%E6%9C%88%E4%BB%A5%E6%96%87%E6%98%8E/</url>
+    <content><![CDATA[<p><strong>给时光以生命，而不是给生命以时光。</strong>（这句话出自帕斯卡，To the time to life, rather than to life in time.老帕之所以有此言论，大概和他的生命状态有很大关系。帕斯卡从小体质虚弱，又因过度劳累而使疾病缠身。他只活到三十九岁，但一生辉煌，活得虽短却很精彩。正是这短暂的一生让他更清楚的看到生命的本质，福祸相依，这正是上帝的公平，或者说是概率的公平。他还说过一句非常有名的话：“人只不过是一根芦苇，是自然界最脆弱的东西，但他是一根能思想的芦苇。”）</p>
+<p>网上的解释是：活着的每时每刻都要精彩，而不是让生命虚度，随着时光衰老。</p>
+<p>我的理解是：给每一个此时此刻赋予生命的精彩，只要活得精彩就美好，不必强行续命。正如有些年老的人，其实与其在病床上忍受病痛的折磨，他们更愿意让自己在睡梦或者昏迷中死去。见过很多这样的老者。不愿接受病痛的折磨，这其实也体现了生命的尊严。比如，今年听说一位澳大利亚的老教授，100多岁，但是已没有故友活在人世，自己也疾病缠身，他选择到了可以执行安乐死的国家安乐死。他的原话说，没有人deserve这样的对待，这不是人该接受的对待，他宁可选择死亡。世界上没有感同身受，但是从他的话里也能知道在生命的最后，他宁可提前结束掉它。</p>
+<p><strong>给岁月以文明，而不是给文明以岁月。</strong></p>
+<p>网上解释：文明的灿烂与否并不是以时间来衡量的，宁可获得短暂的灿烂文明，而不愿苟且偷生。</p>
+<p>我的理解是：努力创造出好的文明，来让岁月精彩，一旦文明终将走向衰败，不要强行延长它的寿命，让更好的文明来替代它，不要把这个文明变得丑陋，成为后来文明的障碍。</p>
+<p>重复一下，<strong>给时光以生命，给岁月以文明</strong>。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《相信未来》——食指</title>
     <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
     <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
@@ -1759,40 +1788,6 @@
       </tags>
   </entry>
   <entry>
-    <title>一次犯罪不过是污染了水流，而一次不公正的司法却污染了水源</title>
-    <url>/2020/08/08/%E4%B8%80%E6%AC%A1%E7%8A%AF%E7%BD%AA%E4%B8%8D%E8%BF%87%E6%98%AF%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%B5%81%EF%BC%8C%E8%80%8C%E4%B8%80%E6%AC%A1%E4%B8%8D%E5%85%AC%E6%AD%A3%E7%9A%84%E5%8F%B8%E6%B3%95%E5%8D%B4%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%BA%90/</url>
-    <content><![CDATA[<p>张玉环事件有感</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>给时光以生命，给岁月以文明</title>
-    <url>/2020/08/26/%E4%B8%8D%E6%98%AF%E7%BB%99%E6%96%87%E6%98%8E%E4%BB%A5%E5%B2%81%E6%9C%88%EF%BC%8C%E8%80%8C%E6%98%AF%E7%BB%99%E5%B2%81%E6%9C%88%E4%BB%A5%E6%96%87%E6%98%8E/</url>
-    <content><![CDATA[<p><strong>给时光以生命，而不是给生命以时光。</strong>（这句话出自帕斯卡，To the time to life, rather than to life in time.老帕之所以有此言论，大概和他的生命状态有很大关系。帕斯卡从小体质虚弱，又因过度劳累而使疾病缠身。他只活到三十九岁，但一生辉煌，活得虽短却很精彩。正是这短暂的一生让他更清楚的看到生命的本质，福祸相依，这正是上帝的公平，或者说是概率的公平。他还说过一句非常有名的话：“人只不过是一根芦苇，是自然界最脆弱的东西，但他是一根能思想的芦苇。”）</p>
-<p>网上的解释是：活着的每时每刻都要精彩，而不是让生命虚度，随着时光衰老。</p>
-<p>我的理解是：给每一个此时此刻赋予生命的精彩，只要活得精彩就美好，不必强行续命。正如有些年老的人，其实与其在病床上忍受病痛的折磨，他们更愿意让自己在睡梦或者昏迷中死去。见过很多这样的老者。不愿接受病痛的折磨，这其实也体现了生命的尊严。比如，今年听说一位澳大利亚的老教授，100多岁，但是已没有故友活在人世，自己也疾病缠身，他选择到了可以执行安乐死的国家安乐死。他的原话说，没有人deserve这样的对待，这不是人该接受的对待，他宁可选择死亡。世界上没有感同身受，但是从他的话里也能知道在生命的最后，他宁可提前结束掉它。</p>
-<p><strong>给岁月以文明，而不是给文明以岁月。</strong></p>
-<p>网上解释：文明的灿烂与否并不是以时间来衡量的，宁可获得短暂的灿烂文明，而不愿苟且偷生。</p>
-<p>我的理解是：努力创造出好的文明，来让岁月精彩，一旦文明终将走向衰败，不要强行延长它的寿命，让更好的文明来替代它，不要把这个文明变得丑陋，成为后来文明的障碍。</p>
-<p>重复一下，<strong>给时光以生命，给岁月以文明</strong>。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>中华民族的脊梁，不是被众人扶持起来的</title>
-    <url>/2020/09/03/%E4%B8%AD%E5%8D%8E%E6%B0%91%E6%97%8F%E7%9A%84%E8%84%8A%E6%A2%81%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%A2%AB%E4%BC%97%E4%BA%BA%E6%89%B6%E6%8C%81%E8%B5%B7%E6%9D%A5%E7%9A%84/</url>
-    <content><![CDATA[<p>中华民族的脊梁，不是被众人扶持起来的，就是因为我们有这样的英雄，这样的精英。我们的民族的脊梁今天才能挺立。-- 纪念杨靖宇和抗日战争胜利75周年</p>
-<p>誓干惊天动地事，敢做隐姓埋名人。 -- 黄旭华</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>了解java GC过程</title>
     <url>/2020/08/28/%E4%BA%86%E8%A7%A3java-GC%E8%BF%87%E7%A8%8B/</url>
     <content><![CDATA[<p>堆的空间是用来存储我们new出来的对象的。当new的对象填充满堆区的话，就会导致内存爆掉，我们的程序就会OOM。jvm 的 GC是清理堆上的对象的。</p>
@@ -1820,6 +1815,16 @@
 ]]></content>
       <tags>
         <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>中华民族的脊梁，不是被众人扶持起来的</title>
+    <url>/2020/09/03/%E4%B8%AD%E5%8D%8E%E6%B0%91%E6%97%8F%E7%9A%84%E8%84%8A%E6%A2%81%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%A2%AB%E4%BC%97%E4%BA%BA%E6%89%B6%E6%8C%81%E8%B5%B7%E6%9D%A5%E7%9A%84/</url>
+    <content><![CDATA[<p>中华民族的脊梁，不是被众人扶持起来的，就是因为我们有这样的英雄，这样的精英。我们的民族的脊梁今天才能挺立。-- 纪念杨靖宇和抗日战争胜利75周年</p>
+<p>誓干惊天动地事，敢做隐姓埋名人。 -- 黄旭华</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2543,15 +2548,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>学会承担责任</title>
-    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>实现KMP算法</title>
     <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下https://time.geekbang.org/column/article/71845</p>
@@ -2593,6 +2589,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>学会承担责任</title>
+    <url>/2019/12/26/%E5%AD%A6%E4%BC%9A%E6%89%BF%E6%8B%85%E8%B4%A3%E4%BB%BB/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2693,6 +2698,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
+    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>并查集侦查无向图中的环</title>
     <url>/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/</url>
     <content><![CDATA[<p>并查集是一种数据结构，它跟踪一个集合的元素被分割成若干不相干（不重叠）的子集。union-find算法是一种对这种数据结构执行两种有用操作的算法：</p>
@@ -2719,15 +2733,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
-    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -3665,6 +3670,109 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>要不要使用分区表？</title>
+    <url>/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/</url>
+    <content><![CDATA[<h3 id="分区表是什么">分区表是什么？</h3>
+<p>为了说明分区表的组织形式，我先创建一个表t；</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`ftime`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="keyword">KEY</span> (<span class="string">`ftime`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"><span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="string">&#x27;2017-4-1&#x27;</span>,<span class="number">1</span>),(<span class="string">&#x27;2018-4-1&#x27;</span>,<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A81.png" class>
+<p>我在表t初始化插入了两行记录，按照定义的分区规则，这两行记录分别落在p_2018和p_2019这两个分区上。</p>
+<p>可以看到，这个表包含了一个.frm文件和4个.ibd文件，每个分区对应一个.ibd文件。也就是说：</p>
+<ol type="1">
+<li>对于引擎层来说，这是4个表；</li>
+<li>对于Server层来说，这是1个表。</li>
+</ol>
+<p>你可能会觉得这两句话都是废话。其实不然，这两句话非常重要，可以帮我们理解分区变的执行逻辑。</p>
+<h3 id="分区表的引擎层行为">分区表的引擎层行为</h3>
+<p>我先给你举个在分区表加间隙锁的例子，目的是说明对于InnoDB来说，这是4个表。</p>
+<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A82.png" class>
+<p>这里顺便复习一下，我在第21篇文章和你介绍的间隙锁加锁规则。</p>
+<p>我们初始化表t的时候，只插入了两行数据，ftime的值分别是，’2017-4-1‘和’2018-4-1‘。session A的select语句对索引ftime上这两个记录之间的间隙加了锁。如果是一个普通表的话，那么T1时刻，在表t的ftime索引上，间隙和加锁状态应该是图3这样的。</p>
+<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A83.jpg" class>
+<p>也就是说，'2017-4-1'和’2018-4-1‘这两个记录之间的间隙是会被锁住的。那么，session B的两条插入语句应该都要进入锁等待状态。</p>
+<p>但是，从上面的实验效果可以看出，session B的第一个insert语句是可以执行成功的。这是因为，对于引擎来说，p_2018和p_2019是两个不同的表，也就是说2017-4-1的下一个记录并不是2018-4-1，而是p_2018分区的supremum。所以T1时刻，在表t的ftime索引上，间隙和加锁的状态其实是图4这样的：</p>
+<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A84.jpg" class>
+<p>由于分区表的规则，session A的select语句其实只操作了分区p_2018，因此加锁范围就是图4中深绿色的部分。</p>
+<p>所以，session B要写入一行ftime是2018-2-1的时候是可以成功的，而要写入2017-12-1这个记录，就要等session A的间隙锁。</p>
+<p>图5就是这时候的show engine innodb status的部分结果。</p>
+<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A85.png" class>
+<p>看完InnoDB引擎的例子，我们再来一个MyISAM分区表的例子。</p>
+<p>我首先用alter table t engine=myisam，把表t改成MyISAM表；然后，我再用下面这个例子说明，对于MyISAM引擎来说，这是4个表。</p>
+<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A86.png" class>
+<blockquote>
+<p>注：这是在用MyISAM的表锁验证，MyISAM引擎只支持表锁。</p>
+</blockquote>
+<p>在session A里面，我用sleep(100)将这条语句的执行时间设置为100秒。由于MyISAM引擎只支持表锁，所以这条update语句会锁住整个表t上的读。</p>
+<p>但我们看到的结果是，session B的第一条查询语句是可以正常执行的，第二条语句才进入锁等待状态。</p>
+<p>这正是因为MyISAM的表锁是在引擎层实现的，session A加的表锁，其实是锁在分区p_2018上。因此，只会堵住在这个分区上执行的查询，落到其他分区的查询是不受影响的。</p>
+<p>看到这里，你可能会说，分区表看来还不错嘛，为什么不让用呢？我们使用分区表的一个重要原因就是单表过大。那么，如果不使用分区表的话，我们就是要使用手动分表的方式。</p>
+<p>接下来，我们一起看看手动分表和分区表有什么区别。</p>
+<p>比如，按照年份来划分，我们就分别创建普通表t_2017、t_2018、t_2019等等。手工分表的逻辑，也是找到需要更新的所有分表，然后依次执行更新。在性能上，这和分区表并没有实质的差别。</p>
+<p>分区表和手工分表，一个是有server层来决定使用哪个分区，一个是由应用层代码来决定使用哪个分表。因此，从引擎层看，这两种方式也是没有差别的。</p>
+<p>其实这两个方案的区别，主要是在server层上。从server层看，我们就不得不提到分区表一个被广为诟病的问题</p>
+<p>：打开表的行为。</p>
+<h3 id="分区策略">分区策略</h3>
+<p>每当第一次访问一个分区表的时候，MySQL需要把所有的分区都访问一遍。<strong>一个典型的报错情况</strong>是这样的：如果一个分区表的分区很多，比如超过了1000个，而MySQL启动的时候，open_files_limit参数使用的是默认值1024，那么就会在访问这个表的时候，由于需要打开所有的文件，导致打开表文件的个数超过了上限而报错。</p>
+<p>下图就是我创建的一个包含了很多分区的表t_myisam，执行一条插入语句后报错的情况。</p>
+<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A87.png" class>
+<p>可以看到，这条insert语句，明显只需要访问一个分区，但语句却无法执行。</p>
+<p>这时，你一定从表名猜到了，这个表我用的是MyISAM引擎。是的，因为使用InnoDB引擎的话，并不会出现这个问题。</p>
+<p>MyISAM分区表使用的分区策略，我们称为<strong>通用分区策略</strong>（generic partitioning），每次访问分区都由server层控制。通用分区策略，是MySQL一开始支持分区表的时候就存在的代码，在文件管理、表管理的实现上很粗糙，因此有比较严重的性能问题。</p>
+<p>从MySQL 5.7.9开始，InnoDB引擎引入了<strong>本地分区策略</strong>（native partitioning）。这个策略是在InnoDB内部自己管理打开分区的行为。</p>
+<p>MySQL从5.7.17开始，将MyISAM分区表标记为即将弃用（deprecated），意思是”从这个版本开始不建议这么使用，请使用替代方案。在将来的版本中会废弃这个功能“。</p>
+<p>从MySQL8.0版本开始，就不允许创建MyISAM分区表了，只允许创建已经实现了本地分区策略的引擎。目前来看，只有InnoDB和NDB这两个引擎支持了本地分区策略。</p>
+<p>接下来，我们再看一下分区表在server层的行为。</p>
+<h3 id="分区表的server层行为">分区表的server层行为</h3>
+<p>如果从server层看的话，一个分区表就只是一个表。</p>
+<p>这句话是什么意思呢？接下来，我就用下面这个例子来和你说明。如图8和如图9所示，分别是这个例子的操作序列和执行结果图。</p>
+<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A88.png" class>
+<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A89.png" class>
+<p>可以看到，虽然session B只需要操作p_2017这个分区，但是由于session A持有整个表t的MDL锁，就导致了session B的alter语句被堵住。</p>
+<p>这也是DBA同学经常说的，分区表，在做DDL的时候，影响会更大。如果你使用的是普通分表，那么当你在truncate一个分表的时候，肯定不会跟另外一个分表上的查询语句，出现MDL锁冲突。</p>
+<p>到这里我们小结一下：</p>
+<ol type="1">
+<li>MySQL在第一次打开分区表的时候，需要访问所有的分区；</li>
+<li>在server层，认为这是同一张表，因此所有分区共用同一个MDL锁；</li>
+<li>在引擎层，认为这是不同的表，因此MDL锁之后的执行过程，会根据分区表规则，只访问必要的分区。</li>
+</ol>
+<p>而关于”必要的分区“的判断，就是根据SQL语句中的where条件，结合分区规则来实现的。比如我们上面的例子中，where ftime=’2018-4-1‘，根据分区规则year函数算出来的值是2018，那么就会落在p_2019这个分区。</p>
+<p>但是，如果这个where条件改成where ftime&gt;='2018-4-1'，虽然查询结果相同，但是这时候根据where条件，就要访问p_2019和p_others这两个分区。</p>
+<p>如果查询语句的where条件中没有分区key，那就只能访问所有分区了。当然，这并不是分区表的问题。即使是使用业务分表的方式，where条件中没有使用分表的key，也必须访问所有的分表。</p>
+<p>我们已经理解了分区表的概念，那么什么场景下适合使用分区表呢？</p>
+<h3 id="分区表的应用场景">分区表的应用场景</h3>
+<p>分区表的一个显而易见的优势是对业务透明，相对于用户分表来说，使用分区表的业务代码更简洁。还有，分区表可以很方便的清理历史数据。</p>
+<p>如果一项业务跑的时间足够长，往往就会有根据时间删除历史数组的需求。这时候，按照时间分区的分区表，就可以直接通过alter table t drop partition...这个语法删掉分区，从而删掉过期的历史数据。</p>
+<p>这个alter table t drop partition...操作是直接删除分区文件，效果跟drop普通表类似。与使用delete语句删除数据相比，优势是速度快、对系统影响小。</p>
+<h3 id="小结">小结</h3>
+<p>这篇文章，我主要和你介绍的是server层和引擎层对分区表的处理方式。我希望通过这些介绍，你能够对是否选择使用分区表，有更清晰的想法。</p>
+<p>需要注意的是，我是以范围分区（range）为例和你介绍的。实际上，MySQL还支持hash分区、list分区等分区方法。你可以在需要用到的时候，再翻翻<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vOC4wL2VuL3BhcnRpdGlvbmluZy10eXBlcy5odG1s">手册<i class="fa fa-external-link-alt"></i></span>。</p>
+<p>实际使用时，分区表跟用户分表比起来，有两个绕不开的问题：一个是第一次访问的时候需要访问所有分区，另一个是共用MDL锁。</p>
+<p>因此，如果要使用分区表，就不要创建太多的分区。我见过一个用户做了按天分区策略，然后预先创建了10年的分区。这种情况下，访问分区表的性能自然是不好的。这里有两个问题需要注意：</p>
+<ol type="1">
+<li>分区并不是越细越好。实际上，单表或者单分区的数据到1千万行，只要没有特别大的索引，对于现在的硬件能力来说已经算是小表了。</li>
+<li>分区也不要提前预留太多，在使用之前预先创建即可。比如，如果是按月分区，每年年底时再把下一年度的12个分区创建上即可。对于没有数据的历史分区，要及时的drop掉。</li>
+</ol>
+<p>至于分区表的其他问题，比如查询需要跨多个分区取数据，查询性能就会比较慢，基本上就不是分区表本身的问题，而是数据量的问题，或者说是使用方式的问题了。</p>
+<p>当然，如果你的团队已经维护了一个成熟的分库分表中间件，用业务分表，对业务开发同学来说，并没有额外的复杂性，对DBA也更直观，自然是更好的。</p>
+<p>最后，我给你留一个思考题吧。</p>
+<p>我们举例的表中，没有用到自增主键，假如现在要创建一个自增字段id。MySQL要求分区表中的主键必须包含分区字段。如果要在表t的基础上做修改，你会怎么定义这个表的主键呢？为什么这么定义呢？</p>
+<p>解答：</p>
+<p>上期的问题是，怎么给分区表t创建自增主键。由于MySQL要求主键包含所有的分区字段，所以肯定是要创建联合主键的。</p>
+<p>这时候就有两种可选：一种是（ftime, id），另一种是（id, ftime）。</p>
+<p>如果从利用率上来看，应该使用（ftime, id）这种模式。因为用ftime做分区key，说明大多数语句都是包含ftime的，使用这种模式，可以利用前缀索引的规则，减少一个索引。</p>
+<p>这时的建表语句是：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line"> <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"> <span class="string">`ftime`</span> datatime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line"> PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>, <span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=MyISAM <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = MyISAM);</span><br></pre></td></tr></table></figure>
+<p>当然，我的建议是你要尽量使用InnoDB引擎。InnoDB表要求至少有一个索引，以自增字段作为第一个字段，所以需要一个id的单独索引。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`ftime`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>,<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`id`</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>);</span><br></pre></td></tr></table></figure>
+<p>当然把字段反过来，创建成：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">PRIMARY KEY (`id`,`ftime`),</span><br><span class="line">KEY `id` (`ftime`)</span><br></pre></td></tr></table></figure>
+<p>也是可以的。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>蓄水池算法</title>
     <url>/2020/07/21/%E8%93%84%E6%B0%B4%E6%B1%A0%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h1 id="蓄水池采样算法reservoir-sampling">蓄水池采样算法（Reservoir Sampling）</h1>
@@ -3768,109 +3876,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>要不要使用分区表？</title>
-    <url>/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/</url>
-    <content><![CDATA[<h3 id="分区表是什么">分区表是什么？</h3>
-<p>为了说明分区表的组织形式，我先创建一个表t；</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`ftime`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="keyword">KEY</span> (<span class="string">`ftime`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"><span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="string">&#x27;2017-4-1&#x27;</span>,<span class="number">1</span>),(<span class="string">&#x27;2018-4-1&#x27;</span>,<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A81.png" class>
-<p>我在表t初始化插入了两行记录，按照定义的分区规则，这两行记录分别落在p_2018和p_2019这两个分区上。</p>
-<p>可以看到，这个表包含了一个.frm文件和4个.ibd文件，每个分区对应一个.ibd文件。也就是说：</p>
-<ol type="1">
-<li>对于引擎层来说，这是4个表；</li>
-<li>对于Server层来说，这是1个表。</li>
-</ol>
-<p>你可能会觉得这两句话都是废话。其实不然，这两句话非常重要，可以帮我们理解分区变的执行逻辑。</p>
-<h3 id="分区表的引擎层行为">分区表的引擎层行为</h3>
-<p>我先给你举个在分区表加间隙锁的例子，目的是说明对于InnoDB来说，这是4个表。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A82.png" class>
-<p>这里顺便复习一下，我在第21篇文章和你介绍的间隙锁加锁规则。</p>
-<p>我们初始化表t的时候，只插入了两行数据，ftime的值分别是，’2017-4-1‘和’2018-4-1‘。session A的select语句对索引ftime上这两个记录之间的间隙加了锁。如果是一个普通表的话，那么T1时刻，在表t的ftime索引上，间隙和加锁状态应该是图3这样的。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A83.jpg" class>
-<p>也就是说，'2017-4-1'和’2018-4-1‘这两个记录之间的间隙是会被锁住的。那么，session B的两条插入语句应该都要进入锁等待状态。</p>
-<p>但是，从上面的实验效果可以看出，session B的第一个insert语句是可以执行成功的。这是因为，对于引擎来说，p_2018和p_2019是两个不同的表，也就是说2017-4-1的下一个记录并不是2018-4-1，而是p_2018分区的supremum。所以T1时刻，在表t的ftime索引上，间隙和加锁的状态其实是图4这样的：</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A84.jpg" class>
-<p>由于分区表的规则，session A的select语句其实只操作了分区p_2018，因此加锁范围就是图4中深绿色的部分。</p>
-<p>所以，session B要写入一行ftime是2018-2-1的时候是可以成功的，而要写入2017-12-1这个记录，就要等session A的间隙锁。</p>
-<p>图5就是这时候的show engine innodb status的部分结果。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A85.png" class>
-<p>看完InnoDB引擎的例子，我们再来一个MyISAM分区表的例子。</p>
-<p>我首先用alter table t engine=myisam，把表t改成MyISAM表；然后，我再用下面这个例子说明，对于MyISAM引擎来说，这是4个表。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A86.png" class>
-<blockquote>
-<p>注：这是在用MyISAM的表锁验证，MyISAM引擎只支持表锁。</p>
-</blockquote>
-<p>在session A里面，我用sleep(100)将这条语句的执行时间设置为100秒。由于MyISAM引擎只支持表锁，所以这条update语句会锁住整个表t上的读。</p>
-<p>但我们看到的结果是，session B的第一条查询语句是可以正常执行的，第二条语句才进入锁等待状态。</p>
-<p>这正是因为MyISAM的表锁是在引擎层实现的，session A加的表锁，其实是锁在分区p_2018上。因此，只会堵住在这个分区上执行的查询，落到其他分区的查询是不受影响的。</p>
-<p>看到这里，你可能会说，分区表看来还不错嘛，为什么不让用呢？我们使用分区表的一个重要原因就是单表过大。那么，如果不使用分区表的话，我们就是要使用手动分表的方式。</p>
-<p>接下来，我们一起看看手动分表和分区表有什么区别。</p>
-<p>比如，按照年份来划分，我们就分别创建普通表t_2017、t_2018、t_2019等等。手工分表的逻辑，也是找到需要更新的所有分表，然后依次执行更新。在性能上，这和分区表并没有实质的差别。</p>
-<p>分区表和手工分表，一个是有server层来决定使用哪个分区，一个是由应用层代码来决定使用哪个分表。因此，从引擎层看，这两种方式也是没有差别的。</p>
-<p>其实这两个方案的区别，主要是在server层上。从server层看，我们就不得不提到分区表一个被广为诟病的问题</p>
-<p>：打开表的行为。</p>
-<h3 id="分区策略">分区策略</h3>
-<p>每当第一次访问一个分区表的时候，MySQL需要把所有的分区都访问一遍。<strong>一个典型的报错情况</strong>是这样的：如果一个分区表的分区很多，比如超过了1000个，而MySQL启动的时候，open_files_limit参数使用的是默认值1024，那么就会在访问这个表的时候，由于需要打开所有的文件，导致打开表文件的个数超过了上限而报错。</p>
-<p>下图就是我创建的一个包含了很多分区的表t_myisam，执行一条插入语句后报错的情况。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A87.png" class>
-<p>可以看到，这条insert语句，明显只需要访问一个分区，但语句却无法执行。</p>
-<p>这时，你一定从表名猜到了，这个表我用的是MyISAM引擎。是的，因为使用InnoDB引擎的话，并不会出现这个问题。</p>
-<p>MyISAM分区表使用的分区策略，我们称为<strong>通用分区策略</strong>（generic partitioning），每次访问分区都由server层控制。通用分区策略，是MySQL一开始支持分区表的时候就存在的代码，在文件管理、表管理的实现上很粗糙，因此有比较严重的性能问题。</p>
-<p>从MySQL 5.7.9开始，InnoDB引擎引入了<strong>本地分区策略</strong>（native partitioning）。这个策略是在InnoDB内部自己管理打开分区的行为。</p>
-<p>MySQL从5.7.17开始，将MyISAM分区表标记为即将弃用（deprecated），意思是”从这个版本开始不建议这么使用，请使用替代方案。在将来的版本中会废弃这个功能“。</p>
-<p>从MySQL8.0版本开始，就不允许创建MyISAM分区表了，只允许创建已经实现了本地分区策略的引擎。目前来看，只有InnoDB和NDB这两个引擎支持了本地分区策略。</p>
-<p>接下来，我们再看一下分区表在server层的行为。</p>
-<h3 id="分区表的server层行为">分区表的server层行为</h3>
-<p>如果从server层看的话，一个分区表就只是一个表。</p>
-<p>这句话是什么意思呢？接下来，我就用下面这个例子来和你说明。如图8和如图9所示，分别是这个例子的操作序列和执行结果图。</p>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A88.png" class>
-<img data-src="/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/%E5%88%86%E5%8C%BA%E8%A1%A89.png" class>
-<p>可以看到，虽然session B只需要操作p_2017这个分区，但是由于session A持有整个表t的MDL锁，就导致了session B的alter语句被堵住。</p>
-<p>这也是DBA同学经常说的，分区表，在做DDL的时候，影响会更大。如果你使用的是普通分表，那么当你在truncate一个分表的时候，肯定不会跟另外一个分表上的查询语句，出现MDL锁冲突。</p>
-<p>到这里我们小结一下：</p>
-<ol type="1">
-<li>MySQL在第一次打开分区表的时候，需要访问所有的分区；</li>
-<li>在server层，认为这是同一张表，因此所有分区共用同一个MDL锁；</li>
-<li>在引擎层，认为这是不同的表，因此MDL锁之后的执行过程，会根据分区表规则，只访问必要的分区。</li>
-</ol>
-<p>而关于”必要的分区“的判断，就是根据SQL语句中的where条件，结合分区规则来实现的。比如我们上面的例子中，where ftime=’2018-4-1‘，根据分区规则year函数算出来的值是2018，那么就会落在p_2019这个分区。</p>
-<p>但是，如果这个where条件改成where ftime&gt;='2018-4-1'，虽然查询结果相同，但是这时候根据where条件，就要访问p_2019和p_others这两个分区。</p>
-<p>如果查询语句的where条件中没有分区key，那就只能访问所有分区了。当然，这并不是分区表的问题。即使是使用业务分表的方式，where条件中没有使用分表的key，也必须访问所有的分表。</p>
-<p>我们已经理解了分区表的概念，那么什么场景下适合使用分区表呢？</p>
-<h3 id="分区表的应用场景">分区表的应用场景</h3>
-<p>分区表的一个显而易见的优势是对业务透明，相对于用户分表来说，使用分区表的业务代码更简洁。还有，分区表可以很方便的清理历史数据。</p>
-<p>如果一项业务跑的时间足够长，往往就会有根据时间删除历史数组的需求。这时候，按照时间分区的分区表，就可以直接通过alter table t drop partition...这个语法删掉分区，从而删掉过期的历史数据。</p>
-<p>这个alter table t drop partition...操作是直接删除分区文件，效果跟drop普通表类似。与使用delete语句删除数据相比，优势是速度快、对系统影响小。</p>
-<h3 id="小结">小结</h3>
-<p>这篇文章，我主要和你介绍的是server层和引擎层对分区表的处理方式。我希望通过这些介绍，你能够对是否选择使用分区表，有更清晰的想法。</p>
-<p>需要注意的是，我是以范围分区（range）为例和你介绍的。实际上，MySQL还支持hash分区、list分区等分区方法。你可以在需要用到的时候，再翻翻<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vOC4wL2VuL3BhcnRpdGlvbmluZy10eXBlcy5odG1s">手册<i class="fa fa-external-link-alt"></i></span>。</p>
-<p>实际使用时，分区表跟用户分表比起来，有两个绕不开的问题：一个是第一次访问的时候需要访问所有分区，另一个是共用MDL锁。</p>
-<p>因此，如果要使用分区表，就不要创建太多的分区。我见过一个用户做了按天分区策略，然后预先创建了10年的分区。这种情况下，访问分区表的性能自然是不好的。这里有两个问题需要注意：</p>
-<ol type="1">
-<li>分区并不是越细越好。实际上，单表或者单分区的数据到1千万行，只要没有特别大的索引，对于现在的硬件能力来说已经算是小表了。</li>
-<li>分区也不要提前预留太多，在使用之前预先创建即可。比如，如果是按月分区，每年年底时再把下一年度的12个分区创建上即可。对于没有数据的历史分区，要及时的drop掉。</li>
-</ol>
-<p>至于分区表的其他问题，比如查询需要跨多个分区取数据，查询性能就会比较慢，基本上就不是分区表本身的问题，而是数据量的问题，或者说是使用方式的问题了。</p>
-<p>当然，如果你的团队已经维护了一个成熟的分库分表中间件，用业务分表，对业务开发同学来说，并没有额外的复杂性，对DBA也更直观，自然是更好的。</p>
-<p>最后，我给你留一个思考题吧。</p>
-<p>我们举例的表中，没有用到自增主键，假如现在要创建一个自增字段id。MySQL要求分区表中的主键必须包含分区字段。如果要在表t的基础上做修改，你会怎么定义这个表的主键呢？为什么这么定义呢？</p>
-<p>解答：</p>
-<p>上期的问题是，怎么给分区表t创建自增主键。由于MySQL要求主键包含所有的分区字段，所以肯定是要创建联合主键的。</p>
-<p>这时候就有两种可选：一种是（ftime, id），另一种是（id, ftime）。</p>
-<p>如果从利用率上来看，应该使用（ftime, id）这种模式。因为用ftime做分区key，说明大多数语句都是包含ftime的，使用这种模式，可以利用前缀索引的规则，减少一个索引。</p>
-<p>这时的建表语句是：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line"> <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"> <span class="string">`ftime`</span> datatime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line"> PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>, <span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=MyISAM <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = MyISAM,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = MyISAM);</span><br></pre></td></tr></table></figure>
-<p>当然，我的建议是你要尽量使用InnoDB引擎。InnoDB表要求至少有一个索引，以自增字段作为第一个字段，所以需要一个id的单独索引。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`ftime`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`c`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`ftime`</span>,<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`id`</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=latin1</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (<span class="keyword">YEAR</span>(ftime))</span><br><span class="line">(<span class="keyword">PARTITION</span> p_2017 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2017</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2018 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2018</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_2019 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2019</span>) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>,</span><br><span class="line"> <span class="keyword">PARTITION</span> p_others <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> MAXVALUE <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span>);</span><br></pre></td></tr></table></figure>
-<p>当然把字段反过来，创建成：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">PRIMARY KEY (`id`,`ftime`),</span><br><span class="line">KEY `id` (`ftime`)</span><br></pre></td></tr></table></figure>
-<p>也是可以的。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -4134,6 +4139,17 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>钢铁是怎样炼成的</title>
+    <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
+    <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
+<p>人的一生应该这样度过：当他回忆往事的时候，他不会因为虚度年华而悔恨；也不会因为碌碌无为而羞愧，当他临死的时候，他能够说：我的整个生命和全部精力，都献给了世界上最壮丽的事业——为人类的解放而斗争。</p>
+<p>人应当赶紧的充分的生活，因为意外的疾病和悲惨的事故随时都可能结束他的生命。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>郭德纲写给儿子郭麒麟的家书</title>
     <url>/2020/07/23/%E9%83%AD%E5%BE%B7%E7%BA%B2%E5%86%99%E7%BB%99%E5%84%BF%E5%AD%90%E9%83%AD%E9%BA%92%E9%BA%9F%E7%9A%84%E5%AE%B6%E4%B9%A6/</url>
     <content><![CDATA[<h3 id="人生的真谛要用自己一辈子去理解">人生的真谛要用自己一辈子去理解</h3>
@@ -4144,17 +4160,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <p>一个人刚出道，不狂是没有出息的。但如果一直狂，是肯定没出息的。你眼中的你，和别人眼中的你，不是一回事。无限赞美自己，只是一种胆怯。我一直认为，恐惧到头就是愤怒。发挥无敌想象，给自己描绘了一个童话世界，白衣如雪来去如风。剑影刀光闪过后，你满脸冷酷地立于珠峰顶端，傲视苍生无比英武。此时我要问的是：孩子，你怎么下去？不让古人，是谓有志；不让今人，是谓无良。记住了，小俗便雅，大雅则俗。有人夸你，别信。有人骂你，别听。周围人随意捧骂，不可与之交，因其无志兴也。记住，言语多反复，当防欺诈。忘恩思小过，定会反戈。开口说大义，临大难必变节。逢人称兄弟，即深交也平常。</p>
 <p>另外，凡事要慎重。江湖子弟，拿得起来放得下。身边人很重要。一根稻草，扔街上就是垃圾，捆上白菜就是白菜价，捆上大闸蟹就是大闸蟹价。包括脚下的平台，也极重要。同样是一个人，步行一小时能走多远？骑车呢？开车呢？坐飞机呢？平台会决定你的速度，且记且记。</p>
 <p>此外，钱财要珍惜，但不可看得太重。财乃天地至公之物，假手于人罢了，雨打残花风卷流云，轮番更转而已。穷转富，富转穷，哪有百世富家翁？至于交友，吃点亏也无妨。人每所谓穷通寿夭为命所系，岂不知造物之报施，全视人之自取。芸芸众生富贵贫寒，不是谁都可以傲视乾坤。其中有命有运，要知因果懂善恶，我儿且记，但行好事，莫问前程。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>钢铁是怎样炼成的</title>
-    <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
-    <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
-<p>人的一生应该这样度过：当他回忆往事的时候，他不会因为虚度年华而悔恨；也不会因为碌碌无为而羞愧，当他临死的时候，他能够说：我的整个生命和全部精力，都献给了世界上最壮丽的事业——为人类的解放而斗争。</p>
-<p>人应当赶紧的充分的生活，因为意外的疾病和悲惨的事故随时都可能结束他的生命。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
