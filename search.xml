@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>ABNF严格定义</title>
-    <url>/2020/09/04/ABNF%E4%B8%A5%E6%A0%BC%E5%AE%9A%E4%B9%89/</url>
-    <content><![CDATA[
-]]></content>
-  </entry>
-  <entry>
     <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
     <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h2 id="问题描述">问题描述</h2>
@@ -32,6 +26,12 @@
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>ABNF严格定义</title>
+    <url>/2020/09/04/ABNF%E4%B8%A5%E6%A0%BC%E5%AE%9A%E4%B9%89/</url>
+    <content><![CDATA[
+]]></content>
   </entry>
   <entry>
     <title>GC的三种基本实现方式和优缺点</title>
@@ -114,7 +114,7 @@
       </tags>
   </entry>
   <entry>
-    <title>HTTP的正确响应码</title>
+    <title>HTTP的正确响应码（For Reference）</title>
     <url>/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/</url>
     <content><![CDATA[<p>100，200，300系列表示成功的响应码</p>
 <ul>
@@ -154,6 +154,57 @@
 <li>308 Permanent Redirect：类似301，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
 </ul></li>
 </ul>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HTTP的错误响应码（For Reference）</title>
+    <url>/2020/09/05/HTTP%E7%9A%84%E9%94%99%E8%AF%AF%E5%93%8D%E5%BA%94%E7%A0%81/</url>
+    <content><![CDATA[<p>将介绍400、500系列表示错误的响应码，搞清楚这些错误响应码的含义对于我们快速地定位问题非常有帮助。</p>
+<ul>
+<li>4xx：客户端出现错误
+<ul>
+<li>400 Bad Request：服务器认为客户端出现了错误，但不能明确判断为以下哪种错误时使用此错误码。例如HTTP请求格式错误。</li>
+<li>401 Unauthorized：用户认证信息缺失或者不正确，导致服务器无法处理请求。（比如URI如果需要传递user和password的时候，往往会得到401Unauthorized）</li>
+<li>407 Proxy Authentication Required：（对401的补充，401往往是源服务器返回的用户信息验证不通过，如果代理服务器会首先验证用户的认证信息的话，那么代理服务器没有通过就会返回407。比如将常在机场、网吧等场合下，如果我们信息验证没通过，可能就会收到407）对需要经由代理的请求，认证信息未通过代理服务器的验证</li>
+<li>403 Forbidden：服务器理解请求的含义，但没有权限执行此请求（常见于搭建了一个服务器，但是我对于某个目录下的文件访问可能没有权限，这个时候客户端就会收到403 Forbidden）</li>
+<li>404 Not Found：服务器没有找到对应的资源（对应的资源已经丢失的）</li>
+<li>410 Gone：（对404 Not Found的一个补充，404只是说服务器找不到对应的资源，但是不知道过一会是不是就能再次找到）服务器没有找到对应的资源，且明确的知道该位置永久性找不到该资源。（很少使用到，实际情况中比较难以遇到）</li>
+<li>405 Method Not Allowed：服务器不支持请求行中的method方法（比如trace方法在nginx 0.5版本中已经明确的不支持了，现在访问任何一个这样的服务器使用trace方法都会得到405 method not allowed）</li>
+<li>406 Not Acceptable：对客户端指定的资源表述不存在（例如对语言或者编码有要求），服务器返回表述列表共客户端选择。</li>
+<li>408 Request Timeout：服务器接收请求超时（比如说服务器接收一个请求最长只能用一分钟，但是一分钟还没有发完我们的请求，就用可能发声这样的事情）</li>
+<li>409 Conflict：（post或者put上传一个文件，但是目标位置已经存在了版本更新的一个资源，我们这个资源没有办法去覆盖它，这时候就会拿到409 Conflict）资源冲突，例如上传文件时目标位置已经存在版本更新的资源</li>
+<li>411 Length Required：如果请求含有包体且未携带Content-Length头部，且不属于chunk类请求，返回411（非常容易构造，加入包体但是又不加入conten-length，也不加入chunk类的相关的描述）</li>
+<li>412 Precondition Failed：（条件类请求不满足的时候，就会返回412）复用缓存时传递的If-Unmodified-Since或者If-None-Match头部不被满足</li>
+<li>413 PayloadTooLarge/Request Entity Too Large：请求的包体在超出服务器能处理的最大长度（wordpress默认长传的附件可能只有2M，就是wordpress的插件，通常需要去把默认的2M向上去调整，就不再得到413这样的错误了。）</li>
+<li>414 URI Too Long：请求的URI超出服务器能接受的最大长度（如果是比较老的服务器，那么对URI通常限制是4k，像nginx这样的比较新的版本服务器，通常限制可能达到了32k。所以我们去验证也是很容易的，我们发一个巨大的URI，超出了服务器能处理的最大长度，我们就会得到414）</li>
+<li>415 Unsupported Media Type：（上传的请求包体对应的文件类型，就是mime类型，是不被服务器所支持的，比如说我们搭建了一个wordpress的站点，它就通常默认是拒绝exe这样的可执行文件，直接出传递，防止有安全的风险。这个时候客户端就会收到415这样的一个错误码，我们就知道只因为服务器认为这个文件类型暂时不被支持）上传的文件类型不被服务器支持。</li>
+<li>416 Range Not Satisfiable：（对于多线程断点续传下载，指定中一段包体是不支持的，比如我们指定从1G到2G这段，但实际上这个文件可能只有100M）无法提供Range请求中指定的那段包体</li>
+<li>417 Expectation Failed：（比如客户端发送中包括Expect 100，我要上传一个巨大的文件了，我期待你给我一个100，但是如果说服务器不支持的情况下，没有办法满足这个要求，它就会返回417）对于Expect请求头部期待的情况无法满足时的响应码</li>
+<li>421 Misdirected Request：服务器认为这个请求不该发给它，因为它没有能力处理。（很少能在网络中见到）</li>
+<li>426 Upgrade Required：服务器拒绝基于当前HTTP协议（比如说HTTP 1.1，要求客户端必须基于更新的，比如说websocket，或者是HTTP2.0，我才提供服务，这个时候就会返回426）提供服务，通过Upgrade头部告知客户端必须升级协议才能继续处理。</li>
+<li>428 Precondition Required：用户请求中缺失了条件类头部，例如If-Match（跟条件请求相关）</li>
+<li>429 Too Many Request：客户端发送请求的速率过快（很多服务器限流限速的时候，往往不会给客户端发429，虽然RFC规范中429是更明确的告诉客户端这样一件事情，但是往往我们会发送503，在5系列响应码中再详细介绍）</li>
+<li>431 Request Header Fields Too Large：请求的HEADER头部大小超过限制（可以看出这里的规范定义的实在是太细了，因为我们刚刚去限制了URI如果特别大的时候，返回了一个414的这样的响应码，431又对于Header去做了一个限制，实际上很多服务器是不会去做这么严格的错误码的返回的，通常都只会返回这个414 URI Too Long，因为URI和Request Too Long往往在服务器中作为同一段缓存区去存储处理的）</li>
+<li>451 Unavaiable For Legal Reasons：RFC7725，由于法律原因资源不可访问</li>
+</ul></li>
+<li>5xx：服务器端出现错误
+<ul>
+<li>500 Internal Server Error：（这可能是我们最常见的一种错误，就是这个内部错误已经没有办法细分了）服务器内部错误，且不属于一下错误类型</li>
+<li>501 Not Implemented：服务器不支持实现请求所需要的功能（当前请求执行的功能我们现在还没有去实现，需要服务器端去升级或者说添加相应的功能）</li>
+<li>502 Bad Gateway：（非常常见的错误码，在与服务器之间有代理服务器，但是这个代理服务器连接不上源服务器，或者说代理服务器没有办法从我们的源服务器中获取到合法的一个响应，这是502 Bad Gateway）代理服务器无法获取到合法响应</li>
+<li>503 Service Unavailable：服务器资源尚未准备好处理当前请求（实际上会有很多种原因导致503出现，比如服务器端做请求的限速，或者说去对于用户的ip做并发连接的限制，那么当达到上限的时候呢，都有可能去发送503，表示我们服务器的资源还没有准备好处理当前请求）</li>
+<li>504 Gateway Timeout：代理服务器无法及时的从上游获得响应（代理服务器与我们的源服务器之间出现了超时，比如我们现在上传一个巨大的文件，或者下载一个巨大的文件，但是我们的代理服务器，例如nginx，它配置的超时时间是1分钟，那如果1分钟之内源服务器还没有及时的响应它，那么代理服务器就会给客户端发送一个504 Gateway Timeout。所以看到我们应该立即反应出来，是代理服务器上的超时时间设置的可能过小）</li>
+<li>505 HTTP Version Not Supported：请求使用的HTTP协议版本不支持（比如说有一些服务器不支持HTTP 2.0，但是我们构造了一个2.0的请求，就会得到这样的响应。我们去验证它也非常的容易，比如GET / HTTP/2.0。）</li>
+<li>507 Insufficient Storage：服务器没有足够的空间处理请求（通常是指磁盘空间，所以507这个错误码已经把服务器内部的相关的问题暴露给客户端了，所以通常507是不被我们见到的，因为这里会有安全性的问题）</li>
+<li>508 Loop Detected：访问资源时检测到循环（或者说循环已经超过了最大的限制次数了，就会返回508 Loop Detected）</li>
+<li>511 Network Authentication Required：代理服务器发现客户端需要进行身份验证才能获得网络访问权限（也是同样在机场、网吧等这样的场景我们经常会见到）</li>
+</ul></li>
+</ul>
+<h3 id="小结">小结</h3>
+<p>这篇文章介绍了客户端出现错误时的400系列错误响应码，以及服务端出现错误时的500系列错误响应吗，那么与上篇文章中介绍的100、200、300系列响应码中，它们还遵循一个潜在的规则，就是当客户端接收到了，一个它不认识的响应码，不知道如何处理的时候，将按照它们所在系列的第一个，就是00系列那个响应码逻辑进行去处理，比如说我们现在收到了一个555这样的响应码，客户端不认，就会按照500的处理逻辑。如果收到了一个277，那么也会按照200这个错误码的处理逻辑来处理。</p>
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
@@ -2031,47 +2082,6 @@
       </tags>
   </entry>
   <entry>
-    <title>使用函数randa()来实现函数randb()</title>
-    <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
-    <content><![CDATA[<h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
-<p>原文引自：https://blog.csdn.net/wangruitao1991/article/details/51678815</p>
-<p>我们由浅入深，首先来看：</p>
-<ol type="1">
-<li><p>给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5</p>
-<p>rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand7，直到它生成1到5之间的数，然后返回。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand5</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>);  <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">5</span>)&#123;</span><br><span class="line">    x = rand7();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个函数可以等概率的产生1到5的数码？首先，它确确实实只会返回1到5这几个数，其次，对于这些数，都是由rand7等概率的产生的1/7，没有对任何一个数有偏袒，直觉告诉我们，rand5就是等概率的产生1到5的。事实呢？让我们来计算一下，产生1到5中的数是不是1/5就OK了。</p>
-<p>产生1的概率：等于第一次产生1的概率，加上第一次生成6，7第二次产生1的概率，加上... $$ p(x=1) = 1/7 + 2/7 * 1/7 + (2/7)^2 * 1/7 + ... \</p>
-<p>= 1/7 * (1 + 2/7 + (2/7)^2+...)\</p>
-<p>= 1/7 * 1 / (1-2/7)\</p>
-<p>= 1/5\ $$ 其他同理，所以从上面的分析，我们可以得到一个一般的结论，如果a &gt; b，那么一定可以用randa实现randb。其中，randa表示等概率生成1到a的函数，randb表示等概率生成1到b的函数。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">;<span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randb</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line"> <span class="keyword">while</span> (x &gt; b) &#123;</span><br><span class="line">      x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里还有没有优化的空间呢。我们想如果a大于b很多，那么这个循环大多数是无法退出的。这是我们可以找到一个最接近a的b的整数倍<strong>b * (A/b)</strong>，大于这个整数倍就继续循环，否则就返回 <strong>randa()%b + 1 </strong>。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randa</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x =  ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">//  max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; b * (a / b)) &#123;</span><br><span class="line">    x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>好了，a大于b时这个问题得到完美的解决了。那么a小于b的时候呢。</p>
-<p>比如，如何用rand5实现rand7。</p>
-<p>我们只需要将rand5映射到一个能产生更大随机数的randa，a &gt; 7，这个问题就可以解决了。这里要注意，映射之后的randa也应该是等概率生成1到a的。</p>
-<p>如何映射呢。其实可以将rand5想象成一个五进制数。2个rand5就可以表示25种情况。</p>
-<p>5 * (rand5() - 1) + rand5()，可以等概率的产生1-25之间的数字。</p>
-<p>根据上面的模板我们可以得到以下的代码：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">7</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在根据上面的模板简化：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">21</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % <span class="number">7</span> +<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过上文分析，我们可以得到步骤如下：</p>
-<ol type="1">
-<li>如果a &gt; b，进入步骤2；否则构造Randa2 = a * (Randa – 1) + Randa， 表示生成1到a2 随机数的函数。如果a2 仍小于b，继教构造 Randa3 = a * (Randa2 - 1) + Randa…直到ak &gt; b，这时我们得到Randak , 我们记为RandA。</li>
-<li>步骤1中我们得到了RandA(可能是Randa或Randak )，其中A &gt; b， 我们用下述代码构造Randb：</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// A &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Randb</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span>(x &gt; b*(A/b)) <span class="comment">// b*(A/b)表示最接近A且小于A的b的倍数</span></span><br><span class="line">        x = RandA();</span><br><span class="line">    <span class="keyword">return</span> x%b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>全局锁和表锁：给表加个字段怎么有这么多阻碍？</title>
     <url>/2020/08/31/%E5%85%A8%E5%B1%80%E9%94%81%E5%92%8C%E8%A1%A8%E9%94%81%EF%BC%9A%E7%BB%99%E8%A1%A8%E5%8A%A0%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%80%8E%E4%B9%88%E6%9C%89%E8%BF%99%E4%B9%88%E5%A4%9A%E9%98%BB%E7%A2%8D%EF%BC%9F/</url>
     <content><![CDATA[<p>今天我要跟你聊聊MySQL的锁。数据库锁设计的初衷是处理并发问题。作为多用户共享的资源，当出现并发访问的时候，数据库需要合理地控制资源的访问规则。而锁就是用来实现这些访问规则的重要数据结构。</p>
@@ -2161,6 +2171,47 @@
 ]]></content>
       <tags>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用函数randa()来实现函数randb()</title>
+    <url>/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/</url>
+    <content><![CDATA[<h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
+<p>原文引自：https://blog.csdn.net/wangruitao1991/article/details/51678815</p>
+<p>我们由浅入深，首先来看：</p>
+<ol type="1">
+<li><p>给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5</p>
+<p>rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand7，直到它生成1到5之间的数，然后返回。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand5</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>);  <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">5</span>)&#123;</span><br><span class="line">    x = rand7();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数可以等概率的产生1到5的数码？首先，它确确实实只会返回1到5这几个数，其次，对于这些数，都是由rand7等概率的产生的1/7，没有对任何一个数有偏袒，直觉告诉我们，rand5就是等概率的产生1到5的。事实呢？让我们来计算一下，产生1到5中的数是不是1/5就OK了。</p>
+<p>产生1的概率：等于第一次产生1的概率，加上第一次生成6，7第二次产生1的概率，加上... $$ p(x=1) = 1/7 + 2/7 * 1/7 + (2/7)^2 * 1/7 + ... \</p>
+<p>= 1/7 * (1 + 2/7 + (2/7)^2+...)\</p>
+<p>= 1/7 * 1 / (1-2/7)\</p>
+<p>= 1/5\ $$ 其他同理，所以从上面的分析，我们可以得到一个一般的结论，如果a &gt; b，那么一定可以用randa实现randb。其中，randa表示等概率生成1到a的函数，randb表示等概率生成1到b的函数。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">;<span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randb</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line"> <span class="keyword">while</span> (x &gt; b) &#123;</span><br><span class="line">      x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里还有没有优化的空间呢。我们想如果a大于b很多，那么这个循环大多数是无法退出的。这是我们可以找到一个最接近a的b的整数倍<strong>b * (A/b)</strong>，大于这个整数倍就继续循环，否则就返回 <strong>randa()%b + 1 </strong>。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randa</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x =  ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">//  max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; b * (a / b)) &#123;</span><br><span class="line">    x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了，a大于b时这个问题得到完美的解决了。那么a小于b的时候呢。</p>
+<p>比如，如何用rand5实现rand7。</p>
+<p>我们只需要将rand5映射到一个能产生更大随机数的randa，a &gt; 7，这个问题就可以解决了。这里要注意，映射之后的randa也应该是等概率生成1到a的。</p>
+<p>如何映射呢。其实可以将rand5想象成一个五进制数。2个rand5就可以表示25种情况。</p>
+<p>5 * (rand5() - 1) + rand5()，可以等概率的产生1-25之间的数字。</p>
+<p>根据上面的模板我们可以得到以下的代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">7</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在根据上面的模板简化：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">21</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % <span class="number">7</span> +<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过上文分析，我们可以得到步骤如下：</p>
+<ol type="1">
+<li>如果a &gt; b，进入步骤2；否则构造Randa2 = a * (Randa – 1) + Randa， 表示生成1到a2 随机数的函数。如果a2 仍小于b，继教构造 Randa3 = a * (Randa2 - 1) + Randa…直到ak &gt; b，这时我们得到Randak , 我们记为RandA。</li>
+<li>步骤1中我们得到了RandA(可能是Randa或Randak )，其中A &gt; b， 我们用下述代码构造Randb：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// A &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Randb</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span>(x &gt; b*(A/b)) <span class="comment">// b*(A/b)表示最接近A且小于A的b的倍数</span></span><br><span class="line">        x = RandA();</span><br><span class="line">    <span class="keyword">return</span> x%b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -2803,6 +2854,17 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>拔智齿后记</title>
     <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
     <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
@@ -2855,17 +2917,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2957,6 +3008,37 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>我们讨论了一个非常简单的旅行商问题的2-近似算法。对于这个问题还有其他更好的近似算法。例如Christofides算法是1.5近似算法。我们将很快把这些算法作为单独的文章来讨论。</p>
 <h2 id="参考">参考</h2>
 <p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-2-approximate-using-mst/?ref=lbp</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>旅行商问题（朴素和dp方法）</title>
+    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
+    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
+<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
+<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
+<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
+<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
+<p>以下是旅行商问题的不同解法。</p>
+<p><strong>朴素的解法：</strong></p>
+<ol type="1">
+<li>将城市1作为起点和终点</li>
+<li>生成所有（n-1）！城市的排列组合</li>
+<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
+<li>返回成本最小的排列组合</li>
+</ol>
+<p>时间复杂度：O(n!)</p>
+<p><strong>DP 动态递推</strong></p>
+<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
+<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
+<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
+<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
+<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
+<p><strong>参考：</strong></p>
+<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -3083,37 +3165,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>旅行商问题（朴素和dp方法）</title>
-    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
-    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
-<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
-<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
-<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
-<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
-<p>以下是旅行商问题的不同解法。</p>
-<p><strong>朴素的解法：</strong></p>
-<ol type="1">
-<li>将城市1作为起点和终点</li>
-<li>生成所有（n-1）！城市的排列组合</li>
-<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
-<li>返回成本最小的排列组合</li>
-</ol>
-<p>时间复杂度：O(n!)</p>
-<p><strong>DP 动态递推</strong></p>
-<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
-<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
-<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
-<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
-<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
-<p><strong>参考：</strong></p>
-<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -3933,17 +3984,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>钢铁是怎样炼成的</title>
-    <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
-    <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
-<p>人的一生应该这样度过：当他回忆往事的时候，他不会因为虚度年华而悔恨；也不会因为碌碌无为而羞愧，当他临死的时候，他能够说：我的整个生命和全部精力，都献给了世界上最壮丽的事业——为人类的解放而斗争。</p>
-<p>人应当赶紧的充分的生活，因为意外的疾病和悲惨的事故随时都可能结束他的生命。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>避免熵增</title>
     <url>/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/</url>
     <content><![CDATA[<ul>
@@ -3965,6 +4005,17 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <p>一个人刚出道，不狂是没有出息的。但如果一直狂，是肯定没出息的。你眼中的你，和别人眼中的你，不是一回事。无限赞美自己，只是一种胆怯。我一直认为，恐惧到头就是愤怒。发挥无敌想象，给自己描绘了一个童话世界，白衣如雪来去如风。剑影刀光闪过后，你满脸冷酷地立于珠峰顶端，傲视苍生无比英武。此时我要问的是：孩子，你怎么下去？不让古人，是谓有志；不让今人，是谓无良。记住了，小俗便雅，大雅则俗。有人夸你，别信。有人骂你，别听。周围人随意捧骂，不可与之交，因其无志兴也。记住，言语多反复，当防欺诈。忘恩思小过，定会反戈。开口说大义，临大难必变节。逢人称兄弟，即深交也平常。</p>
 <p>另外，凡事要慎重。江湖子弟，拿得起来放得下。身边人很重要。一根稻草，扔街上就是垃圾，捆上白菜就是白菜价，捆上大闸蟹就是大闸蟹价。包括脚下的平台，也极重要。同样是一个人，步行一小时能走多远？骑车呢？开车呢？坐飞机呢？平台会决定你的速度，且记且记。</p>
 <p>此外，钱财要珍惜，但不可看得太重。财乃天地至公之物，假手于人罢了，雨打残花风卷流云，轮番更转而已。穷转富，富转穷，哪有百世富家翁？至于交友，吃点亏也无妨。人每所谓穷通寿夭为命所系，岂不知造物之报施，全视人之自取。芸芸众生富贵贫寒，不是谁都可以傲视乾坤。其中有命有运，要知因果懂善恶，我儿且记，但行好事，莫问前程。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>钢铁是怎样炼成的</title>
+    <url>/2020/08/07/%E9%92%A2%E9%93%81%E6%98%AF%E6%80%8E%E6%A0%B7%E7%82%BC%E6%88%90%E7%9A%84/</url>
+    <content><![CDATA[<p>人最宝贵的是生命，生命每人只有一次。</p>
+<p>人的一生应该这样度过：当他回忆往事的时候，他不会因为虚度年华而悔恨；也不会因为碌碌无为而羞愧，当他临死的时候，他能够说：我的整个生命和全部精力，都献给了世界上最壮丽的事业——为人类的解放而斗争。</p>
+<p>人应当赶紧的充分的生活，因为意外的疾病和悲惨的事故随时都可能结束他的生命。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -4058,6 +4109,18 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>阿甘正传经典台词-you have to do the best with what God gave you</title>
+    <url>/2020/09/04/%E9%98%BF%E7%94%98%E6%AD%A3%E4%BC%A0%E7%BB%8F%E5%85%B8%E5%8F%B0%E8%AF%8D-you-have-to-do-the-best-with-what-God-gave-you/</url>
+    <content><![CDATA[<ul>
+<li>Well...I happen to believe you make your own destiny. You have to do the best with what God gave you.</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>电影</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>青蛙跳荷叶问题</title>
     <url>/2020/08/14/%E9%9D%92%E8%9B%99%E8%B7%B3%E8%8D%B7%E5%8F%B6%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<h2 id="问题">问题：</h2>
@@ -4075,18 +4138,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>阿甘正传经典台词-you have to do the best with what God gave you</title>
-    <url>/2020/09/04/%E9%98%BF%E7%94%98%E6%AD%A3%E4%BC%A0%E7%BB%8F%E5%85%B8%E5%8F%B0%E8%AF%8D-you-have-to-do-the-best-with-what-God-gave-you/</url>
-    <content><![CDATA[<ul>
-<li>Well...I happen to believe you make your own destiny. You have to do the best with what God gave you.</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>电影</tag>
       </tags>
   </entry>
   <entry>
