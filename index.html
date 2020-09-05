@@ -185,6 +185,79 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/" class="post-title-link" itemprop="url">如何管理跨代理服务器的长短连接</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-05 11:19:46 / 修改时间：11:21:34" itemprop="dateCreated datePublished" datetime="2020-09-05T11:19:46+08:00">2020-09-05</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>HTTP的请求可以在长连接和短连接上执行。这篇文章介绍长连接和短连接的区别，以及如果客户端和源服务器之间有多个代理服务器，那么这些代理服务器呼入</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/05/HTTP%E7%9A%84%E9%94%99%E8%AF%AF%E5%93%8D%E5%BA%94%E7%A0%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -210,7 +283,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-09-05 10:21:25 / 修改时间：11:17:53" itemprop="dateCreated datePublished" datetime="2020-09-05T10:21:25+08:00">2020-09-05</time>
+              <time title="创建时间：2020-09-05 10:21:25 / 修改时间：11:22:10" itemprop="dateCreated datePublished" datetime="2020-09-05T10:21:25+08:00">2020-09-05</time>
             </span>
 
           
@@ -281,6 +354,8 @@
 </ul>
 <h3 id="小结">小结</h3>
 <p>这篇文章介绍了客户端出现错误时的400系列错误响应码，以及服务端出现错误时的500系列错误响应吗，那么与上篇文章中介绍的100、200、300系列响应码中，它们还遵循一个潜在的规则，就是当客户端接收到了，一个它不认识的响应码，不知道如何处理的时候，将按照它们所在系列的第一个，就是00系列那个响应码逻辑进行去处理，比如说我们现在收到了一个555这样的响应码，客户端不认，就会按照500的处理逻辑。如果收到了一个277，那么也会按照200这个错误码的处理逻辑来处理。</p>
+<h3 id="参考">参考</h3>
+<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
 
       
     </div>
@@ -331,7 +406,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-05 10:59:00" itemprop="dateModified" datetime="2020-09-05T10:59:00+08:00">2020-09-05</time>
+                <time title="修改时间：2020-09-05 11:22:19" itemprop="dateModified" datetime="2020-09-05T11:22:19+08:00">2020-09-05</time>
               </span>
 
           
@@ -397,6 +472,8 @@
 <li>308 Permanent Redirect：类似301，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
 </ul></li>
 </ul>
+<h3 id="参考">参考</h3>
+<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
 
       
     </div>
@@ -1154,78 +1231,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/03/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%B8%8ERSA%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/03/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%B8%8ERSA%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">非对称密码与RSA算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-09-03 22:39:37" itemprop="dateCreated datePublished" datetime="2020-09-03T22:39:37+08:00">2020-09-03</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/09/03/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%B8%8ERSA%E7%AE%97%E6%B3%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/03/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%B8%8ERSA%E7%AE%97%E6%B3%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1297,7 +1302,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">112</span>
+          <span class="site-state-item-count">113</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
