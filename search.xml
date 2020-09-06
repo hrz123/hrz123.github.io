@@ -370,6 +370,38 @@
       </tags>
   </entry>
   <entry>
+    <title>MySQL如何正确地显示随机消息？ </title>
+    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论</p>
+<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
+<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
+<h3 id="正确的方法">正确的方法</h3>
+<p>下面这个流程：</p>
+<ol type="1">
+<li>取得整个表的行数，并记为C。</li>
+<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
+<li>再用limit Y，1 取得一行。</li>
+</ol>
+<p>下面这段代码，就是上面流程的执行语句的序列。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
+<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
+<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
+<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
+<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
+<ol type="1">
+<li>取得整个表的行数，即为C</li>
+<li>按照相同的随机方法得到Y1、Y2、Y3</li>
+<li>再执行三个limit Y, 1语句得到三行数据。</li>
+<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
+</ol>
+<h3 id="参考">参考</h3>
+<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL事务隔离</title>
     <url>/2020/08/20/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/</url>
     <content><![CDATA[<h2 id="事务">事务</h2>
@@ -442,38 +474,6 @@
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> information_schema.innodb_trx <span class="keyword">where</span> TIME_TO_SEC(<span class="keyword">timediff</span>(<span class="keyword">now</span>(),trx_started))&gt;<span class="number">60</span></span><br></pre></td></tr></table></figure>
 <h2 id="小结">小结</h2>
 <p>这篇文章，主要介绍了MySQL的事务隔离级别的现象和实现，根据实现原理分析了长事务存在的风险，以及如何用正确的方式避免长事务，希望举的例子能够帮助你理解事务，并更好的使用MySQL的事务特性。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL如何正确地显示随机消息？ </title>
-    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论</p>
-<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
-<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
-<h3 id="正确的方法">正确的方法</h3>
-<p>下面这个流程：</p>
-<ol type="1">
-<li>取得整个表的行数，并记为C。</li>
-<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
-<li>再用limit Y，1 取得一行。</li>
-</ol>
-<p>下面这段代码，就是上面流程的执行语句的序列。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
-<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
-<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
-<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
-<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
-<ol type="1">
-<li>取得整个表的行数，即为C</li>
-<li>按照相同的随机方法得到Y1、Y2、Y3</li>
-<li>再执行三个limit Y, 1语句得到三行数据。</li>
-<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
-</ol>
-<h3 id="参考">参考</h3>
-<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -924,32 +924,6 @@
       </tags>
   </entry>
   <entry>
-    <title>TLS握手的优化：session缓存、ticket票据及TLS1.3的0-RTT</title>
-    <url>/2020/09/04/TLS%E6%8F%A1%E6%89%8B%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%9Asession%E7%BC%93%E5%AD%98%E3%80%81ticket%E7%A5%A8%E6%8D%AE%E5%8F%8ATLS1-3%E7%9A%840-RTT/</url>
-    <content><![CDATA[<p>TLS握手中所消耗的一个或者两个RTT的时间，是用于安全性，对于我们应用层的信息传递而言并没有意义。所以TLS提供了许多种手段，比如缓存，ticket等等，用于减少我们TLS握手中所消耗的RTT的时间。接下来简要介绍常用的一些手段，以及它们所存在的问题。</p>
-<h3 id="session缓存以服务器生成的session-id为依据">session缓存：以服务器生成的session ID为依据</h3>
-<p>session resume with session ID</p>
-<p>最常用的叫session 缓存</p>
-<p>第一次握手后，服务器会生成一个session ID，这个session ID会传给浏览器，或者说是client，当在一定的时间以内，比如说几个小时或者几天以内，浏览器或者客户端携带着这个session ID，再次访问服务器的时候，服务器这个时候它从它的内存或者说其他的缓存中，取到了这个session ID所对应的加密密钥，那么服务器就可以跟client说，我们就使用上一次所使用的加密密钥就可以了，没有必要使用DH或者DHCE密钥交换协议再次生成一个加密密钥，这样我们就减少了RTT。那么这里对于client和server都有要求。client需要在一定的时间内缓存住session ID以及它所对应的加密密钥，而服务器也需要在它的缓存中，为session ID缓存一定的时间。</p>
-<p>第二次访问的时候，Client Hello中是有一个session ID的，当然，第一次访问的时候是没有这样的一个数字的。有了这样的一个session ID以后呢，Server Hello返回了Change Cipher Spec Message，而没有发送Server Key Exchange，就是我们DHCE中必须要发送公钥这么的一个步骤。Change Cipher Spec中说了些什么呢？我们可以看到，[Expert Info (Note/Sequence): This session reuses previously negotiated key (Session resumption)]，我们使用上一次所协商过的key就可以了。服务器就使用了内存所缓存的session id所对应的密钥。接下来所有的通讯都是基于我们上一次所使用的密钥进行加密的。</p>
-<p>session ID缓存往往会有两个问题：</p>
-<ol type="1">
-<li>server 往往是在内存中存放session id以及对应的密钥信息的，所以位于不同的主机上的server它们是没有办法去分享它们的session id以及对应的密钥信息，然而实际上我们的服务往往都是服务于成千上万个用户，所以要通过反向代理负载均衡等通过一个ip或者一个域名，来为很多个用户服务，所以我们会有很多台server，这些server中如何去共享这些个session id呢，比如说server A为同一个用户所生成的session id当下一次用户来访问的时候，很可能通过负载均衡，访问到了server b，那么server b又需要重新进行握手了，这是第一个问题。</li>
-<li>第二个问题，server在内存中存储session id是有内存消耗的。那么到底缓存多长时间，过短和过长都不合适。</li>
-</ol>
-<p>这个时候就可以考虑session ticket，session ticket处理方式与session 缓存是完全不同的，那首先我们的每一台server不需要再耗费内存去存放每一个session中所需要的信息，而是基于它所独有一个密码，那么这个密码呢是整个集群中所共同分享的一个密码，基于这个密码把相关的加密信息进行加密，发送给客户端，那么当客户端下一次需要握手的时候呢，把这个相关的加密后的信息发送给服务器，而只有这个集群内的服务器才知道这个密码，那么它基于这个密码解密之后，就获取到上一次握手成功后所需要的密钥，我们就可以基于这个密钥，与client中所缓存的这个密钥进行加密数据的一个通讯。这样我们就解决了session缓存所具有的上面的问题了。</p>
-<h3 id="tls1.3的0rtt握手">TLS1.3的0RTT握手</h3>
-<p>我们知道TLS1.3中只需要一次RTT完成握手。所谓的0RTT是指，第一次握手的时候就携带我们相关的数据，比如说我们有一个Get请求，第一次就发送，那么在一个RTT后呢，我们就可以收到response，所以它实现握手没有占用任何的RTT。我们叫它0RTT。那么它们是怎么实现的呢？实际上，它们是第二次握手才可以完成的，因为当我们第一次握手的时候，我们的client和服务器呢会把相关的密钥信息缓存下来，那么第二次握手的时候我们基于上一次缓存的一定时间内有效的信息，对我们的Get请求进行加密，那么发送给server，如果server也认为这个上一次的密钥相关信息没有过期的话，那么它就可以解密到了，也可以把基于同样的密钥，把相应的response发给client。</p>
-<p>当然，无论是session ID缓存或者是session ticket或者TLS1.3中的0RTT，它们其实都面临着同样一种攻击叫做重放攻击。那么什么叫重放攻击呢？比如说我们的client现在发送了一个post请求，那么这个post请求呢使用上一次中所使用到的密钥进行加密，所以这其实是一个报文，一个packet，这个packet发送给server呢，server是认的，因为它马上利用它所没有过期的密钥进行解密，并处理，通常一个post请求很有可能是改变我们的用户的数据状态的，那么就改变了我们的数据库。如果这个报文被我们的一个中间人在某个路由器或者某一个代理服务器中把这个报文保存下来了，那么它就可以在随后的过程中，不需要去解密相关的信息，我只要这个packet不停地重新地再发送，就可以不停地去改变我们的数据库的状态。这就是一个重放攻击。</p>
-<p>所以我们的0RTT，或者说我们session id、ticket reuse都是需要设定一个合适的合理的过期时间的。</p>
-<h3 id="小结">小结</h3>
-<p>本片文章主要介绍了TLS为了提升握手速度，而进行的性能优化手段，而TLS中所面临的另外一个问题，就是它的安全性，非常依赖于当前最快速的计算机的运行速度。那么有没有一劳永逸的绝对安全的这样的一种通讯手段呢？那么量子通讯可以带给大家全新的思考。</p>
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>TLS与量子通讯的原理</title>
     <url>/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/</url>
     <content><![CDATA[<p>TLS保证安全性的最大难题在于如何传递后续对称加密时，所使用的密钥，那么目前所使用的DH或者DHCE协议呢，都存在被快速运算的计算机所破解的一个可能性。那么，接下来将介绍量子通讯协议。当然这里的量子通讯与我们在物理学中所了解到的那个量子力学一点关系都没有，只是借用了其中一些理念而已。</p>
@@ -1010,6 +984,32 @@
 <p>我们首先使用到了对称加密所使用到的一些技术，尤其我们重点介绍了AES算法，以及GCM分组工作模式，那么接下来我们介绍了非对称加密算法的两种应用。首先是在PKI证书体系，其次是在DH或者DHCE密钥交换协议中得到了大量广泛的使用。我们也介绍了TLS1.3协议，那么在未来TLS1.3协议将会得到大量广泛的使用，我们必须清楚TLS1.3协议究竟做了哪些改进，和优化。</p>
 <p>TLS协议的安全性受限于当下最快的计算机的运行速度，所以呢，我们也介绍了理论上绝对安全的量子通讯方式来传递密钥。</p>
 <p>那么之后我们将介绍TLS层次下的传输层协议（TLS属于表示层协议），我们将重点介绍TCP协议的设计原则和众多特性。</p>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TLS握手的优化：session缓存、ticket票据及TLS1.3的0-RTT</title>
+    <url>/2020/09/04/TLS%E6%8F%A1%E6%89%8B%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%9Asession%E7%BC%93%E5%AD%98%E3%80%81ticket%E7%A5%A8%E6%8D%AE%E5%8F%8ATLS1-3%E7%9A%840-RTT/</url>
+    <content><![CDATA[<p>TLS握手中所消耗的一个或者两个RTT的时间，是用于安全性，对于我们应用层的信息传递而言并没有意义。所以TLS提供了许多种手段，比如缓存，ticket等等，用于减少我们TLS握手中所消耗的RTT的时间。接下来简要介绍常用的一些手段，以及它们所存在的问题。</p>
+<h3 id="session缓存以服务器生成的session-id为依据">session缓存：以服务器生成的session ID为依据</h3>
+<p>session resume with session ID</p>
+<p>最常用的叫session 缓存</p>
+<p>第一次握手后，服务器会生成一个session ID，这个session ID会传给浏览器，或者说是client，当在一定的时间以内，比如说几个小时或者几天以内，浏览器或者客户端携带着这个session ID，再次访问服务器的时候，服务器这个时候它从它的内存或者说其他的缓存中，取到了这个session ID所对应的加密密钥，那么服务器就可以跟client说，我们就使用上一次所使用的加密密钥就可以了，没有必要使用DH或者DHCE密钥交换协议再次生成一个加密密钥，这样我们就减少了RTT。那么这里对于client和server都有要求。client需要在一定的时间内缓存住session ID以及它所对应的加密密钥，而服务器也需要在它的缓存中，为session ID缓存一定的时间。</p>
+<p>第二次访问的时候，Client Hello中是有一个session ID的，当然，第一次访问的时候是没有这样的一个数字的。有了这样的一个session ID以后呢，Server Hello返回了Change Cipher Spec Message，而没有发送Server Key Exchange，就是我们DHCE中必须要发送公钥这么的一个步骤。Change Cipher Spec中说了些什么呢？我们可以看到，[Expert Info (Note/Sequence): This session reuses previously negotiated key (Session resumption)]，我们使用上一次所协商过的key就可以了。服务器就使用了内存所缓存的session id所对应的密钥。接下来所有的通讯都是基于我们上一次所使用的密钥进行加密的。</p>
+<p>session ID缓存往往会有两个问题：</p>
+<ol type="1">
+<li>server 往往是在内存中存放session id以及对应的密钥信息的，所以位于不同的主机上的server它们是没有办法去分享它们的session id以及对应的密钥信息，然而实际上我们的服务往往都是服务于成千上万个用户，所以要通过反向代理负载均衡等通过一个ip或者一个域名，来为很多个用户服务，所以我们会有很多台server，这些server中如何去共享这些个session id呢，比如说server A为同一个用户所生成的session id当下一次用户来访问的时候，很可能通过负载均衡，访问到了server b，那么server b又需要重新进行握手了，这是第一个问题。</li>
+<li>第二个问题，server在内存中存储session id是有内存消耗的。那么到底缓存多长时间，过短和过长都不合适。</li>
+</ol>
+<p>这个时候就可以考虑session ticket，session ticket处理方式与session 缓存是完全不同的，那首先我们的每一台server不需要再耗费内存去存放每一个session中所需要的信息，而是基于它所独有一个密码，那么这个密码呢是整个集群中所共同分享的一个密码，基于这个密码把相关的加密信息进行加密，发送给客户端，那么当客户端下一次需要握手的时候呢，把这个相关的加密后的信息发送给服务器，而只有这个集群内的服务器才知道这个密码，那么它基于这个密码解密之后，就获取到上一次握手成功后所需要的密钥，我们就可以基于这个密钥，与client中所缓存的这个密钥进行加密数据的一个通讯。这样我们就解决了session缓存所具有的上面的问题了。</p>
+<h3 id="tls1.3的0rtt握手">TLS1.3的0RTT握手</h3>
+<p>我们知道TLS1.3中只需要一次RTT完成握手。所谓的0RTT是指，第一次握手的时候就携带我们相关的数据，比如说我们有一个Get请求，第一次就发送，那么在一个RTT后呢，我们就可以收到response，所以它实现握手没有占用任何的RTT。我们叫它0RTT。那么它们是怎么实现的呢？实际上，它们是第二次握手才可以完成的，因为当我们第一次握手的时候，我们的client和服务器呢会把相关的密钥信息缓存下来，那么第二次握手的时候我们基于上一次缓存的一定时间内有效的信息，对我们的Get请求进行加密，那么发送给server，如果server也认为这个上一次的密钥相关信息没有过期的话，那么它就可以解密到了，也可以把基于同样的密钥，把相应的response发给client。</p>
+<p>当然，无论是session ID缓存或者是session ticket或者TLS1.3中的0RTT，它们其实都面临着同样一种攻击叫做重放攻击。那么什么叫重放攻击呢？比如说我们的client现在发送了一个post请求，那么这个post请求呢使用上一次中所使用到的密钥进行加密，所以这其实是一个报文，一个packet，这个packet发送给server呢，server是认的，因为它马上利用它所没有过期的密钥进行解密，并处理，通常一个post请求很有可能是改变我们的用户的数据状态的，那么就改变了我们的数据库。如果这个报文被我们的一个中间人在某个路由器或者某一个代理服务器中把这个报文保存下来了，那么它就可以在随后的过程中，不需要去解密相关的信息，我只要这个packet不停地重新地再发送，就可以不停地去改变我们的数据库的状态。这就是一个重放攻击。</p>
+<p>所以我们的0RTT，或者说我们session id、ticket reuse都是需要设定一个合适的合理的过期时间的。</p>
+<h3 id="小结">小结</h3>
+<p>本片文章主要介绍了TLS为了提升握手速度，而进行的性能优化手段，而TLS中所面临的另外一个问题，就是它的安全性，非常依赖于当前最快速的计算机的运行速度。那么有没有一劳永逸的绝对安全的这样的一种通讯手段呢？那么量子通讯可以带给大家全新的思考。</p>
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
@@ -2725,6 +2725,12 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>学到的就要教人，赚到的就要给人</title>
+    <url>/2020/09/06/%E5%AD%A6%E5%88%B0%E7%9A%84%E5%B0%B1%E8%A6%81%E6%95%99%E4%BA%BA%EF%BC%8C%E8%B5%9A%E5%88%B0%E7%9A%84%E5%B0%B1%E8%A6%81%E7%BB%99%E4%BA%BA/</url>
+    <content><![CDATA[
+]]></content>
+  </entry>
+  <entry>
     <title>实现KMP算法</title>
     <url>/2020/07/25/%E5%AE%9E%E7%8E%B0KMP%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>转载自王争老师数据结构与算法之美字符串匹配基础下https://time.geekbang.org/column/article/71845</p>
@@ -2917,78 +2923,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>总结：MySQL中的重要概念（锁，内部临时表等）</title>
-    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
-    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
-<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
-<p>高，并发度最低。</p>
-<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
-<p>低，并发度也最高。</p>
-<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
-<p>锁和行锁之间，并发度一般。</p>
-<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>读锁</th>
-<th>写锁</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>读锁</strong></td>
-<td>不互斥</td>
-<td>互斥</td>
-</tr>
-<tr class="even">
-<td><strong>写锁</strong></td>
-<td>互斥</td>
-<td>互斥</td>
-</tr>
-</tbody>
-</table>
-<h3 id="一些重要的锁">一些重要的锁：</h3>
-<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
-<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
-<p>属于表级锁。</p>
-<h4 id="间隙锁">间隙锁</h4>
-<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
-<h4 id="自增id锁">自增id锁</h4>
-<h4 id="trx_id锁">trx_id锁</h4>
-<p>涉及到竞争资源，很多处都有锁。</p>
-<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
-<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
-<ol type="1">
-<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
-<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
-<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
-</ol>
-<h3 id="mysql常用操作">MySQL常用操作</h3>
-<ol type="1">
-<li>explain查看命令优化器优化结果；</li>
-<li>show engine innodb status;</li>
-<li>show warnings，看优化器改写后的语句；</li>
-<li>show create table t; 查看t的建表语句；</li>
-</ol>
-<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
-<ol type="1">
-<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
-<li>redoLog，undoLog，binLog重要概念。</li>
-<li>WAL (write ahead log 技术)，先将日志写在redolog中</li>
-<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
-<li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
-<li>change buffer</li>
-<li>普通索引和唯一索引尽量选择普通索引</li>
-<li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引，语句为count distinct。预先设定一个可以接受的损失比例。但是使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是你在选择是否使用前缀索引时需要考虑的一个因素。</li>
-<li>脏页和干净页，redo log中的脏页，刷进磁盘才会删除。这时候系统会停止所有更新操作，把 checkpoint 往前推进，redo log 留出空间可以继续写。write_pos， checkpoint</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>怎么最快地复制一张表？</title>
     <url>/2020/08/28/%E6%80%8E%E4%B9%88%E6%9C%80%E5%BF%AB%E5%9C%B0%E5%A4%8D%E5%88%B6%E4%B8%80%E5%BC%A0%E8%A1%A8%EF%BC%9F/</url>
     <content><![CDATA[<p>我在上一篇文章最后，给你留下的问题是怎么在两张表中拷贝数据。如果可以控制对源表的扫描行数和加锁范围很小的话，我们简单地使用insert..select语句即可实现。</p>
@@ -3110,6 +3044,78 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>后两种都是逻辑备份的方式，是可以跨引擎使用的。</p>
 <p>最后，我给你留下一个思考题吧。</p>
 <p>我们前面介绍binlog_format=statement的时候，binlog记录的load data命令是带local的。既然这条命令是发送到备库去执行的，那么备库执行的时候也是本地执行，为什么需要这个local呢？如果写到binlog中的命令不带local，又会出现什么问题呢？</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>总结：MySQL中的重要概念（锁，内部临时表等）</title>
+    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
+    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
+<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
+<p>高，并发度最低。</p>
+<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
+<p>低，并发度也最高。</p>
+<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
+<p>锁和行锁之间，并发度一般。</p>
+<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>读锁</th>
+<th>写锁</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>读锁</strong></td>
+<td>不互斥</td>
+<td>互斥</td>
+</tr>
+<tr class="even">
+<td><strong>写锁</strong></td>
+<td>互斥</td>
+<td>互斥</td>
+</tr>
+</tbody>
+</table>
+<h3 id="一些重要的锁">一些重要的锁：</h3>
+<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
+<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
+<p>属于表级锁。</p>
+<h4 id="间隙锁">间隙锁</h4>
+<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
+<h4 id="自增id锁">自增id锁</h4>
+<h4 id="trx_id锁">trx_id锁</h4>
+<p>涉及到竞争资源，很多处都有锁。</p>
+<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
+<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
+<ol type="1">
+<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
+<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
+<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
+</ol>
+<h3 id="mysql常用操作">MySQL常用操作</h3>
+<ol type="1">
+<li>explain查看命令优化器优化结果；</li>
+<li>show engine innodb status;</li>
+<li>show warnings，看优化器改写后的语句；</li>
+<li>show create table t; 查看t的建表语句；</li>
+</ol>
+<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
+<ol type="1">
+<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
+<li>redoLog，undoLog，binLog重要概念。</li>
+<li>WAL (write ahead log 技术)，先将日志写在redolog中</li>
+<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
+<li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
+<li>change buffer</li>
+<li>普通索引和唯一索引尽量选择普通索引</li>
+<li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引，语句为count distinct。预先设定一个可以接受的损失比例。但是使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是你在选择是否使用前缀索引时需要考虑的一个因素。</li>
+<li>脏页和干净页，redo log中的脏页，刷进磁盘才会删除。这时候系统会停止所有更新操作，把 checkpoint 往前推进，redo log 留出空间可以继续写。write_pos， checkpoint</li>
+</ol>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -4296,6 +4302,17 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>避免熵增</title>
+    <url>/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/</url>
+    <content><![CDATA[<ul>
+<li>心流的状态</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>郭德纲写给儿子郭麒麟的家书</title>
     <url>/2020/07/23/%E9%83%AD%E5%BE%B7%E7%BA%B2%E5%86%99%E7%BB%99%E5%84%BF%E5%AD%90%E9%83%AD%E9%BA%92%E9%BA%9F%E7%9A%84%E5%AE%B6%E4%B9%A6/</url>
     <content><![CDATA[<h3 id="人生的真谛要用自己一辈子去理解">人生的真谛要用自己一辈子去理解</h3>
@@ -4306,17 +4323,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 <p>一个人刚出道，不狂是没有出息的。但如果一直狂，是肯定没出息的。你眼中的你，和别人眼中的你，不是一回事。无限赞美自己，只是一种胆怯。我一直认为，恐惧到头就是愤怒。发挥无敌想象，给自己描绘了一个童话世界，白衣如雪来去如风。剑影刀光闪过后，你满脸冷酷地立于珠峰顶端，傲视苍生无比英武。此时我要问的是：孩子，你怎么下去？不让古人，是谓有志；不让今人，是谓无良。记住了，小俗便雅，大雅则俗。有人夸你，别信。有人骂你，别听。周围人随意捧骂，不可与之交，因其无志兴也。记住，言语多反复，当防欺诈。忘恩思小过，定会反戈。开口说大义，临大难必变节。逢人称兄弟，即深交也平常。</p>
 <p>另外，凡事要慎重。江湖子弟，拿得起来放得下。身边人很重要。一根稻草，扔街上就是垃圾，捆上白菜就是白菜价，捆上大闸蟹就是大闸蟹价。包括脚下的平台，也极重要。同样是一个人，步行一小时能走多远？骑车呢？开车呢？坐飞机呢？平台会决定你的速度，且记且记。</p>
 <p>此外，钱财要珍惜，但不可看得太重。财乃天地至公之物，假手于人罢了，雨打残花风卷流云，轮番更转而已。穷转富，富转穷，哪有百世富家翁？至于交友，吃点亏也无妨。人每所谓穷通寿夭为命所系，岂不知造物之报施，全视人之自取。芸芸众生富贵贫寒，不是谁都可以傲视乾坤。其中有命有运，要知因果懂善恶，我儿且记，但行好事，莫问前程。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>避免熵增</title>
-    <url>/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/</url>
-    <content><![CDATA[<ul>
-<li>心流的状态</li>
-</ul>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -4391,6 +4397,36 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>阻塞与非阻塞，同步与异步</title>
+    <url>/2020/09/01/%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5/</url>
+    <content><![CDATA[<h3 id="阻塞与非阻塞">阻塞与非阻塞</h3>
+<ol type="1">
+<li>主要是指，操作系统，或者底层的c库，提供的方法，或者是一个系统调用。也就是说我们调用这个方法的时候，这个方法可能会导致我的进程进入sleep状态，为什么会进入sleep状态呢？就是当前的条件不满足的情况下，操作系统主动的把我的进程切换为另外一个进程了，在使用当前的CPU。那么这样就是一个阻塞方法。</li>
+<li>而非阻塞方法就是我们调用该方法，永远不会因为，当我们时间片未用完时，把我们的进程主动切换掉。</li>
+</ol>
+<h3 id="同步与异步">同步与异步</h3>
+<p>而同步和异步则是从我们调用的方式而言，就是我们编码中写我们的业务逻辑这样的一个角度。我们可以从nginx的发展历史趋势上可以看出这一点。那么nginx目前除了官方在提供的javascript利用这样的同步写代码的方式实现非阻塞编码的效果，以及openresty基于lua语言用同步写代码的方式实现非阻塞高并发的一个效果。</p>
+<p>接下来，我们来看一看非阻塞和阻塞以及同步异步，到底有一些什么样具体的区别。</p>
+<p>那么，在阻塞调用中，我们以accept为例。因为绝大多数程序，在调用accept的时候，它都是在使用阻塞socket的。使用阻塞socket的时候呢，当我们调用accept方法的时候，如果说我们监听的端口所对应的accept队列，就是操作系统已经为我们做好了几个三次握手建立成功的socket，那么阻塞方法可能会立刻得到返回，而不会被阻塞。但是，如果accept队列是空的，那么操作系统就会去等待新的三次握手的连接，到达我们的内核中，我们才会去唤醒这个accept调用，这个时间往往是可控的。我们去设置这个阻塞socket最长的超时时间，那么如果没有达到的话，也可以唤醒我们的这样一个调用。所以，这里的流程中，就是会产生进程间的主动切换。而我们之前谈过，像nginx是不能容忍这样的进程间切换的。因为它并发的连接实在是太多了。</p>
+<p>那么非阻塞调用，有什么差别呢？我们先看accept如果你使用了非阻塞套接字，使用accept调用去执行的时候呢，如果accept队列为空，它是不等待立刻返回的。但是它返回的是什么呢？其实是EAGAIN，是一个错误码。所以这个时候呢，我们的代码回收一个错误码，但这个错误码是一个特殊的错误码。需要我们的代码去处理它。如果我们再次调用accept是非阻塞的，如果accept队列不为空的话，则把成功的那一个socket建立好的套接字返回给我们的代码。所以，这里有一个很大的问题，就是由我们的代码决定当accept收到一个EAGAIN这样的错误码时，我们究竟是应该等一会，继续处理这个连接，别不sleep一下，还是先切换到其他的任务，再处理。</p>
+<p>我这里举的是一个非常简单的accept的例子。如果涉及到我们的业务特性，比如http的复杂的子请求、主请求，等等，实际上是会导致我们的代码非常复杂。因此，非阻塞调用呢，是我们的底层实现，如果我们用异步方法去使用非阻塞调用是非常自然而然的。我们可以看一下，是怎样用异步的方式去处理非阻塞连接。</p>
+<p>那么我这里举了一个例子。是一个反向代理的例子，那么nginx做反向代理的时候有一个特点，他会去考虑到上游服务的处理能力相对是不足的，所以，如果是一个有body的http请求，那么，nginx会先把body接收完，再去向上游服务器发起连接，那么我们看右边这段代码。我们可以看到，当我们收完header的时候，我们已经知道，接下来向谁，哪一台服务器去发起反向代理，建立连接了。但是我需要先读取body，所以它调用了这样一个方法，那么这个方法就是一个标准的异步方法。它表达当我执行完read request body之后，再去调用post_handler方法，也就是upstream_init，是我们对上游服务器建立连接的方法，所以当我们调用这样的一个异步调用的时候它其实意味着先把body收完，再调这个方法。非常的复杂。</p>
+<p>这是标准的异步调用</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">rc = ngx_http_read_request_body(r, ngx_http_upsream_init);</span><br><span class="line"><span class="keyword">if</span> (rc &gt;= NGX_HTTP_SRECIAL_RESPONSE) &#123;</span><br><span class="line">  <span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法执行完时调用post_handler异步方法</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ngx_init_t</span></span><br><span class="line">ngx_http_read_client_request_body(<span class="keyword">ngx_http_request_t</span> * r, ngx_http_client_body_handler_pt post_handler)</span><br></pre></td></tr></table></figure>
+<p>最终读取完body后调用ngx_http_upstream_init方法</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ngx_http_upstream_init</span><span class="params">(<span class="keyword">ngx_http_request_t</span> *r)</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>我们再来看一看，与此相反的同步调用的方法。比如说openresty写一段lua代码，比如说我现在要对redis建立连接，因为我们建立连接使用的也是TCP，那么TCP一样有三次握手，三次握手基于这种报文，那么我们在基于nginx openresty上也是不能使用阻塞方法的。但是如果你用异步的方式，非常复杂。同步方式呢，可以看到。</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="keyword">local</span> cliend = redis:new()</span><br><span class="line">client:set_tmeout(<span class="number">30000</span>)</span><br><span class="line"><span class="keyword">local</span> ok, err = client:connect(ip, port)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> ok <span class="keyword">then</span></span><br><span class="line">    ngx.say(<span class="string">&quot;failed: &quot;</span>, err)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>我们new一个client redis以后，设置好这个连接的超时时间，我们就可以调用connect，这个connect就是一个同步调用，但是它里面走的是非阻塞代码。所以我们在写lua代码的时候，完全可以不必考虑像刚刚我们举的这个例子一样，考虑connect完成以后，再去回调另外一个方法，在另外一个方法中决定，connect是成功了还是失败了。如果成功了，我应该发消息，完全不需要这么做。我们只需要简单的connect，我收到响应值了，那么ok，如果是没有收到ok，那么我们打印一个ngx.say('failed')就可以了。因为在connect方法执行的过程中，当connect没有被满足，也就是我没有收到redis发来的ACK响应，就是成功建立连接时呢。这个connect方法不会返回，但是也不会阻塞nginx的代码，这就叫做同步调用代码。那么它使用了非阻塞的一个方式。</p>
+<p>谈完同步异步阻塞与非阻塞以后我，我相信大家对于如何兼顾开发效率与我们的运行效率应该有了一个很好的认识。实际上，如果我们不是在极端场景下，都会去使用如openresty或者nginx的javascript模块，来使用同步编程的方式，达成我们的目的，这样的开发效率非常的高。</p>
+]]></content>
+      <tags>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>阿甘正传经典台词-you have to do the best with what God gave you</title>
     <url>/2020/09/04/%E9%98%BF%E7%94%98%E6%AD%A3%E4%BC%A0%E7%BB%8F%E5%85%B8%E5%8F%B0%E8%AF%8D-you-have-to-do-the-best-with-what-God-gave-you/</url>
     <content><![CDATA[<ul>
@@ -4420,36 +4456,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>阻塞与非阻塞，同步与异步</title>
-    <url>/2020/09/01/%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5/</url>
-    <content><![CDATA[<h3 id="阻塞与非阻塞">阻塞与非阻塞</h3>
-<ol type="1">
-<li>主要是指，操作系统，或者底层的c库，提供的方法，或者是一个系统调用。也就是说我们调用这个方法的时候，这个方法可能会导致我的进程进入sleep状态，为什么会进入sleep状态呢？就是当前的条件不满足的情况下，操作系统主动的把我的进程切换为另外一个进程了，在使用当前的CPU。那么这样就是一个阻塞方法。</li>
-<li>而非阻塞方法就是我们调用该方法，永远不会因为，当我们时间片未用完时，把我们的进程主动切换掉。</li>
-</ol>
-<h3 id="同步与异步">同步与异步</h3>
-<p>而同步和异步则是从我们调用的方式而言，就是我们编码中写我们的业务逻辑这样的一个角度。我们可以从nginx的发展历史趋势上可以看出这一点。那么nginx目前除了官方在提供的javascript利用这样的同步写代码的方式实现非阻塞编码的效果，以及openresty基于lua语言用同步写代码的方式实现非阻塞高并发的一个效果。</p>
-<p>接下来，我们来看一看非阻塞和阻塞以及同步异步，到底有一些什么样具体的区别。</p>
-<p>那么，在阻塞调用中，我们以accept为例。因为绝大多数程序，在调用accept的时候，它都是在使用阻塞socket的。使用阻塞socket的时候呢，当我们调用accept方法的时候，如果说我们监听的端口所对应的accept队列，就是操作系统已经为我们做好了几个三次握手建立成功的socket，那么阻塞方法可能会立刻得到返回，而不会被阻塞。但是，如果accept队列是空的，那么操作系统就会去等待新的三次握手的连接，到达我们的内核中，我们才会去唤醒这个accept调用，这个时间往往是可控的。我们去设置这个阻塞socket最长的超时时间，那么如果没有达到的话，也可以唤醒我们的这样一个调用。所以，这里的流程中，就是会产生进程间的主动切换。而我们之前谈过，像nginx是不能容忍这样的进程间切换的。因为它并发的连接实在是太多了。</p>
-<p>那么非阻塞调用，有什么差别呢？我们先看accept如果你使用了非阻塞套接字，使用accept调用去执行的时候呢，如果accept队列为空，它是不等待立刻返回的。但是它返回的是什么呢？其实是EAGAIN，是一个错误码。所以这个时候呢，我们的代码回收一个错误码，但这个错误码是一个特殊的错误码。需要我们的代码去处理它。如果我们再次调用accept是非阻塞的，如果accept队列不为空的话，则把成功的那一个socket建立好的套接字返回给我们的代码。所以，这里有一个很大的问题，就是由我们的代码决定当accept收到一个EAGAIN这样的错误码时，我们究竟是应该等一会，继续处理这个连接，别不sleep一下，还是先切换到其他的任务，再处理。</p>
-<p>我这里举的是一个非常简单的accept的例子。如果涉及到我们的业务特性，比如http的复杂的子请求、主请求，等等，实际上是会导致我们的代码非常复杂。因此，非阻塞调用呢，是我们的底层实现，如果我们用异步方法去使用非阻塞调用是非常自然而然的。我们可以看一下，是怎样用异步的方式去处理非阻塞连接。</p>
-<p>那么我这里举了一个例子。是一个反向代理的例子，那么nginx做反向代理的时候有一个特点，他会去考虑到上游服务的处理能力相对是不足的，所以，如果是一个有body的http请求，那么，nginx会先把body接收完，再去向上游服务器发起连接，那么我们看右边这段代码。我们可以看到，当我们收完header的时候，我们已经知道，接下来向谁，哪一台服务器去发起反向代理，建立连接了。但是我需要先读取body，所以它调用了这样一个方法，那么这个方法就是一个标准的异步方法。它表达当我执行完read request body之后，再去调用post_handler方法，也就是upstream_init，是我们对上游服务器建立连接的方法，所以当我们调用这样的一个异步调用的时候它其实意味着先把body收完，再调这个方法。非常的复杂。</p>
-<p>这是标准的异步调用</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">rc = ngx_http_read_request_body(r, ngx_http_upsream_init);</span><br><span class="line"><span class="keyword">if</span> (rc &gt;= NGX_HTTP_SRECIAL_RESPONSE) &#123;</span><br><span class="line">  <span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个方法执行完时调用post_handler异步方法</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ngx_init_t</span></span><br><span class="line">ngx_http_read_client_request_body(<span class="keyword">ngx_http_request_t</span> * r, ngx_http_client_body_handler_pt post_handler)</span><br></pre></td></tr></table></figure>
-<p>最终读取完body后调用ngx_http_upstream_init方法</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ngx_http_upstream_init</span><span class="params">(<span class="keyword">ngx_http_request_t</span> *r)</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-<p>我们再来看一看，与此相反的同步调用的方法。比如说openresty写一段lua代码，比如说我现在要对redis建立连接，因为我们建立连接使用的也是TCP，那么TCP一样有三次握手，三次握手基于这种报文，那么我们在基于nginx openresty上也是不能使用阻塞方法的。但是如果你用异步的方式，非常复杂。同步方式呢，可以看到。</p>
-<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="keyword">local</span> cliend = redis:new()</span><br><span class="line">client:set_tmeout(<span class="number">30000</span>)</span><br><span class="line"><span class="keyword">local</span> ok, err = client:connect(ip, port)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> ok <span class="keyword">then</span></span><br><span class="line">    ngx.say(<span class="string">&quot;failed: &quot;</span>, err)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>我们new一个client redis以后，设置好这个连接的超时时间，我们就可以调用connect，这个connect就是一个同步调用，但是它里面走的是非阻塞代码。所以我们在写lua代码的时候，完全可以不必考虑像刚刚我们举的这个例子一样，考虑connect完成以后，再去回调另外一个方法，在另外一个方法中决定，connect是成功了还是失败了。如果成功了，我应该发消息，完全不需要这么做。我们只需要简单的connect，我收到响应值了，那么ok，如果是没有收到ok，那么我们打印一个ngx.say('failed')就可以了。因为在connect方法执行的过程中，当connect没有被满足，也就是我没有收到redis发来的ACK响应，就是成功建立连接时呢。这个connect方法不会返回，但是也不会阻塞nginx的代码，这就叫做同步调用代码。那么它使用了非阻塞的一个方式。</p>
-<p>谈完同步异步阻塞与非阻塞以后我，我相信大家对于如何兼顾开发效率与我们的运行效率应该有了一个很好的认识。实际上，如果我们不是在极端场景下，都会去使用如openresty或者nginx的javascript模块，来使用同步编程的方式，达成我们的目的，这样的开发效率非常的高。</p>
-]]></content>
-      <tags>
-        <tag>操作系统</tag>
       </tags>
   </entry>
   <entry>
