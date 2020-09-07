@@ -317,27 +317,26 @@
           <p>先说结论</p>
 <p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
 <p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
-<h3 id="正确的方法">正确的方法</h3>
-<p>下面这个流程：</p>
-<ol type="1">
+<h3 id="正确的方法"><a href="#正确的方法" class="headerlink" title="正确的方法"></a>正确的方法</h3><p>下面这个流程：</p>
+<ol>
 <li>取得整个表的行数，并记为C。</li>
 <li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
 <li>再用limit Y，1 取得一行。</li>
 </ol>
 <p>下面这段代码，就是上面流程的执行语句的序列。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
+
 <p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
 <p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
 <p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
 <p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
-<ol type="1">
+<ol>
 <li>取得整个表的行数，即为C</li>
 <li>按照相同的随机方法得到Y1、Y2、Y3</li>
 <li>再执行三个limit Y, 1语句得到三行数据。</li>
-<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
+<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3<br>id1 = select * from t limit @Y1，1；<br>id2= select * from t where id &gt; id1 limit @Y2-@Y1，1；<br>select * from t where id &gt; id2 limit @Y3 - @Y2，1；</li>
 </ol>
-<h3 id="参考">参考</h3>
-<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
 
       
     </div>
@@ -416,20 +415,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>首先官方文档是这么写的。参考<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnklMjBJbm5vREIlMjB0YWJsZSUyMGhhcyUyMGEsZm9yJTIwdGhlJTIwcm93cyUyMGlzJTIwc3RvcmVkLiZhbXA7dGV4dD1UaGUlMjByb3clMjBJRCUyMGlzJTIwYSxhcmUlMjBwaHlzaWNhbGx5JTIwaW4lMjBpbnNlcnRpb24lMjBvcmRlci4=">MySQL5.6 Ref manual<i class="fa fa-external-link-alt"></i></span>。</p>
+          <p>首先官方文档是这么写的。参考[MySQL5.6 Ref manual](<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnk=">https://dev.mysql.com/doc/refman/5.6/en/innodb-index-types.html#:~:text=Every<i class="fa fa-external-link-alt"></i></span> InnoDB table has a,for the rows is stored.&amp;text=The row ID is a,are physically in insertion order.)。</p>
 <p>每个InnoDB表都有一个特殊的索引，称为聚簇索引clustered index，行的数据就存储在这里。通常情况下，聚簇索引是主键的同义词。为了从查询、插入和其他数据库操作中获得最佳性能，你必须理解InnoDB是如何使用聚簇索引来优化每个表的最常见的查找和DML操作的。</p>
 <ul>
 <li>当你在表上定义一个primary key时，InnoDB就会把它作为聚簇索引。为你创建的每一个表定义一个主键。如果没有逻辑上唯一且非空的列或列集合，则添加一个新的自动增加列，其值会自动填入。</li>
 <li>如果你没有为你的表定义primary key，MySQL会定位第一个Unique索引，其中所有的关键列都是Not Null。InnoDB使用它作为聚簇索引。</li>
 <li>如果表没有primary key或合适的unique索引，InnoDB内部会在包含row id值的合成列上生成一个名为GEN_CLUST_INDEX的隐藏聚簇索引。行是由InnoDB分配给这种表中的行的ID来排序的。row id是一个6字节的字段，随着新行的插入而单调增加。因此，按row id排序的行在物理上是按插入顺序排列的。</li>
 </ul>
-<h5 id="聚簇索引是如何加快查询速度的">聚簇索引是如何加快查询速度的？</h5>
-<p>通过聚簇索引访问行的速度很快，因为索引搜索会直接引导到包含所有行数据的页面。如果一张表很大，与使用与索引记录不同的页面存储行数据的存储组织相比，聚簇索引架构往往可以节省一次磁盘I/O操作。</p>
-<h5 id="二级索引与聚簇索引的关系">二级索引与聚簇索引的关系</h5>
-<p>除了聚簇索引以外的所有索引都称为二级索引。在InnoDB中，二级索引中的每条记录都包含改行的主键列，以及二级索引指定的列。InnoDB使用这个主键值来搜索聚簇索引中的行。</p>
+<h5 id="聚簇索引是如何加快查询速度的？"><a href="#聚簇索引是如何加快查询速度的？" class="headerlink" title="聚簇索引是如何加快查询速度的？"></a>聚簇索引是如何加快查询速度的？</h5><p>通过聚簇索引访问行的速度很快，因为索引搜索会直接引导到包含所有行数据的页面。如果一张表很大，与使用与索引记录不同的页面存储行数据的存储组织相比，聚簇索引架构往往可以节省一次磁盘I/O操作。</p>
+<h5 id="二级索引与聚簇索引的关系"><a href="#二级索引与聚簇索引的关系" class="headerlink" title="二级索引与聚簇索引的关系"></a>二级索引与聚簇索引的关系</h5><p>除了聚簇索引以外的所有索引都称为二级索引。在InnoDB中，二级索引中的每条记录都包含改行的主键列，以及二级索引指定的列。InnoDB使用这个主键值来搜索聚簇索引中的行。</p>
 <p>如果主键长，二级索引就会使用更多的空间，所以主键短是有利的。</p>
-<h3 id="回答标题的问题">回答标题的问题</h3>
-<img data-src="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/rowid1.gif" class>
+<h3 id="回答标题的问题"><a href="#回答标题的问题" class="headerlink" title="回答标题的问题"></a>回答标题的问题</h3><img data-src="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/rowid1.gif" class>
+
 <p>这里我没有找到mysql的rowid为什么是6个字节的答案，找到是关于oracle rowid的解释，猜测是互通的。</p>
 <p>rowid是伪列。不会真正存在表的data block中，但是它会存在于index中。</p>
 <p>扩展的rowid在磁盘上需要10个字节的存储空间，并使用18个字符来显示。</p>
@@ -437,8 +434,7 @@
 <p>在oracle 8以前，一个rowid占用6个字节大小的存储空间（10 bit file# + 22bit block # + 16 bit row #)，rowid格式为：BBBBBBBB.RRRR.FFFF。</p>
 <p>在oracle 8以后，rowid的存储空间扩大到了10个字节（32 bit object# + 10bit rfile# + 22 bit block# + 16 bit row#)，文件号仍然用10位表示，只是不再需要置换，为了向后兼容，同时引入了相对文件号（rfile#)，所以从Oracle7到Oracle8，rowid仍然无需发生变化。</p>
 <p>这里我猜测，mysql rowid也是存储了 10位的文件号，22位的块号，16位的行号。</p>
-<h3 id="更新已经得到答案">更新：已经得到答案。</h3>
-<p>详见<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MzE4Mw==">文章<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="更新：已经得到答案。"><a href="#更新：已经得到答案。" class="headerlink" title="更新：已经得到答案。"></a>更新：已经得到答案。</h3><p>详见<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MzE4Mw==">文章<i class="fa fa-external-link-alt"></i></span></p>
 
       
     </div>
@@ -517,31 +513,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="epoll-网络事件收集器模型也有分发">epoll 网络事件收集器模型（也有分发）</h3>
-<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
+          <h3 id="epoll-网络事件收集器模型（也有分发）"><a href="#epoll-网络事件收集器模型（也有分发）" class="headerlink" title="epoll 网络事件收集器模型（也有分发）"></a>epoll 网络事件收集器模型（也有分发）</h3><p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
 <p>首先，epoll 和 kqueue（mac os内核才有）随文件描述符（句柄数的增加，也表示并发连接数的增加）的增加，所消耗的时间几乎不变。而Poll和select所消耗的时间是急剧上升的。epoll基本与句柄数增加是无关的，所以它的性能会好很多，而且非常适合做大并发连接的处理。那么，为什么会这样呢？</p>
 <p>Benchmark显示：</p>
 <img data-src="/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/benchmark.png" class>
-<h3 id="前提">前提</h3>
-<p>高并发连接中，每次处理的活跃连接数量占比很小</p>
+
+<h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><p>高并发连接中，每次处理的活跃连接数量占比很小</p>
 <blockquote>
 <p>select 和 poll的实现是有问题的。每一次我去取操作系统的事件的时候，我都需要把这100万个连接通通地扔给操作系统，让它去依次地判断哪些连接上面有事件进来了，所以可以看到这里操作系统做了大量的无用功 ，它扫描了大量不活跃的连接。那么epoll就是用了这样的一个特性，因为每次处理的活跃连接的占比其实非常小，那么，它怎么实现的呢？其实非常简单，因为它维护了一个数据结构叫eventpoll。这里，它通过两个数据结构把这两件事分开了。也就是说，nginx每次取活跃连接的时候，我们只需要去遍历一个链表，这个链表里仅仅只有活跃的连接，这样我们的效率就很高。那么，我们还会经常做的操作是什么呢？比如说，nginx收到80端口建立连接的请求。那么，收到80端口建立连接成功以后呢，我们要添加一个读事件，这个读事件是用来读取HTTP消息的，那这时候呢，我可能会添加一个新的事件，或者写事件添加进来。这个时候添加呢，我只会放到这个红黑树中，这个二叉平衡树，它能保证我的插入效率值是logn。如果我现在不想再处理读事件或者写事件，我只需要从这个平衡二叉树中移除一个节点就可以了，同样是logn的时间复杂度。所以这个效率非常高。那么什么时候这个链表会有所增减呢。当我们读取一个事件的时候，链表中自然就没了。那么，当操作系统接收到网卡中发送来的一个报文的时候，那么这个链表就会增加一个新的元素，所以我们在使用epoll的时候，它的操作，添加修改删除，是非常快的，是logn复杂度的。而我们获取句柄的时候，只是去遍历这个rdllink，也就是ready准备好的所有的连接，是把它读取出来而已。那么，从内核态读取到用户态，只读这么一点东西，它的效率是非常高的。</p>
 </blockquote>
-<h3 id="实现">实现</h3>
-<ul>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><ul>
 <li>红黑树</li>
 <li>链表</li>
 </ul>
-<h3 id="使用">使用</h3>
-<ul>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><ul>
 <li>创建</li>
 <li>操作：添加/修改/删除</li>
 <li>获取句柄</li>
 <li>关闭</li>
 </ul>
 <p>以上，简单介绍了epoll的使用方法，它对我们理解nginx的事件驱动模型是有帮助的。</p>
-<h3 id="其他">其他</h3>
-<p>每一个nginx worker进程都有一个独立的ngx_cycle_t这样一个数据结构。有三个主要的数组，connections，read_events，write_events。分别代表预分配的连接、读事件和写事件。三个数组大小和配置是一模一样的，三个数组通过序号对应起来。</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>每一个nginx worker进程都有一个独立的ngx_cycle_t这样一个数据结构。有三个主要的数组，connections，read_events，write_events。分别代表预分配的连接、读事件和写事件。三个数组大小和配置是一模一样的，三个数组通过序号对应起来。</p>
 <p>每一个connection到底使用了多大的内存呢？连接使用的核心数据结构是ngx_connection_s，64位操作系统中，大约占用了232个字节，nginx版本不同可能有微小的差异，每一个ngx_connetion_s结构体对应着两个事件，一个读一个写，每一个时间对应的结构体，事件的核心数据结构是ngx_event_s，结构体占用的字节数是96字节。所以当我们使用一个连接的时候，它使用的字节大约是232+96*2，我们的worker connections配置得越大，那么初始化的时候就会预分配这么多内存。</p>
 <p>我们再来看ngx_event_s中有哪些成员，这里我们比较关注的是，有一个handler（ngx_event_gandler_pt）指针，这是一个回调方法，也就是很多第三方模块会把这个handler设为自己的实现；这里还有一个timer（ngx_rbtree_node_t），也就是说，当我们对http请求做读超时写超时等等设置的时候，其实是在操作它的读事件和写事件中的timer，这个timer就是inginx实现超时定时器，也就是基于rbtree就实现的这样一个结构体。那么红黑树中每个成员叫rbtree_node，那么这个timer就是它的node，用来指向我们的读事件是否超时、写事件是否超时，这些定时器其实也是可配的。</p>
 <p>比如client_header_timeout，默认是60s，也就是在我们刚刚某个连接上，在准备读取它的header时，我们在它的读事件上添加了一个60s的定时器。</p>
@@ -551,8 +543,7 @@
 <p>如果你开发过nginx的第三方开发模块，虽然我们在写C语言代码，但是我们不需要关心内存的释放，那么如果你现在在配置一些比较罕见的nginx使用场景，你可能会需要去修改nginx在请求和连接上初始分配内存池大小。但是nginx官方可能会写着推荐通常不需要去该这样的配置。那么我们究竟要不要这些内存池的大小呢？下面，我们来看一看内存池究竟是怎么样运转的。</p>
 <p>ngx_connection_s这样的结构体中，有一个成员变量就是pool，ngx_pool_t，它对应着这个连接所使用的的内存池。这个内存池可以通过一个配置项叫connection_pool_size去定义。那么，我们为什么会需要内存池呢，如果我们有一些工具的话我们会发现，nginx它所产生的内存碎片其实是非常小的，这就是内存池的一个功了。那么，内存池呢，它会把内存提前分配好一批，而且，当我们使用小块内存的时候 ，它会用next指针一个个连接在一起，每次我们使用的东西比较少的时候呢，第二次再分配小块内存，会连接在一起去使用，这样就大大减少了我们的内存碎片。当然我们如果分配大块内存的时候，还是会走到操作系统的alloc去分配大块的内存。那么对于nginx有什么好处呢？因为它主要在处理web请求，web请求，特别对于http请求，它有两个非常明显的特点。每当我们有一个TCP连接的时候，那么，这个TCP连接上面可能会运行很多http请求，也就是所谓的http keepalive请求，连接没有关闭，执行完一条请求以后还负责执行另外一条请求。 那么有一些内存呢，我为连接分配一次就够了，比如说，我去读取每一个请求的前1k字节，那么在连接内存池上，我分配一次，只要这个连接不关闭，那么这段1k的内存，我永远不需要释放，什么时候需要释放呢？连接关闭的时候我再释放。没有任何问题。请求内存池呢？每一个http请求，我开始分配的时候，我不知道分配多大，但是http请求，特别是http1.1而言，通常我们会分配4k的大小的内存，因为我们的url或者header往往需要分配那么多，如果没有内存池呢，我们可能需要频繁的分配，小块的分配，而分配内存，其实是有代价的，如果我们一次分配，分配较多的内存呢，就没有这样的问题。而请求执行完毕以后，哪怕连接我们还可以复用，我们也可以把请求池销毁，而这样，所有nginx第三方模块开发者，他们就不必关注，内存什么时候会释放，它只要关注，我是从请求内存池里面，申请分配的内存，还是连接内存池里，申请分配的内存。只要这个逻辑讲得通，比如请求结束以后，连接仍然想继续使用，那么你可以在连接内存池里面分配。好我们看一下具体的例子。还是在nginx_http_core_module这个模块中，我们可以看到它有一个叫connection_pool_size，点开以后可以看到默认情况下，它大约是256或者512，这个跟我们的操作系统位数是有关的。那么内存池配置512，并不代表，在这里我只能分配512字节，当我们分配的内存超过预分配的大小的时候，还是可以继续分配的，这里只是说，因为我提前预分配了足够大小的空间，可以减少我分配内存的次数。那我们再来看，另一个配置，叫request pool size也就是我们每一个请求的内存池的大小，这里我们可以看到，它的默认大小是4k，为什么差距会那么大呢？之所以会差距8倍，是因为，对于连接而言，它需要保存的上下文信息非常的少，它只需要帮助后面的请求读取最初一部分字节就可以了，而对于请求而言，我们需要保存大量的上下文信息，比如说所有读取到的url或者header，我需要一直保存下来，url通常还比较长，所以我们需要有4k的大小。当然官方文档中说，它对性能的影响比较小，如果我们在极端场景下，如果你的url特别大，你可以考虑把这个分配得更大，或者说你是很小内存的，url非常小，header也非常少，你可以考虑request_pool_size把它降一降，这样或许nginx消耗的内存会小一些，那么也意味着你可以做更大并发量的请求。</p>
 <p>以上我们介绍了内存池的原理，以及请求内存池和连接内存池，它们的配置代表着怎样的意义。内存池对减少我们的内存碎片，对第三方模块的快速开发，是有很大意义的。可能有一些第三方模块不当使用了内存池，比如本该在请求内存池里分配内存，却在连接内存池分配内存，这可能会导致内存的延期释放，导致nginx的内存无谓的增加，这需要我们注意。</p>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyMDMwMS02ODM5NA==">Nginx核心知识100讲<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyMDMwMS02ODM5NA==">Nginx核心知识100讲<i class="fa fa-external-link-alt"></i></span></p>
 
       
     </div>
@@ -633,24 +624,26 @@
       
           <p>先上代码</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span></span><br><span class="line">        print(<span class="string">&#x27;class.__new__ called&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> super(Student, cls).__new__(cls)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, name, height</span>):</span></span><br><span class="line">        print(<span class="string">&#x27;class.__init__ called&#x27;</span>)</span><br><span class="line">        self.name = name</span><br><span class="line">        self.height = height</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;The height of Student %s if %s&quot;</span> % (self.name, self.height)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    xiaoming = Student(<span class="string">&#x27;xiaoming&#x27;</span>, <span class="number">175</span>)</span><br><span class="line">    print(xiaoming)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-<p>其中，<strong>new</strong>()不是一定要有，只有继承自object的类才有，该方法可以return父类（通过super(当前类名, cls).__new__())出来的实例，或者直接是object的__new__出来的实例。值得注意的是，在定义子类时没有重新定义__new__()时，Python默认调用该类父类的__new__()方法来构造该类实例，如果该类父类也没有重写__new__()，那么将一直追溯至object的__new__()方法，因为object是所有新式类的基类。如果子类中重写了__new__()方法，那么可以自由选择任意一个其他的新式类。</p>
-<p>可见，当类中同时出现__new__()和__init__()时，先调用__new__，再调用__init__()，具体的执行过程为：</p>
-<ol type="1">
-<li>调用实例对象代码xiaoming = Student('xiaoming', 175);</li>
-<li>传入name和height的参数，执行Student类的__new__()方法，该方法返回一个类的实例，通常会用父类super(Student, cls).__new__(cls)，<strong>new</strong>()产生的实例即__init__()的self；</li>
-<li>用实例来调用__init__()方法，进行初始化实例对象的操作。</li>
+
+<p>其中，<strong>new</strong>()不是一定要有，只有继承自object的类才有，该方法可以return父类（通过super(当前类名, cls).<strong>new</strong>())出来的实例，或者直接是object的<strong>new__出来的实例。值得注意的是，在定义子类时没有重新定义__new</strong>()时，Python默认调用该类父类的<strong>new</strong>()方法来构造该类实例，如果该类父类也没有重写<strong>new</strong>()，那么将一直追溯至object的<strong>new</strong>()方法，因为object是所有新式类的基类。如果子类中重写了<strong>new</strong>()方法，那么可以自由选择任意一个其他的新式类。</p>
+<p>可见，当类中同时出现<strong>new</strong>()和<strong>init</strong>()时，先调用<strong>new__，再调用__init</strong>()，具体的执行过程为：</p>
+<ol>
+<li>调用实例对象代码xiaoming = Student(‘xiaoming’, 175);</li>
+<li>传入name和height的参数，执行Student类的<strong>new</strong>()方法，该方法返回一个类的实例，通常会用父类super(Student, cls).<strong>new</strong>(cls)，<strong>new</strong>()产生的实例即<strong>init</strong>()的self；</li>
+<li>用实例来调用<strong>init</strong>()方法，进行初始化实例对象的操作。</li>
 </ol>
-<p>可以看到，python中__new__()与__init__()的区别，</p>
-<ol type="1">
-<li>首先用法不同，<strong>new</strong>()用于创建实例，所以该方法是在实例创建之前被调用，它是类级别的方法，是个静态方法； 而__init__()用于初始化实例，所以该方法是在实例对象创建后被调用，它是实例级别的方法，用于设置对象属性的一些初始值。 由此可知，<strong>new</strong>()在__init__()之前被调用。如果__new__()创建的是当前类的实例，会自动调用__init__()，通过return调用的__new__()的参数cls来保证是当前类实例，如果是其他类的类名，那么创建返回的是其他类实例，就不会调用当前类的__init__()函数。</li>
-<li>其次传入参数不同 <strong>new</strong>()至少有一个参数cls，代表当前类，此参数在实例化时由Python解释器自动识别； <strong>init</strong>()至少有一个参数self，就是这个__new__返回的实例，<strong>init</strong>()在__new__()的基础上完成一些初始化的操作。</li>
-<li>返回值不同 <strong>new</strong>()必须有返回值，返回实例对象； <strong>init</strong>()不需要有返回值。 另外谈谈__new__()的作用，<strong>new</strong>()方法主要用于继承一些不可变的class，比如int，str, tuple，提供一个自定义这些类的实例化过程的途径，一般通过重载__new__()的方法来实现。代码如下：</li>
+<p>可以看到，python中<strong>new</strong>()与<strong>init</strong>()的区别，</p>
+<ol>
+<li>首先用法不同，<strong>new</strong>()用于创建实例，所以该方法是在实例创建之前被调用，它是类级别的方法，是个静态方法；<br>而<strong>init</strong>()用于初始化实例，所以该方法是在实例对象创建后被调用，它是实例级别的方法，用于设置对象属性的一些初始值。<br>由此可知，<strong>new</strong>()在<strong>init</strong>()之前被调用。如果<strong>new</strong>()创建的是当前类的实例，会自动调用<strong>init</strong>()，通过return调用的<strong>new</strong>()的参数cls来保证是当前类实例，如果是其他类的类名，那么创建返回的是其他类实例，就不会调用当前类的<strong>init</strong>()函数。</li>
+<li>其次传入参数不同<br><strong>new</strong>()至少有一个参数cls，代表当前类，此参数在实例化时由Python解释器自动识别；<br><strong>init</strong>()至少有一个参数self，就是这个<strong>new__返回的实例，__init</strong>()在<strong>new</strong>()的基础上完成一些初始化的操作。</li>
+<li>返回值不同<br><strong>new</strong>()必须有返回值，返回实例对象；<br><strong>init</strong>()不需要有返回值。<br>另外谈谈<strong>new</strong>()的作用，<strong>new</strong>()方法主要用于继承一些不可变的class，比如int，str, tuple，提供一个自定义这些类的实例化过程的途径，一般通过重载<strong>new</strong>()的方法来实现。代码如下：</li>
 </ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PositiveInteger</span>(<span class="params">int</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, value</span>):</span></span><br><span class="line">        <span class="keyword">return</span> super(PositiveInteger, cls).__new__(cls, abs(value))</span><br><span class="line"></span><br><span class="line">a = PositiveInteger(<span class="number">-10</span>)</span><br><span class="line">print(a)</span><br></pre></td></tr></table></figure>
+
 <p>另外，<strong>new</strong>()方法还可以用来实现单例模式，也就是使每次实例化时只返回同一个实例对象。代码如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 利用__new__实现python单例模式.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span>(<span class="params">object</span>):</span></span><br><span class="line">    _instance_lock = threading.Lock()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, *args, **kwargs</span>):</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> hasattr(Singleton, <span class="string">&quot;_instance&quot;</span>):</span><br><span class="line">            <span class="keyword">with</span> Singleton._instance_lock:</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> hasattr(Singleton, <span class="string">&quot;_instance&quot;</span>):</span><br><span class="line">                    Singleton._instance = object.__new__(cls)</span><br><span class="line">        <span class="keyword">return</span> Singleton._instance</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    obj1 = Singleton()</span><br><span class="line">    obj2 = Singleton()</span><br><span class="line">    obj1.attr = <span class="string">&#x27;value1&#x27;</span></span><br><span class="line">    print(obj1.attr, obj2.attr)</span><br><span class="line">    print(obj1 <span class="keyword">is</span> obj2)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-<h3 id="参考">参考</h3>
-<ol type="1">
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
 <li>实现单例模式的几种方式，new方式推荐使用，<span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vaHVjaG9uZy9wLzgyNDQyNzkuaHRtbCNfbGFiMl8xXzM=">链接<i class="fa fa-external-link-alt"></i></span></li>
 <li>new 和 init 的区别，<span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vamF5bGl1L3AvOTAxMzE1NS5odG1s">链接<i class="fa fa-external-link-alt"></i></span></li>
 </ol>
@@ -895,25 +888,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <ol type="1">
+          <ol>
 <li><p>能不能使用join语句？</p>
-<ol type="1">
+<ol>
 <li>如果可以使用Index Nested-Loop Join算法，也就是说可以用上被驱动表上的索引，是没问题的。</li>
 <li>如果使用Block Nested_Loop Join算法，扫描行数就会过多。尤其是在大表上的join操作，这样可能要扫描被驱动表很多次，会占用大量的系统资源。所以这种join尽量不要用。</li>
-</ol></li>
+</ol>
+</li>
 <li><p>如果要使用join，应该选择大表做驱动表还是选择小表做驱动表？</p>
-<ol type="1">
+<ol>
 <li>如果是Index Nested-Loop Join算法，应该选择小表做驱动表；</li>
-<li>如果是Block Nested-Loop Join算法：
-<ul>
+<li>如果是Block Nested-Loop Join算法：<ul>
 <li>在oin_buffer_size足够大的时候，是一样的；</li>
 <li>在join_buffer_size不够大的时候（这种情况更常见），应该选择小表做驱动表。</li>
-</ul></li>
+</ul>
+</li>
 <li>所以总是选择小表做驱动表。</li>
-</ol></li>
+</ol>
+</li>
 <li><p>什么叫做小表？</p>
-<p><strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是”小表“，应该作为驱动表。</strong></p></li>
-<li><p>总体来看，不论是在原表上加索引，还是用有索引的临时表，我们的思路都是让 join 语句能够用上被驱动表上的索引，来触发 BKA 算法，提升查询性能。</p></li>
+<p><strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是”小表“，应该作为驱动表。</strong></p>
+</li>
+<li><p>总体来看，不论是在原表上加索引，还是用有索引的临时表，我们的思路都是让 join 语句能够用上被驱动表上的索引，来触发 BKA 算法，提升查询性能。</p>
+</li>
 </ol>
 
       
@@ -990,14 +987,18 @@
           <p>读写分离的主要目标是分摊主库的压力。每个大型架构最终都会实现读写分离。</p>
 <p>读写分离的架构有两种。</p>
 
+
 <p>图1中的结构是客户端（client）主动做负载均衡，这种模式下一般会把数据库的连接信息放在客户端的连接层。也就是说，由客户端来选择后端数据库进行查询。</p>
 <p>还有一种架构是，在MySQL和客户端之间有一个中间代理层proxy，客户端只连接proxy，由proxy根据请求类型和上下文决定请求的分发路由。</p>
 <img data-src="/2020/08/25/MySQL%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%97%B6%E5%A4%84%E7%90%86%E8%BF%87%E6%9C%9F%E8%AF%BB%E7%9A%84%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%842.jpg" class>
+
 <p>接下来，我们就看一下客户端直连和带proxy的读写分离架构，各有哪些特点。</p>
-<ol type="1">
+<ol>
 <li><p>客户端直连方案，因为少了一层proxy转发，所以查询性能稍微好一点儿，并且整体架构简单，排查问题更方便。但是这种方案，由于要了解后端部署细节，所以在出现主备切换、库迁移等操作的时候，客户端都会感知到，并且需要调整数据库连接信息。</p>
-<p>你可能会觉得这样客户端也太麻烦了，信息大量冗余，架构很丑。其实也未必，一般采用这样的架构，一定会伴随一个负责管理后端的组件，比如ZooKeeper，尽量让业务端只专注于业务逻辑开发。</p></li>
-<li><p>带proxy的架构，对客户端比较友好。客户端不需要关注后端细节，连接维护、后端信息维护等工作，都是由proxy完成的。但这样的话，对后端维护团队的要求会更高。而且，proxy也需要有高可用架构。因此，带proxy架构的整体就相对比较复杂。</p></li>
+<p>你可能会觉得这样客户端也太麻烦了，信息大量冗余，架构很丑。其实也未必，一般采用这样的架构，一定会伴随一个负责管理后端的组件，比如ZooKeeper，尽量让业务端只专注于业务逻辑开发。</p>
+</li>
+<li><p>带proxy的架构，对客户端比较友好。客户端不需要关注后端细节，连接维护、后端信息维护等工作，都是由proxy完成的。但这样的话，对后端维护团队的要求会更高。而且，proxy也需要有高可用架构。因此，带proxy架构的整体就相对比较复杂。</p>
+</li>
 </ol>
 <p>理解了这两种方案的优劣，具体选择哪个方案就取决于数据库团队提供的能力了。但目前看，趋势是往带proxy的架构方向发展的。</p>
 <p>但是，不论使用哪种架构，你都会碰到我们今天要讨论的问题：由于主从可能存在延迟，客户端执行完一个更新事务后马上发起查询，如果查询选择的是从库的话，就有可能读到刚刚事务更新之前的状态。</p>
@@ -1014,34 +1015,32 @@
 <li>等主库位点方案；</li>
 <li>等 GTID 方案。</li>
 </ul>
-<h3 id="强制走主库方案">强制走主库方案</h3>
-<p>强制走主库方案其实就是，将查询请求做分类。通常情况下，我们可以将查询请求分为这么两类：</p>
-<ol type="1">
+<h3 id="强制走主库方案"><a href="#强制走主库方案" class="headerlink" title="强制走主库方案"></a>强制走主库方案</h3><p>强制走主库方案其实就是，将查询请求做分类。通常情况下，我们可以将查询请求分为这么两类：</p>
+<ol>
 <li>对于必须要拿到最新结果的请求，强制将其发到主库上。比如，在一个交易平台上，卖家发布商品以后，马上要返回主页面，看商品是否发布成功。那么，这个请求需要拿到最新的结果，就必须走主库。</li>
 <li>对于可以读到旧数据的请求，才将其发到从库上。在这个交易平台上，买家来逛商铺页面，就算晚几秒看到最新发布的商品，也是可以接受的。那么，这类请求就可以走从库。</li>
 </ol>
 <p>你可能会说，这个方案是不是有点畏难和取巧的意思，但其实这个方案是用得最多的。</p>
 <p>当然，这个方案最大的问题在于，有时候你会碰到”所有查询都不能是过期读“的需求，比如一些金融类的业务。这样的话，你就要放弃读写分离，所有读写压力都在主库，等同于放弃了扩展性。</p>
 <p>因此接下来，我们来讨论的话题是：可以支持读写分离的场景下，有哪些解决过期读的方案，并分析各个方案的优缺点。</p>
-<h3 id="sleep方案">Sleep方案</h3>
-<p>主库更新后，读从库之前先sleep一下。具体的方案就是，类似于执行一条select sleep(1)命令。</p>
+<h3 id="Sleep方案"><a href="#Sleep方案" class="headerlink" title="Sleep方案"></a>Sleep方案</h3><p>主库更新后，读从库之前先sleep一下。具体的方案就是，类似于执行一条select sleep(1)命令。</p>
 <p>这个方案的假设是，大多数情况下主备延迟在1s之内，做一个sleep可以有很大概率拿到最新的数据。</p>
 <p>这个方案给你的第一感觉，很可能是不靠谱，应该不会有人用吧？并且，你可能还会说，直接在发起查询时限制性一条sleep语句，用户体验很不友好啊。</p>
 <p>但，这个思路确实可以在一定程度上解决问题。为了看起来更靠谱，我们可以换一种方式。</p>
 <p>以卖家发布商品为例，商品发布后，用Ajax(Asynchronous JavaScript + XML，异步JavaScript和XML）直接把客户端输入的内容作为”新的商品“显示在页面上，而不是真正地去数据库做查询。</p>
 <p>这样，卖家就可以通过这个显示，来确认产品已经发布成功了。等到卖家再刷新页面，去查看商品的时候，其实已经过了一段时间了，也就达到了sleep的目的，进而也就解决了过期读的问题。</p>
 <p>也就是说，这个sleep方案确实解决了类似场景下的过期读问题。但，从严格意义上来说，这个方案存在的问题就是不精确。这个不精确包含了两层意思：</p>
-<ol type="1">
+<ol>
 <li>如果这个查询请求本来0.5秒就可以在从库上拿到正确结果，也会等1秒；</li>
 <li>如果延迟超过1s，还是会出现过期读。</li>
 </ol>
-<h3 id="判断主库无延迟方案">判断主库无延迟方案</h3>
-<p>要确保备库无延迟，通常有三种做法。</p>
+<h3 id="判断主库无延迟方案"><a href="#判断主库无延迟方案" class="headerlink" title="判断主库无延迟方案"></a>判断主库无延迟方案</h3><p>要确保备库无延迟，通常有三种做法。</p>
 <p>通过前面的文章，我们知道show slave status结果里的seconds_behind_master参数的值，可以用来衡量主备延迟时间的长短。</p>
 <p>所以<strong>第一种确保主备无延迟的方法是</strong>，每次从库执行查询请求前，先判断seconds_behind_master是否已经等于0。如果还不等于0，那就必须等到这个参数变为0才能执行查询请求。</p>
 <p>seconds_behind_master的单位是秒，如果你觉得精度不够的话，还可以采用对比位点和GTID的方法来确保主备无延迟，也就是我们接下来要说的第二和第三种方法。</p>
 <p>如图3所示，是一个show slave status结果的部分截图。</p>
 <img data-src="/2020/08/25/MySQL%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%97%B6%E5%A4%84%E7%90%86%E8%BF%87%E6%9C%9F%E8%AF%BB%E7%9A%84%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88/%E8%BF%87%E6%9C%9F%E8%AF%BB1.png" class>
+
 <p>现在，我们就通过这个结果，来看看具体如何通过对比位点和GTID来确保主备无延迟。</p>
 <p><strong>第二种方法</strong>，对比位点确保主备无延迟：</p>
 <ul>
@@ -1059,7 +1058,7 @@
 <p>可见，对比位点和对比GTID这两种方法，都要比对比seconds_behind_master是否为0更准确。</p>
 <p>在执行查询请求之前，先判断从库是否同步完成的方法，相比于sleep方案，准确度确实提升了不少，但还是没有达到”精确“的程度。为什么这么说呢？</p>
 <p>我们现在一起回顾一下，一个事务的binlog在主备库之间的状态：</p>
-<ol type="1">
+<ol>
 <li>主库执行完成，写入binlog，并反馈给客户端；</li>
 <li>binlog被从主库发送给备库，备库收到；</li>
 <li>在备库执行binlog完成。</li>
@@ -1067,17 +1066,17 @@
 <p>我们上面判断主备无延迟的逻辑，是”备库收到的日志都执行完成了“。但是，从binlog在主备之间状态的分析中，不难看出还有一部分日志，处于客户端已经收到提交确认，而备库还没收到日志的状态。</p>
 <p>如图4所示就是这样的一个状态。</p>
 <img data-src="/2020/08/25/MySQL%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%97%B6%E5%A4%84%E7%90%86%E8%BF%87%E6%9C%9F%E8%AF%BB%E7%9A%84%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88/%E8%BF%87%E6%9C%9F%E8%AF%BB2.png" class>
+
 <p>这是，主库上执行完成了三个事务trx1，trx2和trx3，其中：</p>
-<ol type="1">
+<ol>
 <li>trx1和trx2已经传到从库，并且已经执行完成了；</li>
 <li>trx3在主库执行完成，并且已经回复给客户端，但是还没有传到从库中。</li>
 </ol>
 <p>如果这时候你在从库B上执行查询请求，按照我们上面的逻辑，从库认为已经没有同步延迟，但还是查不到trx3的。严格地说，就是出现了过期读。</p>
 <p>那么，这个问题有没有办法解决呢？</p>
-<h3 id="配合semi-sync">配合semi-sync</h3>
-<p>要解决这个问题，就要引入半同步机制，也就是semi-sync replication。</p>
+<h3 id="配合semi-sync"><a href="#配合semi-sync" class="headerlink" title="配合semi-sync"></a>配合semi-sync</h3><p>要解决这个问题，就要引入半同步机制，也就是semi-sync replication。</p>
 <p>semi-sync做了这样的设计：</p>
-<ol type="1">
+<ol>
 <li>事务提交的时候，主库把binlog发给从库；</li>
 <li>从库收到binlog以后，发回给主库一个ack，表示收到了；</li>
 <li>从库收到这个ack以后，才能给客户端返回”事务完成“的确认。</li>
@@ -1087,7 +1086,7 @@
 <p>答案是，如果使用的是普通的异步复制机制，就有可能丢失，但semi-sync就可以解决这个问题。</p>
 <p>这样，semi-sync配合前面关于位点的判断，就能够确定在从库上执行的查询请求，可以避免过期读。</p>
 <p>但是，semi-sync+位点判断的方案，只对一主一备的场景是成立的。在一主多从场景中，主库只要等到一个从库的ack，就开始给客户端返回确认。这是，在从库上执行查询请求，就有两种情况：</p>
-<ol type="1">
+<ol>
 <li>如果查询是落在这个响应了ack的从库上，是能够确保读到最新数据；</li>
 <li>但如果是查询落到了其他从库上，它们可能还没有收到最新的日志，就会产生过期读的问题。</li>
 </ol>
@@ -1095,33 +1094,34 @@
 <p>实际上，回到我们最初的业务逻辑里，当发起一个查询请求以后，我们要得到准确的结果，其实并不需要等到”主备完全同步“。</p>
 <p>为什么这么说呢？我们来看一下这个时序图。</p>
 <img data-src="/2020/08/25/MySQL%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%97%B6%E5%A4%84%E7%90%86%E8%BF%87%E6%9C%9F%E8%AF%BB%E7%9A%84%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88/%E8%BF%87%E6%9C%9F%E8%AF%BB3.png" class>
+
 <p>图5所示，就是等待位点方案的一个bad case。图中备库B下的虚线框，分别表示relaylog和binlog中的事务。可以看到，图5中从状态1到状态4，一直处于延迟一个事务的状态。</p>
 <p>备库B一直到状态4都和主库A存在延迟，如果用上面必须等到无延迟才能查询的方案，select语句一直到状态4都不能被执行。</p>
 <p>但是，其实客户端是在发完trx1更新后发起的select语句，我们只需要确保trx1已经执行完成就可以执行select语句了。也就是说，如果在状态3执行查询请求，得到的就是预期结果了。</p>
 <p>到这里，我们小结一下，semi-sync配合判断主备无延迟的方案，存在两个问题：</p>
-<ol type="1">
+<ol>
 <li>一主多从的时候，在某些从库执行查询请求会存在过期读的现象；</li>
 <li>在持续延迟的情况下，可能出现过度等待的问题。</li>
 </ol>
 <p>接下来，我要和你介绍的等主库位点方案，就可以解决这两个问题。</p>
-<h3 id="等主库位点方案">等主库位点方案</h3>
-<p>要理解等主库位点方案，我需要先和你介绍一条命令：</p>
+<h3 id="等主库位点方案"><a href="#等主库位点方案" class="headerlink" title="等主库位点方案"></a>等主库位点方案</h3><p>要理解等主库位点方案，我需要先和你介绍一条命令：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">master_pos_wait</span>(<span class="keyword">file</span>, pos[, <span class="keyword">timeout</span>]);</span><br></pre></td></tr></table></figure>
+
 <p>这条命令的逻辑如下：</p>
-<ol type="1">
+<ol>
 <li>它是在从库执行的；</li>
 <li>参数file和pos指的是主库上的文件名和位置；</li>
 <li>timeout可选，设置为正整数N表示这个函数最多等待N秒。</li>
 </ol>
 <p>这个命令正常返回的结果是一个正整数M，表示从命令开始执行，到应用完file和pos表示的binlog位置，执行了多少事务。</p>
 <p>当然，除了正常返回一个正整数M外，这条命令还会返回一些其他结果，包括：</p>
-<ol type="1">
+<ol>
 <li>如果执行期间，备库同步线程发生异常，则返回NULL；</li>
 <li>如果等待时间超过N秒，就返回-1；</li>
 <li>如果刚开始执行的时候，就发现已经执行过这个位置了，则返回0。</li>
 </ol>
 <p>对于图5中先执行trx1，再执行一个查询请求的逻辑，要保证能够查到正确的数据，我们可以使用这个逻辑：</p>
-<ol type="1">
+<ol>
 <li>trx1事务更新完成后，马上执行show master status得到当前主库执行到的File和Position；</li>
 <li>选定一个从库执行查询语句；</li>
 <li>在从库上执行select master_pos_wait(FIle, Position, 1);</li>
@@ -1130,22 +1130,23 @@
 </ol>
 <p>上面的流程画出来。</p>
 <img data-src="/2020/08/25/MySQL%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%97%B6%E5%A4%84%E7%90%86%E8%BF%87%E6%9C%9F%E8%AF%BB%E7%9A%84%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88/%E8%BF%87%E6%9C%9F%E8%AF%BB4.png" class>
+
 <p>这里我们假设，这条select查询最多在从库上等待1秒。那么，如果1秒内master_pos_wait返回一个大于等于0的整数，就确保了从库上执行的这个查询结果一定包含了trx1的数据。</p>
 <p>步骤5到主库执行查询语句，是这类方案常用的退化机制。因为从库的延迟时间不可控，不能无限等待，所以如果等待超时，就应该放弃，然后到主库去查。</p>
 <p>你可能会说，如果所有的从库都延迟超过1秒了，那查询压力不就都跑到主库上了吗？确实是这样。</p>
 <p>但是，按照我们设定不允许过期读的要求，就只有两种选择，一种是超时放弃，一种是转到主库查询，具体怎么选择，就需要业务开发同学做好限流策略了。</p>
-<h3 id="gtid方案">GTID方案</h3>
-<p>如果你的数据库开启了GTID模式，对应的也有等待GTID的方案。</p>
+<h3 id="GTID方案"><a href="#GTID方案" class="headerlink" title="GTID方案"></a>GTID方案</h3><p>如果你的数据库开启了GTID模式，对应的也有等待GTID的方案。</p>
 <p>MySQL中同样提供了一个类似的命令：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> wait_for_executed_gtid_set(gtid_set, <span class="number">1</span>); </span><br></pre></td></tr></table></figure>
+
 <p>这条命令的逻辑是：</p>
-<ol type="1">
+<ol>
 <li>等待，直到这个库执行的事务中包含传入的gtid_set，返回0；</li>
 <li>超时返回1.</li>
 </ol>
 <p>在前面等位点的方案中，我们执行完事务后，还要主动去主库执行show master status。而MySQL 5.7.6版本开始，允许在执行完更新类事务后，把这个事务的GTID返回给客户端，这样等GTID的方案就可以减少一次查询。</p>
 <p>这时，等GTID的执行流程就变成了：</p>
-<ol type="1">
+<ol>
 <li>trx1事务更新完成后，从返回包直接获取这个事务的GTID，记为gtid1；</li>
 <li>选定一个从库执行查询语句；</li>
 <li>在从库上执行select wait_for_executed_gtid_set(gtid1, 1);</li>
@@ -1155,24 +1156,25 @@
 <p>跟等主库位点的方案一样，等待超时后时候直接到主库查询，需要业务开发同学来做限流考虑。</p>
 <p>我把这个流程图画出来。</p>
 <img data-src="/2020/08/25/MySQL%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%97%B6%E5%A4%84%E7%90%86%E8%BF%87%E6%9C%9F%E8%AF%BB%E7%9A%84%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88/%E8%BF%87%E6%9C%9F%E8%AF%BB5.png" class>
+
 <p>在上面的第一步中，trx1事务更新完成后，从返回包直接获取这个事务的GTID。问题是，怎么能够让MySQL在执行事务后，返回包中带上GTID呢？</p>
 <p>你只需要将参数session_track_gtids设置为OWN_GTID，然后通过API接口mysql_session_track_get_first从返回包解析出GTID的值即可。</p>
 <p>在专栏的第一篇文章中，我介绍mysql_reset_connection的时候，有同学留言问这类接口应该怎么使用。</p>
 <p>这里我再回答一下。其实，MySQL并没有提供这类接口的SQL用法，是提供给程序的API。</p>
 <p>比如，为了让客户端在事务提交后，返回的GTID能够在客户端显示出来，我对MySQL客户端代码做了点修改，如下所示：</p>
 <img data-src="/2020/08/25/MySQL%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%97%B6%E5%A4%84%E7%90%86%E8%BF%87%E6%9C%9F%E8%AF%BB%E7%9A%84%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88/%E8%BF%87%E6%9C%9F%E8%AF%BB6.png" class>
+
 <p>这样，就可以看到语句执行完成，显示出GTID的值。</p>
 <img data-src="/2020/08/25/MySQL%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%97%B6%E5%A4%84%E7%90%86%E8%BF%87%E6%9C%9F%E8%AF%BB%E7%9A%84%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88/%E8%BF%87%E6%9C%9F%E8%AF%BB7.png" class>
+
 <p>当然了，这只是一个例子。你要是用这个方案的时候，还是应该在你的客户端代码中调用mysql_session_track_get_first这个函数。</p>
-<h3 id="小结">小结</h3>
-<p>在今天这篇文章中，我跟你介绍了一主多从做读写分离时，可能碰到过期读的原因，以及几种应对的方案。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>在今天这篇文章中，我跟你介绍了一主多从做读写分离时，可能碰到过期读的原因，以及几种应对的方案。</p>
 <p>这几种方案中，有的方案看上去是做了妥协，有的方案看上去不那么靠谱儿，但都是有实际应用场景的，你需要根据业务需求选择。</p>
 <p>即使是最后等待位点和等待 GTID 这两个方案，虽然看上去比较靠谱儿，但仍然存在需要权衡的情况。如果所有的从库都延迟，那么请求就会全部落到主库上，这时候会不会由于压力突然增大，把主库打挂了呢？</p>
 <p>其实，在实际应用中，这几个方案是可以混合使用的。</p>
 <p>比如，先在客户端对请求做分类，区分哪些请求可以接受过期读，而哪些请求完全不能接受过期读；然后，对于不能接受过期读的语句，再使用等 GTID 或等位点的方案。</p>
 <p>但话说回来，过期读在本质上是由一写多读导致的。在实际应用中，可能会有别的不需要等待就可以水平扩展的数据库方案，但这往往是用牺牲写性能换来的，也就是需要在读性能和写性能中取权衡。</p>
-<h3 id="转载">转载</h3>
-<p>感谢丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NzYzNg==">专栏<i class="fa fa-external-link-alt"></i></span>，如转载参考有不妥，请通知我立即删除。</p>
+<h3 id="转载"><a href="#转载" class="headerlink" title="转载"></a>转载</h3><p>感谢丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NzYzNg==">专栏<i class="fa fa-external-link-alt"></i></span>，如转载参考有不妥，请通知我立即删除。</p>
 
       
     </div>
@@ -1253,58 +1255,101 @@
       
           <p>「被讨厌的勇气」真是一本好书，希望大家都能看一看。</p>
 <p>这里开始简单记录书中一些我认为很有意义的话。</p>
-<ol type="1">
-<li><p>阿德勒心理学就是勇气心理学，人不能缺乏”<strong>获得幸福的勇气</strong>“。</p></li>
-<li><p>人之所以不幸正是因为自己亲手选择了”不幸“，而不是因为生来就不幸。是因为你认为”不幸“对你自身而言是一种”善“。是因为你在不断地下着不改变自己生活方式的决心。即使人们有各种不满，但还是认为保持现状更加轻松、更能安心。</p></li>
+<ol>
+<li><p>阿德勒心理学就是勇气心理学，人不能缺乏”<strong>获得幸福的勇气</strong>“。</p>
+</li>
+<li><p>人之所以不幸正是因为自己亲手选择了”不幸“，而不是因为生来就不幸。是因为你认为”不幸“对你自身而言是一种”善“。是因为你在不断地下着不改变自己生活方式的决心。即使人们有各种不满，但还是认为保持现状更加轻松、更能安心。</p>
+</li>
 <li><p>哲人：是的。<strong>以自己的不幸为武器支配对方</strong>。通过诉说自己如何不幸、如何痛苦来让周围的人——比如家人或朋友——担心或束缚支配其言行。刚开始提到的那些闭门不出者就常常沉浸在以不幸为武器的优越感中。阿德勒甚至指出：”在我们的文化中，弱势其实非常强大而且具有特权。”</p>
 <p>青年：什么叫“弱势具有特权”？</p>
 <p>哲人：阿德勒说：“在我们的文化中，如果要问谁最强大，那答案也许是婴儿。婴儿其实总是处于支配而非被支配的地位。”婴儿就是通过其弱势的特点来支配大人。并且，婴儿因为弱势所以不受任何人的支配。</p>
 <p>青年：……根本没有这种观点。</p>
-<p>哲人：当然，负伤之人所说的“你无法体会我的心情”之类的话中也包含着一定的事实。谁都无法完全理解痛苦的当事人的心情。但是，只要把自己的不幸当作保持“特别”的武器来用，<strong>那人就会永远需要不幸</strong>。</p></li>
+<p>哲人：当然，负伤之人所说的“你无法体会我的心情”之类的话中也包含着一定的事实。谁都无法完全理解痛苦的当事人的心情。但是，只要把自己的不幸当作保持“特别”的武器来用，<strong>那人就会永远需要不幸</strong>。</p>
+</li>
 <li><p>哲人：<strong>健全的自卑感不是来自与别人的比较，而是来自与“理想的自己”的比较。</strong></p>
 <p>青年：但是……</p>
-<p>哲人：好吧，我们都不一样。性别、年龄、知识、经验、外貌，没有完全一样的人，我们应该积极地看待自己与别人的差异。但是，我们“<strong>虽然不同但是平等</strong>”。</p></li>
-<li><p><strong>可以把马带到水边，但不能强迫其喝水。基本上，一切人际关系矛盾都起因于对别人的课题妄加干涉或者自己的课题被别人妄加干涉。能够改变自己的只有自己。</strong>别人不是为了满足你的期待而活。即使是自己的孩子也不是为了满足父母的期待而活。</p></li>
-<li><p>关于自己的人生你能够做的就只有“<strong>选择自己认为最好的道路</strong>”。另一方面，<strong>别人如何评价你的选择，那是别人的课题，你根本无法左右</strong>。</p></li>
-<li><p><strong>不去干涉别人的课题也不让别人干涉自己的课题。</strong>这就是阿德勒心理学给出的具体而且可能彻底改变人际关系烦恼的具有划时代意义的观点。</p></li>
-<li><p><strong>毫不在意别人的评价、不害怕被别人讨厌、不追求被他人认可，如果不付出以上这些代价，那就无法贯彻自己的生活方式</strong>，也就是不能获得自由。</p></li>
-<li><p><strong>活在害怕关系破裂的恐惧之中，那是为他人而活的一种不自由的生活方式。</strong></p></li>
-<li><p><strong>不可以表扬也不可以批评</strong>，这就是阿德勒心理学的立场。</p></li>
-<li><p><strong>表扬这种行为含有“有能力者对没能力者所做的评价”这方面的特点。</strong></p></li>
-<li><p><strong>阿德勒心理学反对一切”纵向关系“，提倡把所有的人际关系都看作”横向关系“。</strong>在某种意义上，这可以说是阿德勒心理学的基本原理。</p></li>
-<li><p><strong>自卑感原本就是从纵向关系中产生的一种意识</strong>。只要能够对所有人都建立起”虽不同但平等“的横向关系，那就根本不会产生自卑情结。</p></li>
+<p>哲人：好吧，我们都不一样。性别、年龄、知识、经验、外貌，没有完全一样的人，我们应该积极地看待自己与别人的差异。但是，我们“<strong>虽然不同但是平等</strong>”。</p>
+</li>
+<li><p><strong>可以把马带到水边，但不能强迫其喝水。基本上，一切人际关系矛盾都起因于对别人的课题妄加干涉或者自己的课题被别人妄加干涉。能够改变自己的只有自己。</strong>别人不是为了满足你的期待而活。即使是自己的孩子也不是为了满足父母的期待而活。</p>
+</li>
+<li><p>关于自己的人生你能够做的就只有“<strong>选择自己认为最好的道路</strong>”。另一方面，<strong>别人如何评价你的选择，那是别人的课题，你根本无法左右</strong>。</p>
+</li>
+<li><p><strong>不去干涉别人的课题也不让别人干涉自己的课题。</strong>这就是阿德勒心理学给出的具体而且可能彻底改变人际关系烦恼的具有划时代意义的观点。</p>
+</li>
+<li><p><strong>毫不在意别人的评价、不害怕被别人讨厌、不追求被他人认可，如果不付出以上这些代价，那就无法贯彻自己的生活方式</strong>，也就是不能获得自由。</p>
+</li>
+<li><p><strong>活在害怕关系破裂的恐惧之中，那是为他人而活的一种不自由的生活方式。</strong></p>
+</li>
+<li><p><strong>不可以表扬也不可以批评</strong>，这就是阿德勒心理学的立场。</p>
+</li>
+<li><p><strong>表扬这种行为含有“有能力者对没能力者所做的评价”这方面的特点。</strong></p>
+</li>
+<li><p><strong>阿德勒心理学反对一切”纵向关系“，提倡把所有的人际关系都看作”横向关系“。</strong>在某种意义上，这可以说是阿德勒心理学的基本原理。</p>
+</li>
+<li><p><strong>自卑感原本就是从纵向关系中产生的一种意识</strong>。只要能够对所有人都建立起”虽不同但平等“的横向关系，那就根本不会产生自卑情结。</p>
+</li>
 <li><p>那么，人为什么会去干涉别人呢？其背后实际上也是一种纵向关系。<strong>正因为把人际关系看成纵向关系、把对方看得比自己低，所以才会去干涉。</strong>希望通过干涉行为把对方导向成自己希望的方向。这是坚信自己正确而对方错误。</p>
-<p>当然，这里的干涉就是操纵。命令孩子”好好学习“的父母就是个典型例子。也许本人是出于善意，但结果却是妄加干涉，因为这是想按照自己的意思去操纵对方。</p></li>
-<li><p><strong>阿德勒心理学把这种基于横向关系的援助称为”鼓励“。</strong></p></li>
-<li><p><strong>因为人会因为被表扬而形成”自己没能力“的信念。</strong></p></li>
-<li><p><strong>最重要的是不"评价"他人</strong>，评价性的语言是基于纵向关系的语言。如果是基于横向关系，那自然就会说出一些更加真诚地表示感谢、尊敬或者喜悦的话。</p></li>
-<li><p><strong>人在听到感谢之词的时候，就会知道自己能够对别人有所贡献。</strong></p></li>
-<li><p>例如，人样才能够获得“勇气”？阿德勒的简洁是：<strong>人只有在能够感觉到自己有价值的时候才可以获得勇气。</strong></p></li>
-<li><p><strong>人只有在可以体会到“我对共同体有用”的时候才能够感觉到自己的价值。</strong></p></li>
-<li><p>请不要用“行为”标准而是用“存在”标准去看待他人；不要用他人“做了什么”去判断，而应对其存在本身表示喜悦和感谢。</p></li>
-<li><p>关于共同体感觉问题，也有人向阿德勒本人提出过同样的疑问。当时，阿德勒的回答是这样的：<strong>“必须得有人开始。即使其他人不合作，那也跟你没关系。我的意见就是这样：应该由你来开始。不必去考虑他人是否合作。”</strong></p></li>
-<li><p><strong>如果你与某人建立起了纵向关系，那你就会不自觉地从“纵向”去把握所有的人际关系。</strong></p></li>
-<li><p>并不是说将任何人都变成朋友或者像对待朋友一样去对待每一个人，不是这样的，<strong>重要的是意识上的平等以及坚持自己应有的主张。</strong></p></li>
-<li><p><strong>上帝，请赐予我平静，去接受我无法改变的；给予我勇气，去改变我能改变的；赐我智慧，分辨这两者的区别。</strong></p></li>
-<li><p>是的，我们并不缺乏能力，只是缺乏“勇气”。一切都是“勇气”的问题。</p></li>
-<li><p><strong>在相信他人的时候不附加任何条件。</strong>即使没有足以构成信用的客观依据也依然相信，不考虑抵押之类的事情，无条件的相信。这就是信赖。</p></li>
-<li><p>你现在认为“无条件地信赖别人只会遭到背叛”。但是，决定背不背叛的不是你，那是他人的课题。<strong>你只需要考虑“我该怎么做”。</strong></p></li>
-<li><p>你现在一味地担心“被背叛”，也只关注因此受到的伤痛。但是，<strong>如果不敢去信赖别人，那最终就会与任何人都建立不了深厚的关系。</strong></p></li>
-<li><p><strong>他者贡献并不是舍弃“我”而为他人效劳，它反而是为了能够体会到“我”的价值而采取的一种手段。</strong></p></li>
-<li><p><strong>任何情况下都只是攻击我的“那个人”有问题，而绝不是“大家”的错。</strong></p></li>
-<li><p><strong>只不过是以工作为借口来逃避其他责任。</strong>本来家务、育儿、交友或兴趣应该全都给予关心，阿德勒不认可任何一方面突出的生活方式。</p></li>
-<li><p><strong>对人而言，最大的不幸就是不喜欢自己。</strong>对于这种现实，阿德勒准备了极其简单的回答——“我对共同体有益”或者“我对他人有用”这种想法就足以让人体会到自己的价值。</p></li>
+<p>当然，这里的干涉就是操纵。命令孩子”好好学习“的父母就是个典型例子。也许本人是出于善意，但结果却是妄加干涉，因为这是想按照自己的意思去操纵对方。</p>
+</li>
+<li><p><strong>阿德勒心理学把这种基于横向关系的援助称为”鼓励“。</strong></p>
+</li>
+<li><p><strong>因为人会因为被表扬而形成”自己没能力“的信念。</strong></p>
+</li>
+<li><p><strong>最重要的是不”评价”他人</strong>，评价性的语言是基于纵向关系的语言。如果是基于横向关系，那自然就会说出一些更加真诚地表示感谢、尊敬或者喜悦的话。</p>
+</li>
+<li><p><strong>人在听到感谢之词的时候，就会知道自己能够对别人有所贡献。</strong></p>
+</li>
+<li><p>例如，人样才能够获得“勇气”？阿德勒的简洁是：<strong>人只有在能够感觉到自己有价值的时候才可以获得勇气。</strong></p>
+</li>
+<li><p><strong>人只有在可以体会到“我对共同体有用”的时候才能够感觉到自己的价值。</strong></p>
+</li>
+<li><p>请不要用“行为”标准而是用“存在”标准去看待他人；不要用他人“做了什么”去判断，而应对其存在本身表示喜悦和感谢。</p>
+</li>
+<li><p>关于共同体感觉问题，也有人向阿德勒本人提出过同样的疑问。当时，阿德勒的回答是这样的：<strong>“必须得有人开始。即使其他人不合作，那也跟你没关系。我的意见就是这样：应该由你来开始。不必去考虑他人是否合作。”</strong></p>
+</li>
+<li><p><strong>如果你与某人建立起了纵向关系，那你就会不自觉地从“纵向”去把握所有的人际关系。</strong></p>
+</li>
+<li><p>并不是说将任何人都变成朋友或者像对待朋友一样去对待每一个人，不是这样的，<strong>重要的是意识上的平等以及坚持自己应有的主张。</strong></p>
+</li>
+<li><p><strong>上帝，请赐予我平静，去接受我无法改变的；给予我勇气，去改变我能改变的；赐我智慧，分辨这两者的区别。</strong></p>
+</li>
+<li><p>是的，我们并不缺乏能力，只是缺乏“勇气”。一切都是“勇气”的问题。</p>
+</li>
+<li><p><strong>在相信他人的时候不附加任何条件。</strong>即使没有足以构成信用的客观依据也依然相信，不考虑抵押之类的事情，无条件的相信。这就是信赖。</p>
+</li>
+<li><p>你现在认为“无条件地信赖别人只会遭到背叛”。但是，决定背不背叛的不是你，那是他人的课题。<strong>你只需要考虑“我该怎么做”。</strong></p>
+</li>
+<li><p>你现在一味地担心“被背叛”，也只关注因此受到的伤痛。但是，<strong>如果不敢去信赖别人，那最终就会与任何人都建立不了深厚的关系。</strong></p>
+</li>
+<li><p><strong>他者贡献并不是舍弃“我”而为他人效劳，它反而是为了能够体会到“我”的价值而采取的一种手段。</strong></p>
+</li>
+<li><p><strong>任何情况下都只是攻击我的“那个人”有问题，而绝不是“大家”的错。</strong></p>
+</li>
+<li><p><strong>只不过是以工作为借口来逃避其他责任。</strong>本来家务、育儿、交友或兴趣应该全都给予关心，阿德勒不认可任何一方面突出的生活方式。</p>
+</li>
+<li><p><strong>对人而言，最大的不幸就是不喜欢自己。</strong>对于这种现实，阿德勒准备了极其简单的回答——“我对共同体有益”或者“我对他人有用”这种想法就足以让人体会到自己的价值。</p>
+</li>
 <li><p>青年：您是说，只要有了共同体感觉认可欲求就会消失吗？</p>
-<p>哲人：会消失。<strong>不再需要他人的认可。</strong></p></li>
-<li><p>如果人生是一条线，那么人生规划就有可能。但是，我们的人生只是点的连续。<strong>计划式的人生不是有没有必要，而是根本不可能。</strong></p></li>
-<li><p>请你这样想。<strong>人生就像是在每一个瞬间不同旋转起舞的连续的刹那。</strong>并且，蓦然四顾时常常会惊觉：”已经来到这里了吗？“</p></li>
-<li><p>在舞蹈中，跳舞本身就是目的，最终会跳到哪里谁都不知道。当然，作为跳的结果最终会到达某个地方。因为一直在跳动所以不会停在原地。但是，<strong>并不存在目的地</strong>。</p></li>
-<li><p><strong>如果把强烈的聚光灯对准”此时此刻“，那就会既看不到过去也看不到未来。</strong></p></li>
-<li><p>过去发生了什么与你的”此时此刻“没有任何关系，未来会如何也不是”此时此刻“要考虑的问题。</p></li>
-<li><p>人生中最大的谎言就是不活在”此时此刻“。</p></li>
-<li><p>所以阿德勒再说了”并不存在普遍性的人生意义“之后还说：”<strong>人生意义是自己赋予自己的。</strong>“</p></li>
-<li><p>无论你过着怎么的刹那，即使有人讨厌你，<strong>只要没有迷失”他者贡献“这颗引导之星，那么你就不会迷失而且做什么都可以</strong>。即使被讨厌自己的人讨厌着也可以自由的生活。</p></li>
-<li><p><strong>世界不是靠他人改变而只能靠”我“来改变。</strong></p></li>
+<p>哲人：会消失。<strong>不再需要他人的认可。</strong></p>
+</li>
+<li><p>如果人生是一条线，那么人生规划就有可能。但是，我们的人生只是点的连续。<strong>计划式的人生不是有没有必要，而是根本不可能。</strong></p>
+</li>
+<li><p>请你这样想。<strong>人生就像是在每一个瞬间不同旋转起舞的连续的刹那。</strong>并且，蓦然四顾时常常会惊觉：”已经来到这里了吗？“</p>
+</li>
+<li><p>在舞蹈中，跳舞本身就是目的，最终会跳到哪里谁都不知道。当然，作为跳的结果最终会到达某个地方。因为一直在跳动所以不会停在原地。但是，<strong>并不存在目的地</strong>。</p>
+</li>
+<li><p><strong>如果把强烈的聚光灯对准”此时此刻“，那就会既看不到过去也看不到未来。</strong></p>
+</li>
+<li><p>过去发生了什么与你的”此时此刻“没有任何关系，未来会如何也不是”此时此刻“要考虑的问题。</p>
+</li>
+<li><p>人生中最大的谎言就是不活在”此时此刻“。</p>
+</li>
+<li><p>所以阿德勒再说了”并不存在普遍性的人生意义“之后还说：”<strong>人生意义是自己赋予自己的。</strong>“</p>
+</li>
+<li><p>无论你过着怎么的刹那，即使有人讨厌你，<strong>只要没有迷失”他者贡献“这颗引导之星，那么你就不会迷失而且做什么都可以</strong>。即使被讨厌自己的人讨厌着也可以自由的生活。</p>
+</li>
+<li><p><strong>世界不是靠他人改变而只能靠”我“来改变。</strong></p>
+</li>
 </ol>
 
       
