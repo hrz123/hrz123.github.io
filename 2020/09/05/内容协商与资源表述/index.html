@@ -248,76 +248,67 @@
 
       
         <p>HTTP协议全称是超文本传输协议，超文本也就是对应着我们的一个资源的一种表述，就是我们服务器端一个URI对应的一个页面，我们把它传输到客户端进行渲染显示，那么rest架构呢，也就是我们HTTP协议设计时所遵循的架构，它也是在描述资源状态的一种转移。由于我们一种资源对应着许多种状态，所以我们的客户端在接受我们资源表述的转移时需要进行一种协商。比如：一个来自中国的用户，在他的浏览器访问一个页面时可能得到的是一个中文页面。但是一个其他国家的用户，在用浏览器访问同一个URL时呢，获得的页面可能是用他的本国语言描述的。那么接下来这篇文章中，我们将介绍内容协商是怎样进行的。</p>
-<h3 id="内容协商">内容协商</h3>
-<p>每个URI指向的资源可以是任何事物，可以由多种不同的表述，例如一份文档可以有不同语言的翻译、不同的媒体格式、可以针对不同的浏览器提供不同的压缩编码等。（同一个URL可能会有很多种语言，比如法语、德语的不同的页面，也可以不同的方式比如说我们可以展示一个html的在页面上显示的格式，也可以直接展示为一个pdf的文档，那么由于我们的浏览器不同，浏览器所支持的压缩算法也是不一样的，而我们的html这种文本语言本身是有很大的压缩空间的，所以，我们既可以以gzip，也可以以br这种压缩方式。所以这就是一个URL对应着资源的许多种不同的表述。）</p>
-<h3 id="内容协商的两种方式">内容协商的两种方式</h3>
-<ul>
-<li>Proactive主动式内容协商：
-<ul>
+<h3 id="内容协商"><a href="#内容协商" class="headerlink" title="内容协商"></a>内容协商</h3><p>每个URI指向的资源可以是任何事物，可以由多种不同的表述，例如一份文档可以有不同语言的翻译、不同的媒体格式、可以针对不同的浏览器提供不同的压缩编码等。（同一个URL可能会有很多种语言，比如法语、德语的不同的页面，也可以不同的方式比如说我们可以展示一个html的在页面上显示的格式，也可以直接展示为一个pdf的文档，那么由于我们的浏览器不同，浏览器所支持的压缩算法也是不一样的，而我们的html这种文本语言本身是有很大的压缩空间的，所以，我们既可以以gzip，也可以以br这种压缩方式。所以这就是一个URL对应着资源的许多种不同的表述。）</p>
+<h3 id="内容协商的两种方式"><a href="#内容协商的两种方式" class="headerlink" title="内容协商的两种方式"></a>内容协商的两种方式</h3><ul>
+<li>Proactive主动式内容协商：<ul>
 <li>指由客户端先在请求头部提出需要的表述形式，而服务器根据这些请求头部提供特定的representation表述（这种主动式内容协商会有一个问题，就是服务器端可能会相对武断，因为它可能拿不到足够的信息）</li>
-</ul></li>
-<li>Reactive响应式内容协商：
-<ul>
-<li>指服务器返回300 Multiple Choices 或者 406 Not Acceptable，由客户端选择一种表述URI使用（再发起相应的请求）</li>
-</ul></li>
 </ul>
-<h3 id="proactive主动式内容协商">Proactive主动式内容协商</h3>
-<p>我们的请求中除了传递URL描述对应的资源以外，还要告诉我接受那种格式（Accept：text/*），我希望那种语言（accept-Language: en），接受哪种压缩的方式（Accept-Encoding：br, gzip ; q = 0.8）（Content-Type：text/html Content-Language: en Content-Encoding: br）</p>
-<h3 id="reactive响应式内容协商">Reactive响应式内容协商</h3>
-<p>服务器返回了一个列表，列表中是它认为合适的一种表述，通过300这样的响应码返回给客户端，而客户端对这个list中自行决定了一个比较合适的新的一个URL，再次访问服务器端，服务器端给到正确的表述。（有一个问题，RFC规范中没有明确的告诉Client应该依据怎样的规则，所以导致各大浏览器无法按照统一的策略去选择合适的响应表述给用户。所以响应式内容协商相对是很少使用的。）</p>
-<h3 id="常见的协商要素一">常见的协商要素（一）</h3>
-<ul>
+</li>
+<li>Reactive响应式内容协商：<ul>
+<li>指服务器返回300 Multiple Choices 或者 406 Not Acceptable，由客户端选择一种表述URI使用（再发起相应的请求）</li>
+</ul>
+</li>
+</ul>
+<h3 id="Proactive主动式内容协商"><a href="#Proactive主动式内容协商" class="headerlink" title="Proactive主动式内容协商"></a>Proactive主动式内容协商</h3><p>我们的请求中除了传递URL描述对应的资源以外，还要告诉我接受那种格式（Accept：text/*），我希望那种语言（accept-Language: en），接受哪种压缩的方式（Accept-Encoding：br, gzip ; q = 0.8）（Content-Type：text/html  Content-Language: en Content-Encoding: br）</p>
+<h3 id="Reactive响应式内容协商"><a href="#Reactive响应式内容协商" class="headerlink" title="Reactive响应式内容协商"></a>Reactive响应式内容协商</h3><p>服务器返回了一个列表，列表中是它认为合适的一种表述，通过300这样的响应码返回给客户端，而客户端对这个list中自行决定了一个比较合适的新的一个URL，再次访问服务器端，服务器端给到正确的表述。（有一个问题，RFC规范中没有明确的告诉Client应该依据怎样的规则，所以导致各大浏览器无法按照统一的策略去选择合适的响应表述给用户。所以响应式内容协商相对是很少使用的。）</p>
+<h3 id="常见的协商要素（一）"><a href="#常见的协商要素（一）" class="headerlink" title="常见的协商要素（一）"></a>常见的协商要素（一）</h3><ul>
 <li>质量因子q：内容的质量、可接受类型的优先级（非常常见，有两种主要的表达方式，第一个是表示内容的质量，我们现在可以想见，如果我们发起请求去获取一张图片，如果这张图片是一张高清图片的缩略图，让用户快速浏览用的，那么我们就可以做非常高的压缩比，那么这个时候的质量因子，就可以比较小。那么如果这个时候我们描述的是一张医学上的图片，那么这个图片中，我们的质量因子就要设的比较大，因为我们不能容忍对这张图片做大幅度的压缩，以使得我们损失了大量的细节。第二个则是表示我们可接受类型的优先级。</li>
-<li>媒体资源的MIME类型及质量因子
-<ul>
+<li>媒体资源的MIME类型及质量因子<ul>
 <li>Accept：text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</li>
 <li>Accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3</li>
-</ul></li>
 </ul>
-<h3 id="常见的协商要素二">常见的协商要素（二）</h3>
-<ul>
-<li>字符编码：由于UTF-8格式广为使用，Accept-Charset已被废弃
-<ul>
+</li>
+</ul>
+<h3 id="常见的协商要素（二）"><a href="#常见的协商要素（二）" class="headerlink" title="常见的协商要素（二）"></a>常见的协商要素（二）</h3><ul>
+<li>字符编码：由于UTF-8格式广为使用，Accept-Charset已被废弃<ul>
 <li>Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7</li>
-</ul></li>
-<li>内容编码：主要指压缩算法
-<ul>
+</ul>
+</li>
+<li>内容编码：主要指压缩算法<ul>
 <li>Accept-Encoding: gzip,deflate,br</li>
-</ul></li>
-<li>表述语言
-<ul>
+</ul>
+</li>
+<li>表述语言<ul>
 <li>Accept-Language:zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7</li>
 <li>Accept-Language:zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</li>
-</ul></li>
 </ul>
-<h3 id="国际化与本地化">国际化与本地化</h3>
-<ul>
-<li>internationalization（i18n，i和n间有18个字符）
-<ul>
+</li>
+</ul>
+<h3 id="国际化与本地化"><a href="#国际化与本地化" class="headerlink" title="国际化与本地化"></a>国际化与本地化</h3><ul>
+<li>internationalization（i18n，i和n间有18个字符）<ul>
 <li>指设计软件时，在不同的国家、地区可以不做逻辑实现层面的修改便能够以不同的语言显示</li>
-</ul></li>
-<li>localization（l10n，l和n间有10个字符）
-<ul>
+</ul>
+</li>
+<li>localization（l10n，l和n间有10个字符）<ul>
 <li>指内容协商时，根据请求中的语言及区域信息，选择特定的语言作为资源表述</li>
-</ul></li>
 </ul>
-<h3 id="资源表述的元数据头部">资源表述的元数据头部</h3>
-<ul>
-<li>媒体类型、编码
-<ul>
+</li>
+</ul>
+<h3 id="资源表述的元数据头部"><a href="#资源表述的元数据头部" class="headerlink" title="资源表述的元数据头部"></a>资源表述的元数据头部</h3><ul>
+<li>媒体类型、编码<ul>
 <li>content-type: text/html; charset=utf-8</li>
-</ul></li>
-<li>内容编码
-<ul>
-<li>content-encoding: gzip</li>
-</ul></li>
-<li>语言
-<ul>
-<li>Content-Language: de-DE, en-CA</li>
-</ul></li>
 </ul>
-<h3 id="小结">小结</h3>
-<p>内容协商将决定服务器端生成不同的HTTP包体传输给客户端。下一篇文章将介绍HTTP消息包体的传输方式。</p>
+</li>
+<li>内容编码<ul>
+<li>content-encoding: gzip</li>
+</ul>
+</li>
+<li>语言<ul>
+<li>Content-Language: de-DE, en-CA</li>
+</ul>
+</li>
+</ul>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>内容协商将决定服务器端生成不同的HTTP包体传输给客户端。下一篇文章将介绍HTTP消息包体的传输方式。</p>
 
     </div>
 
@@ -408,7 +399,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86"><span class="nav-number">1.</span> <span class="nav-text">内容协商</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">内容协商的两种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proactive%E4%B8%BB%E5%8A%A8%E5%BC%8F%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86"><span class="nav-number">3.</span> <span class="nav-text">Proactive主动式内容协商</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reactive%E5%93%8D%E5%BA%94%E5%BC%8F%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86"><span class="nav-number">4.</span> <span class="nav-text">Reactive响应式内容协商</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%8D%8F%E5%95%86%E8%A6%81%E7%B4%A0%E4%B8%80"><span class="nav-number">5.</span> <span class="nav-text">常见的协商要素（一）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%8D%8F%E5%95%86%E8%A6%81%E7%B4%A0%E4%BA%8C"><span class="nav-number">6.</span> <span class="nav-text">常见的协商要素（二）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BD%E9%99%85%E5%8C%96%E4%B8%8E%E6%9C%AC%E5%9C%B0%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">国际化与本地化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E8%A1%A8%E8%BF%B0%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E5%A4%B4%E9%83%A8"><span class="nav-number">8.</span> <span class="nav-text">资源表述的元数据头部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">9.</span> <span class="nav-text">小结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86"><span class="nav-number">1.</span> <span class="nav-text">内容协商</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">内容协商的两种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Proactive%E4%B8%BB%E5%8A%A8%E5%BC%8F%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86"><span class="nav-number">3.</span> <span class="nav-text">Proactive主动式内容协商</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reactive%E5%93%8D%E5%BA%94%E5%BC%8F%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86"><span class="nav-number">4.</span> <span class="nav-text">Reactive响应式内容协商</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%8D%8F%E5%95%86%E8%A6%81%E7%B4%A0%EF%BC%88%E4%B8%80%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">常见的协商要素（一）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%8D%8F%E5%95%86%E8%A6%81%E7%B4%A0%EF%BC%88%E4%BA%8C%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">常见的协商要素（二）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BD%E9%99%85%E5%8C%96%E4%B8%8E%E6%9C%AC%E5%9C%B0%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">国际化与本地化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E8%A1%A8%E8%BF%B0%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E5%A4%B4%E9%83%A8"><span class="nav-number">8.</span> <span class="nav-text">资源表述的元数据头部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">9.</span> <span class="nav-text">小结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -424,7 +415,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">124</span>
+          <span class="site-state-item-count">125</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
