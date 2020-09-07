@@ -185,6 +185,157 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/" class="post-title-link" itemprop="url">深入理解MySQL索引底层实现原理丨技术干货</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-24 23:19:54" itemprop="dateCreated datePublished" datetime="2020-07-24T23:19:54+08:00">2020-07-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-01 12:52:00" itemprop="dateModified" datetime="2020-08-01T12:52:00+08:00">2020-08-01</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="转载">转载：</h3>
+<p>https://zhuanlan.zhihu.com/p/77383599</p>
+<h2 id="一索引的本质">一、索引的本质</h2>
+<p><strong>MySQL官方对索引的定义为</strong>：索引（Index）是帮助MySQL高效获取数据的数据结构。提取句子主干，就可以得到索引的本质：索引是数据结构。</p>
+<p>我们知道，数据库查询是数据库的最主要功能之一。我们都希望查询数据的速度能尽可能的快，因此数据库系统的设计者会从查询算法的角度进行优化。最基本的查询算法当然是顺序查找（linear search），这种复杂度为O(n)的算法在数据量很大时显然是糟糕的，好在计算机科学的发展提供了很多更优秀的查找算法，例如二分查找（binary search）、二叉树查找（binary tree search）等。如果稍微分析一下会发现，每种查找算法都只能应用于特定的数据结构之上，例如二分查找要求被检索数据有序，而二叉树查找只能应用于二叉查找树上，但是数据本身的组织结构不可能完全满足各种数据结构（例如，理论上不可能同时将两列都按顺序进行组织），所以，在数据之外，数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法。这种数据结构，就是索引。</p>
+<p>看一个例子：</p>
+<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%861.jpg" class>
+<p>上图展示了一种可能的索引方式。左边是数据表，一共有两列七条记录，最左边的是数据记录的物理地址（注意逻辑上相邻的记录在磁盘上也并不是一定物理相邻的）。为了加快Col2的查找，可以维护一个右边所示的二叉查找树，每个节点分别包含索引键值和一个指向对应数据记录物理地址的指针，这样就可以运用二叉查找在O(log2n)的复杂度内获取到相应数据。</p>
+<p>虽然这是一个货真价实的索引，但是实际的数据库系统几乎没有使用二叉查找树或其进化品种红黑树（red-black tree）实现的，原因会在下文介绍。</p>
+<h2 id="二二叉排序树">二、二叉排序树</h2>
+<p>在介绍B树之前，先来看另一颗神奇的树——二叉排序树（Binary Sort Tree）。关于这棵树大家已经很熟悉了，我不多说了，看原文吧。</p>
+<ul>
+<li>若左子树不空，则左子树上所有节点的值均小于它的根节点的值</li>
+<li>若右子树不空，则右字数上所有节点的值均大于它的根节点的值</li>
+<li>它的左、右子树也分别为二叉排序数（递归定义）</li>
+</ul>
+<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%862.jpg" class>
+<p>从图中可以看出，二叉排序树组织数据时，用于查找是比较方便的，因为每次经过一次节点时，最多可以减少一半的可能，不过极端情况会出现所有节点都位于同一侧，直观上看就是一条直线，那么这种查询的效率就比较低了，因此需要对二叉树左右子树的高度进行平衡化处理，于是就有了平衡二叉树（Balenced Binary Tree）。</p>
+<p>所谓“平衡”，说的是这棵树的各个分支的高度是均匀的，它的左子树和右子树的高度之差绝对值小于1，这样就不会出现一条支路特别长的情况。于是，在这样的平衡树中进行查找时，总共比较节点的次数不超过树的高度，这就确保了查询的效率（时间复杂度为O(logn)）</p>
+<h2 id="三b树">三、B树</h2>
+<p>还是直接看图比较清楚，图中所示，B树事实上是一种平衡的多叉查找树，也就是说最多可以开m个叉（m&gt;=2)，我们称之为m阶B树，为了体现本博客的良心之处，不同于其他地方都能看到2阶B树，这里特意画了一棵5阶B树 。博主棒。</p>
+<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%863.jpg" class>
+<p>总的来说，m阶B树满足以下条件：</p>
+<ul>
+<li>每个节点至多可以拥有m棵子树</li>
+<li>根节点，至少有2个节点（要么极端情况，就是一棵树就一个根节点，单细胞生物，既是根，也是叶，也是树）。</li>
+<li>非根非叶的节点至少有Ceil(m/2)个子树（Ceil表示向上取整，图中5阶B树，每个节点至少有3个子树，也就是至少有3个叉）。</li>
+<li>非叶子节点中的信息包括[n, A0, K1, A1, K2, A2, ..., Kn, An]，其中n表示该节点中保存的关键字个数，K为关键字且Ki&lt;Ki+1，A为指向子树根节点的指针。</li>
+<li>从根到叶子的每一条路径都有相同的长度，也就是说，叶子节点在相同的层，并且这些节点不带信息，实际上这些节点就表示找不到指定的值，也就是指向这些节点的指针为空。</li>
+<li>B树的查询过程和二查排序树比较类似，从根节点依次比较每个节点，因为每个节点中的关键字和左右子树都是有序的，所以只要比较节点中的关键字，或者沿着指针就能很快的找到指定的关键字，如果查找失败，则会返回叶子节点，即空指针。</li>
+</ul>
+<p><strong>例如查询图中字母表中的K</strong>：</p>
+<ul>
+<li>从根节点P开始，K的位置在P之前，进入左侧指针</li>
+<li>左子树中，依次比较C、F、J、M，发现K在J和M之间。</li>
+<li>沿着J和M之间的指针，继续访问子树，并依次进行比较，发现第一个关键字K即为指定查找的值。</li>
+</ul>
+<p>B树搜索的简单伪代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">BTree_Search(node, key) &#123;</span><br><span class="line">    <span class="keyword">if</span>(node == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">foreach</span>(node.key)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(node.key[i] == key) <span class="keyword">return</span> node.data[i];</span><br><span class="line">        <span class="keyword">if</span>(node.key[i] &gt; key) <span class="keyword">return</span> BTree_Search(point[i]-&gt;node, key);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> BTree_Search(point[i+<span class="number">1</span>]-&gt;node, key);</span><br><span class="line">&#125;</span><br><span class="line">data = BTree_Search(root, my_key);</span><br></pre></td></tr></table></figure>
+<p><strong>B树的特点可以总结为如下：</strong></p>
+<ul>
+<li>关键字集合分布在整颗树中</li>
+<li>任何一个关键字出现且只出现在一个节点中</li>
+<li>搜索有可能在非叶子节点结束</li>
+<li>其搜索性能等价于在关键字集合内做一次二分查找</li>
+<li>B树的插入删除新的数据记录会破坏B-Tree的性质，因为在插入删除时，需要对树进行分裂、合并、转移等操作以保持B-Tree的性质。</li>
+</ul>
+<h2 id="四plus版-b树">四、Plus版-B+树</h2>
+<p>作为B树的加强版，B+树与B树的差异在于</p>
+<p>有n棵子树的节点含有n个关键字（也有人认为是n-1个关键字）。</p>
+<p>所有的关键字全部存储在叶子节点上，且叶子节点本身根据关键字自小而大顺序连接。</p>
+<p>非叶子节点可以看成索引部分，节点中仅包含有其子树（根节点）中的最大（最小）关键字。</p>
+<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%864.jpg" class>
+<p>B+树的查找过程，与B树类似，只不过查找时，如果在非叶子节点上的关键字等于给定值，并不终止，而是继续沿着指针直到叶子节点位置。因此在B+树中，不管查找成功与否，每次查找都是走了一条从根到叶子节点的路径。</p>
+<p><strong>B+树的特性如下：</strong></p>
+<ul>
+<li>所有关键字都存储在叶子节点上，且链表中的关键字恰好是有序的</li>
+<li>不可能非叶子节点命中返回</li>
+<li>非叶子节点相当于叶子节点的索引，叶子节点相当于是存储（关键字）数据的数据层。</li>
+<li>更适合文件索引系统</li>
+</ul>
+<h2 id="五带有顺序访问指针的btree">五、带有顺序访问指针的B+Tree</h2>
+<p>一般在数据库系统或文件系统中使用的B+Tree结构都在进店B+Tree的基础上进行了优化，增加了顺序访问指针，</p>
+<img data-src="/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%865.jpg" class>
+<p>如上图所示，在B+Tree的每个叶子节点增加一个指向相邻子节点的指针，就形成了带有顺序访问指针的B+Tree。做这个优化的目的是为了提高区间访问的性能，例如图4中如果要查询key为从18到49的所有数据记录，当找到18后，只需顺着节点和指针顺序遍历就可以一次性访问到所有数据节点，极大提高了取件查找效率。</p>
+<h2 id="六mysql为什么使用b树b树">六、MySQL为什么使用B树（B+树）</h2>
+<p>红黑树等数据结构也可以用来实现索引，但是文件系统以及数据库系统普遍采用B树或者B+树，这一节将结合计算机组成原理相关知识讨论B-/+Tree作为索引的理论基础。</p>
+<p>一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储在磁盘上。这样的话，索引查找过程中就要产生磁盘I/O消耗，相对于内存存取，I/O存取的消耗要高几个数量级，所以评价一个数据结构作为索引的优劣最重要的指标就是在查找过程中磁盘I/O操作次数的渐进复杂度。换句话说，索引的结构组织要尽量减少查找过程中磁盘I/O的存取次数。下面先介绍内存和磁盘存取原理，然后再结合这些原理分析B-/+Tree作为索引的效率。</p>
+<p>太长了，后面我总结一下</p>
+<ol type="1">
+<li>预读的长度一般为页（page）的整倍数。页是计算机管理存储器的逻辑块，硬件及操作系统往往将主存和磁盘存储区分割为连续的大小相等的块，每个存储块称为一页（在许多操作系统中，页得大小通常为4k），主存和磁盘以页为单位交换数据。当程序要读取的数据不在主存中时，会触发一个缺页异常，此时系统会向磁盘发出读盘信号，磁盘会找到数据的起始位置并向后连续读取一页或几页载入内存中，然后异常返回，程序继续运行。</li>
+<li>B-Tree巧妙地利用磁盘预读原理，将一个节点的大小设为等于一个页。每次新建节点时，直接申请一个页的空间，这样就保证一个节点物理上也存储在一个页里，加之计算机存储分配都是按页对齐的，就实现了一个node只需一次I/O。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/24/%E8%A7%A3%E5%86%B3%E5%8D%9A%E5%BC%88%E9%97%AE%E9%A2%98%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E9%80%9A%E7%94%A8%E6%80%9D%E8%B7%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1344,92 +1495,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/" class="post-title-link" itemprop="url">python实现Trie(字典树、前缀树)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-07-20 09:49:51 / 修改时间：10:18:31" itemprop="dateCreated datePublished" datetime="2020-07-20T09:49:51+08:00">2020-07-20</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/20/python%E5%AE%9E%E7%8E%B0Trie-%E5%AD%97%E5%85%B8%E6%A0%91%E3%80%81%E5%89%8D%E7%BC%80%E6%A0%91/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="wiki-百科上的介绍">wiki 百科上的介绍：</h2>
-<p>Trie，字典树，也叫前缀树。是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，尔根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和比分内部节点所对应的键才有相关的值。</p>
-<h2 id="应用">应用：</h2>
-<p>trie常用于搜索提示。如当输入一个网址，可以自动搜索出可能的选择。当没有完全匹配的搜索结果，可以返回前缀最相似的可能。</p>
-<h2 id="要实现的方法">要实现的方法</h2>
-<p>一般来讲trie要实现这么几个方法</p>
-<ul>
-<li>插入一个单词insert(word: str) -&gt; None</li>
-<li>查找一个单词是否在trie中search(word:str) -&gt; bool</li>
-<li>查找一个前缀是否在trie中startsWith(prefix:str) -&gt; bool</li>
-</ul>
-<h3 id="leetcode上的208题实现trie">leetcode上的208题<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvaW1wbGVtZW50LXRyaWUtcHJlZml4LXRyZWUv">实现trie<i class="fa fa-external-link-alt"></i></span></h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Initialize your data structure here.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.root = &#123;&#125;</span><br><span class="line">        self.end_of_word = <span class="string">&#x27;#&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">self, word: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Inserts a word into the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            node = node.setdefault(char, &#123;&#125;)</span><br><span class="line">        node[self.end_of_word] = self.end_of_word</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, word: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if the word is in the trie.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> word:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> self.end_of_word <span class="keyword">in</span> node</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">startsWith</span>(<span class="params">self, prefix: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        node = self.root</span><br><span class="line">        <span class="keyword">for</span> char <span class="keyword">in</span> prefix:</span><br><span class="line">            <span class="keyword">if</span> char <span class="keyword">not</span> <span class="keyword">in</span> node:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            node = node[char]</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-<p>通常情况下没有必要使用一个trie node表示一个trie的节点，存入hash表和是否是结尾。结尾可以用一个特殊字符代替，判断这个字符是否在hash表中。这样每一个节点其实都是一个hash表。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1501,7 +1566,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-count">122</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

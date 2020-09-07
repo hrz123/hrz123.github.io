@@ -185,6 +185,173 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/" class="post-title-link" itemprop="url">如何管理跨代理服务器的长短连接</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-05 11:19:46 / 修改时间：13:58:47" itemprop="dateCreated datePublished" datetime="2020-09-05T11:19:46+08:00">2020-09-05</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>HTTP的请求可以在长连接和短连接上执行。这篇文章介绍长连接和短连接的区别，以及如果客户端和源服务器之间有多个代理服务器，那么这些代理服务器会如何处理长连接。</p>
+<p>在我们谈HTTP的长连接和短连接的差别之前呢，我们先来看一下之前介绍过的HTTP连接的常见的一个流程。</p>
+<h3 id="http连接的常见流程">HTTP连接的常见流程</h3>
+<p>http://www.joes-hardware.com:80/power-tools.html</p>
+<ol type="1">
+<li>浏览器解析出主机名 www.joes-headware.com</li>
+<li>浏览器查询这个主机名的IP地址（DNS）202.43.78.3</li>
+<li>浏览器获得端口号（80）</li>
+<li>浏览器发起到202.43.78.3端口80的连接（TCP）</li>
+<li>浏览器向服务器发送一条HTTP GET报文（服务器必须在这个连接上立刻的返回一个响应，而不能去插播其他的响应）</li>
+<li>浏览器从服务器读取HTTP响应报文</li>
+<li>浏览器关闭连接</li>
+</ol>
+<p>这就是一个完整的请求的过程，也是一个短连接的流程。</p>
+<h3 id="从tcp编程上看http请求处理">从TCP编程上看HTTP请求处理</h3>
+<p>服务器：</p>
+<ol type="1">
+<li>创建新的套接字（socket）</li>
+<li>将套接字绑定到端口80上去（bind）</li>
+<li>允许套接字进行连接（listen）</li>
+<li>等待连接（accept)</li>
+<li>通知应用程序有连接到来</li>
+<li>开始读取请求（read）</li>
+<li>处理HTTP请求报文</li>
+<li>回送HTTP响应（write）</li>
+<li>关闭连接（close）</li>
+</ol>
+<p>客户端：</p>
+<ol type="1">
+<li>获取IP地址和端口号</li>
+<li>创建新的套接字（socket）</li>
+<li>连接到服务器IP：port上去（connect）</li>
+<li>连接成功</li>
+<li>发送HTTP请求（write）</li>
+<li>等待HTTP响应（read）</li>
+<li>处理HTTP响应</li>
+<li>关闭连接（close）</li>
+</ol>
+<img data-src="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/%E4%BB%8ETCP%E7%BC%96%E7%A8%8B%E4%B8%8A%E7%9C%8BHTTP%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86.png" class>
+<h3 id="短连接与长连接">短连接与长连接</h3>
+<p>我们先谈一个事务的概念，我们假定一个事务就是一个请求对应着一个响应。那么什么是短连接呢？就是从时间线上来看，每建立一个连接1，处理一个请求，得到一个响应以后，这个连接就关闭，然后处理事务2的时候，又发起请求2和响应2，连接2也接着关闭，那么这就是一个串行的一个短连接。什么叫长连接呢？现在客户端与服务器建立了一个连接，执行完第一个事务以后，我们又来执行第2个事务、第3个事务、第4个事务，一直执行在同一个连接上，那么这就叫做持久的长连接。长连接是由什么来决定的呢？因为并不是所有的浏览器和客户端都支持长连接，特别是现在有一些非常古老的服务器，是不支持长连接的，那么客户端和服务器需要去沟通，那么沟通是通过什么呢？就通过Connection这样一个头部。Connection头部如果添加了Keep-Alive这样的一个值的时候，就表示长连接的一个意思。如果是请求中携带了Connection: Keep-Alive表示客户端说我希望使用长连接，如果服务器端也支持场链接的话，它会回的响应中也添加Connection: Keep-Alive。那么接下来，我们就可以复用这个长连接，去发送请求了。</p>
+<ul>
+<li>Connection头部
+<ul>
+<li>Keep-Alive：长连接
+<ul>
+<li>客户端请求长连接
+<ul>
+<li>Connection：Keep-Alive</li>
+</ul></li>
+<li>服务器表示支持长连接
+<ul>
+<li>Connection：Keep-Alive</li>
+</ul></li>
+<li>客户端复用连接</li>
+<li>HTTP/1.1默认支持长连接
+<ul>
+<li>Connection: Keep-Alive无意义（所以传递它意义并不大）</li>
+</ul></li>
+</ul></li>
+<li>Close：短连接（如果我们明确地表示不支持长连接呢？特别是在HTTP/1.1中呢，我们可以加Connection：Close。就表示这将是一个短连接。</li>
+<li>（那么Connection除了表示长连接和短连接以外呢，它还有一个功能，就是对于Connection后面列出的头部，它表示的含义是对代理服务器有一些要求，就是代理服务器在转发这个请求的时候，请不要去转发我Connection中列出的头部）对代理服务器的要求
+<ul>
+<li>不转发Connection列出头部，该头部仅与当前连接相关（比如说Connection里面列出了一个Cookie，那么代理服务器转发给源服务器的时候就需要把Cookie这个头部给它去除掉）</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="connection仅针对当前连接有效">Connection仅针对当前连接有效</h3>
+<p>Connection如果中间有代理服务器的时候，其实Connection并不是表示对完整的一个链路上都要使用长连接，而它仅表示是对当前的TCP连接，也就是说我们客户端与代理服务器之间这条连接是使用长连接。客户端中Connection: Keep-Alive只是表示与第一个代理服务器之间使用长连接，代理服务器可能和反向代理服务器呢，是不想使用长连接的，比如说这个代理服务器是一个比较老的版本，直接发了一个Connection: Close。表示我与这个代理服务器不想使用长连接，而这个反向代理服务器和我们企业内网的比如说源服务器之间，都支持长连接，那么这个代理服务器发出一个Connection：Keep-Alive，而源服务器跟这个反向代理服务器告诉说Connection：Keep-Alive，那么它们俩之间就是用这个长连接了。而这个反向代理服务器和这个正向代理服务器之间呢，使用的就是短连接，而这个正向代理服务器，因为它不支持长连接，所以它告诉客户端说，虽然你跟我说需要使用Keep-Alive，但是我是不支持的，所以我返回了一个Connection：Close。</p>
+<p>这个场景中，主要是第一个正向代理服务器不支持长连接，但是它有一个优点，虽然我不支持，但是我认得Connection这个头部，我知道客户端说Keep-Alive时表示它想使用长连接，而接下来我不支持长连接，那么我给我的下游会传一个Connection: Close。如果这个代理服务器是一个非常古老的代理服务器，也就是我们Internet规模下确实存在可能非常古老的这样的代理服务器的场景，那么它其实是不认得Connection这个头部的，因为我们只有在HTTP/1.1协议中才引入了这个Connection头部，所以在它不认识的情况下呢，它会把它的Connection：Keep-Alive原封不动的传到上游去。当然它也不可能支持长连接。</p>
+<h3 id="代理服务器对长连接的支持">代理服务器对长连接的支持</h3>
+<ul>
+<li>问题：各方间错误使用了长连接
+<ul>
+<li>客户端发起长连接</li>
+<li>代理服务器陈旧，不能正确的处理请求的Connection头部，将客户端请求中的Connection:Keep-Alive原样转发给上游服务器</li>
+<li>上游服务器正确的处理了Connection头部，在发送响应后没有关闭连接，而试图保持、复用与不认长连接的代理服务器的连接</li>
+<li>代理服务器收到响应中Connection: Keep-Alive后不认，转发给客户端，同时等待服务器关闭短连接</li>
+<li>客户端收到了Connection：Keep-Alive，认为可以复用长连接，继续在该连接上发起请求</li>
+<li>代理服务器出错，因为短连接上不能发起两次请求</li>
+</ul></li>
+<li>Proxy-Connection
+<ul>
+<li>陈旧的代理服务器不识别该头部：退化为短连接</li>
+<li>新版本的代理服务器理解该头部
+<ul>
+<li>与客户端建立长连接</li>
+<li>与服务器使用Connection替代Proxy_connection头部</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="小结">小结</h3>
+<p>这篇文章介绍HTTP中的keep-alive长连接，长连接可以有效的减少TCP的握手次数，也在拥塞控制上能够提升我们的吞吐量，我们也介绍了如果在网络中，存在非常古老的代理服务器，是需要我们通过Proxy-Connection头部，来替换Connection头部，来完成长连接的处理。</p>
+<h3 id="参考">参考</h3>
+<p>陶辉老师Web协议详解与抓包实战https://time.geekbang.org/course/detail/100026801-94635</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/05/HTTP%E7%9A%84%E9%94%99%E8%AF%AF%E5%93%8D%E5%BA%94%E7%A0%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1158,86 +1325,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/03/%E7%A1%AE%E4%BF%9DWeb%E5%AE%89%E5%85%A8%E7%9A%84HTTPS/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/03/%E7%A1%AE%E4%BF%9DWeb%E5%AE%89%E5%85%A8%E7%9A%84HTTPS/" class="post-title-link" itemprop="url">确保Web安全的HTTPS</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-09-03 15:15:53 / 修改时间：15:22:39" itemprop="dateCreated datePublished" datetime="2020-09-03T15:15:53+08:00">2020-09-03</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/09/03/%E7%A1%AE%E4%BF%9DWeb%E5%AE%89%E5%85%A8%E7%9A%84HTTPS/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/03/%E7%A1%AE%E4%BF%9DWeb%E5%AE%89%E5%85%A8%E7%9A%84HTTPS/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>​ HTTP主要有这些不足，列举如下：</p>
-<ul>
-<li><p>通信使用明文（不加密），内容可能会被窃听</p></li>
-<li><p>不验证通信方的身份，因此有可能遭遇伪装</p></li>
-<li><p>无法证明报文的完整性，所以有可能已遭篡改</p></li>
-</ul>
-<p>这些问题不仅在HTTP上出现，其他未加密的协议中也会存在这类问题。</p>
-<p>除此之外，HTTP本身还有很多缺点。而且，还有像某些特定的Web服务器和特定的Web浏览器在实际应用中存在的不足（也可以说成是脆弱性或安全漏洞），另外，用Java和PHP等变成语言开发的Web应用也可能存在安全漏洞。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1309,7 +1396,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-count">122</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

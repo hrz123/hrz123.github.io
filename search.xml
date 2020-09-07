@@ -108,6 +108,54 @@
       </tags>
   </entry>
   <entry>
+    <title>HTTP的正确响应码（For Reference）</title>
+    <url>/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/</url>
+    <content><![CDATA[<p>100，200，300系列表示成功的响应码</p>
+<ul>
+<li>响应码规范：RFC6585（2012.4）、RFC7231（2014.6）</li>
+<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持
+<ul>
+<li>100 Continue：上传大文件前使用
+<ul>
+<li>由客户端发起请求中携带Expect 100-continue头部触发</li>
+</ul></li>
+<li>101 Switch Protocols：协议升级使用
+<ul>
+<li>由客户端发起请求中携带Upgrade：头部触发，如升级websocket或者http/2.0</li>
+</ul></li>
+<li>102 Processing：WebDAV请求可能包含许多涉及文件操作的子请求，需要很长时间才能完成请求。该代码表示服务器已经收到并正在处理请求，但无响应可用。这样可以防止客户端超时，并假设请求丢失</li>
+</ul></li>
+<li>2xx：成功处理请求
+<ul>
+<li>200 OK：成功返回了响应</li>
+<li>201 Created：有新资源在服务器端被成功创建</li>
+<li>202 Accepted：服务端接受并开始处理请求；但请求未处理完成。这样一个模糊的概念是有意如此设计，可以覆盖更多的场景。<strong>例如异步、需要长时间处理的任务。</strong>先给客户端返回202 Accept，而由异步的任务继续去处理这个任务。</li>
+<li>203 Non-Authoritative Information：当代理服务器修改了origin server的原始响应包体时（例如更换了HTML中的元素值），代理服务器可以通过修改200为203的方式告知客户端这一事实，方便客户端为这一行为做出相应的处理。203响应可以被缓存。203这个规范并不被广为接受。</li>
+<li>204 No Content：成功执行了请求且不携带响应包体，并暗示客户端无需更新当前的页面视图。（常见与我们用put等方法post等方法上传了一些资源但是返回的响应告诉不需要去刷新当前的URI等。）</li>
+<li>205 Reset Content：成功执行了请求且不携带响应包体，同时指明客户端需要更新当前页面视图。（比如说URI画图等，可能会遇到）</li>
+<li>206 Partial Content：（多线程断点续传下载都会使用到range协议）使用range协议时返回<strong>部分</strong>响应内容时的响应码</li>
+<li>207 Multi-Status：RFC4918，在WEBDAV协议中以XML返回多个资源的状态。（返回目录树的结构的时候，实际上是返回了很多个子目录及其相关的资源描述，那么这个时候我们其实有很多个响应码，那么207就是把这些响应作为一个响应的时候，那么这个响应码我们告诉客户端是207）</li>
+<li>208 Already Reported：RFC5842，为避免相同集合下资源在207响应码下重复上报，使用208可以使用父集合的响应码。</li>
+</ul></li>
+<li>3xx：重定向使用Location指向的资源或者缓存中的资源。在RFC2068中规定客户端重定向次数不应超过5次，以防止死循环。
+<ul>
+<li>300 Multiple Choices：资源有多种表述，通过300返回给客户端后其自行选择访问哪一种表述。由于缺乏明确的细节，300很少使用。</li>
+<li>301 Moved Permanently：资源永久性的重定向到另一个URL中。（浏览器可以对永久性的重定向直接缓存）</li>
+<li>302 Found：资源临时的重定向到另一个URL中。</li>
+<li>303 See Other：重定向到其他资源，常用语POST/PUT等方法的响应中。</li>
+<li>304 Not Modified：当客户端拥有可能过期的缓存时，会携带缓存的标识etag、时间等信息询问服务器缓存是否仍可复用，而304是告诉客户端可以复用缓存。</li>
+<li>307 Temporary Redirect：类似302，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
+<li>308 Permanent Redirect：类似301，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
+</ul></li>
+</ul>
+<h3 id="参考">参考</h3>
+<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HTTP消息在服务器端的路由</title>
     <url>/2020/09/05/HTTP%E6%B6%88%E6%81%AF%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E7%9A%84%E8%B7%AF%E7%94%B1/</url>
     <content><![CDATA[<p>在上一篇文章中，我们介绍了客户端如何与服务器建立起连接，那么这篇文章中，将介绍服务器接收到连接以后，又怎样把HTTP消息进行路由和处理的常规流程。这里重点将介绍HOST这个请求头部。</p>
@@ -167,54 +215,6 @@
       <tags>
         <tag>计算机网络</tag>
         <tag>HTTP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HTTP的正确响应码（For Reference）</title>
-    <url>/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/</url>
-    <content><![CDATA[<p>100，200，300系列表示成功的响应码</p>
-<ul>
-<li>响应码规范：RFC6585（2012.4）、RFC7231（2014.6）</li>
-<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持
-<ul>
-<li>100 Continue：上传大文件前使用
-<ul>
-<li>由客户端发起请求中携带Expect 100-continue头部触发</li>
-</ul></li>
-<li>101 Switch Protocols：协议升级使用
-<ul>
-<li>由客户端发起请求中携带Upgrade：头部触发，如升级websocket或者http/2.0</li>
-</ul></li>
-<li>102 Processing：WebDAV请求可能包含许多涉及文件操作的子请求，需要很长时间才能完成请求。该代码表示服务器已经收到并正在处理请求，但无响应可用。这样可以防止客户端超时，并假设请求丢失</li>
-</ul></li>
-<li>2xx：成功处理请求
-<ul>
-<li>200 OK：成功返回了响应</li>
-<li>201 Created：有新资源在服务器端被成功创建</li>
-<li>202 Accepted：服务端接受并开始处理请求；但请求未处理完成。这样一个模糊的概念是有意如此设计，可以覆盖更多的场景。<strong>例如异步、需要长时间处理的任务。</strong>先给客户端返回202 Accept，而由异步的任务继续去处理这个任务。</li>
-<li>203 Non-Authoritative Information：当代理服务器修改了origin server的原始响应包体时（例如更换了HTML中的元素值），代理服务器可以通过修改200为203的方式告知客户端这一事实，方便客户端为这一行为做出相应的处理。203响应可以被缓存。203这个规范并不被广为接受。</li>
-<li>204 No Content：成功执行了请求且不携带响应包体，并暗示客户端无需更新当前的页面视图。（常见与我们用put等方法post等方法上传了一些资源但是返回的响应告诉不需要去刷新当前的URI等。）</li>
-<li>205 Reset Content：成功执行了请求且不携带响应包体，同时指明客户端需要更新当前页面视图。（比如说URI画图等，可能会遇到）</li>
-<li>206 Partial Content：（多线程断点续传下载都会使用到range协议）使用range协议时返回<strong>部分</strong>响应内容时的响应码</li>
-<li>207 Multi-Status：RFC4918，在WEBDAV协议中以XML返回多个资源的状态。（返回目录树的结构的时候，实际上是返回了很多个子目录及其相关的资源描述，那么这个时候我们其实有很多个响应码，那么207就是把这些响应作为一个响应的时候，那么这个响应码我们告诉客户端是207）</li>
-<li>208 Already Reported：RFC5842，为避免相同集合下资源在207响应码下重复上报，使用208可以使用父集合的响应码。</li>
-</ul></li>
-<li>3xx：重定向使用Location指向的资源或者缓存中的资源。在RFC2068中规定客户端重定向次数不应超过5次，以防止死循环。
-<ul>
-<li>300 Multiple Choices：资源有多种表述，通过300返回给客户端后其自行选择访问哪一种表述。由于缺乏明确的细节，300很少使用。</li>
-<li>301 Moved Permanently：资源永久性的重定向到另一个URL中。（浏览器可以对永久性的重定向直接缓存）</li>
-<li>302 Found：资源临时的重定向到另一个URL中。</li>
-<li>303 See Other：重定向到其他资源，常用语POST/PUT等方法的响应中。</li>
-<li>304 Not Modified：当客户端拥有可能过期的缓存时，会携带缓存的标识etag、时间等信息询问服务器缓存是否仍可复用，而304是告诉客户端可以复用缓存。</li>
-<li>307 Temporary Redirect：类似302，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
-<li>308 Permanent Redirect：类似301，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
-</ul></li>
-</ul>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
       </tags>
   </entry>
   <entry>
@@ -302,6 +302,74 @@
       </tags>
   </entry>
   <entry>
+    <title>MySQL中的锁</title>
+    <url>/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
+    <content><![CDATA[<h2 id="全局锁表锁行锁间隙锁">全局锁、表锁、行锁、间隙锁。</h2>
+<h4 id="全局锁flush-tables-with-read-lock">全局锁：flush tables with read lock</h4>
+<h4 id="表级锁">表级锁：</h4>
+<ol type="1">
+<li>表锁：lock tables ... read/write</li>
+<li>MDL（metadata lock）：server层，增删改查DML语句添加读锁，修改表结构定义DDL语句加写锁。更加详细的可以看这个链接<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3EyODc4OTQ4L2FydGljbGUvZGV0YWlscy85NjQzMDEyOQ==">https://blog.csdn.net/q2878948/article/details/96430129<i class="fa fa-external-link-alt"></i></span></li>
+</ol>
+<p>间隙锁为了解决幻读，比较不同。</p>
+<p>比如行锁，分成读锁（共享锁）和写锁（排他锁）。下图就是这两种类型行锁的冲突关系。</p>
+<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/MySQL%E4%B8%AD%E7%9A%84%E9%94%81.png" class>
+<p>也就是说，跟行锁有冲突关系的是“另外一个行锁”。</p>
+<p>但是间隙锁不一样，<strong>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作</strong>。间隙锁之间都不存在冲突关系。</p>
+<p>这句话不太好理解，举个例子：</p>
+<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%812.png" class>
+<p>这里session B并不会被堵住，因为表t里并没有c=7这个记录，因此session A加的是间隙锁（5，10）。而session B也是在这个间隙加的间隙锁。它们有共同的目标，即：保护这个间隙，不允许插入值。但，它们之间不是冲突的。</p>
+<p>间隙锁和行锁合称 next-key lock，每个 next-key lock 是前开后闭区间。也就是说，我们的表 t 初始化以后，如果用 select * from t for update 要把整个表所有记录锁起来，就形成了 7 个 next-key lock，分别是 (-∞,0]、(0,5]、(5,10]、(10,15]、(15,20]、(20, 25]、(25, +supremum]。</p>
+<blockquote>
+<p>备注：这篇文章中，如果没有特别说明，我们把间隙锁记为开区间，把 next-key lock 记为前开后闭区间。</p>
+</blockquote>
+<p>你可能会问说，这个 supremum 从哪儿来的呢？</p>
+<p>这是因为 +∞是开区间。实现上，InnoDB 给每个索引加了一个不存在的最大值 supremum，这样才符合我们前面说的“都是前开后闭区间”。</p>
+<p><strong>间隙锁和next-key lock的引入，帮我们解决了幻读的问题，但同时也带来了一些“困扰”。</strong></p>
+<p>在前面的文章中，就用同学提到了这个问题。我把他的问题转述一下，对应到我们这个例子的表来说，业务逻辑是这样额：任意锁住一行，如果这一行不存在的话就插入，如果存在这一行就更新它的数据，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">begin;</span><br><span class="line">select * from t where id&#x3D;N for update;</span><br><span class="line"></span><br><span class="line">&#x2F;*如果行不存在*&#x2F;</span><br><span class="line">insert into t values(N,N,N);</span><br><span class="line">&#x2F;*如果行存在*&#x2F;</span><br><span class="line">update t set d&#x3D;N set id&#x3D;N;</span><br><span class="line"></span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
+<p>可能你会说，这个不是insert .. on duplicate key update 就能解决吗？但其实在有多个唯一键的时候，这个方法是不能满足这位提问同学的需求的。至于为什么，我会在后面的文章中再展开说明。</p>
+<p>现在，我们就只讨论这个逻辑。</p>
+<p>这个同学碰到的现象是，这个逻辑一旦有并发，就会碰到死锁。你一定也觉得奇怪，这个逻辑每次操作前用 for update 锁起来，已经是最严格的模式了，怎么还会有死锁呢？</p>
+<p>这里，我用两个 session 来模拟并发，并假设 N=9。</p>
+<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%813.png" class>
+<p>你看到了，其实都不需要用到后面的update语句，就已经形成死锁了。我们按语句执行顺序来分析一下：</p>
+<ol type="1">
+<li>session A执行select ... for update 语句，由于id=9这一行并不存在，因此会加上间隙锁（5，10；</li>
+<li>session B执行select ... for update 语句，同样会加上间隙锁（5，10），间隙锁之间不会冲突，因此这个语句可以执行成功；</li>
+<li>session B试图插入一行（9，9，9），被session A的间隙锁挡住了，只好进入等待；</li>
+<li>session A试图插入一行（9，9，9），被session B的间隙锁挡住了。</li>
+</ol>
+<p>至此，两个session进入互相等待的状态，形成死锁。当然，InnoDB的死锁检测马上就发现了这对死锁关系，让session A的insert语句返回了。</p>
+<p>你现在知道了，<strong>间隙锁的引入，可能会导致同样的语句锁住更大的范围，这其实是影响了并发度的</strong>。其实，这还只是一个简单的例子，在下一篇文章中我们还会碰到更多、更复杂的例子。</p>
+<p>你可能会说，为了解决幻读的问题，我们引入了这么一大串内容，有没有更简单一点的处理方法呢。</p>
+<p>今天和你分析的问题都是在可重复读隔离级别下的，间隙锁是在可重复读隔离级别下才会生效的。所以，你如果把隔离级别设置为读提交的话，就没有间隙锁了。但同时，你要解决可能出现的数据和日志不一致问题，需要把 binlog 格式设置为 row。这，也是现在不少公司使用的配置组合。</p>
+<p>比如说，大家都用读提交，可是逻辑备份的时候，mysqldump 为什么要把备份线程设置成可重复读呢？（这个我在前面的文章中已经解释过了，你可以再回顾下第 6 篇文章《全局锁和表锁 ：给表加个字段怎么有这么多阻碍？》的内容）</p>
+<p>然后，在备份期间，备份线程用的是可重复读，而业务线程用的是读提交。同时存在两种事务隔离级别，会不会有问题？</p>
+<p>进一步地，这两个不同的隔离级别现象有什么不一样的，关于我们的业务，“用读提交就够了”这个结论是怎么得到的？</p>
+<h2 id="加锁规则的经验总结">加锁规则的经验总结</h2>
+<p>首先说明一下，这些加锁规则我没在别的地方看到过有类似的总结，以前我自己判断的时候都是想着代码里面的实现来脑补的。这次为了总结成不看代码的同学也能理解的规则，是我又重新刷了代码临时总结出来的。所以，这个规则有以下两条前提说明：</p>
+<ol type="1">
+<li>MySQL 后面的版本可能会改变加锁策略，所以这个规则只限于截止到现在的最新版本，即 5.x 系列 &lt;=5.7.24，8.0 系列 &lt;=8.0.13。</li>
+<li>如果大家在验证中有发现 bad case 的话，请提出来，我会再补充进这篇文章，使得一起学习本专栏的所有同学都能受益。</li>
+</ol>
+<p>因为间隙锁在可重复读隔离级别下才有效，所以本篇文章接下来的描述，若没有特殊说明，默认是可重复读隔离级别。</p>
+<p><strong>我总结的加锁规则里面，包含了两个“原则”、两个“优化”和一个“bug”。</strong></p>
+<ol type="1">
+<li>原则 1：加锁的基本单位是 next-key lock。 next-key lock 是前开后闭区间。</li>
+<li>原则 2：查找过程中访问到的对象才会加锁。</li>
+<li>优化 1：索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。</li>
+<li>优化 2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</li>
+<li>一个 bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。</li>
+</ol>
+<h2 id="参考">参考</h2>
+<p>感谢丁奇老师的专栏，摘录部分，如有不妥，请通知我立即删除。https://time.geekbang.org/column/article/75659</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL事务隔离</title>
     <url>/2020/08/20/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/</url>
     <content><![CDATA[<h2 id="事务">事务</h2>
@@ -380,74 +448,6 @@
       </tags>
   </entry>
   <entry>
-    <title>MySQL中的锁</title>
-    <url>/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
-    <content><![CDATA[<h2 id="全局锁表锁行锁间隙锁">全局锁、表锁、行锁、间隙锁。</h2>
-<h4 id="全局锁flush-tables-with-read-lock">全局锁：flush tables with read lock</h4>
-<h4 id="表级锁">表级锁：</h4>
-<ol type="1">
-<li>表锁：lock tables ... read/write</li>
-<li>MDL（metadata lock）：server层，增删改查DML语句添加读锁，修改表结构定义DDL语句加写锁。更加详细的可以看这个链接<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3EyODc4OTQ4L2FydGljbGUvZGV0YWlscy85NjQzMDEyOQ==">https://blog.csdn.net/q2878948/article/details/96430129<i class="fa fa-external-link-alt"></i></span></li>
-</ol>
-<p>间隙锁为了解决幻读，比较不同。</p>
-<p>比如行锁，分成读锁（共享锁）和写锁（排他锁）。下图就是这两种类型行锁的冲突关系。</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/MySQL%E4%B8%AD%E7%9A%84%E9%94%81.png" class>
-<p>也就是说，跟行锁有冲突关系的是“另外一个行锁”。</p>
-<p>但是间隙锁不一样，<strong>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作</strong>。间隙锁之间都不存在冲突关系。</p>
-<p>这句话不太好理解，举个例子：</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%812.png" class>
-<p>这里session B并不会被堵住，因为表t里并没有c=7这个记录，因此session A加的是间隙锁（5，10）。而session B也是在这个间隙加的间隙锁。它们有共同的目标，即：保护这个间隙，不允许插入值。但，它们之间不是冲突的。</p>
-<p>间隙锁和行锁合称 next-key lock，每个 next-key lock 是前开后闭区间。也就是说，我们的表 t 初始化以后，如果用 select * from t for update 要把整个表所有记录锁起来，就形成了 7 个 next-key lock，分别是 (-∞,0]、(0,5]、(5,10]、(10,15]、(15,20]、(20, 25]、(25, +supremum]。</p>
-<blockquote>
-<p>备注：这篇文章中，如果没有特别说明，我们把间隙锁记为开区间，把 next-key lock 记为前开后闭区间。</p>
-</blockquote>
-<p>你可能会问说，这个 supremum 从哪儿来的呢？</p>
-<p>这是因为 +∞是开区间。实现上，InnoDB 给每个索引加了一个不存在的最大值 supremum，这样才符合我们前面说的“都是前开后闭区间”。</p>
-<p><strong>间隙锁和next-key lock的引入，帮我们解决了幻读的问题，但同时也带来了一些“困扰”。</strong></p>
-<p>在前面的文章中，就用同学提到了这个问题。我把他的问题转述一下，对应到我们这个例子的表来说，业务逻辑是这样额：任意锁住一行，如果这一行不存在的话就插入，如果存在这一行就更新它的数据，代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">begin;</span><br><span class="line">select * from t where id&#x3D;N for update;</span><br><span class="line"></span><br><span class="line">&#x2F;*如果行不存在*&#x2F;</span><br><span class="line">insert into t values(N,N,N);</span><br><span class="line">&#x2F;*如果行存在*&#x2F;</span><br><span class="line">update t set d&#x3D;N set id&#x3D;N;</span><br><span class="line"></span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
-<p>可能你会说，这个不是insert .. on duplicate key update 就能解决吗？但其实在有多个唯一键的时候，这个方法是不能满足这位提问同学的需求的。至于为什么，我会在后面的文章中再展开说明。</p>
-<p>现在，我们就只讨论这个逻辑。</p>
-<p>这个同学碰到的现象是，这个逻辑一旦有并发，就会碰到死锁。你一定也觉得奇怪，这个逻辑每次操作前用 for update 锁起来，已经是最严格的模式了，怎么还会有死锁呢？</p>
-<p>这里，我用两个 session 来模拟并发，并假设 N=9。</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%813.png" class>
-<p>你看到了，其实都不需要用到后面的update语句，就已经形成死锁了。我们按语句执行顺序来分析一下：</p>
-<ol type="1">
-<li>session A执行select ... for update 语句，由于id=9这一行并不存在，因此会加上间隙锁（5，10；</li>
-<li>session B执行select ... for update 语句，同样会加上间隙锁（5，10），间隙锁之间不会冲突，因此这个语句可以执行成功；</li>
-<li>session B试图插入一行（9，9，9），被session A的间隙锁挡住了，只好进入等待；</li>
-<li>session A试图插入一行（9，9，9），被session B的间隙锁挡住了。</li>
-</ol>
-<p>至此，两个session进入互相等待的状态，形成死锁。当然，InnoDB的死锁检测马上就发现了这对死锁关系，让session A的insert语句返回了。</p>
-<p>你现在知道了，<strong>间隙锁的引入，可能会导致同样的语句锁住更大的范围，这其实是影响了并发度的</strong>。其实，这还只是一个简单的例子，在下一篇文章中我们还会碰到更多、更复杂的例子。</p>
-<p>你可能会说，为了解决幻读的问题，我们引入了这么一大串内容，有没有更简单一点的处理方法呢。</p>
-<p>今天和你分析的问题都是在可重复读隔离级别下的，间隙锁是在可重复读隔离级别下才会生效的。所以，你如果把隔离级别设置为读提交的话，就没有间隙锁了。但同时，你要解决可能出现的数据和日志不一致问题，需要把 binlog 格式设置为 row。这，也是现在不少公司使用的配置组合。</p>
-<p>比如说，大家都用读提交，可是逻辑备份的时候，mysqldump 为什么要把备份线程设置成可重复读呢？（这个我在前面的文章中已经解释过了，你可以再回顾下第 6 篇文章《全局锁和表锁 ：给表加个字段怎么有这么多阻碍？》的内容）</p>
-<p>然后，在备份期间，备份线程用的是可重复读，而业务线程用的是读提交。同时存在两种事务隔离级别，会不会有问题？</p>
-<p>进一步地，这两个不同的隔离级别现象有什么不一样的，关于我们的业务，“用读提交就够了”这个结论是怎么得到的？</p>
-<h2 id="加锁规则的经验总结">加锁规则的经验总结</h2>
-<p>首先说明一下，这些加锁规则我没在别的地方看到过有类似的总结，以前我自己判断的时候都是想着代码里面的实现来脑补的。这次为了总结成不看代码的同学也能理解的规则，是我又重新刷了代码临时总结出来的。所以，这个规则有以下两条前提说明：</p>
-<ol type="1">
-<li>MySQL 后面的版本可能会改变加锁策略，所以这个规则只限于截止到现在的最新版本，即 5.x 系列 &lt;=5.7.24，8.0 系列 &lt;=8.0.13。</li>
-<li>如果大家在验证中有发现 bad case 的话，请提出来，我会再补充进这篇文章，使得一起学习本专栏的所有同学都能受益。</li>
-</ol>
-<p>因为间隙锁在可重复读隔离级别下才有效，所以本篇文章接下来的描述，若没有特殊说明，默认是可重复读隔离级别。</p>
-<p><strong>我总结的加锁规则里面，包含了两个“原则”、两个“优化”和一个“bug”。</strong></p>
-<ol type="1">
-<li>原则 1：加锁的基本单位是 next-key lock。 next-key lock 是前开后闭区间。</li>
-<li>原则 2：查找过程中访问到的对象才会加锁。</li>
-<li>优化 1：索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。</li>
-<li>优化 2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</li>
-<li>一个 bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。</li>
-</ol>
-<h2 id="参考">参考</h2>
-<p>感谢丁奇老师的专栏，摘录部分，如有不妥，请通知我立即删除。https://time.geekbang.org/column/article/75659</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MySQL如何正确地显示随机消息？ </title>
     <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
     <content><![CDATA[<p>先说结论</p>
@@ -477,6 +477,18 @@
 ]]></content>
       <tags>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -613,18 +625,6 @@
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -829,15 +829,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Python实现重试机制</title>
-    <url>/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># retry_decorator.py</span></span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">interval, max_retries=<span class="number">3</span>, exceptions=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    res = func(*args, **kwargs)</span><br><span class="line">                    <span class="keyword">return</span> res</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            res = func(*args, **kwargs)</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">max_retries=<span class="number">3</span>, exceptions=None, interval=<span class="number">0</span></span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">            <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@retry(interval=0.5)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_func</span>():</span></span><br><span class="line">    <span class="keyword">global</span> i</span><br><span class="line">    i += <span class="number">1</span></span><br><span class="line">    print(i)</span><br><span class="line">    <span class="keyword">raise</span> Exception</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    my_func()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Python的方法解析顺序(MRO)</title>
     <url>/2020/08/30/Python%E7%9A%84%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F-MRO/</url>
     <content><![CDATA[<h3 id="参考">参考</h3>
@@ -846,6 +837,15 @@
 </ul>
 <p>对于支持继承的编程语言来说，其方法（属性）可能定义在当前类，也可能来自于基类，所以在方法调用时就需要对当前类和基类进行搜索以确定方法所在的位置。而搜索的顺序就是所谓的「方法解析顺序」（Method Resolution Order，或MRO）。对于只支持单继承的语言来说，MRO 一般比较简单；而对于 Python 这种支持多继承的语言来说，MRO 就复杂很多。</p>
 <p>先看一个「菱形继承」的例子：</p>
+]]></content>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python实现重试机制</title>
+    <url>/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># retry_decorator.py</span></span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">interval, max_retries=<span class="number">3</span>, exceptions=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    res = func(*args, **kwargs)</span><br><span class="line">                    <span class="keyword">return</span> res</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            res = func(*args, **kwargs)</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">max_retries=<span class="number">3</span>, exceptions=None, interval=<span class="number">0</span></span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">            <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@retry(interval=0.5)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_func</span>():</span></span><br><span class="line">    <span class="keyword">global</span> i</span><br><span class="line">    i += <span class="number">1</span></span><br><span class="line">    print(i)</span><br><span class="line">    <span class="keyword">raise</span> Exception</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    my_func()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>Python</tag>
@@ -1890,6 +1890,40 @@
       </tags>
   </entry>
   <entry>
+    <title>从网络原理来看SSL安全协议</title>
+    <url>/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[<p>网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。</p>
+<p>SSL的全称是（secure sockets layer），而现在我们很多时候在使用TLS（transport layer security）。我们简单看一下它的发展过程。</p>
+<p>SSL协议是由网景公司在1995年推出的，那么在3.0获得了一个非常大的一个发展，但是接下来，微软把它的ie浏览器捆绑windows，一起卖出以后呢。导致网景遇到了很大的一个困境，网景在把SSL协议交给IETF组织以后呢，在1999年，应微软的要求，IETF把SSL改名为TLS1.0。后面在06年、08年到18年，TLS分别发展了1.1，1.2，1.3协议。那么TLS协议，究竟是怎样保证HTTP的明文消息被加密的呢？我们可以看一下TLS的通用模型，在OSI七层模型中，应用层是HTTP协议，那么HTTP协议之下，我们的表示层，也就是SSL协议所发挥作用的这一层，它通过握手、交换密钥、告警、对称加密的方式，使HTTP层没有感知的情况下，做到了数据的安全加密。那么TLS究竟是怎样做到了数据的安全加密的呢？</p>
+<p>我们可以看一下TLS的安全密码套件。当我们抓包，或者观察服务器端的配置时，我们可以看到类似于这张图中的这样的一个配置。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</span><br></pre></td></tr></table></figure>
+<p>这个安全密码的配置呢，它决定了我们的TLS协议是怎样保证明文被加密的。</p>
+<p>这里大概有四个组成部分，第一个组成部分叫密钥交换，也就是ECDHE，这实际上是一个椭圆曲线加密算法的表达，密钥交换是为了解决浏览器和服务器之间是怎样各自独立的生成密钥，而最后生成的密钥，是相同的。接下来它们会用这个密钥去加密数据，那么在密钥交换这个过程中呢，我们需要去让各自双方去验证对方的身份，而验证身份，是需要一个算法，而这个算法叫RSA。它用于身份验证。接下来我们执行数据加密解密这样的通讯的时候呢，我们需要用到对称加密算法，而对称加密算法AES_128_GCM就是表达这样的一个对称加密算法，其中第一个部分AES它表达了是怎样一种算法，第二个部分128它表示了AES算法里支持了三种加密强度，那么我们使用了128位这样的一个加密强度。那么AES中，它有很多分组模式，其中GCM是比较新的一种分组模式，它可以提高多核CPU情况下加密和解密的一个性能。SSA256是一个摘要算法，它用来把不定长度的字符串，生成固定长度的更短的一个摘要。</p>
+<p>那么，以上是TLS算法的一个概要介绍。之后我们再来看一下对称加密算法和非对称加密算法有什么不同。</p>
+<p>在对称加密这样的一个场景中，是两个想要通信的人bob和alice共同持有同一把密钥，那么bob可以把原始明文的文档通过这一把密钥加密生成一个密文文档，而alice拿到这个密文文档以后呢，他用这把密钥还原，转化为原始的明文文档，而中间的任何人，如果没有持有这把密钥，即使他知道了对称加密的算法，他也没有办法把密文还原成原始文档，对称加密究竟是怎么实现的呢？</p>
+<p>我们可以以RC4这样一个对称加密的序列算法，来看一下。</p>
+<p>1010 密钥序列（共同持有密钥）</p>
+<p>异或</p>
+<p>0110 明文</p>
+<p>等于</p>
+<p>1100 密文</p>
+<p>异或有一个对称的特性。</p>
+<p>对称加密，性能非常的好，加密解密都只需要遍历一次。</p>
+<p>而非对称加密性能就会差很多。</p>
+<p>我们看一下非对称加密的算法，它根据一个数学原理啊，它会生成一对密钥。这一对密钥中，如果我们称其中的一个叫做公钥，那么另一个就叫做私钥，那么公钥和私钥有什么特性呢，就是同一份明文文档，如果用公钥加密，如果用公钥加密，那么只有用私钥才能解密，同样的道理，如果文档用私钥加密了，用公钥才能解密，可能大家有些疑惑。那么我们来说一下具体的场景。</p>
+<p>比如说alice他有一对公钥和私钥，那么他就可以把他的公钥发布给大家，比如bob是其中一个人，他拿到了alice的公钥，那么这个时候的加密操作是怎么做的呢？比如bob如果想传递一份原始文档给alice，那么bob就拿到alice的公钥，对于原始文档进行加密，把密文再发送给alice，alice拿他的私钥才能进行解密，其他人用了公钥以后都没有办法解密。那么公钥和私钥还有第二种用法，就是身份验证，比如现在有一段信息，alice用他的私钥，进行了加密，然后把密文发给了bob或者任何人，只要bob拿到了alice的公钥，因为公钥本身就是公开的，那么用公钥能成功的解开这段密文，就证明这段密文确实是由alice发出的，这为我们接下来TLS的密钥交换算法提供了基本的签名保障。</p>
+<p>以上就是对称加密和非对称加密的基本原理。</p>
+<p>SSL证书的公信力</p>
+<p>在之前的加密过程中，我们谈到了Alice和bob中间进行通信，但其实它们有一个前提条件，alice必须知道，bob就是bob，也就是他收到的信息，必须是bob发来的。那么这样的一个新的问题，在多方通信的过程中，必须有一个公信机构，这样的一个机构就是CA机构。接下里我们就来看看CA是怎么样颁发证书以及怎么样让证书过期的。</p>
+<p>那么，CA就是CA机构，我们作为一个站点的维护者，我们就是一个证书的订阅人，首先我们必须去申请一个证书，为了申请这个证书，我们可能必要登记，我是谁，我属于什么组织，我想做什么。到了登记机构，通过CSR（request certificate issuance, CSR）发给CA，那么CA中心通过以后呢，它会去生成一对公钥和私钥，那么公钥会在CA的证书之内保存着呢，私钥证书订阅人拿到以后，就会把它部署到自己的web服务器中，比如说nginx。当浏览器通过第一步，访问我们的https站点的时候，那么它会去请求我们的证书，而nginx这样的web服务器，会把我们的公钥证书发给我们的浏览器，而浏览器需要去验证我们的证书是不是合法有效的，但是如果我们用lets encrypt我们会发现，这个证书只有三个月的有效期，如果通过大部分其他SSL CA这样的颁发证书，一般是一年的有效期，那么这个有效期是怎样体现的呢？那么CA中心会把过期的证书放到CRL服务器，这个服务器会把所有过期的证书形成一条链条，所以它的性能非常的差。所以它又推出了一个OCSP程序，OCSP可以就一个证书去查询它是否过期。所以浏览器是可以去直接去查询OCSP响应程序的。但OCSP性能还不是很高，所以往往，比如我们的nginx，会有一个OCSP的开关，当我们打开开关以后，会由nginx主动的去OCSP去查询，这样大量的客户端就可以直接从nginx获取到证书是否有效。</p>
+<p>那么证书究竟是怎样组成的呢？接下来，我们看一下证书究竟有哪几种类型。第一种证书叫做域名验证DV，也就是说这个整数，它只会去验证我们域名的归属是否正确。比如我们在lets encrypt申请证书的时候会发现。只要你的域名指向的服务器是你正在申请证书的服务器，那你就可以成功的申请到证书。如果你使用其他的一些CA机构颁发的一些证书，可能会去验证你注册的那个邮箱是否正确。第二种证书叫做组织验证，OV验证证书，组织验证呢就是我们在申请证书的时候会去验证我们填写的机构企业名称是否是正确的，所以OV证书的申请往往需要几天的时间，不像DV证书，基本上实时就可以获取到了。而OV证书他的价格，也要远远高于DV证书。DV证书很多都是免费的。那么，比OV证书做了更严格的验证，就是扩展验证EV证书，因为EV证书做了更严格的验证，所以大部分浏览器会对EV证书的显示非常的友好，它会把我们申请证书时所填写的机构名称，在浏览器的地址栏中的，最左侧显示出来。而对DV或者OV证书，浏览器是没有这个优待的。</p>
+<p>那么，我们获取到这样的证书之后，究竟是怎样生效的呢？浏览器实际上从安全角度来说对DVOV或者EV证书，它的效果是一样的。</p>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>从五种架构风格推导出HTTP的REST架构</title>
     <url>/2020/09/04/%E4%BB%8E%E4%BA%94%E7%A7%8D%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC%E6%8E%A8%E5%AF%BC%E5%87%BAHTTP%E7%9A%84REST%E6%9E%B6%E6%9E%84/</url>
     <content><![CDATA[<p>在分布式的Web架构中呢，有5类架构风格。那么什么叫架构风格呢？我们在日常编程中可能会有习惯用法，再高一级在面向对象语言中呢，可能会有设计模式，那么再往上更大粒度的抽象我们可以用到架构。而架构风格是指某一类架构它们具有相同的或者说类似的一些约束，我们把它归纳为一类架构风格。那么我们rest架构，也就是HTTP设计所遵循的这样的架构会使用到我们下面的，或者说参考我们下列5类架构风格中的其中一些架构。</p>
@@ -2041,37 +2075,12 @@
       </tags>
   </entry>
   <entry>
-    <title>从网络原理来看SSL安全协议</title>
-    <url>/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/</url>
-    <content><![CDATA[<p>网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。</p>
-<p>SSL的全称是（secure sockets layer），而现在我们很多时候在使用TLS（transport layer security）。我们简单看一下它的发展过程。</p>
-<p>SSL协议是由网景公司在1995年推出的，那么在3.0获得了一个非常大的一个发展，但是接下来，微软把它的ie浏览器捆绑windows，一起卖出以后呢。导致网景遇到了很大的一个困境，网景在把SSL协议交给IETF组织以后呢，在1999年，应微软的要求，IETF把SSL改名为TLS1.0。后面在06年、08年到18年，TLS分别发展了1.1，1.2，1.3协议。那么TLS协议，究竟是怎样保证HTTP的明文消息被加密的呢？我们可以看一下TLS的通用模型，在OSI七层模型中，应用层是HTTP协议，那么HTTP协议之下，我们的表示层，也就是SSL协议所发挥作用的这一层，它通过握手、交换密钥、告警、对称加密的方式，使HTTP层没有感知的情况下，做到了数据的安全加密。那么TLS究竟是怎样做到了数据的安全加密的呢？</p>
-<p>我们可以看一下TLS的安全密码套件。当我们抓包，或者观察服务器端的配置时，我们可以看到类似于这张图中的这样的一个配置。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</span><br></pre></td></tr></table></figure>
-<p>这个安全密码的配置呢，它决定了我们的TLS协议是怎样保证明文被加密的。</p>
-<p>这里大概有四个组成部分，第一个组成部分叫密钥交换，也就是ECDHE，这实际上是一个椭圆曲线加密算法的表达，密钥交换是为了解决浏览器和服务器之间是怎样各自独立的生成密钥，而最后生成的密钥，是相同的。接下来它们会用这个密钥去加密数据，那么在密钥交换这个过程中呢，我们需要去让各自双方去验证对方的身份，而验证身份，是需要一个算法，而这个算法叫RSA。它用于身份验证。接下来我们执行数据加密解密这样的通讯的时候呢，我们需要用到对称加密算法，而对称加密算法AES_128_GCM就是表达这样的一个对称加密算法，其中第一个部分AES它表达了是怎样一种算法，第二个部分128它表示了AES算法里支持了三种加密强度，那么我们使用了128位这样的一个加密强度。那么AES中，它有很多分组模式，其中GCM是比较新的一种分组模式，它可以提高多核CPU情况下加密和解密的一个性能。SSA256是一个摘要算法，它用来把不定长度的字符串，生成固定长度的更短的一个摘要。</p>
-<p>那么，以上是TLS算法的一个概要介绍。之后我们再来看一下对称加密算法和非对称加密算法有什么不同。</p>
-<p>在对称加密这样的一个场景中，是两个想要通信的人bob和alice共同持有同一把密钥，那么bob可以把原始明文的文档通过这一把密钥加密生成一个密文文档，而alice拿到这个密文文档以后呢，他用这把密钥还原，转化为原始的明文文档，而中间的任何人，如果没有持有这把密钥，即使他知道了对称加密的算法，他也没有办法把密文还原成原始文档，对称加密究竟是怎么实现的呢？</p>
-<p>我们可以以RC4这样一个对称加密的序列算法，来看一下。</p>
-<p>1010 密钥序列（共同持有密钥）</p>
-<p>异或</p>
-<p>0110 明文</p>
-<p>等于</p>
-<p>1100 密文</p>
-<p>异或有一个对称的特性。</p>
-<p>对称加密，性能非常的好，加密解密都只需要遍历一次。</p>
-<p>而非对称加密性能就会差很多。</p>
-<p>我们看一下非对称加密的算法，它根据一个数学原理啊，它会生成一对密钥。这一对密钥中，如果我们称其中的一个叫做公钥，那么另一个就叫做私钥，那么公钥和私钥有什么特性呢，就是同一份明文文档，如果用公钥加密，如果用公钥加密，那么只有用私钥才能解密，同样的道理，如果文档用私钥加密了，用公钥才能解密，可能大家有些疑惑。那么我们来说一下具体的场景。</p>
-<p>比如说alice他有一对公钥和私钥，那么他就可以把他的公钥发布给大家，比如bob是其中一个人，他拿到了alice的公钥，那么这个时候的加密操作是怎么做的呢？比如bob如果想传递一份原始文档给alice，那么bob就拿到alice的公钥，对于原始文档进行加密，把密文再发送给alice，alice拿他的私钥才能进行解密，其他人用了公钥以后都没有办法解密。那么公钥和私钥还有第二种用法，就是身份验证，比如现在有一段信息，alice用他的私钥，进行了加密，然后把密文发给了bob或者任何人，只要bob拿到了alice的公钥，因为公钥本身就是公开的，那么用公钥能成功的解开这段密文，就证明这段密文确实是由alice发出的，这为我们接下来TLS的密钥交换算法提供了基本的签名保障。</p>
-<p>以上就是对称加密和非对称加密的基本原理。</p>
-<p>SSL证书的公信力</p>
-<p>在之前的加密过程中，我们谈到了Alice和bob中间进行通信，但其实它们有一个前提条件，alice必须知道，bob就是bob，也就是他收到的信息，必须是bob发来的。那么这样的一个新的问题，在多方通信的过程中，必须有一个公信机构，这样的一个机构就是CA机构。接下里我们就来看看CA是怎么样颁发证书以及怎么样让证书过期的。</p>
-<p>那么，CA就是CA机构，我们作为一个站点的维护者，我们就是一个证书的订阅人，首先我们必须去申请一个证书，为了申请这个证书，我们可能必要登记，我是谁，我属于什么组织，我想做什么。到了登记机构，通过CSR（request certificate issuance, CSR）发给CA，那么CA中心通过以后呢，它会去生成一对公钥和私钥，那么公钥会在CA的证书之内保存着呢，私钥证书订阅人拿到以后，就会把它部署到自己的web服务器中，比如说nginx。当浏览器通过第一步，访问我们的https站点的时候，那么它会去请求我们的证书，而nginx这样的web服务器，会把我们的公钥证书发给我们的浏览器，而浏览器需要去验证我们的证书是不是合法有效的，但是如果我们用lets encrypt我们会发现，这个证书只有三个月的有效期，如果通过大部分其他SSL CA这样的颁发证书，一般是一年的有效期，那么这个有效期是怎样体现的呢？那么CA中心会把过期的证书放到CRL服务器，这个服务器会把所有过期的证书形成一条链条，所以它的性能非常的差。所以它又推出了一个OCSP程序，OCSP可以就一个证书去查询它是否过期。所以浏览器是可以去直接去查询OCSP响应程序的。但OCSP性能还不是很高，所以往往，比如我们的nginx，会有一个OCSP的开关，当我们打开开关以后，会由nginx主动的去OCSP去查询，这样大量的客户端就可以直接从nginx获取到证书是否有效。</p>
-<p>那么证书究竟是怎样组成的呢？接下来，我们看一下证书究竟有哪几种类型。第一种证书叫做域名验证DV，也就是说这个整数，它只会去验证我们域名的归属是否正确。比如我们在lets encrypt申请证书的时候会发现。只要你的域名指向的服务器是你正在申请证书的服务器，那你就可以成功的申请到证书。如果你使用其他的一些CA机构颁发的一些证书，可能会去验证你注册的那个邮箱是否正确。第二种证书叫做组织验证，OV验证证书，组织验证呢就是我们在申请证书的时候会去验证我们填写的机构企业名称是否是正确的，所以OV证书的申请往往需要几天的时间，不像DV证书，基本上实时就可以获取到了。而OV证书他的价格，也要远远高于DV证书。DV证书很多都是免费的。那么，比OV证书做了更严格的验证，就是扩展验证EV证书，因为EV证书做了更严格的验证，所以大部分浏览器会对EV证书的显示非常的友好，它会把我们申请证书时所填写的机构名称，在浏览器的地址栏中的，最左侧显示出来。而对DV或者OV证书，浏览器是没有这个优待的。</p>
-<p>那么，我们获取到这样的证书之后，究竟是怎样生效的呢？浏览器实际上从安全角度来说对DVOV或者EV证书，它的效果是一样的。</p>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
 ]]></content>
       <tags>
-        <tag>计算机网络</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2120,15 +2129,6 @@
       <tags>
         <tag>计算机网络</tag>
         <tag>HTTP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -3194,6 +3194,43 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>抽象类与接口</title>
+    <url>/2020/09/07/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 抽象类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> enabled;</span><br><span class="line">  <span class="keyword">private</span> Level minPermittedLevel;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Logger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">    <span class="keyword">this</span>.enabled = enabled;</span><br><span class="line">    <span class="keyword">this</span>.minPermittedLeve = minPermittedLevel;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String message)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> loggable = enabled &amp;&amp; (minPermittedLevel.intValue() &lt;= level.intValue());</span><br><span class="line">    <span class="keyword">if</span> (!loggable) <span class="keyword">return</span>;</span><br><span class="line">    doLog(level, message);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">doLog</span><span class="params">(Level level, String message)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 抽象类的子类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">public</span> Writer fileWriter;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">FileLogger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel, String filepath)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(name, enabled, minPermittedLevel);</span><br><span class="line">    <span class="keyword">this</span>.fileWriter = <span class="keyword">new</span> FileWriter(filepath);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doLog</span><span class="params">(Level level, String message)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 格式化level和message，输出到日志文件</span></span><br><span class="line"><span class="comment">//    fileWriter.write(...);</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageQueueLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> MessageQueueClient msgQueueClient;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MessageQueueLogger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel, MessageQueueClient msgQueueClient)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(anem, enabled, minPermittedLevel);</span><br><span class="line">    <span class="keyword">this</span>.msgQueueClient = msgQueueClient;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doLog</span><span class="params">(Level level, String message)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 格式化level和message，输出到消息中间件</span></span><br><span class="line"><span class="comment">//    msgQueueClient.send(...)</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(RpcRequest req)</span> <span class="keyword">throws</span> RpcException</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 接口实现类：鉴权过滤器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AuthenticationFilter</span> <span class="keyword">implements</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(RpcRequest req)</span> <span class="keyword">throws</span> RpcException </span>&#123;</span><br><span class="line">    <span class="comment">// ...鉴权逻辑...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 接口实现类：限流过滤器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RateLimitFilter</span> <span class="keyword">implements</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(RpcRequest req)</span> <span class="keyword">throws</span> RpcException </span>&#123;</span><br><span class="line">    <span class="comment">// ...限流逻辑...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 过滤器使用demo</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">  <span class="comment">//  filters.add(new AuthenticationFilter());</span></span><br><span class="line"><span class="comment">//  filters.add(new RateLimitFilter());</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> List&lt;Filter&gt; filters = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleRpcRequest</span><span class="params">(RpcRequest req)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">for</span> (Filter filter : filters) &#123;</span><br><span class="line">        filter.doFilter(req);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RpcException e) &#123;</span><br><span class="line">      <span class="comment">// ...处理过滤结果...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...省略其他处理逻辑...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>抽象类实际上就是类，只不过是一种特殊的类，这种类不能被实例化为对象，只能被子类继承。我们知道，继承关系是一种is-a的关系，那抽象类既然属于类是，也表示一种is-a的关系。相对于抽象类的is-a关系来说，接口表示一种has-a关系，表示具有某些工呢过。对于接口，有一个更加形象的叫法，那就是协议（contract）。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> enabled;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Level minPermittedLevel;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Logger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 构造函数不变</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isLoggable</span><span class="params">(Level level)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> loggable = enabled $$(minPermittedLevel.intValue() &lt;= level.intValue());</span><br><span class="line">    <span class="keyword">return</span> loggable;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 子类：输出日志到文件</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> Writer fileWriter;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">FileLogger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel, String filepath)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 构造函数不变</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String message)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isLoggable(level)) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 格式化level和message，输出到日志文件</span></span><br><span class="line">    fileWriter.write(...)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// subclass：output message to message middleware</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageQueueLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> MessageQueueClient msgQueueClient;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MessageQueueLogger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel, MessageQueueClient msgQueueClient)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 构造函数不变</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String message)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isLoggable()) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// formatting level and message, output to message middleware</span></span><br><span class="line">    msgQueueClient.send(...)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...省略部分代码...</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String mesage)</span> </span>&#123; <span class="comment">// do nothing... &#125;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...省略部分代码...</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String mesage)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isLoggable()) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 格式化level和message,输出到日志文件</span></span><br><span class="line">    fileWriter.write(...);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageQueueLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...省略部分代码...</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String mesage)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isLoggable()) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 格式化level和message,输出到消息中间件</span></span><br><span class="line">    msgQueueClient.send(...);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Logger中并没有定义log()方法。可能会想，在Logger父类中，定义一个空的log()方法，让子类重写父类的log()方法，实现自己的记录日志的逻辑，不就可以了吗？这个设计思路能用，但是，它显然没有之前通过抽象类的实现思路优雅。</p>
+<p>抽象类更多的是为了代码复用，而接口就更侧重于解耦。接口是对行为的一种抽象，相当于一组协议或者契约，你可以联想类比一下API接口。调用者只需要关注抽象的接口，不需要了解具体的实现，具体的实现代码对调用者透明。接口实现了约定和实现相分离，可以降低代码间的耦合性，提高代码的可扩展性。</p>
+<p>实际上，借口是一个比抽象类应用更加广泛、更加重要的知识点。比如，我们经常提到的“基于接口而非实现编程”，就是一条几乎天天会用到，并且能极大地提高代码的灵活性、扩展性的设计思想。</p>
+<h3 id="如何模拟抽象类和接口两个语法概念">如何模拟抽象类和接口两个语法概念？</h3>
+<p>在前面举的例子中，我们使用Java的接口语法实现了一个Filter过滤器。不过，如果你熟悉的是C++这种编程语言，你可能会说，C++只有抽象类，并没有接口，那从代码实现的角度来说，是不是就无法实现Filter的设计思路了呢？</p>
+<p>实际上，我们可以通过抽象类来模拟接口。怎么来模拟呢？</p>
+<p>我们先来回忆一下接口的定义：接口中没有成员变量，只有方法声明，没有方法实现，实现接口的类必须实现接口中的所有方法。只要满足这样几点，从设计的角度上来说，我们就可以把它叫做接口。实际上，要满足接口的这些语法特性并不难。在下面这段C++代码中，我们就用抽象类模拟了一个接口（下面这段代码实际上是策略模式中的一段代码）。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Strategy</span> &#123;</span> <span class="comment">// 用抽象类模拟接口</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ~Strategy();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">algorithm</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    Strategy();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>抽象类Strategy没有定义任何属性，并且所有的方法都声明为virtual类型（等同于Java中的abstract关键字），这样，所有的方法都不能有代码实现，并且所有集成这个抽象类的子类，都要实现这些方法。从语法特性上来看，这个抽象类就相当于一个接口。</p>
+<p>不过，如果你熟悉的既不是Java，也不是C++，而是现在比较流行的动态编程语言，比如Python、Ruby等，你可能还会有疑问：在这些动态语言中，不仅没有接口的概念，也没有类似abstract，virtual这样的关键字来定义抽象类，那该如何实现上面讲到的Filter、Logger的设计思路呢？实际上，除了用抽象类来模拟接口之外，我们还可以用普通类来模拟接口。具体的Java代码实现如下所示。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MockInterface</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="title">MockInterface</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">funcA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> MethodUnSuportedException();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们知道类中的方法必须包含实现，这个不符合接口的定义。但是，我们可以让类中的方法报出MethodUnSupportedException异常，来模拟不包含实现的接口，并且能强迫子类在继承父类的时候，都去主动实现父类的方法，否则就会在运行时抛出异常。那又如何避免这个类被实例化呢？实际上很简单，我们只需要将这个类的构造函数声明为protected访问权限就可以了。</p>
+<p>对动态编程语言来说，还有一种对接口支持的策略就是duck-typing，Go也是这样支持接口的。</p>
+<p>如果我们要表示一种is-a的关系，并且是为了解决代码复用的问题，我们就用抽象类；如果我们要表示一种has-a关系，并且是为了解决抽象而非代码服用的问题，我们就可以使用接口。</p>
+<p>从类的继承层次上来看，抽象类是一种自下而上的设计思路，先有子类的代码复用，然后再抽象成上层的父类（也就是抽象类）。而接口正好相反，它是一种自上而下的设计思路。我们在编程的时候，一般都是先设计接口，再去考虑具体的实现。</p>
+<h3 id="小结">小结</h3>
+<ol type="1">
+<li><p>抽象类和接口的语法特性</p>
+<p>抽象类不允许被实例化，只能被继承。它可以包含属性和方法。方法既可以包含代码实现，也可以不包含代码实现。不包含代码实现的方法叫做抽象方法。子类继承抽象类，必须实现抽象类中的所有抽象方法。接口不能包含属性，只能声明方法，方法不能包含代码实现。类实现接口的时候，必须实现接口中声明的所有方法。</p></li>
+<li><p>抽象类和接口存在的意义</p>
+<p>抽象类是对成员变量和方法的抽象，是一种is-a关系，是为了解决代码复用问题。接口仅仅是对方法的抽象，是一种has-a关系，表示具有某一组行为特性，是为了解决解耦问题，隔离接口和具体的实现，提高代码的扩展性。</p></li>
+<li><p>抽象类和接口的应用场景区别</p>
+<p>什么时候该用抽象类？什么时候该用接口？实际上，判断的标准很简单。如果要表示一种is-a的关系，并且是为了解决代码服用问题，我们就用抽象类；如果要表示一种has-a关系，并且是为了解决抽象而代码复用问题，那我们就用接口。</p></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>设计模式</tag>
       </tags>
   </entry>
   <entry>
