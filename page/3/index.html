@@ -238,14 +238,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>​    HTTP主要有这些不足，列举如下：</p>
+          <p>​ HTTP主要有这些不足，列举如下：</p>
 <ul>
-<li><p>通信使用明文（不加密），内容可能会被窃听</p>
-</li>
-<li><p>不验证通信方的身份，因此有可能遭遇伪装</p>
-</li>
-<li><p>无法证明报文的完整性，所以有可能已遭篡改</p>
-</li>
+<li><p>通信使用明文（不加密），内容可能会被窃听</p></li>
+<li><p>不验证通信方的身份，因此有可能遭遇伪装</p></li>
+<li><p>无法证明报文的完整性，所以有可能已遭篡改</p></li>
 </ul>
 <p>这些问题不仅在HTTP上出现，其他未加密的协议中也会存在这类问题。</p>
 <p>除此之外，HTTP本身还有很多缺点。而且，还有像某些特定的Web服务器和特定的Web浏览器在实际应用中存在的不足（也可以说成是脆弱性或安全漏洞），另外，用Java和PHP等变成语言开发的Web应用也可能存在安全漏洞。</p>
@@ -322,6 +319,7 @@
 
       
           <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># retry_decorator.py</span></span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">interval, max_retries=<span class="number">3</span>, exceptions=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    res = func(*args, **kwargs)</span><br><span class="line">                    <span class="keyword">return</span> res</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            res = func(*args, **kwargs)</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">max_retries=<span class="number">3</span>, exceptions=None, interval=<span class="number">0</span></span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">            <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@retry(interval=0.5)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_func</span>():</span></span><br><span class="line">    <span class="keyword">global</span> i</span><br><span class="line">    i += <span class="number">1</span></span><br><span class="line">    print(i)</span><br><span class="line">    <span class="keyword">raise</span> Exception</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    my_func()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
       
     </div>
 
@@ -399,32 +397,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><span class="exturl" data-url="aHR0cDovL2NlbmFsdWx1LmdpdGh1Yi5pby9weXRob24vZGVmYXVsdC1tdXRhYmxlLWFyZ3VtZW50cy8=">http://cenalulu.github.io/python/default-mutable-arguments/<i class="fa fa-external-link-alt"></i></span></p>
+          <h3 id="参考">参考</h3>
+<p>http://cenalulu.github.io/python/default-mutable-arguments/</p>
 <p>本文将介绍使用mutable对象作为Python函数参数默认值潜在的危害，以及其实现原理和设计目的</p>
-<h3 id="陷阱重现"><a href="#陷阱重现" class="headerlink" title="陷阱重现"></a>陷阱重现</h3><p>我们用实际的例子演示一下我们今天所要讨论的主要内容。下面一段代码定义了一个名为generate_new_list_with的函数。该函数的本意是在每次都调用时都新建一个包含有给定element值的list。而实际运行结果如下：</p>
+<h3 id="陷阱重现">陷阱重现</h3>
+<p>我们用实际的例子演示一下我们今天所要讨论的主要内容。下面一段代码定义了一个名为generate_new_list_with的函数。该函数的本意是在每次都调用时都新建一个包含有给定element值的list。而实际运行结果如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=[], element=None</span>):</span></span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    list1 = generate_new_list_with(element=<span class="number">1</span>)</span><br><span class="line">    print(list1)</span><br><span class="line">    <span class="comment"># [1]</span></span><br><span class="line">    list2 = generate_new_list_with(element=<span class="number">2</span>)</span><br><span class="line">    print(list2)</span><br><span class="line">    <span class="comment"># [1, 2]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-
 <p>可见代码运行结果并不和我们预期的一样。list_2在函数的第二次调用时并没有得到一个新的list并填入2，而是在第一次调用结果的基础上append了一个2。为什么会发生这样在其他编程语言中简直像bug一样的问题呢？</p>
-<h3 id="准备知识：Python变量的实质"><a href="#准备知识：Python变量的实质" class="headerlink" title="准备知识：Python变量的实质"></a>准备知识：Python变量的实质</h3><p>要了解这个问题的原因我们现需要一个准备知识，那就是：Python变量到底是如何实现的？Python变量区别与其他编程语言的声明&amp;赋值方式，采用的是创建&amp;指向的类似于指针的方式实现的。即Python中的变量实际上是对值或者对象的一个指针（简单的说他们是指的一个名字）。我们来看一个例子。</p>
+<h3 id="准备知识python变量的实质">准备知识：Python变量的实质</h3>
+<p>要了解这个问题的原因我们现需要一个准备知识，那就是：Python变量到底是如何实现的？Python变量区别与其他编程语言的声明&amp;赋值方式，采用的是创建&amp;指向的类似于指针的方式实现的。即Python中的变量实际上是对值或者对象的一个指针（简单的说他们是指的一个名字）。我们来看一个例子。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p = <span class="number">1</span></span><br><span class="line">p = p + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
 <p>对于传统语言，上面这段代码的执行方式将会是，现在内存中声明得到一个p的变量，然后将1存入变量p所在内存。执行家法操作的时候得到2的结果，将2这个数值再次存入到p所在内存地址中。可见整个执行活成中，<strong>变化的是变量p所在内存地址上的值。</strong></p>
 <p>上面这段代码中，Python实际上是现在执行内存中创建了一个1的对象，并将p指向了它。在执行加法操作的时候，实际上通过加法操作得到了一个2的新对象，并将p指向这个新的对象。<strong>可见整个执行过程中，变化的是p指向的内存地址。</strong></p>
-<h3 id="函数参数默认值陷阱的根本原因"><a href="#函数参数默认值陷阱的根本原因" class="headerlink" title="函数参数默认值陷阱的根本原因"></a>函数参数默认值陷阱的根本原因</h3><p>一句话来解释：Python函数的参数默认值，是在编译阶段就绑定的。</p>
+<h3 id="函数参数默认值陷阱的根本原因">函数参数默认值陷阱的根本原因</h3>
+<p>一句话来解释：Python函数的参数默认值，是在编译阶段就绑定的。</p>
 <p>现在，我们先从一段摘录来详细分析这个陷阱的原因。下面是一段从Python Common Gotchas中摘录的原因解释：</p>
 <blockquote>
-<p>Python’s default arguments are evaluated once when the function is defined, not each time the function is called(like it is in say, Ruby). This means that if you use a mutable default argument and mutate it, you will and have mutated that object for all future calls to the function as well.</p>
+<p>Python's default arguments are evaluated once when the function is defined, not each time the function is called(like it is in say, Ruby). This means that if you use a mutable default argument and mutate it, you will and have mutated that object for all future calls to the function as well.</p>
 </blockquote>
 <p><strong>可见如果参数默认值是在函数编译compile阶段就已经被确定。之后所有的函数调用时，如果参数不显示的给予赋值，那么所谓的参数默认值不过是一个指向那个在compile阶段就已经存在的对象的指针。</strong>如果调用函数时，没有显示指定传入参数值的话。那么所有这种情况下的该参数都会作为编译时创建的那个对象的一种别名存在。<strong>如果参数的默认值是一个不可变（Immutable）数值，那么在函数体内如果修改了该参数，那么参数就会重新指向另一个新的不可变值，而如果参数默认值是和本文最开始的举例一样，是一个可变对象（Mutable），那么情况就比较糟糕了。所有函数体内对于该参数的修改，实际上都是对compile阶段就已经确定的那个对象的修改。</strong>对于这么一个陷阱在Python官方文档中也有特别提示：</p>
 <blockquote>
 <p>Important warning: The default value is evaluated only once. This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes.</p>
 </blockquote>
-<h3 id="如何避免这个陷阱带来不必要麻烦"><a href="#如何避免这个陷阱带来不必要麻烦" class="headerlink" title="如何避免这个陷阱带来不必要麻烦"></a>如何避免这个陷阱带来不必要麻烦</h3><p>当然最好的方式是不要使用可变对象作为函数默认值。如果非要这么用的话，下面是一种解决方案。还是以文章开头的需求为例：</p>
+<h3 id="如何避免这个陷阱带来不必要麻烦">如何避免这个陷阱带来不必要麻烦</h3>
+<p>当然最好的方式是不要使用可变对象作为函数默认值。如果非要这么用的话，下面是一种解决方案。还是以文章开头的需求为例：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=None, element=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> my_list <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        my_list = []</span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br></pre></td></tr></table></figure>
-
-<h3 id="为什么Python要这么设计"><a href="#为什么Python要这么设计" class="headerlink" title="为什么Python要这么设计"></a>为什么Python要这么设计</h3><p>这个问题的答案在 STackOverFlow上可以找到答案。这里将得票数最多的答案最重要的部分摘录如下：</p>
+<h3 id="为什么python要这么设计">为什么Python要这么设计</h3>
+<p>这个问题的答案在 STackOverFlow上可以找到答案。这里将得票数最多的答案最重要的部分摘录如下：</p>
 <blockquote>
-<p>Actually, this is not a design flaw, and it is not because of internals, or performance. It comes simply from the fact that functions in Python are first-class objects, and not only a piece of code. As soon as you get to think into this way, then it completely makes sense: a function is an object being evaluated on its definition; default parameters are kind of “member data” and therefore their state may change from one call to the other - exactly as in any other object. In any case, Effbot has a very nice explanation of the reasons for this behavior in Default Parameter Values in Python. I found is very clear, and I really suggest reading it for a better knowledge og how function objects work.</p>
+<p>Actually, this is not a design flaw, and it is not because of internals, or performance. It comes simply from the fact that functions in Python are first-class objects, and not only a piece of code. As soon as you get to think into this way, then it completely makes sense: a function is an object being evaluated on its definition; default parameters are kind of "member data" and therefore their state may change from one call to the other - exactly as in any other object. In any case, Effbot has a very nice explanation of the reasons for this behavior in Default Parameter Values in Python. I found is very clear, and I really suggest reading it for a better knowledge og how function objects work.</p>
 </blockquote>
 <p>在这个回答中，答者认为是出于Python编译器的实现方式考虑，函数是一个内部一级对象。而参数默认值是这个对象的属性。在其他任何语言中，对象属性都是在对象创建时做绑定的。因此，函数参数默认值是在编译时绑定就不足为奇了。然而，也有很多一些回答者不买账，认为即使是first-class object也可以使用closure的方式在执行绑定。</p>
 <blockquote>
@@ -503,8 +504,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <iframe src="//player.bilibili.com/player.html?aid=926934688&bvid=BV1mT4y1L7hL&cid=231563117&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
-
+          <iframe src="//player.bilibili.com/player.html?aid=926934688&amp;bvid=BV1mT4y1L7hL&amp;cid=231563117&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
 
       
     </div>
@@ -580,9 +581,7 @@
           <p>假设我们想对一个函数进行它执行时间的打印，我们可以用函数式编程，完成一个装饰器。</p>
 <p>下面给出Python3和Go中的代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">timeSpent</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">    @functools.wraps(func)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">        start = time.perf_counter()</span><br><span class="line">        res = func(*args, **kwargs)</span><br><span class="line">        print(<span class="string">&quot;time sleep&quot;</span>, time.perf_counter() - start)</span><br><span class="line">        <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@timeSpent</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">x, y</span>):</span></span><br><span class="line">    time.sleep(<span class="number">0.1</span>)</span><br><span class="line">    <span class="keyword">return</span> x + y</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">timeSpent</span><span class="params">(inner <span class="keyword">func</span>(op <span class="keyword">int</span>)</span> <span class="title">int</span>) <span class="title">func</span><span class="params">(op <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(n <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">        start := time.Now()</span><br><span class="line">        ret := inner(n)</span><br><span class="line">        fmt.Println(<span class="string">&quot;time spent:&quot;</span>, time.Since(start).Seconds())</span><br><span class="line">        <span class="keyword">return</span> ret</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">slowFunc</span><span class="params">(op <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    time.Sleep(time.Second * <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> op</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestFn</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">    tsSF := timeSpent(slowFunc)</span><br><span class="line">    t.Log(tsSF(<span class="number">10</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">timeSpent</span><span class="params">(inner <span class="keyword">func</span>(op <span class="keyword">int</span>)</span> <span class="title">int</span>) <span class="title">func</span><span class="params">(op <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(n <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">     start := time.Now()</span><br><span class="line">       ret := inner(n)</span><br><span class="line">       fmt.Println(<span class="string">&quot;time spent:&quot;</span>, time.Since(start).Seconds())</span><br><span class="line">     <span class="keyword">return</span> ret</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">slowFunc</span><span class="params">(op <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    time.Sleep(time.Second * <span class="number">1</span>)</span><br><span class="line">   <span class="keyword">return</span> op</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestFn</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">  tsSF := timeSpent(slowFunc)</span><br><span class="line">   t.Log(tsSF(<span class="number">10</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这样就可以对一个想要计算执行时间的函数，快速添加计算执行时间的代码。</p>
 
       
@@ -769,8 +768,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <ol>
-<li>他们这群人，又想吃人，又是鬼鬼祟祟，想法子遮掩，不敢直截下手，真要令我笑死。我忍不住，便放声大笑起来，十分快活。自己晓得这笑声里面，有的是义勇和正气。 –鲁迅《狂人日记》</li>
+          <ol type="1">
+<li>他们这群人，又想吃人，又是鬼鬼祟祟，想法子遮掩，不敢直截下手，真要令我笑死。我忍不住，便放声大笑起来，十分快活。自己晓得这笑声里面，有的是义勇和正气。 --鲁迅《狂人日记》</li>
 <li>人类的悲欢并不相通，我只是觉得他们吵闹。——鲁迅《而已集·小杂感》</li>
 <li>无穷的远方，无数的人们，都和我有关。——鲁迅《且介亭杂文末集·这也是生活》</li>
 </ol>
@@ -847,6 +846,7 @@
 
       
           
+
       
     </div>
 
@@ -918,8 +918,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="MySQL中尽量使用普通索引，减少使用唯一索引"><a href="#MySQL中尽量使用普通索引，减少使用唯一索引" class="headerlink" title="MySQL中尽量使用普通索引，减少使用唯一索引"></a>MySQL中尽量使用普通索引，减少使用唯一索引</h3><h4 id="查询过程"><a href="#查询过程" class="headerlink" title="查询过程"></a>查询过程</h4><p>平均性能差异微乎其微。</p>
-<h4 id="更新过程"><a href="#更新过程" class="headerlink" title="更新过程"></a>更新过程</h4><h5 id="change-buffer"><a href="#change-buffer" class="headerlink" title="change buffer"></a>change buffer</h5><p>当需要更新一个数据页时，如果数据页在内存中就直接更新，而如果这个数据页还没有在内存中的话，在不影响数据一致性的前提下，InnoDB会将这些更新操作缓存在change buffer中，这样就不需要从磁盘中读入这个数据页了。在下次查询需要访问这个数据页的时候，将数据页读入内存，然后执行change buffer中与这个页有关的操作。通过这种方式就能保证这个数据逻辑的正确性。</p>
+          <h3 id="mysql中尽量使用普通索引减少使用唯一索引">MySQL中尽量使用普通索引，减少使用唯一索引</h3>
+<h4 id="查询过程">查询过程</h4>
+<p>平均性能差异微乎其微。</p>
+<h4 id="更新过程">更新过程</h4>
+<h5 id="change-buffer">change buffer</h5>
+<p>当需要更新一个数据页时，如果数据页在内存中就直接更新，而如果这个数据页还没有在内存中的话，在不影响数据一致性的前提下，InnoDB会将这些更新操作缓存在change buffer中，这样就不需要从磁盘中读入这个数据页了。在下次查询需要访问这个数据页的时候，将数据页读入内存，然后执行change buffer中与这个页有关的操作。通过这种方式就能保证这个数据逻辑的正确性。</p>
 <p>需要说明的是，虽然名字叫change buffer，实际上它是可以持久化的数据。也就是说，change buffer在内存中有拷贝，也会下被写入到磁盘上。</p>
 <p>将change buffer中的操作应用到原数据页，得到最新结果的过程称为merge。除了访问这个数据页会触发merge外，系统有后台线程会定期merge。在数据库正常关闭的（shutdown）的过程中，也会执行merge操作。</p>
 <p>显然，如果能够将更新操作先记录在change buffer，减少读磁盘，语句的执行速度会得到明显的提升。而且，数据读入内存是需要占用buffer pool的，所以这种方式还能后避免占用内存，提高内存利用率。</p>
@@ -930,23 +934,24 @@
 <p>现在，你已经理解了change buffer的机制，那么我们再一起来看看<strong>如果要在这张表中插入一个新纪录（4，400）的话，InnoDB的处理流程是怎样的。</strong></p>
 <p>第一种情况是，<strong>这个记录要更新的目标页在内存中</strong>。那么两者差不多。</p>
 <p>第二种情况是，这个记录要更新的目标页不在内存中。那么唯一索引要读入内存，涉及磁盘随机IO的访问，是成本最高的操作之一。</p>
-<h5 id="change-buffer的使用场景"><a href="#change-buffer的使用场景" class="headerlink" title="change buffer的使用场景"></a>change buffer的使用场景</h5><p>普通索引的所有场景，使用change buffer都可以起到加速作用吗？</p>
+<h5 id="change-buffer的使用场景">change buffer的使用场景</h5>
+<p>普通索引的所有场景，使用change buffer都可以起到加速作用吗？</p>
 <p>因为merge的时候是真正进行数据更新的时刻，而change buffer记录的变更越多（也就是这个页面上要更新的次数越多)，收益就越大。</p>
 <p>因此，对于写多读少的业务来说，页面在写完以后马上被访问到的概率比较小，此时change buffer的使用效果最好。这种业务模型常见的就是账单类、日志类的系统。（这类写入比较多的业务类型可以使用LSM树作为数据结构的数据库）。</p>
 <p>反过来，假设一个业务的更新模式是写入之后马上会做查询，那么即使满足了条件，将更新先记录在change buffer，但之后由于马上要访问这个数据页，会立即触发merge过程。这样随机访问IO的次数不会减少，反而增加了change buffer的维护代价。</p>
-<h3 id="索引该如何选择和实践呢？"><a href="#索引该如何选择和实践呢？" class="headerlink" title="索引该如何选择和实践呢？"></a>索引该如何选择和实践呢？</h3><p>普通索引和唯一索引应该如何选择。查询能力上没差别，主要考虑的是对更新性能的影响。所以，我建议你尽量选择普通索引。</p>
+<h3 id="索引该如何选择和实践呢">索引该如何选择和实践呢？</h3>
+<p>普通索引和唯一索引应该如何选择。查询能力上没差别，主要考虑的是对更新性能的影响。所以，我建议你尽量选择普通索引。</p>
 <p>如果所有的更新后面，都马上伴随着对这个记录的查询，那么你应该关闭change buffer。而在其他情况下，change buffer都能提升更新性能。</p>
 <p>在实际应用中，你会发现，普通索引和change buffer的配合使用，对于数据量大的表的更新优化还是很明显的。</p>
 <p>特别的，在使用机械硬盘时，change buffer这个机制的收效是非常显著的。所以，当你有一个类似”历史数据“的库，并且处于成本考虑用的是机械硬盘时，那你应该特别关注这些表里的索引，尽量使用普通索引，然后把change buffer尽量开大，以确保这个”历史数据“表的数据写入速度。</p>
-<h4 id="change-buffer和redo-log"><a href="#change-buffer和redo-log" class="headerlink" title="change buffer和redo log"></a>change buffer和redo log</h4><p>现在，我们要在表上执行这个语句：</p>
+<h4 id="change-buffer和redo-log">change buffer和redo log</h4>
+<p>现在，我们要在表上执行这个语句：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; insert into t(id, k) values(id1, k1), (id2, k2);</span><br></pre></td></tr></table></figure>
-
 <p>这里，我们假设当前k索引树的状态，查找到位置后，k1所在的数据页在内存（InnoDB buffer pool）中，k2所在的数据页不在内存中。如果2所示是带change buffer的更新状态图。</p>
 <img data-src="/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/change_buffer1.png" class>
-
 <p>分析这条更新语句，你会发现它涉及了四个部分：内存、redo log（ib_log_fileX）、数据表空间（t.ibd）、系统表空间（ibdata1）。</p>
 <p>这条更新语句做了如下的操作（按照图中的数组顺序）：</p>
-<ol>
+<ol type="1">
 <li>Page 1在内存中，直接更新内存；</li>
 <li>Page 2没有在内存中，就在内存的change buffer区域，记录下”我要往Page2插入一行“这个信息</li>
 <li>将上述两个动作记录到redo log中。</li>
@@ -957,15 +962,14 @@
 <p>比如，我们现在要执行select * from t where k in (k1, k2)。这里，我画了这两个请求的流程图。</p>
 <p>如果读语句发生在更新语句后不久，内存中的数据都还在，那么此时的这两个读操作就与系统表空间（ibdata1）和redo log（ib_log_fileX）无关了。</p>
 <img data-src="/2020/09/01/%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95%E5%92%8C%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9/change_buffer2.png" class>
-
 <p>图中可以看到：</p>
-<ol>
+<ol type="1">
 <li>读Page1的时候，直接从内存返回。有同学之前问到，WAL之后读数据，是不是一定要读盘，是不是一定要从redo log里面把数据更新以后才可以返回？其实是不用的。你可以看一下图3的状态，虽然磁盘上还是之前的数据，但是这里直接从内存返回结果，结果是正确的。</li>
 <li>要读Page 2的时候，需要把Page 2从磁盘读入内存中，然后应用change buffer里面的操作日志，生成一个正确的版本并返回结果。</li>
 </ol>
 <p>可以看到，直到需要读Page 2的时候，这个数据页才会被读入内存。</p>
 <p>wal机制可以将数据按顺序写到redo log（减少随机写对io的消耗）对普通索引上的数据进行修改，通常是将修改动作记录到change buffer（减少随机读磁盘的消耗），待查询时如果数据页不在内存，先读取到内存，再将change buffer中的修改动作通过merge操作，合并数据。</p>
-<ol>
+<ol type="1">
 <li>如果业务要求有唯一键。业务正确性优先，文章的前提是业务代码已经保证不会写入重复数据，在这情况下，讨论性能问题。如果业务不能保证，或者业务就是要求数据库来做约束，那么没得选，必须创建唯一索引。这种下，如果碰上了大量插入数据慢、内存命中率低的时候，可以给你多提供一个排查思路。</li>
 <li>然后，在一些“归档库”的场景，你是可以考虑使用普通索引的。比如，线上数据只需要保留半年，然后历史数据保存在归档库。这时候，归档数据已经是确保没有唯一键冲突了。要提高归档效率，可以考虑把表里面的唯一索引改成普通索引。</li>
 </ol>
@@ -1046,22 +1050,21 @@
 <p>SSL协议是由网景公司在1995年推出的，那么在3.0获得了一个非常大的一个发展，但是接下来，微软把它的ie浏览器捆绑windows，一起卖出以后呢。导致网景遇到了很大的一个困境，网景在把SSL协议交给IETF组织以后呢，在1999年，应微软的要求，IETF把SSL改名为TLS1.0。后面在06年、08年到18年，TLS分别发展了1.1，1.2，1.3协议。那么TLS协议，究竟是怎样保证HTTP的明文消息被加密的呢？我们可以看一下TLS的通用模型，在OSI七层模型中，应用层是HTTP协议，那么HTTP协议之下，我们的表示层，也就是SSL协议所发挥作用的这一层，它通过握手、交换密钥、告警、对称加密的方式，使HTTP层没有感知的情况下，做到了数据的安全加密。那么TLS究竟是怎样做到了数据的安全加密的呢？</p>
 <p>我们可以看一下TLS的安全密码套件。当我们抓包，或者观察服务器端的配置时，我们可以看到类似于这张图中的这样的一个配置。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</span><br></pre></td></tr></table></figure>
-
 <p>这个安全密码的配置呢，它决定了我们的TLS协议是怎样保证明文被加密的。</p>
 <p>这里大概有四个组成部分，第一个组成部分叫密钥交换，也就是ECDHE，这实际上是一个椭圆曲线加密算法的表达，密钥交换是为了解决浏览器和服务器之间是怎样各自独立的生成密钥，而最后生成的密钥，是相同的。接下来它们会用这个密钥去加密数据，那么在密钥交换这个过程中呢，我们需要去让各自双方去验证对方的身份，而验证身份，是需要一个算法，而这个算法叫RSA。它用于身份验证。接下来我们执行数据加密解密这样的通讯的时候呢，我们需要用到对称加密算法，而对称加密算法AES_128_GCM就是表达这样的一个对称加密算法，其中第一个部分AES它表达了是怎样一种算法，第二个部分128它表示了AES算法里支持了三种加密强度，那么我们使用了128位这样的一个加密强度。那么AES中，它有很多分组模式，其中GCM是比较新的一种分组模式，它可以提高多核CPU情况下加密和解密的一个性能。SSA256是一个摘要算法，它用来把不定长度的字符串，生成固定长度的更短的一个摘要。</p>
 <p>那么，以上是TLS算法的一个概要介绍。之后我们再来看一下对称加密算法和非对称加密算法有什么不同。</p>
 <p>在对称加密这样的一个场景中，是两个想要通信的人bob和alice共同持有同一把密钥，那么bob可以把原始明文的文档通过这一把密钥加密生成一个密文文档，而alice拿到这个密文文档以后呢，他用这把密钥还原，转化为原始的明文文档，而中间的任何人，如果没有持有这把密钥，即使他知道了对称加密的算法，他也没有办法把密文还原成原始文档，对称加密究竟是怎么实现的呢？</p>
 <p>我们可以以RC4这样一个对称加密的序列算法，来看一下。</p>
-<p>1010  密钥序列（共同持有密钥）</p>
+<p>1010 密钥序列（共同持有密钥）</p>
 <p>异或</p>
-<p>0110  明文</p>
+<p>0110 明文</p>
 <p>等于</p>
-<p>1100  密文</p>
+<p>1100 密文</p>
 <p>异或有一个对称的特性。</p>
 <p>对称加密，性能非常的好，加密解密都只需要遍历一次。</p>
 <p>而非对称加密性能就会差很多。</p>
 <p>我们看一下非对称加密的算法，它根据一个数学原理啊，它会生成一对密钥。这一对密钥中，如果我们称其中的一个叫做公钥，那么另一个就叫做私钥，那么公钥和私钥有什么特性呢，就是同一份明文文档，如果用公钥加密，如果用公钥加密，那么只有用私钥才能解密，同样的道理，如果文档用私钥加密了，用公钥才能解密，可能大家有些疑惑。那么我们来说一下具体的场景。</p>
-<p>比如说alice他有一对公钥和私钥，那么他就可以把他的公钥发布给大家，比如bob是其中一个人，他拿到了alice的公钥，那么这个时候的加密操作是怎么做的呢？比如bob如果想传递一份原始文档给alice，那么bob就拿到alice的公钥，对于原始文档进行加密，把密文再发送给alice，alice拿他的私钥才能进行解密，其他人用了公钥以后都没有办法解密。那么公钥和私钥还有第二种用法，就是身份验证，比如现在有一段信息，alice用他的私钥，进行了加密，然后把密文发给了bob或者任何人，只要bob拿到了alice的公钥，因为公钥本身就是公开的，那么用公钥能成功的解开这段密文，就证明这段密文确实是由alice发出的，这为我们接下来TLS的密钥交换算法提供了基本的签名保障。 </p>
+<p>比如说alice他有一对公钥和私钥，那么他就可以把他的公钥发布给大家，比如bob是其中一个人，他拿到了alice的公钥，那么这个时候的加密操作是怎么做的呢？比如bob如果想传递一份原始文档给alice，那么bob就拿到alice的公钥，对于原始文档进行加密，把密文再发送给alice，alice拿他的私钥才能进行解密，其他人用了公钥以后都没有办法解密。那么公钥和私钥还有第二种用法，就是身份验证，比如现在有一段信息，alice用他的私钥，进行了加密，然后把密文发给了bob或者任何人，只要bob拿到了alice的公钥，因为公钥本身就是公开的，那么用公钥能成功的解开这段密文，就证明这段密文确实是由alice发出的，这为我们接下来TLS的密钥交换算法提供了基本的签名保障。</p>
 <p>以上就是对称加密和非对称加密的基本原理。</p>
 <p>SSL证书的公信力</p>
 <p>在之前的加密过程中，我们谈到了Alice和bob中间进行通信，但其实它们有一个前提条件，alice必须知道，bob就是bob，也就是他收到的信息，必须是bob发来的。那么这样的一个新的问题，在多方通信的过程中，必须有一个公信机构，这样的一个机构就是CA机构。接下里我们就来看看CA是怎么样颁发证书以及怎么样让证书过期的。</p>

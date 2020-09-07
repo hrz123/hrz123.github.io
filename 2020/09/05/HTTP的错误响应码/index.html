@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="将介绍400、500系列表示错误的响应码，搞清楚这些错误响应码的含义对于我们快速地定位问题非常有帮助。  4xx：客户端出现错误 400 Bad Request：服务器认为客户端出现了错误，但不能明确判断为以下哪种错误时使用此错误码。例如HTTP请求格式错误。 401 Unauthorized：用户认证信息缺失或者不正确，导致服务器无法处理请求。（比如URI如果需要传递user和password的">
+  <meta name="description" content="将介绍400、500系列表示错误的响应码，搞清楚这些错误响应码的含义对于我们快速地定位问题非常有帮助。  4xx：客户端出现错误  400 Bad Request：服务器认为客户端出现了错误，但不能明确判断为以下哪种错误时使用此错误码。例如HTTP请求格式错误。 401 Unauthorized：用户认证信息缺失或者不正确，导致服务器无法处理请求。（比如URI如果需要传递user和password">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HTTP的错误响应码（For Reference）">
 <meta property="og:url" content="https://hrz123.github.io/2020/09/05/HTTP%E7%9A%84%E9%94%99%E8%AF%AF%E5%93%8D%E5%BA%94%E7%A0%81/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="将介绍400、500系列表示错误的响应码，搞清楚这些错误响应码的含义对于我们快速地定位问题非常有帮助。  4xx：客户端出现错误 400 Bad Request：服务器认为客户端出现了错误，但不能明确判断为以下哪种错误时使用此错误码。例如HTTP请求格式错误。 401 Unauthorized：用户认证信息缺失或者不正确，导致服务器无法处理请求。（比如URI如果需要传递user和password的">
+<meta property="og:description" content="将介绍400、500系列表示错误的响应码，搞清楚这些错误响应码的含义对于我们快速地定位问题非常有帮助。  4xx：客户端出现错误  400 Bad Request：服务器认为客户端出现了错误，但不能明确判断为以下哪种错误时使用此错误码。例如HTTP请求格式错误。 401 Unauthorized：用户认证信息缺失或者不正确，导致服务器无法处理请求。（比如URI如果需要传递user和password">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-05T02:21:25.000Z">
 <meta property="article:modified_time" content="2020-09-05T03:22:10.915Z">
@@ -242,7 +242,8 @@
       
         <p>将介绍400、500系列表示错误的响应码，搞清楚这些错误响应码的含义对于我们快速地定位问题非常有帮助。</p>
 <ul>
-<li>4xx：客户端出现错误<ul>
+<li>4xx：客户端出现错误
+<ul>
 <li>400 Bad Request：服务器认为客户端出现了错误，但不能明确判断为以下哪种错误时使用此错误码。例如HTTP请求格式错误。</li>
 <li>401 Unauthorized：用户认证信息缺失或者不正确，导致服务器无法处理请求。（比如URI如果需要传递user和password的时候，往往会得到401Unauthorized）</li>
 <li>407 Proxy Authentication Required：（对401的补充，401往往是源服务器返回的用户信息验证不通过，如果代理服务器会首先验证用户的认证信息的话，那么代理服务器没有通过就会返回407。比如将常在机场、网吧等场合下，如果我们信息验证没通过，可能就会收到407）对需要经由代理的请求，认证信息未通过代理服务器的验证</li>
@@ -266,9 +267,9 @@
 <li>429 Too Many Request：客户端发送请求的速率过快（很多服务器限流限速的时候，往往不会给客户端发429，虽然RFC规范中429是更明确的告诉客户端这样一件事情，但是往往我们会发送503，在5系列响应码中再详细介绍）</li>
 <li>431 Request Header Fields Too Large：请求的HEADER头部大小超过限制（可以看出这里的规范定义的实在是太细了，因为我们刚刚去限制了URI如果特别大的时候，返回了一个414的这样的响应码，431又对于Header去做了一个限制，实际上很多服务器是不会去做这么严格的错误码的返回的，通常都只会返回这个414 URI Too Long，因为URI和Request Too Long往往在服务器中作为同一段缓存区去存储处理的）</li>
 <li>451 Unavaiable For Legal Reasons：RFC7725，由于法律原因资源不可访问</li>
-</ul>
-</li>
-<li>5xx：服务器端出现错误<ul>
+</ul></li>
+<li>5xx：服务器端出现错误
+<ul>
 <li>500 Internal Server Error：（这可能是我们最常见的一种错误，就是这个内部错误已经没有办法细分了）服务器内部错误，且不属于一下错误类型</li>
 <li>501 Not Implemented：服务器不支持实现请求所需要的功能（当前请求执行的功能我们现在还没有去实现，需要服务器端去升级或者说添加相应的功能）</li>
 <li>502 Bad Gateway：（非常常见的错误码，在与服务器之间有代理服务器，但是这个代理服务器连接不上源服务器，或者说代理服务器没有办法从我们的源服务器中获取到合法的一个响应，这是502 Bad Gateway）代理服务器无法获取到合法响应</li>
@@ -278,11 +279,12 @@
 <li>507 Insufficient Storage：服务器没有足够的空间处理请求（通常是指磁盘空间，所以507这个错误码已经把服务器内部的相关的问题暴露给客户端了，所以通常507是不被我们见到的，因为这里会有安全性的问题）</li>
 <li>508 Loop Detected：访问资源时检测到循环（或者说循环已经超过了最大的限制次数了，就会返回508 Loop Detected）</li>
 <li>511 Network Authentication Required：代理服务器发现客户端需要进行身份验证才能获得网络访问权限（也是同样在机场、网吧等这样的场景我们经常会见到）</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>这篇文章介绍了客户端出现错误时的400系列错误响应码，以及服务端出现错误时的500系列错误响应吗，那么与上篇文章中介绍的100、200、300系列响应码中，它们还遵循一个潜在的规则，就是当客户端接收到了，一个它不认识的响应码，不知道如何处理的时候，将按照它们所在系列的第一个，就是00系列那个响应码逻辑进行去处理，比如说我们现在收到了一个555这样的响应码，客户端不认，就会按照500的处理逻辑。如果收到了一个277，那么也会按照200这个错误码的处理逻辑来处理。</p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
+<h3 id="小结">小结</h3>
+<p>这篇文章介绍了客户端出现错误时的400系列错误响应码，以及服务端出现错误时的500系列错误响应吗，那么与上篇文章中介绍的100、200、300系列响应码中，它们还遵循一个潜在的规则，就是当客户端接收到了，一个它不认识的响应码，不知道如何处理的时候，将按照它们所在系列的第一个，就是00系列那个响应码逻辑进行去处理，比如说我们现在收到了一个555这样的响应码，客户端不认，就会按照500的处理逻辑。如果收到了一个277，那么也会按照200这个错误码的处理逻辑来处理。</p>
+<h3 id="参考">参考</h3>
+<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
 
     </div>
 
