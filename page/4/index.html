@@ -185,6 +185,104 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">从网络原理来看SSL安全协议</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-01 10:05:57 / 修改时间：15:42:55" itemprop="dateCreated datePublished" datetime="2020-09-01T10:05:57+08:00">2020-09-01</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。</p>
+<p>SSL的全称是（secure sockets layer），而现在我们很多时候在使用TLS（transport layer security）。我们简单看一下它的发展过程。</p>
+<p>SSL协议是由网景公司在1995年推出的，那么在3.0获得了一个非常大的一个发展，但是接下来，微软把它的ie浏览器捆绑windows，一起卖出以后呢。导致网景遇到了很大的一个困境，网景在把SSL协议交给IETF组织以后呢，在1999年，应微软的要求，IETF把SSL改名为TLS1.0。后面在06年、08年到18年，TLS分别发展了1.1，1.2，1.3协议。那么TLS协议，究竟是怎样保证HTTP的明文消息被加密的呢？我们可以看一下TLS的通用模型，在OSI七层模型中，应用层是HTTP协议，那么HTTP协议之下，我们的表示层，也就是SSL协议所发挥作用的这一层，它通过握手、交换密钥、告警、对称加密的方式，使HTTP层没有感知的情况下，做到了数据的安全加密。那么TLS究竟是怎样做到了数据的安全加密的呢？</p>
+<p>我们可以看一下TLS的安全密码套件。当我们抓包，或者观察服务器端的配置时，我们可以看到类似于这张图中的这样的一个配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</span><br></pre></td></tr></table></figure>
+<p>这个安全密码的配置呢，它决定了我们的TLS协议是怎样保证明文被加密的。</p>
+<p>这里大概有四个组成部分，第一个组成部分叫密钥交换，也就是ECDHE，这实际上是一个椭圆曲线加密算法的表达，密钥交换是为了解决浏览器和服务器之间是怎样各自独立的生成密钥，而最后生成的密钥，是相同的。接下来它们会用这个密钥去加密数据，那么在密钥交换这个过程中呢，我们需要去让各自双方去验证对方的身份，而验证身份，是需要一个算法，而这个算法叫RSA。它用于身份验证。接下来我们执行数据加密解密这样的通讯的时候呢，我们需要用到对称加密算法，而对称加密算法AES_128_GCM就是表达这样的一个对称加密算法，其中第一个部分AES它表达了是怎样一种算法，第二个部分128它表示了AES算法里支持了三种加密强度，那么我们使用了128位这样的一个加密强度。那么AES中，它有很多分组模式，其中GCM是比较新的一种分组模式，它可以提高多核CPU情况下加密和解密的一个性能。SSA256是一个摘要算法，它用来把不定长度的字符串，生成固定长度的更短的一个摘要。</p>
+<p>那么，以上是TLS算法的一个概要介绍。之后我们再来看一下对称加密算法和非对称加密算法有什么不同。</p>
+<p>在对称加密这样的一个场景中，是两个想要通信的人bob和alice共同持有同一把密钥，那么bob可以把原始明文的文档通过这一把密钥加密生成一个密文文档，而alice拿到这个密文文档以后呢，他用这把密钥还原，转化为原始的明文文档，而中间的任何人，如果没有持有这把密钥，即使他知道了对称加密的算法，他也没有办法把密文还原成原始文档，对称加密究竟是怎么实现的呢？</p>
+<p>我们可以以RC4这样一个对称加密的序列算法，来看一下。</p>
+<p>1010 密钥序列（共同持有密钥）</p>
+<p>异或</p>
+<p>0110 明文</p>
+<p>等于</p>
+<p>1100 密文</p>
+<p>异或有一个对称的特性。</p>
+<p>对称加密，性能非常的好，加密解密都只需要遍历一次。</p>
+<p>而非对称加密性能就会差很多。</p>
+<p>我们看一下非对称加密的算法，它根据一个数学原理啊，它会生成一对密钥。这一对密钥中，如果我们称其中的一个叫做公钥，那么另一个就叫做私钥，那么公钥和私钥有什么特性呢，就是同一份明文文档，如果用公钥加密，如果用公钥加密，那么只有用私钥才能解密，同样的道理，如果文档用私钥加密了，用公钥才能解密，可能大家有些疑惑。那么我们来说一下具体的场景。</p>
+<p>比如说alice他有一对公钥和私钥，那么他就可以把他的公钥发布给大家，比如bob是其中一个人，他拿到了alice的公钥，那么这个时候的加密操作是怎么做的呢？比如bob如果想传递一份原始文档给alice，那么bob就拿到alice的公钥，对于原始文档进行加密，把密文再发送给alice，alice拿他的私钥才能进行解密，其他人用了公钥以后都没有办法解密。那么公钥和私钥还有第二种用法，就是身份验证，比如现在有一段信息，alice用他的私钥，进行了加密，然后把密文发给了bob或者任何人，只要bob拿到了alice的公钥，因为公钥本身就是公开的，那么用公钥能成功的解开这段密文，就证明这段密文确实是由alice发出的，这为我们接下来TLS的密钥交换算法提供了基本的签名保障。</p>
+<p>以上就是对称加密和非对称加密的基本原理。</p>
+<p>SSL证书的公信力</p>
+<p>在之前的加密过程中，我们谈到了Alice和bob中间进行通信，但其实它们有一个前提条件，alice必须知道，bob就是bob，也就是他收到的信息，必须是bob发来的。那么这样的一个新的问题，在多方通信的过程中，必须有一个公信机构，这样的一个机构就是CA机构。接下里我们就来看看CA是怎么样颁发证书以及怎么样让证书过期的。</p>
+<p>那么，CA就是CA机构，我们作为一个站点的维护者，我们就是一个证书的订阅人，首先我们必须去申请一个证书，为了申请这个证书，我们可能必要登记，我是谁，我属于什么组织，我想做什么。到了登记机构，通过CSR（request certificate issuance, CSR）发给CA，那么CA中心通过以后呢，它会去生成一对公钥和私钥，那么公钥会在CA的证书之内保存着呢，私钥证书订阅人拿到以后，就会把它部署到自己的web服务器中，比如说nginx。当浏览器通过第一步，访问我们的https站点的时候，那么它会去请求我们的证书，而nginx这样的web服务器，会把我们的公钥证书发给我们的浏览器，而浏览器需要去验证我们的证书是不是合法有效的，但是如果我们用lets encrypt我们会发现，这个证书只有三个月的有效期，如果通过大部分其他SSL CA这样的颁发证书，一般是一年的有效期，那么这个有效期是怎样体现的呢？那么CA中心会把过期的证书放到CRL服务器，这个服务器会把所有过期的证书形成一条链条，所以它的性能非常的差。所以它又推出了一个OCSP程序，OCSP可以就一个证书去查询它是否过期。所以浏览器是可以去直接去查询OCSP响应程序的。但OCSP性能还不是很高，所以往往，比如我们的nginx，会有一个OCSP的开关，当我们打开开关以后，会由nginx主动的去OCSP去查询，这样大量的客户端就可以直接从nginx获取到证书是否有效。</p>
+<p>那么证书究竟是怎样组成的呢？接下来，我们看一下证书究竟有哪几种类型。第一种证书叫做域名验证DV，也就是说这个整数，它只会去验证我们域名的归属是否正确。比如我们在lets encrypt申请证书的时候会发现。只要你的域名指向的服务器是你正在申请证书的服务器，那你就可以成功的申请到证书。如果你使用其他的一些CA机构颁发的一些证书，可能会去验证你注册的那个邮箱是否正确。第二种证书叫做组织验证，OV验证证书，组织验证呢就是我们在申请证书的时候会去验证我们填写的机构企业名称是否是正确的，所以OV证书的申请往往需要几天的时间，不像DV证书，基本上实时就可以获取到了。而OV证书他的价格，也要远远高于DV证书。DV证书很多都是免费的。那么，比OV证书做了更严格的验证，就是扩展验证EV证书，因为EV证书做了更严格的验证，所以大部分浏览器会对EV证书的显示非常的友好，它会把我们申请证书时所填写的机构名称，在浏览器的地址栏中的，最左侧显示出来。而对DV或者OV证书，浏览器是没有这个优待的。</p>
+<p>那么，我们获取到这样的证书之后，究竟是怎样生效的呢？浏览器实际上从安全角度来说对DVOV或者EV证书，它的效果是一样的。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/01/%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1345,219 +1443,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">转：说一说这些好问题</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-08-29 13:35:41 / 修改时间：23:50:31" itemprop="dateCreated datePublished" datetime="2020-08-29T13:35:41+08:00">2020-08-29</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在我看来，能够帮我们扩展一个逻辑的边界的问题，就是好问题。因为通过解决这样的问题，<strong>能够加深我们对这个逻辑的理解，或者帮我们关联到另外一个知识点，进而可以帮助我们建立起自己的知识网络。</strong></p>
-<p>在工作中会问好问题，是一个很重要的能力。</p>
-<h3 id="join的写法">join的写法</h3>
-<p>在35篇文章《join语句怎么优化?》中，我在介绍join执行顺序的时候，用的都是strainght_join。有同学哉问候提出了两个问题：</p>
-<ol type="1">
-<li>如果用left join的话，左边的表一定是驱动表吗？</li>
-<li>如果两个表的join包含多个条件的等值匹配，是都要写到on里面呢，还是只把一个条件写到on里面，其他条件写到where部分？</li>
-</ol>
-<p>为了同时回答这两个问题，我来构造两个表a和b：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> a(f1 <span class="built_in">int</span>, f2 <span class="built_in">int</span>, <span class="keyword">index</span>(f1))<span class="keyword">engine</span>=<span class="keyword">innodb</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> b(f1 <span class="built_in">int</span>, f2 <span class="built_in">int</span>)<span class="keyword">engine</span>=<span class="keyword">innodb</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> a <span class="keyword">values</span>(<span class="number">1</span>,<span class="number">1</span>),(<span class="number">2</span>,<span class="number">2</span>),(<span class="number">3</span>,<span class="number">3</span>),(<span class="number">4</span>,<span class="number">4</span>),(<span class="number">5</span>,<span class="number">5</span>),(<span class="number">6</span>,<span class="number">6</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> b <span class="keyword">values</span>(<span class="number">3</span>,<span class="number">3</span>),(<span class="number">4</span>,<span class="number">4</span>),(<span class="number">5</span>,<span class="number">5</span>),(<span class="number">6</span>,<span class="number">6</span>),(<span class="number">7</span>,<span class="number">7</span>),(<span class="number">8</span>,<span class="number">8</span>);</span><br></pre></td></tr></table></figure>
-<p>表a和b都有两个字段f1和f2，不同的是表a的字段f1上有索引。然后，我往两个表中都插入了6条记录，其中在表a和b上同时存在的数据有4行。</p>
-<p>同学提到的第二个问题，其实就是下面这两种写法的区别：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">left</span> <span class="keyword">join</span> b <span class="keyword">on</span> (a.f1=b.f1) <span class="keyword">and</span> (a.f2=b.f2); <span class="comment">/*Q1*/</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">left</span> <span class="keyword">join</span> b <span class="keyword">on</span> (a.f1=b.f1) <span class="keyword">where</span> (a.f2=b.f2); <span class="comment">/*Q2*/</span></span><br></pre></td></tr></table></figure>
-<p>我把这两条语句分别记为Q1和Q2。</p>
-<p>首先，需要说明的是，这两个left join语句的语义逻辑并不相同。我们先来看一下它们的执行结果。</p>
-<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%98-%E4%B8%A4%E4%B8%AAjoin%E7%9A%84%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C.png" class>
-<p>可以看到：</p>
-<ol type="1">
-<li>语句Q1返回的数据集是6行，表a中即使没有满足匹配条件的记录，查询结果中也会返回一行，并将表b的各个字段值填成NULL。</li>
-<li>语句Q2返回的是4行。从逻辑上可以这么理解，最后的两行，由于表b中没有匹配的字段，结果集里面b.f2的值是空，不满足where部分的条件判断，因此不能作为结果集的一部分。</li>
-</ol>
-<p>接下来，我们看看实际执行这两条语句时，MySQL是怎么做的。</p>
-<p>我们先一起看看语句Q1的explain结果：</p>
-<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%98-Q1%E7%9A%84explain%E7%BB%93%E6%9E%9C.png" class>
-<p>可以看到，这个结果符合我们的预期：</p>
-<ul>
-<li>驱动表是表a，被驱动表是表b；</li>
-<li>由于表b的f1字段上没有索引，所以使用的是Block Nested Loop Join（简称BNL）算法。</li>
-</ul>
-<p>看到BNL算法，你就应该知道这条语句执行流程其实是这样的：</p>
-<ol type="1">
-<li>把表a的内容读入joiin_buffer中。因为是select *，所以字段f1和f2都被放入join_buffer了。</li>
-<li>顺序扫描表b，对于每一行数据，判断join条件（也就是(a.f1=b.f1) and (a.f1=1)）是否满足，满足条件的记录，作为结果集的一行返回。如果语句中有where子句，需要先判断where部分满足条件后，再返回。</li>
-<li>表b扫描完成后，对于没有被匹配的表a的行（在这个例子中就是(1,1)、(2,2)这两行），把剩余字段补上NULL，再放入结果集中。</li>
-</ol>
-<p>对应的流程图如下：</p>
-<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%982.jpg" class>
-<p>可以看到，这条语句确实是以表a为驱动表，而且从执行效果看，也和使用straight_join是一样的。</p>
-<p>你可能会想，语句Q2的查询结果里面少了最后两行数据，是不是就是把上面流程中的步骤3去掉呢？我们还是先看一下语句Q2的explain结果吧。</p>
-<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%983.png" class>
-<p>可以看到，这条语句是以表b为驱动表的。而如果一条join语句的Extra字段什么都没写的话，就表示使用的是Index Nested-Loop Join (NLJ) 算法。</p>
-<p>因此，语句Q2使用了a的f1索引，执行流程是这样的：顺序扫描表b，每一行用b.f1到表a中去查，匹配到记录后判断a.f2=b.f2是否满足，满足条件的话就作为结果集的一部分返回。</p>
-<p>那么，<strong>为什么语句Q1和Q2这两个查询的执行流程会差距这么大呢？</strong>其实，这是因为优化器基于Q2这个查询的语义做了优化。</p>
-<p>为了理解这个问题，我需要再和你交代一个背景知识点：在MySQL里，NULL跟任何值执行等值判断和不等值判断的结果，都是NULL。这里包括，select NULL = NULL的结果，也是返回NULL。</p>
-<p>因此，语句Q2里面where a.f2=b.f2就表示，查询结果里面不会包含b.f2是NULL的行，这样这个left join的语义就是"找到这两个表里面，f1、f2对应相同的行。对于表a中存在，而表b中匹配不到的行，就放弃"。</p>
-<p>这样，这条语句虽然用的是left join，但是语义跟join是一致的。</p>
-<p>因此，优化器就把这条语句的left join改写成了join，然后因为表a的f1上有索引，就把表b作为驱动表，，这样就可以用上NLJ算法。在执行explain之后，你再执行show warnings，就能看到这个改写的结果，如图5所示。</p>
-<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%984.png" class>
-<p>这个例子说明，即使我们在SQL语句中写成left join，执行过程还是有可能不是从左到右连接的。也就是说，<strong>使用left join时，左边的表不一定是驱动表。</strong></p>
-<p>这样看来，<strong>如果需要left join的语义，就不能把被驱动表的字段放在where条件里面做等值判断或不等值判断，必须都写在on里面。</strong>那如果是join语句呢？</p>
-<p>这时候，我们再看看这两条语句：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">join</span> b <span class="keyword">on</span>(a.f1=b.f1) <span class="keyword">and</span> (a.f2=b.f2); <span class="comment">/*Q3*/</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">join</span> b <span class="keyword">on</span>(a.f1=b.f1) <span class="keyword">where</span> (a.f2=b.f2); <span class="comment">/*Q4*/</span></span><br></pre></td></tr></table></figure>
-<p>我们再使用一次看explain和show warnings的方法，看看优化器是怎么做的。</p>
-<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%985.png" class>
-<p>可以看到，这两条语句都被改写成：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> a <span class="keyword">join</span> b <span class="keyword">where</span> (a.f1=b.f1) <span class="keyword">and</span> (a.f2=b.f2);</span><br></pre></td></tr></table></figure>
-<p>执行计划自然也是一模一样的。</p>
-<p>也就是所，在这种情况下，join将判断条件是否全部放在on部分就没有区别了。</p>
-<h3 id="simple-nested-loop-join的性能问题">Simple Nested Loop Join的性能问题</h3>
-<p>我们知道，join语句使用不同的算法，对语句的性能影响会很大。在34篇文章<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83OTcwMA==">《到底可不可以使用join？》<i class="fa fa-external-link-alt"></i></span>的评论区中，有同学提了一个很不错的问题。</p>
-<p>我们在文中说道，虽然BNL算法和Simple Nested Loop Join算法都是要判断M*N次（M和N分别是join的两个表的行数），但是Simple Nested Loop Join算法的每轮判断都要走全表扫描，因此性能上BNL算法执行起来会快很多。</p>
-<p>为了便于说明，我还是先为你简单描述一下这两个算法。</p>
-<p>BNL算法的执行逻辑是：</p>
-<ol type="1">
-<li>首先，将驱动表的数据全部读入内存join_buffer中，这里join_buffer是无序数组；</li>
-<li>然后，顺序遍历被驱动表的所有行，每一行数据都跟join_buffer中的数据进行匹配，匹配成功则作为结果集的一部分返回。</li>
-</ol>
-<p>Simple Nested Loop join算法的执行逻辑是：顺序取出驱动表中的每一行数据，到被驱动表做全表扫描匹配，匹配成功则作为结果集的一部分返回。</p>
-<p>同学的疑问是，Simple Nested Loop Join算法，其实也是把数据读到内存里，然后按照匹配条件进行判断，为什么性能差距会这么大呢？</p>
-<p>解释这个问题，需要用到MySQL中索引结构和Buffer Pool的相关知识点：</p>
-<ol type="1">
-<li><p>在对被驱动表做全表扫描的时候，如果数据没有在Buffer Pool中，就需要等待这部分数据从磁盘读入；</p>
-<p>从磁盘读入数据到内存中，会影响正常业务的Buffer Pool命中率，而且这个算法天然会对被驱动表的数据做多次访问，更容易将这些数据页放到Buffer Pool的头部（请参考<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MDE0Nw==">第35篇文章<i class="fa fa-external-link-alt"></i></span>中的相关内容）；</p></li>
-<li><p>即使被驱动表数据都是在内存中，每次查找”下一个记录的操作“，都是类似指针操作。而join_buffer中的是数组，遍历的成本更低。</p></li>
-</ol>
-<p>所以说，BNL算法的性能会更好。</p>
-<h3 id="distinct和group-by的性能">distinct和group by的性能</h3>
-<p>在<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MDQ3Nw==">37篇文章《什么时候会使用内部临时表？》<i class="fa fa-external-link-alt"></i></span>中，同学提了一个好问题：如果只需要去重，不需要执行聚合函数，distinct和group by哪种效率高一些呢？</p>
-<p>我来展开一下他的问题：如果表t的字段a上没有索引，那么下面这两条语句：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a <span class="keyword">from</span> t <span class="keyword">group</span> <span class="keyword">by</span> a <span class="keyword">order</span> <span class="keyword">by</span> <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> a <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
-<p>的性能是不是相同的？</p>
-<p>首先需要说明的是，这种group by的写法，并不是SQL标准的写法。标准的group by语句，是需要在select部分加一个聚合函数，比如：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">selecrt a, count(*) from t group by a order by null;</span><br></pre></td></tr></table></figure>
-<p>这条语句的逻辑是：按照字段a分组，计算每组的a出现次数。在这个结果里，由于做的是聚合计算，相同的a只出现一次。</p>
-<blockquote>
-<p>备注：这里你可以顺便复习一下<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MDQ3Nw==">第37篇文章中<i class="fa fa-external-link-alt"></i></span>关于group by 的相关内容。</p>
-</blockquote>
-<p>没有了count(*)以后，也就是不再需要执行"计算总数"的逻辑时，第一条语句的逻辑就变成是：按照字段a做分组，相同的a的值只返回一行。而这就是distinct的语义，所以不需要执行聚合函数时，distinct和group by这两条语句的语义和执行流程是相同的，因此执行性能也相同。</p>
-<p>这两条语句的执行流程是下面这样的：</p>
-<ol type="1">
-<li>创建一个临时表，临时表有一个字段a，并且在这个字段a上创建一个唯一索引；</li>
-<li>遍历表t，依次取数据插入临时表中：
-<ul>
-<li>如果发现唯一键冲突，就跳过；</li>
-<li>否则插入成功；</li>
-</ul></li>
-<li>遍历完成后，将临时表作为结果集返回给客户端。</li>
-</ol>
-<h3 id="备库自增主键问题">备库自增主键问题</h3>
-<p>除了性能问题，大家对细节的追问也很到位。在<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MDUzMQ==">第39篇文章《自增主键为什么不是连续的？》<i class="fa fa-external-link-alt"></i></span>评论区，有同学问道：在binlog_format=statement时，语句A先获取id=1，然后语句B获取id=2；接着语句B提交，写binlog，然后语句A再写binlog。这时候，如果binlog重放，是不是会发生语句B的id为1，而语句A的id为2的不一致情况呢？</p>
-<p>首先，这个问题默认了"自增id的生成顺序，和binlog的写入顺序可能是不同的"，这个理解是正确的。</p>
-<p>其次，这个问题限定在statement的格式下，也是对的。因为row格式的binlog就没有这个问题了，Write row event里面直接写了每一行的所有字段的值。</p>
-<p>而至于为什么不会发生不一致的情况，我们来看一下下面的这个例子。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t(<span class="keyword">id</span>, it auto_increment primary <span class="keyword">key</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="literal">null</span>);</span><br></pre></td></tr></table></figure>
-<img data-src="/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/%E5%A5%BD%E9%97%AE%E9%A2%986.png" class>
-<p>可以看到，在insert语句之前，还有一句SET INSERT_ID=1。这条命令的意思是，这个线程里下一次需要用到自增值的时候，不论当前表的自增值是多少，固定用1这个值。</p>
-<p>这个SET INSERT_ID语句是固定跟在insert语句之前的，比如同学提到的场景，主库上语句A的id是1，语句B的id是2，但是写入binlog的顺序先B后A，那么binlog就变成：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> INSERT_ID=<span class="number">2</span>;</span><br><span class="line">语句B;</span><br><span class="line"><span class="keyword">SET</span> INSERT_ID=<span class="number">1</span>;</span><br><span class="line">语句A;</span><br></pre></td></tr></table></figure>
-<p>你看，在备库上语句B用到的INSERT_ID依然是2，跟主库相同。</p>
-<p>因此，即使两个INSERT语句在主备库的执行顺序不同，自增主键字段的值也不会不一致。</p>
-<h3 id="小结">小结</h3>
-<p>今天这篇答疑文章，我选了4个好问题和你分享，并做了分析。在我看来，能够提出好问题，首先表示这些同学理解了我们文章的内容，进而又做了深入思考。</p>
-<p>答疑文章也是要有课后思考题的。</p>
-<p>在<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83MDU2Mg==">第8篇文章的评论区<i class="fa fa-external-link-alt"></i></span>，有同学提了一个问题：他查看了一下innodb_trx，发现这个事务的trx_id是一个很大的数（281479535353408），而且似乎在同一个session中启动会话得到的trx_Id是保持不变的。当执行任何加写锁的语句后，trx_id都会变成一个很小的数字(118378)。</p>
-<p>你可以通过实验验证一下，然后分析看看，事务id的分配规则是什么，以及MySQL为什么要这么设计呢？</p>
-<p>解答： 只读事务id是临时生成的，原本trx_id的值就是0。计算的算法是：把当前事务的trx变量的指针地址转成整数，再加上2^48。</p>
-<p>实际上，在T1时刻，session A还没有涉及到更新，是一个只读事务。而对于只读事务，InnoDB并不会分配trx_id。也就是说：</p>
-<ol type="1">
-<li>在T1时刻，trx_id的值其实就是0。而这个很大的数，只是显示用的。一会儿我会再和你说说这个数据的生成逻辑。</li>
-<li>直到session A在T3时刻执行insert语句的时候，InnoDB才真正分配了trx_id。所以，T4时刻，session B查到的这个trx_id的值就是1289。</li>
-</ol>
-<p>需要注意的是，除了显而易见的修改类语句外，如果select语句后面加上for update，这个事务也不是只读事务。</p>
-<p>在上一篇文章的评论区，有同学提出，实验的时候发现不止加1。这是因为：</p>
-<ol type="1">
-<li>update和delete语句除了事务本身，还涉及到标记删除旧数据，也就是要把数据放到purge队列里等待后续的物理删除，这个操作也会把max_trx_id+1，因此在一个事务中至少加2；</li>
-<li>而InnoDB的后台操作，比如表的索引信息统计这类操作，也是会启动内部事务的，因此你可能看到，trx_id值并不是按照加1递增的。</li>
-</ol>
-<p>那么，<strong>T2时刻查到的这个很大的数字是怎么来的呢？</strong></p>
-<p>其实，这个数字是每次查询的时候由系统临时计算出来的。它的算法是：把当前事务的trx变量的指针地址转成整数，再加上2^48。使用这个算法，就可以保证以下两点：</p>
-<ol type="1">
-<li>因为同一个只读事务在执行期间，它的指针地址是不会变的，所以不论是在innodb_trx还是在innodb_locks表里，同一个只读事务查出来的trx_id就会是一样的。</li>
-<li>如果有并行的多个只读事务，每个事务的trx变量的指针地址肯定不同。这样，不同的并发只读事务，查出来的trx_id就是不同的。</li>
-</ol>
-<p>那么，<strong>为什么还要再加上2^48呢？</strong></p>
-<p>在显示值里面加上2^48，目的是保证只读事务显示的trx_id值比较大，正常情况下就会区别于读写事务的id。但是，trx_id跟row_id的逻辑类似，定义长度也是8个字节。因此，在理论上还是可能出现一个读写事务与一个只读事务显示的trx_id相同的情况。不过，这个概率很低，并且也没有什么实质的危害，可以不管它。</p>
-<p>另一个问题是，<strong>只读事务不分配trx_id，有什么好处呢？</strong></p>
-<ul>
-<li>一个好处是，这样做可以减小事务视图里面活跃事务数组的大小。因为正在运行的只读事务，是不影响数据的可见性判断的，所以在创建事务的一致性视图时，InnoDB就只需要拷贝读写事务的trx_id；</li>
-<li>另一个好处是，可以减少trx_id的申请次数。在InnoDB里，即使你只是执行一个普通的select语句，在执行过程中，也是要对应一个只读事务的。所以只读事务优化后，普通的查询语句不需要申请trx_id，就大大减少了并发事务申请trx_id时的锁冲突。</li>
-</ul>
-<p>由于只读事务不分配trx_id，一个自然而然的结果就是trx_id的增加速度变慢了。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1629,7 +1514,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">122</span>
+          <span class="site-state-item-count">123</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
