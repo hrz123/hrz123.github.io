@@ -245,76 +245,67 @@
 
       
           <p>HTTP协议全称是超文本传输协议，超文本也就是对应着我们的一个资源的一种表述，就是我们服务器端一个URI对应的一个页面，我们把它传输到客户端进行渲染显示，那么rest架构呢，也就是我们HTTP协议设计时所遵循的架构，它也是在描述资源状态的一种转移。由于我们一种资源对应着许多种状态，所以我们的客户端在接受我们资源表述的转移时需要进行一种协商。比如：一个来自中国的用户，在他的浏览器访问一个页面时可能得到的是一个中文页面。但是一个其他国家的用户，在用浏览器访问同一个URL时呢，获得的页面可能是用他的本国语言描述的。那么接下来这篇文章中，我们将介绍内容协商是怎样进行的。</p>
-<h3 id="内容协商">内容协商</h3>
-<p>每个URI指向的资源可以是任何事物，可以由多种不同的表述，例如一份文档可以有不同语言的翻译、不同的媒体格式、可以针对不同的浏览器提供不同的压缩编码等。（同一个URL可能会有很多种语言，比如法语、德语的不同的页面，也可以不同的方式比如说我们可以展示一个html的在页面上显示的格式，也可以直接展示为一个pdf的文档，那么由于我们的浏览器不同，浏览器所支持的压缩算法也是不一样的，而我们的html这种文本语言本身是有很大的压缩空间的，所以，我们既可以以gzip，也可以以br这种压缩方式。所以这就是一个URL对应着资源的许多种不同的表述。）</p>
-<h3 id="内容协商的两种方式">内容协商的两种方式</h3>
-<ul>
-<li>Proactive主动式内容协商：
-<ul>
+<h3 id="内容协商"><a href="#内容协商" class="headerlink" title="内容协商"></a>内容协商</h3><p>每个URI指向的资源可以是任何事物，可以由多种不同的表述，例如一份文档可以有不同语言的翻译、不同的媒体格式、可以针对不同的浏览器提供不同的压缩编码等。（同一个URL可能会有很多种语言，比如法语、德语的不同的页面，也可以不同的方式比如说我们可以展示一个html的在页面上显示的格式，也可以直接展示为一个pdf的文档，那么由于我们的浏览器不同，浏览器所支持的压缩算法也是不一样的，而我们的html这种文本语言本身是有很大的压缩空间的，所以，我们既可以以gzip，也可以以br这种压缩方式。所以这就是一个URL对应着资源的许多种不同的表述。）</p>
+<h3 id="内容协商的两种方式"><a href="#内容协商的两种方式" class="headerlink" title="内容协商的两种方式"></a>内容协商的两种方式</h3><ul>
+<li>Proactive主动式内容协商：<ul>
 <li>指由客户端先在请求头部提出需要的表述形式，而服务器根据这些请求头部提供特定的representation表述（这种主动式内容协商会有一个问题，就是服务器端可能会相对武断，因为它可能拿不到足够的信息）</li>
-</ul></li>
-<li>Reactive响应式内容协商：
-<ul>
-<li>指服务器返回300 Multiple Choices 或者 406 Not Acceptable，由客户端选择一种表述URI使用（再发起相应的请求）</li>
-</ul></li>
 </ul>
-<h3 id="proactive主动式内容协商">Proactive主动式内容协商</h3>
-<p>我们的请求中除了传递URL描述对应的资源以外，还要告诉我接受那种格式（Accept：text/*），我希望那种语言（accept-Language: en），接受哪种压缩的方式（Accept-Encoding：br, gzip ; q = 0.8）（Content-Type：text/html Content-Language: en Content-Encoding: br）</p>
-<h3 id="reactive响应式内容协商">Reactive响应式内容协商</h3>
-<p>服务器返回了一个列表，列表中是它认为合适的一种表述，通过300这样的响应码返回给客户端，而客户端对这个list中自行决定了一个比较合适的新的一个URL，再次访问服务器端，服务器端给到正确的表述。（有一个问题，RFC规范中没有明确的告诉Client应该依据怎样的规则，所以导致各大浏览器无法按照统一的策略去选择合适的响应表述给用户。所以响应式内容协商相对是很少使用的。）</p>
-<h3 id="常见的协商要素一">常见的协商要素（一）</h3>
-<ul>
+</li>
+<li>Reactive响应式内容协商：<ul>
+<li>指服务器返回300 Multiple Choices 或者 406 Not Acceptable，由客户端选择一种表述URI使用（再发起相应的请求）</li>
+</ul>
+</li>
+</ul>
+<h3 id="Proactive主动式内容协商"><a href="#Proactive主动式内容协商" class="headerlink" title="Proactive主动式内容协商"></a>Proactive主动式内容协商</h3><p>我们的请求中除了传递URL描述对应的资源以外，还要告诉我接受那种格式（Accept：text/*），我希望那种语言（accept-Language: en），接受哪种压缩的方式（Accept-Encoding：br, gzip ; q = 0.8）（Content-Type：text/html  Content-Language: en Content-Encoding: br）</p>
+<h3 id="Reactive响应式内容协商"><a href="#Reactive响应式内容协商" class="headerlink" title="Reactive响应式内容协商"></a>Reactive响应式内容协商</h3><p>服务器返回了一个列表，列表中是它认为合适的一种表述，通过300这样的响应码返回给客户端，而客户端对这个list中自行决定了一个比较合适的新的一个URL，再次访问服务器端，服务器端给到正确的表述。（有一个问题，RFC规范中没有明确的告诉Client应该依据怎样的规则，所以导致各大浏览器无法按照统一的策略去选择合适的响应表述给用户。所以响应式内容协商相对是很少使用的。）</p>
+<h3 id="常见的协商要素（一）"><a href="#常见的协商要素（一）" class="headerlink" title="常见的协商要素（一）"></a>常见的协商要素（一）</h3><ul>
 <li>质量因子q：内容的质量、可接受类型的优先级（非常常见，有两种主要的表达方式，第一个是表示内容的质量，我们现在可以想见，如果我们发起请求去获取一张图片，如果这张图片是一张高清图片的缩略图，让用户快速浏览用的，那么我们就可以做非常高的压缩比，那么这个时候的质量因子，就可以比较小。那么如果这个时候我们描述的是一张医学上的图片，那么这个图片中，我们的质量因子就要设的比较大，因为我们不能容忍对这张图片做大幅度的压缩，以使得我们损失了大量的细节。第二个则是表示我们可接受类型的优先级。</li>
-<li>媒体资源的MIME类型及质量因子
-<ul>
+<li>媒体资源的MIME类型及质量因子<ul>
 <li>Accept：text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</li>
 <li>Accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3</li>
-</ul></li>
 </ul>
-<h3 id="常见的协商要素二">常见的协商要素（二）</h3>
-<ul>
-<li>字符编码：由于UTF-8格式广为使用，Accept-Charset已被废弃
-<ul>
+</li>
+</ul>
+<h3 id="常见的协商要素（二）"><a href="#常见的协商要素（二）" class="headerlink" title="常见的协商要素（二）"></a>常见的协商要素（二）</h3><ul>
+<li>字符编码：由于UTF-8格式广为使用，Accept-Charset已被废弃<ul>
 <li>Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7</li>
-</ul></li>
-<li>内容编码：主要指压缩算法
-<ul>
+</ul>
+</li>
+<li>内容编码：主要指压缩算法<ul>
 <li>Accept-Encoding: gzip,deflate,br</li>
-</ul></li>
-<li>表述语言
-<ul>
+</ul>
+</li>
+<li>表述语言<ul>
 <li>Accept-Language:zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7</li>
 <li>Accept-Language:zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</li>
-</ul></li>
 </ul>
-<h3 id="国际化与本地化">国际化与本地化</h3>
-<ul>
-<li>internationalization（i18n，i和n间有18个字符）
-<ul>
+</li>
+</ul>
+<h3 id="国际化与本地化"><a href="#国际化与本地化" class="headerlink" title="国际化与本地化"></a>国际化与本地化</h3><ul>
+<li>internationalization（i18n，i和n间有18个字符）<ul>
 <li>指设计软件时，在不同的国家、地区可以不做逻辑实现层面的修改便能够以不同的语言显示</li>
-</ul></li>
-<li>localization（l10n，l和n间有10个字符）
-<ul>
+</ul>
+</li>
+<li>localization（l10n，l和n间有10个字符）<ul>
 <li>指内容协商时，根据请求中的语言及区域信息，选择特定的语言作为资源表述</li>
-</ul></li>
 </ul>
-<h3 id="资源表述的元数据头部">资源表述的元数据头部</h3>
-<ul>
-<li>媒体类型、编码
-<ul>
+</li>
+</ul>
+<h3 id="资源表述的元数据头部"><a href="#资源表述的元数据头部" class="headerlink" title="资源表述的元数据头部"></a>资源表述的元数据头部</h3><ul>
+<li>媒体类型、编码<ul>
 <li>content-type: text/html; charset=utf-8</li>
-</ul></li>
-<li>内容编码
-<ul>
-<li>content-encoding: gzip</li>
-</ul></li>
-<li>语言
-<ul>
-<li>Content-Language: de-DE, en-CA</li>
-</ul></li>
 </ul>
-<h3 id="小结">小结</h3>
-<p>内容协商将决定服务器端生成不同的HTTP包体传输给客户端。下一篇文章将介绍HTTP消息包体的传输方式。</p>
+</li>
+<li>内容编码<ul>
+<li>content-encoding: gzip</li>
+</ul>
+</li>
+<li>语言<ul>
+<li>Content-Language: de-DE, en-CA</li>
+</ul>
+</li>
+</ul>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>内容协商将决定服务器端生成不同的HTTP包体传输给客户端。下一篇文章将介绍HTTP消息包体的传输方式。</p>
 
       
     </div>
@@ -388,7 +379,6 @@
 
       
           
-
       
     </div>
 
@@ -461,44 +451,40 @@
 
       
           <p>在HTTP消息传输过程中，会经历会多正向代理服务器和反向代理服务器，那么这些代理服务器在转发消息时，会涉及到一些HTTP头部，这篇文章中，将会介绍这些HTTP头部。包括由于存在这些代理服务器，所以客户端与源服务器之间有许多条TCP连接，那么有一些HTTP头部是用于将客户端的实际IP地址，传递给服务器做相关用途的。</p>
-<h3 id="客户端与源服务器间存在多个代理">客户端与源服务器间存在多个代理</h3>
-<p>rest架构图，客户端与源服务器之间存在许多代理，而客户端每经过一个4层传输层以上的代理就建立一条新的TCP连接，而TCP连接中的源端的IP地址，只是这个TCP连接中的地址。比如说origin server，如果想基于客户端的IP地址来做负载均衡，或者是做限速限流，那么通过TCP连接是拿不到的。因为它只能拿到Gateway的IP地址。那么我们该怎么样传递客户端的IP地址到源服务器呢？我们可以通过一个HTTP头部。</p>
-<h3 id="问题如何传递ip地址">问题：如何传递IP地址？</h3>
-<ol type="1">
+<h3 id="客户端与源服务器间存在多个代理"><a href="#客户端与源服务器间存在多个代理" class="headerlink" title="客户端与源服务器间存在多个代理"></a>客户端与源服务器间存在多个代理</h3><p>rest架构图，客户端与源服务器之间存在许多代理，而客户端每经过一个4层传输层以上的代理就建立一条新的TCP连接，而TCP连接中的源端的IP地址，只是这个TCP连接中的地址。比如说origin server，如果想基于客户端的IP地址来做负载均衡，或者是做限速限流，那么通过TCP连接是拿不到的。因为它只能拿到Gateway的IP地址。那么我们该怎么样传递客户端的IP地址到源服务器呢？我们可以通过一个HTTP头部。</p>
+<h3 id="问题：如何传递IP地址？"><a href="#问题：如何传递IP地址？" class="headerlink" title="问题：如何传递IP地址？"></a>问题：如何传递IP地址？</h3><ol>
 <li>TCP连接四元组（src ip, src port, dst ip, dst port）</li>
 <li>HTTP头部<strong>X-Forwarded-For</strong>用于传递IP</li>
 <li>HTTP头部X-Real-IP用于传递用户IP（非RFC规范中的，比如nginx就经常会使用X-Real-IP来传递用户的IP）</li>
 <li>网络中存在许多反向代理（前提）</li>
 </ol>
-<p>用户 内网IP： 192.168.0.x</p>
+<p>用户 内网IP：             192.168.0.x</p>
 <p>ADSL 运营商公网IP：115.204.33.1</p>
-<p>正向代理：IP地址 1.1.1.1 X-Forwarded-For:115.204.33.1 X-Real-IP: 115.204.33.1</p>
-<p>CDN IP地址： 2.2.2.2 X-Forwarded-For:115.204.33.1 1.1.1.1 X-Real-IP: 115.204.33.1</p>
+<p>正向代理：IP地址      1.1.1.1                              X-Forwarded-For:115.204.33.1                 X-Real-IP: 115.204.33.1</p>
+<p>CDN IP地址：             2.2.2.2                             X-Forwarded-For:115.204.33.1 1.1.1.1    X-Real-IP: 115.204.33.1</p>
 <p>反向代理 用户地址：115.204.33.1 remote_addr变量：2.2.2.2</p>
-<h3 id="消息的转发">消息的转发</h3>
-<ul>
-<li>Max-Forwards头部
-<ul>
+<h3 id="消息的转发"><a href="#消息的转发" class="headerlink" title="消息的转发"></a>消息的转发</h3><ul>
+<li>Max-Forwards头部<ul>
 <li>限制Proxy代理服务器的最大转发次数，仅对TRACE/OPTIONS方法有效（以防止过长的代理服务器的转发）</li>
 <li>Max-Forwards=1*DIGIT （ABNF中的定义是1个数字）</li>
-</ul></li>
-<li>Via头部
-<ul>
-<li>指明经过的代理服务器名称及版本</li>
-<li>Via = 1#（received-protocol RWS received-by [ RWS comment ]）
-<ul>
-<li>received-protocol = [ protocol-name "/" ] protocol-version</li>
-<li>reveived-by = ( uri-host [ ":" port ]) / pseudonym</li>
-<li>pseudonym = token</li>
-</ul></li>
-</ul></li>
-<li>Cache-Control：no-transform（还有很多其他的用途）
-<ul>
-<li>禁止代理服务器修改响应包体（为了防止代理服务器修改服务器发向客户端的响应中的包体内容，那么HTTP规范又引入了一个新的Header字段叫做Cache-Control）</li>
-</ul></li>
 </ul>
-<h3 id="小结">小结</h3>
-<p>这篇文章讨论了HTTP请求在历经重重的代理服务器后，在HTTP header的头部中能够反馈给我们的信息。特别是对于在服务器端获取到客户端的原始IP地址是非常有用的。</p>
+</li>
+<li>Via头部<ul>
+<li>指明经过的代理服务器名称及版本</li>
+<li>Via = 1#（received-protocol RWS received-by [ RWS comment ]）<ul>
+<li>received-protocol =  [ protocol-name “/“ ] protocol-version</li>
+<li>reveived-by = ( uri-host [ “:” port ]) / pseudonym</li>
+<li>pseudonym = token</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Cache-Control：no-transform（还有很多其他的用途）<ul>
+<li>禁止代理服务器修改响应包体（为了防止代理服务器修改服务器发向客户端的响应中的包体内容，那么HTTP规范又引入了一个新的Header字段叫做Cache-Control）</li>
+</ul>
+</li>
+</ul>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>这篇文章讨论了HTTP请求在历经重重的代理服务器后，在HTTP header的头部中能够反馈给我们的信息。特别是对于在服务器端获取到客户端的原始IP地址是非常有用的。</p>
 
       
     </div>
@@ -572,58 +558,54 @@
 
       
           <p>在上一篇文章中，我们介绍了客户端如何与服务器建立起连接，那么这篇文章中，将介绍服务器接收到连接以后，又怎样把HTTP消息进行路由和处理的常规流程。这里重点将介绍HOST这个请求头部。</p>
-<h3 id="host头部">HOST头部</h3>
-<ul>
-<li>HOST = uri-host [":" port] （ABNF对它的定义）
-<ul>
+<h3 id="HOST头部"><a href="#HOST头部" class="headerlink" title="HOST头部"></a>HOST头部</h3><ul>
+<li>HOST = uri-host [“:” port] （ABNF对它的定义）<ul>
 <li>HTTP/1.1规范要求，不传递Host头部则返回400错误响应码（为什么HTTP/1.1规范要加入这样一个要求呢？因为在HTTP/1.0这个版本中，是没有HOST头部的。因为HTTP/1.0所在的上世纪90年代中，域名相对是比较少的，每一个服务器的ip地址仅对应一个域名，所以当用户已经对你的服务器建立起连接以后，你是不需要考虑匹配那个域名对应的服务的。但是后来我们发现，HTTP域名众多，但是ip地址相对比较少，所以我们引入了HOST头部。）</li>
-<li>为防止HTTP/1.0时代的陈旧的代理服务器还在我们的网络中，发向正向代理的请求<strong>request-target</strong>必须以<strong>absolute-form</strong>形式出现
-<ul>
+<li>为防止HTTP/1.0时代的陈旧的代理服务器还在我们的网络中，发向正向代理的请求<strong>request-target</strong>必须以<strong>absolute-form</strong>形式出现<ul>
 <li>request-line = method SP <strong>request-target</strong> SP HTTP-version CRLF</li>
-<li>absolute-form = absolute-URI
-<ul>
-<li>absolute-URI = scheme ":" hier-part ["?" query ]</li>
-</ul></li>
-</ul></li>
-</ul></li>
+<li>absolute-form = absolute-URI<ul>
+<li>absolute-URI = scheme “:” hier-part [“?” query ]</li>
 </ul>
-<h3 id="规范和实现间是有差距的">规范和实现间是有差距的</h3>
-<ul>
-<li>关于Host头部：https://tools.ietf.org/html/rfc7230#section-5.4
-<ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="规范和实现间是有差距的"><a href="#规范和实现间是有差距的" class="headerlink" title="规范和实现间是有差距的"></a>规范和实现间是有差距的</h3><ul>
+<li>关于Host头部：<span class="exturl" data-url="aHR0cHM6Ly90b29scy5pZXRmLm9yZy9odG1sL3JmYzcyMzAjc2VjdGlvbi01LjQ=">https://tools.ietf.org/html/rfc7230#section-5.4<i class="fa fa-external-link-alt"></i></span><ul>
 <li>A cliend MUST send a Host header field in all HTTP/1.1 request messages.</li>
 <li>A server MUST respond with a 400 (Bad Request) status code to any HTTP/1.1 request message that <strong>lacks</strong> a Host header field and to any request message that contains <strong>more than one</strong> Host header field or a Host header field with an <strong>invalid field-value</strong>.</li>
-</ul></li>
 </ul>
-<h3 id="host头部与消息的路由">Host头部与消息的路由</h3>
-<p>（这里我们以典型的nginx来处理HOST头部的流程，来演示大部分的Web服务器在建立好TCP连接以后，究竟是怎样来寻找消息的处理模块的）</p>
-<ol type="1">
-<li>建立TCP连接
-<ul>
+</li>
+</ul>
+<h3 id="Host头部与消息的路由"><a href="#Host头部与消息的路由" class="headerlink" title="Host头部与消息的路由"></a>Host头部与消息的路由</h3><p>（这里我们以典型的nginx来处理HOST头部的流程，来演示大部分的Web服务器在建立好TCP连接以后，究竟是怎样来寻找消息的处理模块的）</p>
+<ol>
+<li>建立TCP连接<ul>
 <li>确定服务器的ip地址</li>
-</ul></li>
+</ul>
+</li>
 <li>接收请求</li>
-<li><strong>寻找虚拟主机</strong>
-<ul>
+<li><strong>寻找虚拟主机</strong><ul>
 <li><strong>匹配Host头部域名</strong>（请求行URI中，可能拿到了absolute-form，也就是绝对形式中因为这里可以取到域名，或者从Header中的Host头部也可以取到域名，拿到这个域名以后，就会和这台Web服务器所支持的所有域名进行匹配，匹配选中以后，就会选中相应的模块进行处理）</li>
-</ul></li>
-<li><strong>寻找URI的处理代码</strong>（接着进行第二步的路由匹配，就是按照URI中的Path路径，一一匹配相应的代码，找到处理请求的代码，然后开始访问相应的资源）
-<ul>
+</ul>
+</li>
+<li><strong>寻找URI的处理代码</strong>（接着进行第二步的路由匹配，就是按照URI中的Path路径，一一匹配相应的代码，找到处理请求的代码，然后开始访问相应的资源）<ul>
 <li><strong>匹配URI</strong></li>
-</ul></li>
-<li>执行处理请求的代码
-<ul>
+</ul>
+</li>
+<li>执行处理请求的代码<ul>
 <li>访问资源</li>
-</ul></li>
-<li>生成HTTP响应
-<ol type="1">
+</ul>
+</li>
+<li>生成HTTP响应<ol>
 <li>各中间件基于PF架构串行修改响应</li>
-</ol></li>
+</ol>
+</li>
 <li>发送HTTP响应</li>
 <li>记录访问日志</li>
 </ol>
-<h3 id="小结">小结</h3>
-<p>这篇文章中介绍了HOST头部，以及如何基于HOST进行消息的路由，这里我们所介绍的服务器根据HOST头部路由的流程，与大多数Web服务器相似，对我们具有参考价值。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>这篇文章中介绍了HOST头部，以及如何基于HOST进行消息的路由，这里我们所介绍的服务器根据HOST头部路由的流程，与大多数Web服务器相似，对我们具有参考价值。</p>
 
       
     </div>
@@ -697,8 +679,8 @@
 
       
           <p>向所有在为弱势群体发声、为众人谋幸福的人们致敬。</p>
-<iframe src="//player.bilibili.com/player.html?aid=456881063&amp;bvid=BV145411h7r9&amp;cid=231278018&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
-</iframe>
+<iframe src="//player.bilibili.com/player.html?aid=456881063&bvid=BV145411h7r9&cid=231278018&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
 
       
     </div>
@@ -773,10 +755,9 @@
       
           <p>HTTP的请求可以在长连接和短连接上执行。这篇文章介绍长连接和短连接的区别，以及如果客户端和源服务器之间有多个代理服务器，那么这些代理服务器会如何处理长连接。</p>
 <p>在我们谈HTTP的长连接和短连接的差别之前呢，我们先来看一下之前介绍过的HTTP连接的常见的一个流程。</p>
-<h3 id="http连接的常见流程">HTTP连接的常见流程</h3>
-<p>http://www.joes-hardware.com:80/power-tools.html</p>
-<ol type="1">
-<li>浏览器解析出主机名 www.joes-headware.com</li>
+<h3 id="HTTP连接的常见流程"><a href="#HTTP连接的常见流程" class="headerlink" title="HTTP连接的常见流程"></a>HTTP连接的常见流程</h3><p><span class="exturl" data-url="aHR0cDovL3d3dy5qb2VzLWhhcmR3YXJlLmNvbS9wb3dlci10b29scy5odG1s">http://www.joes-hardware.com:80/power-tools.html<i class="fa fa-external-link-alt"></i></span></p>
+<ol>
+<li>浏览器解析出主机名 <span class="exturl" data-url="aHR0cDovL3d3dy5qb2VzLWhlYWR3YXJlLmNvbS8=">www.joes-headware.com<i class="fa fa-external-link-alt"></i></span></li>
 <li>浏览器查询这个主机名的IP地址（DNS）202.43.78.3</li>
 <li>浏览器获得端口号（80）</li>
 <li>浏览器发起到202.43.78.3端口80的连接（TCP）</li>
@@ -785,9 +766,8 @@
 <li>浏览器关闭连接</li>
 </ol>
 <p>这就是一个完整的请求的过程，也是一个短连接的流程。</p>
-<h3 id="从tcp编程上看http请求处理">从TCP编程上看HTTP请求处理</h3>
-<p>服务器：</p>
-<ol type="1">
+<h3 id="从TCP编程上看HTTP请求处理"><a href="#从TCP编程上看HTTP请求处理" class="headerlink" title="从TCP编程上看HTTP请求处理"></a>从TCP编程上看HTTP请求处理</h3><p>服务器：</p>
+<ol>
 <li>创建新的套接字（socket）</li>
 <li>将套接字绑定到端口80上去（bind）</li>
 <li>允许套接字进行连接（listen）</li>
@@ -799,7 +779,7 @@
 <li>关闭连接（close）</li>
 </ol>
 <p>客户端：</p>
-<ol type="1">
+<ol>
 <li>获取IP地址和端口号</li>
 <li>创建新的套接字（socket）</li>
 <li>连接到服务器IP：port上去（connect）</li>
@@ -810,62 +790,58 @@
 <li>关闭连接（close）</li>
 </ol>
 <img data-src="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/%E4%BB%8ETCP%E7%BC%96%E7%A8%8B%E4%B8%8A%E7%9C%8BHTTP%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86.png" class>
-<h3 id="短连接与长连接">短连接与长连接</h3>
-<p>我们先谈一个事务的概念，我们假定一个事务就是一个请求对应着一个响应。那么什么是短连接呢？就是从时间线上来看，每建立一个连接1，处理一个请求，得到一个响应以后，这个连接就关闭，然后处理事务2的时候，又发起请求2和响应2，连接2也接着关闭，那么这就是一个串行的一个短连接。什么叫长连接呢？现在客户端与服务器建立了一个连接，执行完第一个事务以后，我们又来执行第2个事务、第3个事务、第4个事务，一直执行在同一个连接上，那么这就叫做持久的长连接。长连接是由什么来决定的呢？因为并不是所有的浏览器和客户端都支持长连接，特别是现在有一些非常古老的服务器，是不支持长连接的，那么客户端和服务器需要去沟通，那么沟通是通过什么呢？就通过Connection这样一个头部。Connection头部如果添加了Keep-Alive这样的一个值的时候，就表示长连接的一个意思。如果是请求中携带了Connection: Keep-Alive表示客户端说我希望使用长连接，如果服务器端也支持场链接的话，它会回的响应中也添加Connection: Keep-Alive。那么接下来，我们就可以复用这个长连接，去发送请求了。</p>
+
+<h3 id="短连接与长连接"><a href="#短连接与长连接" class="headerlink" title="短连接与长连接"></a>短连接与长连接</h3><p>我们先谈一个事务的概念，我们假定一个事务就是一个请求对应着一个响应。那么什么是短连接呢？就是从时间线上来看，每建立一个连接1，处理一个请求，得到一个响应以后，这个连接就关闭，然后处理事务2的时候，又发起请求2和响应2，连接2也接着关闭，那么这就是一个串行的一个短连接。什么叫长连接呢？现在客户端与服务器建立了一个连接，执行完第一个事务以后，我们又来执行第2个事务、第3个事务、第4个事务，一直执行在同一个连接上，那么这就叫做持久的长连接。长连接是由什么来决定的呢？因为并不是所有的浏览器和客户端都支持长连接，特别是现在有一些非常古老的服务器，是不支持长连接的，那么客户端和服务器需要去沟通，那么沟通是通过什么呢？就通过Connection这样一个头部。Connection头部如果添加了Keep-Alive这样的一个值的时候，就表示长连接的一个意思。如果是请求中携带了Connection: Keep-Alive表示客户端说我希望使用长连接，如果服务器端也支持场链接的话，它会回的响应中也添加Connection: Keep-Alive。那么接下来，我们就可以复用这个长连接，去发送请求了。</p>
 <ul>
-<li>Connection头部
-<ul>
-<li>Keep-Alive：长连接
-<ul>
-<li>客户端请求长连接
-<ul>
+<li>Connection头部<ul>
+<li>Keep-Alive：长连接<ul>
+<li>客户端请求长连接<ul>
 <li>Connection：Keep-Alive</li>
-</ul></li>
-<li>服务器表示支持长连接
-<ul>
-<li>Connection：Keep-Alive</li>
-</ul></li>
-<li>客户端复用连接</li>
-<li>HTTP/1.1默认支持长连接
-<ul>
-<li>Connection: Keep-Alive无意义（所以传递它意义并不大）</li>
-</ul></li>
-</ul></li>
-<li>Close：短连接（如果我们明确地表示不支持长连接呢？特别是在HTTP/1.1中呢，我们可以加Connection：Close。就表示这将是一个短连接。</li>
-<li>（那么Connection除了表示长连接和短连接以外呢，它还有一个功能，就是对于Connection后面列出的头部，它表示的含义是对代理服务器有一些要求，就是代理服务器在转发这个请求的时候，请不要去转发我Connection中列出的头部）对代理服务器的要求
-<ul>
-<li>不转发Connection列出头部，该头部仅与当前连接相关（比如说Connection里面列出了一个Cookie，那么代理服务器转发给源服务器的时候就需要把Cookie这个头部给它去除掉）</li>
-</ul></li>
-</ul></li>
 </ul>
-<h3 id="connection仅针对当前连接有效">Connection仅针对当前连接有效</h3>
-<p>Connection如果中间有代理服务器的时候，其实Connection并不是表示对完整的一个链路上都要使用长连接，而它仅表示是对当前的TCP连接，也就是说我们客户端与代理服务器之间这条连接是使用长连接。客户端中Connection: Keep-Alive只是表示与第一个代理服务器之间使用长连接，代理服务器可能和反向代理服务器呢，是不想使用长连接的，比如说这个代理服务器是一个比较老的版本，直接发了一个Connection: Close。表示我与这个代理服务器不想使用长连接，而这个反向代理服务器和我们企业内网的比如说源服务器之间，都支持长连接，那么这个代理服务器发出一个Connection：Keep-Alive，而源服务器跟这个反向代理服务器告诉说Connection：Keep-Alive，那么它们俩之间就是用这个长连接了。而这个反向代理服务器和这个正向代理服务器之间呢，使用的就是短连接，而这个正向代理服务器，因为它不支持长连接，所以它告诉客户端说，虽然你跟我说需要使用Keep-Alive，但是我是不支持的，所以我返回了一个Connection：Close。</p>
+</li>
+<li>服务器表示支持长连接<ul>
+<li>Connection：Keep-Alive</li>
+</ul>
+</li>
+<li>客户端复用连接</li>
+<li>HTTP/1.1默认支持长连接<ul>
+<li>Connection: Keep-Alive无意义（所以传递它意义并不大）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Close：短连接（如果我们明确地表示不支持长连接呢？特别是在HTTP/1.1中呢，我们可以加Connection：Close。就表示这将是一个短连接。</li>
+<li>（那么Connection除了表示长连接和短连接以外呢，它还有一个功能，就是对于Connection后面列出的头部，它表示的含义是对代理服务器有一些要求，就是代理服务器在转发这个请求的时候，请不要去转发我Connection中列出的头部）对代理服务器的要求<ul>
+<li>不转发Connection列出头部，该头部仅与当前连接相关（比如说Connection里面列出了一个Cookie，那么代理服务器转发给源服务器的时候就需要把Cookie这个头部给它去除掉） </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Connection仅针对当前连接有效"><a href="#Connection仅针对当前连接有效" class="headerlink" title="Connection仅针对当前连接有效"></a>Connection仅针对当前连接有效</h3><p>Connection如果中间有代理服务器的时候，其实Connection并不是表示对完整的一个链路上都要使用长连接，而它仅表示是对当前的TCP连接，也就是说我们客户端与代理服务器之间这条连接是使用长连接。客户端中Connection: Keep-Alive只是表示与第一个代理服务器之间使用长连接，代理服务器可能和反向代理服务器呢，是不想使用长连接的，比如说这个代理服务器是一个比较老的版本，直接发了一个Connection: Close。表示我与这个代理服务器不想使用长连接，而这个反向代理服务器和我们企业内网的比如说源服务器之间，都支持长连接，那么这个代理服务器发出一个Connection：Keep-Alive，而源服务器跟这个反向代理服务器告诉说Connection：Keep-Alive，那么它们俩之间就是用这个长连接了。而这个反向代理服务器和这个正向代理服务器之间呢，使用的就是短连接，而这个正向代理服务器，因为它不支持长连接，所以它告诉客户端说，虽然你跟我说需要使用Keep-Alive，但是我是不支持的，所以我返回了一个Connection：Close。</p>
 <p>这个场景中，主要是第一个正向代理服务器不支持长连接，但是它有一个优点，虽然我不支持，但是我认得Connection这个头部，我知道客户端说Keep-Alive时表示它想使用长连接，而接下来我不支持长连接，那么我给我的下游会传一个Connection: Close。如果这个代理服务器是一个非常古老的代理服务器，也就是我们Internet规模下确实存在可能非常古老的这样的代理服务器的场景，那么它其实是不认得Connection这个头部的，因为我们只有在HTTP/1.1协议中才引入了这个Connection头部，所以在它不认识的情况下呢，它会把它的Connection：Keep-Alive原封不动的传到上游去。当然它也不可能支持长连接。</p>
-<h3 id="代理服务器对长连接的支持">代理服务器对长连接的支持</h3>
-<ul>
-<li>问题：各方间错误使用了长连接
-<ul>
+<h3 id="代理服务器对长连接的支持"><a href="#代理服务器对长连接的支持" class="headerlink" title="代理服务器对长连接的支持"></a>代理服务器对长连接的支持</h3><ul>
+<li>问题：各方间错误使用了长连接<ul>
 <li>客户端发起长连接</li>
 <li>代理服务器陈旧，不能正确的处理请求的Connection头部，将客户端请求中的Connection:Keep-Alive原样转发给上游服务器</li>
 <li>上游服务器正确的处理了Connection头部，在发送响应后没有关闭连接，而试图保持、复用与不认长连接的代理服务器的连接</li>
 <li>代理服务器收到响应中Connection: Keep-Alive后不认，转发给客户端，同时等待服务器关闭短连接</li>
 <li>客户端收到了Connection：Keep-Alive，认为可以复用长连接，继续在该连接上发起请求</li>
 <li>代理服务器出错，因为短连接上不能发起两次请求</li>
-</ul></li>
-<li>Proxy-Connection
-<ul>
+</ul>
+</li>
+<li>Proxy-Connection<ul>
 <li>陈旧的代理服务器不识别该头部：退化为短连接</li>
-<li>新版本的代理服务器理解该头部
-<ul>
+<li>新版本的代理服务器理解该头部<ul>
 <li>与客户端建立长连接</li>
 <li>与服务器使用Connection替代Proxy_connection头部</li>
-</ul></li>
-</ul></li>
 </ul>
-<h3 id="小结">小结</h3>
-<p>这篇文章介绍HTTP中的keep-alive长连接，长连接可以有效的减少TCP的握手次数，也在拥塞控制上能够提升我们的吞吐量，我们也介绍了如果在网络中，存在非常古老的代理服务器，是需要我们通过Proxy-Connection头部，来替换Connection头部，来完成长连接的处理。</p>
-<h3 id="参考">参考</h3>
-<p>陶辉老师Web协议详解与抓包实战https://time.geekbang.org/course/detail/100026801-94635</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>这篇文章介绍HTTP中的keep-alive长连接，长连接可以有效的减少TCP的握手次数，也在拥塞控制上能够提升我们的吞吐量，我们也介绍了如果在网络中，存在非常古老的代理服务器，是需要我们通过Proxy-Connection头部，来替换Connection头部，来完成长连接的处理。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>陶辉老师Web协议详解与抓包实战<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzNQ==">https://time.geekbang.org/course/detail/100026801-94635<i class="fa fa-external-link-alt"></i></span></p>
 
       
     </div>
@@ -940,8 +916,7 @@
       
           <p>将介绍400、500系列表示错误的响应码，搞清楚这些错误响应码的含义对于我们快速地定位问题非常有帮助。</p>
 <ul>
-<li>4xx：客户端出现错误
-<ul>
+<li>4xx：客户端出现错误<ul>
 <li>400 Bad Request：服务器认为客户端出现了错误，但不能明确判断为以下哪种错误时使用此错误码。例如HTTP请求格式错误。</li>
 <li>401 Unauthorized：用户认证信息缺失或者不正确，导致服务器无法处理请求。（比如URI如果需要传递user和password的时候，往往会得到401Unauthorized）</li>
 <li>407 Proxy Authentication Required：（对401的补充，401往往是源服务器返回的用户信息验证不通过，如果代理服务器会首先验证用户的认证信息的话，那么代理服务器没有通过就会返回407。比如将常在机场、网吧等场合下，如果我们信息验证没通过，可能就会收到407）对需要经由代理的请求，认证信息未通过代理服务器的验证</li>
@@ -965,9 +940,9 @@
 <li>429 Too Many Request：客户端发送请求的速率过快（很多服务器限流限速的时候，往往不会给客户端发429，虽然RFC规范中429是更明确的告诉客户端这样一件事情，但是往往我们会发送503，在5系列响应码中再详细介绍）</li>
 <li>431 Request Header Fields Too Large：请求的HEADER头部大小超过限制（可以看出这里的规范定义的实在是太细了，因为我们刚刚去限制了URI如果特别大的时候，返回了一个414的这样的响应码，431又对于Header去做了一个限制，实际上很多服务器是不会去做这么严格的错误码的返回的，通常都只会返回这个414 URI Too Long，因为URI和Request Too Long往往在服务器中作为同一段缓存区去存储处理的）</li>
 <li>451 Unavaiable For Legal Reasons：RFC7725，由于法律原因资源不可访问</li>
-</ul></li>
-<li>5xx：服务器端出现错误
-<ul>
+</ul>
+</li>
+<li>5xx：服务器端出现错误<ul>
 <li>500 Internal Server Error：（这可能是我们最常见的一种错误，就是这个内部错误已经没有办法细分了）服务器内部错误，且不属于一下错误类型</li>
 <li>501 Not Implemented：服务器不支持实现请求所需要的功能（当前请求执行的功能我们现在还没有去实现，需要服务器端去升级或者说添加相应的功能）</li>
 <li>502 Bad Gateway：（非常常见的错误码，在与服务器之间有代理服务器，但是这个代理服务器连接不上源服务器，或者说代理服务器没有办法从我们的源服务器中获取到合法的一个响应，这是502 Bad Gateway）代理服务器无法获取到合法响应</li>
@@ -977,12 +952,11 @@
 <li>507 Insufficient Storage：服务器没有足够的空间处理请求（通常是指磁盘空间，所以507这个错误码已经把服务器内部的相关的问题暴露给客户端了，所以通常507是不被我们见到的，因为这里会有安全性的问题）</li>
 <li>508 Loop Detected：访问资源时检测到循环（或者说循环已经超过了最大的限制次数了，就会返回508 Loop Detected）</li>
 <li>511 Network Authentication Required：代理服务器发现客户端需要进行身份验证才能获得网络访问权限（也是同样在机场、网吧等这样的场景我们经常会见到）</li>
-</ul></li>
 </ul>
-<h3 id="小结">小结</h3>
-<p>这篇文章介绍了客户端出现错误时的400系列错误响应码，以及服务端出现错误时的500系列错误响应吗，那么与上篇文章中介绍的100、200、300系列响应码中，它们还遵循一个潜在的规则，就是当客户端接收到了，一个它不认识的响应码，不知道如何处理的时候，将按照它们所在系列的第一个，就是00系列那个响应码逻辑进行去处理，比如说我们现在收到了一个555这样的响应码，客户端不认，就会按照500的处理逻辑。如果收到了一个277，那么也会按照200这个错误码的处理逻辑来处理。</p>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
+</li>
+</ul>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>这篇文章介绍了客户端出现错误时的400系列错误响应码，以及服务端出现错误时的500系列错误响应吗，那么与上篇文章中介绍的100、200、300系列响应码中，它们还遵循一个潜在的规则，就是当客户端接收到了，一个它不认识的响应码，不知道如何处理的时候，将按照它们所在系列的第一个，就是00系列那个响应码逻辑进行去处理，比如说我们现在收到了一个555这样的响应码，客户端不认，就会按照500的处理逻辑。如果收到了一个277，那么也会按照200这个错误码的处理逻辑来处理。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
 
       
     </div>
@@ -1064,20 +1038,19 @@
           <p>100，200，300系列表示成功的响应码</p>
 <ul>
 <li>响应码规范：RFC6585（2012.4）、RFC7231（2014.6）</li>
-<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持
-<ul>
-<li>100 Continue：上传大文件前使用
-<ul>
+<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持<ul>
+<li>100 Continue：上传大文件前使用<ul>
 <li>由客户端发起请求中携带Expect 100-continue头部触发</li>
-</ul></li>
-<li>101 Switch Protocols：协议升级使用
-<ul>
+</ul>
+</li>
+<li>101 Switch Protocols：协议升级使用<ul>
 <li>由客户端发起请求中携带Upgrade：头部触发，如升级websocket或者http/2.0</li>
-</ul></li>
+</ul>
+</li>
 <li>102 Processing：WebDAV请求可能包含许多涉及文件操作的子请求，需要很长时间才能完成请求。该代码表示服务器已经收到并正在处理请求，但无响应可用。这样可以防止客户端超时，并假设请求丢失</li>
-</ul></li>
-<li>2xx：成功处理请求
-<ul>
+</ul>
+</li>
+<li>2xx：成功处理请求<ul>
 <li>200 OK：成功返回了响应</li>
 <li>201 Created：有新资源在服务器端被成功创建</li>
 <li>202 Accepted：服务端接受并开始处理请求；但请求未处理完成。这样一个模糊的概念是有意如此设计，可以覆盖更多的场景。<strong>例如异步、需要长时间处理的任务。</strong>先给客户端返回202 Accept，而由异步的任务继续去处理这个任务。</li>
@@ -1087,9 +1060,9 @@
 <li>206 Partial Content：（多线程断点续传下载都会使用到range协议）使用range协议时返回<strong>部分</strong>响应内容时的响应码</li>
 <li>207 Multi-Status：RFC4918，在WEBDAV协议中以XML返回多个资源的状态。（返回目录树的结构的时候，实际上是返回了很多个子目录及其相关的资源描述，那么这个时候我们其实有很多个响应码，那么207就是把这些响应作为一个响应的时候，那么这个响应码我们告诉客户端是207）</li>
 <li>208 Already Reported：RFC5842，为避免相同集合下资源在207响应码下重复上报，使用208可以使用父集合的响应码。</li>
-</ul></li>
-<li>3xx：重定向使用Location指向的资源或者缓存中的资源。在RFC2068中规定客户端重定向次数不应超过5次，以防止死循环。
-<ul>
+</ul>
+</li>
+<li>3xx：重定向使用Location指向的资源或者缓存中的资源。在RFC2068中规定客户端重定向次数不应超过5次，以防止死循环。<ul>
 <li>300 Multiple Choices：资源有多种表述，通过300返回给客户端后其自行选择访问哪一种表述。由于缺乏明确的细节，300很少使用。</li>
 <li>301 Moved Permanently：资源永久性的重定向到另一个URL中。（浏览器可以对永久性的重定向直接缓存）</li>
 <li>302 Found：资源临时的重定向到另一个URL中。</li>
@@ -1097,10 +1070,10 @@
 <li>304 Not Modified：当客户端拥有可能过期的缓存时，会携带缓存的标识etag、时间等信息询问服务器缓存是否仍可复用，而304是告诉客户端可以复用缓存。</li>
 <li>307 Temporary Redirect：类似302，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
 <li>308 Permanent Redirect：类似301，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
-</ul></li>
 </ul>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
 
       
     </div>
@@ -1180,7 +1153,7 @@
 
       
           <ul>
-<li>Well...I happen to believe you make your own destiny. You have to do the best with what God gave you.</li>
+<li>Well…I happen to believe you make your own destiny. You have to do the best with what God gave you.</li>
 </ul>
 
       
@@ -1256,147 +1229,150 @@
       
           <p>在分布式的Web架构中呢，有5类架构风格。那么什么叫架构风格呢？我们在日常编程中可能会有习惯用法，再高一级在面向对象语言中呢，可能会有设计模式，那么再往上更大粒度的抽象我们可以用到架构。而架构风格是指某一类架构它们具有相同的或者说类似的一些约束，我们把它归纳为一类架构风格。那么我们rest架构，也就是HTTP设计所遵循的这样的架构会使用到我们下面的，或者说参考我们下列5类架构风格中的其中一些架构。</p>
 <p>那么这5类架构风格呢，主要包括：</p>
-<ol type="1">
-<li>数据流风格 Data-flow Styles（协议的分层，nginx）
-<ul>
+<ol>
+<li>数据流风格 Data-flow Styles（协议的分层，nginx）<ul>
 <li>优点：简单性、可进化性、可扩展性、可配置性、可重用性</li>
-</ul></li>
-<li>复制风格 Replication Styles
-<ul>
+</ul>
+</li>
+<li>复制风格 Replication Styles<ul>
 <li>优点：用户可察觉的性能、可伸缩性、网络效率、可靠性也可以得到提升</li>
-</ul></li>
-<li>分层风格 Hierarchical Styles
-<ul>
+</ul>
+</li>
+<li>分层风格 Hierarchical Styles<ul>
 <li>优点：简单性、可进化性、可伸缩性</li>
-</ul></li>
-<li>移动代码风格 Mobile Code Styles
-<ul>
+</ul>
+</li>
+<li>移动代码风格 Mobile Code Styles<ul>
 <li>优点：可移植性、可扩展性、网络效率</li>
-</ul></li>
-<li>点对点风格 Peer-to-Peer Styles
-<ul>
+</ul>
+</li>
+<li>点对点风格 Peer-to-Peer Styles<ul>
 <li>优点：可进化性、可重用性、可扩展性、可配置性</li>
-</ul></li>
+</ul>
+</li>
 </ol>
-<h3 id="数据流风格data-flow-styles">数据流风格Data-flow Styles</h3>
-<ul>
-<li>管道和过滤器Pipe And Filter，PF
-<ul>
+<h3 id="数据流风格Data-flow-Styles"><a href="#数据流风格Data-flow-Styles" class="headerlink" title="数据流风格Data-flow Styles"></a>数据流风格Data-flow Styles</h3><ul>
+<li>管道和过滤器Pipe And Filter，PF<ul>
 <li>每个Filter都有输入端和输出端，只能从输入端读取数据，处理后再从输出端产生数据（协议，TCP-ip-数据链路层协议，只能从输入端到输出端）</li>
-</ul></li>
-<li>统一接口的管道与过滤器 Uniform Pipe And Filter, UPF
-<ul>
+</ul>
+</li>
+<li>统一接口的管道与过滤器 Uniform Pipe And Filter, UPF<ul>
 <li>在PF上增加了统一接口的约束，所有Filter过滤器必须具备同样的接口</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p>主要这种数据流风格会对简单性上有所体现，特别是UPF以后简单性会有很大的提升，我们每一个模块每一个Filter都可以独自的去升级进化不影响。那么我们再增加一个新的功能，比如说增加一个新的协议层，或者说nginx增加一个新的模块，都是很容易的，所以可扩展性也是非常好的。那么可配置性也是一样的，我们可以通过配置文件灵活的去增加我们的Filter或者说我们的协议层级，而在我们的可重用性上面也是非常好的。每一个Filter我们会独立的拿下来以后给新的这样的一种架构去使用。</p>
-<h3 id="复制风格replication-styles">复制风格Replication Styles</h3>
-<ul>
-<li>复制仓库Replicated Repository，RR
-<ul>
+<h3 id="复制风格Replication-Styles"><a href="#复制风格Replication-Styles" class="headerlink" title="复制风格Replication Styles"></a>复制风格Replication Styles</h3><ul>
+<li>复制仓库Replicated Repository，RR<ul>
 <li>多个进程提供相同的服务，通过反向代理对外提供集中服务（MySQL冷热备份，Web app同时提供很多服务、使用nginx反向代理）</li>
-</ul></li>
-<li>缓存$
-<ul>
+</ul>
+</li>
+<li>缓存$<ul>
 <li>RR的变体，通过复制请求的结果，为后续请求复用</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p>复制仓库与缓存这两种架构，对于用户可察觉的网络性能，RR和$风格因为都会对用户能够觉察到的性能有一个提升。缓存风格呢，因为直接减少了网络的传输量，所以网络效率会更高一些，那scalability呢，可伸缩性，因为有很多可以复制的进程或者可以复制的数据，也会导致我们scalability更好。简单性上，缓存风格也会表现更好一些。因为我有多个进程多个服务，所以可靠性上也会更好一些。</p>
-<h3 id="分层风格hierarchical-styles">分层风格Hierarchical Styles</h3>
-<ul>
-<li>客户端服务器Client-Server, CS（HTTP）
-<ul>
+<h3 id="分层风格Hierarchical-Styles"><a href="#分层风格Hierarchical-Styles" class="headerlink" title="分层风格Hierarchical Styles"></a>分层风格Hierarchical Styles</h3><ul>
+<li>客户端服务器Client-Server, CS（HTTP）<ul>
 <li>由Client触发请求，Server监听到请求后产生响应，Client一直等待收到响应后，会话结束</li>
 <li>分离关注点隐藏细节，良好的简单性、可伸缩性、可进化性（Server只关注资源的响应的生成，资源的管理，Client就关注于网络和结果可视化的渲染。向对方都隐藏了各自的细节，所以它们的简单性相对比较好，我们只关注中间的协议，而不关注可视化或者说数据库的管理。可伸缩性：比如Server在不停地增加更多的服务的节点，我们就可以为client提供更高可用性的服务。可进化性，意味着我们client和server都可以独立的进行进展）</li>
-</ul></li>
-<li>分层系统Layered System, LS
-<ul>
+</ul>
+</li>
+<li>分层系统Layered System, LS<ul>
 <li>每一层为其上的层服务，并使用在其之下的层所提供的服务，例如TCP/IP，OSI</li>
-</ul></li>
-<li>分层客户端服务器Layered Client-Server, LCS
-<ul>
+</ul>
+</li>
+<li>分层客户端服务器Layered Client-Server, LCS<ul>
 <li>LS+CS，例如正向代理和反向代理，从空间上分为外部层与内部层（正向代理，客户端和整个网络环境分离，反向代理把企业内网和整个企业外面的Internet网络进行了分层</li>
-</ul></li>
-<li>无状态、客户端服务器Client-Stateless-Server CSS
-<ul>
+</ul>
+</li>
+<li>无状态、客户端服务器Client-Stateless-Server CSS<ul>
 <li>基于CS，服务器上不允许有session state会话状态</li>
 <li>提升了可见性、可伸缩性、可靠性，但重复数据导致降低网络性能（HTTP 2.0的很多升级都体现在这几个方面，HTTP2.0中不希望重复的传递HTTP的头部，因为HTTP的头部特别是Cookie占用了网络资源，就是HTTP2.0已经做不到无状态了，所以它的重复数据相对比较少，网络性能更高，但是可见性、可伸缩性、可靠性上，相对较差一些。</li>
-</ul></li>
-<li>缓存、无状态、客户端服务器Client-Cache-Stateless-Server-C$SS
-<ul>
+</ul>
+</li>
+<li>缓存、无状态、客户端服务器Client-Cache-Stateless-Server-C$SS<ul>
 <li>提升性能（因为有重复数据，因为反复传递相同的header，环节可能导致的问题）</li>
-</ul></li>
+</ul>
+</li>
 <li>分层、缓存、无状态、客户端服务器Layered-Client-Cache-Stateless-Server, LC$SS</li>
 </ul>
 <p>client connector, client+cache, server connector, server+cache</p>
 <ul>
-<li>远程会话Remote Session, RS
-<ul>
+<li>远程会话Remote Session, RS<ul>
 <li>CS变体，服务器保存Application State应用状态（FTP）</li>
 <li>可伸缩性（不可能任意扩充服务器而对客户端没有影响）、可见性差（因为我单独的抓取一个报文，分析一个报文是没有办法得到完整的请求信息的）</li>
-</ul></li>
-<li>远程数据访问Remote Data Access, RDA
-<ul>
+</ul>
+</li>
+<li>远程数据访问Remote Data Access, RDA<ul>
 <li>CS变体，Application state应用状态同时分布在客户端与服务器（SQL访问，因为我们的查询集可能包含几百万条数据，所以我们必须要用到游标cursor，反复的一页一页地获取数据，也就是使得我们的客户端保存了一个应用的状态，我当前查询到第几页，而服务器端也需要为游标来保存这样的相应的数据）</li>
 <li>巨大的数据集有可能通过迭代而减少整个数据集</li>
 <li>简单性、可伸缩性差（我们传统的关系型数据库很少能够支持这种高可用性，基于数据仓库的多个热备份的分布式架构，是很难达到的）</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p>由服务器来保存客户端的架构都会导致scalability很差，所以我们HTTP协议所依赖的Rest架构不使用这两种方式。特别是加入分层，加入CS架构以后，scalability是非常优秀的，简单性也是因为我们加入分层统一无状态以后，得到了很大的提升。可进化性因为所有基于client server这种分离关注点的情况下，我们的可进化性都是比较优秀的。而在可重复使用上，特别是基于分层属性后，都会有很大的一个提升。而在可见性上，因为我加入了一个stateless，无状态，无状态的情况下每一条请求都携带了全部的信息，所以我的可见性会更好。那么可移植性，也是基于分层以后可移植性有了很大的提升。可靠性呢，因为我们有了无状态有了缓存以后，我们的可靠性也得到了提升。</p>
-<h3 id="移动代码风格mobile-code-styles">移动代码风格Mobile Code Styles</h3>
-<p>（表示实际程序要执行的那个代码是可以任意的从客户端到服务器端移动的）</p>
+<h3 id="移动代码风格Mobile-Code-Styles"><a href="#移动代码风格Mobile-Code-Styles" class="headerlink" title="移动代码风格Mobile Code Styles"></a>移动代码风格Mobile Code Styles</h3><p>（表示实际程序要执行的那个代码是可以任意的从客户端到服务器端移动的）</p>
 <ul>
 <li><p>虚拟机Virtual Machibe, VM</p>
 <ul>
 <li>分离指令与实现（公有云、基于KVM，Java的虚拟机）</li>
-</ul></li>
+</ul>
+</li>
 <li><p>远程求值Remote Evaluation, REV</p>
 <ul>
 <li>基于CS的VM，将代码发送至服务器执行</li>
-</ul></li>
+</ul>
+</li>
 <li><p>按需代码Code on Demand，COD</p>
 <ul>
 <li>服务器在响应中发回处理代码，在客户端执行（JS脚本）</li>
 <li>优秀的可扩展性和可配置性，提升用户可察觉性能和网络效率</li>
-</ul></li>
+</ul>
+</li>
 <li><p>分层、按需代码、缓存、无状态、客户端服务器</p>
 <p>Layered-Code-on-Demand-Client-Cache-Stateless-Server, LCODC$SS</p>
 <ul>
 <li>LC$SS+COD</li>
-</ul></li>
+</ul>
+</li>
 <li><p>移动代理Mobile Agent，MA</p>
 <ul>
 <li>相当于REV+COD</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p>REV的安全性风险太大</p>
 <p>统一接口的LC$SS+COD的架构</p>
 <p>用户可察觉的网络性能，网络性能，可伸缩性，可进化型，可扩展性，可配置性，可见性，可重用性</p>
-<h3 id="peer-to-peer-styles">Peer-to-Peer Styles</h3>
-<ul>
+<h3 id="Peer-to-Peer-Styles"><a href="#Peer-to-Peer-Styles" class="headerlink" title="Peer-to-Peer Styles"></a>Peer-to-Peer Styles</h3><ul>
 <li><p>Event-based Integration，EBI</p>
 <ul>
 <li>基于事件集成系统，如由类似kafka，Rabbit MQ这样的消息系统+分发订阅来消除耦合</li>
 <li>优秀的可重用性、可扩展性、可进化性</li>
 <li>缺乏可理解性</li>
 <li>由于消息广播等因素造成的消息风暴，可伸缩性差</li>
-</ul></li>
+</ul>
+</li>
 <li><p>Chiron-2，C2</p>
 <p>参见论文《A Component-and Message-Based Architectual Style for GUI Software</p>
 <ul>
 <li>相当于EBI+LCS，控制了消息的方向</li>
-</ul></li>
+</ul>
+</li>
 <li><p>Distruibuted Objects，DO</p>
 <ul>
 <li>组件结对交互</li>
-</ul></li>
+</ul>
+</li>
 <li><p>Brokered Distributed Object，BDO</p>
 <ul>
 <li>引入名字解析组件来简化DO，例如CORBA</li>
-</ul></li>
 </ul>
-<h3 id="风格演化到rest">风格演化到rest</h3>
-
+</li>
+</ul>
+<h3 id="风格演化到rest"><a href="#风格演化到rest" class="headerlink" title="风格演化到rest"></a>风格演化到rest</h3>
       
     </div>
 
