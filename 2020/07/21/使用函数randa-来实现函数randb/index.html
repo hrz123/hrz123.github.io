@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="使用函数randa()来实现函数randb() 原文引自：https:&#x2F;&#x2F;blog.csdn.net&#x2F;wangruitao1991&#x2F;article&#x2F;details&#x2F;51678815 我们由浅入深，首先来看：  给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5 rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳ran">
+  <meta name="description" content="使用函数randa()来实现函数randb()原文引自：https:&#x2F;&#x2F;blog.csdn.net&#x2F;wangruitao1991&#x2F;article&#x2F;details&#x2F;51678815 我们由浅入深，首先来看：  给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5 rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用函数randa()来实现函数randb()">
 <meta property="og:url" content="https://hrz123.github.io/2020/07/21/%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="使用函数randa()来实现函数randb() 原文引自：https:&#x2F;&#x2F;blog.csdn.net&#x2F;wangruitao1991&#x2F;article&#x2F;details&#x2F;51678815 我们由浅入深，首先来看：  给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5 rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳ran">
+<meta property="og:description" content="使用函数randa()来实现函数randb()原文引自：https:&#x2F;&#x2F;blog.csdn.net&#x2F;wangruitao1991&#x2F;article&#x2F;details&#x2F;51678815 我们由浅入深，首先来看：  给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5 rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-07-21T04:44:07.000Z">
 <meta property="article:modified_time" content="2020-08-01T04:52:10.063Z">
@@ -246,21 +246,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="使用函数randa来实现函数randb">使用函数randa()来实现函数randb()</h1>
-<p>原文引自：https://blog.csdn.net/wangruitao1991/article/details/51678815</p>
+        <h1 id="使用函数randa-来实现函数randb"><a href="#使用函数randa-来实现函数randb" class="headerlink" title="使用函数randa()来实现函数randb()"></a>使用函数randa()来实现函数randb()</h1><p>原文引自：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbmdydWl0YW8xOTkxL2FydGljbGUvZGV0YWlscy81MTY3ODgxNQ==">https://blog.csdn.net/wangruitao1991/article/details/51678815<i class="fa fa-external-link-alt"></i></span></p>
 <p>我们由浅入深，首先来看：</p>
-<ol type="1">
+<ol>
 <li><p>给你一个能成1到7随机数的函数，用它写一个生成1到5的随机数。即使用rand7来实现rand5</p>
 <p>rand7可以随机生成1，2，3，4，5，6，7，是等概率的，这里直观的想法是不断地电泳rand7，直到它生成1到5之间的数，然后返回。代码如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand5</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>);  <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">5</span>)&#123;</span><br><span class="line">    x = rand7();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这个函数可以等概率的产生1到5的数码？首先，它确确实实只会返回1到5这几个数，其次，对于这些数，都是由rand7等概率的产生的1/7，没有对任何一个数有偏袒，直觉告诉我们，rand5就是等概率的产生1到5的。事实呢？让我们来计算一下，产生1到5中的数是不是1/5就OK了。</p>
-<p>产生1的概率：等于第一次产生1的概率，加上第一次生成6，7第二次产生1的概率，加上... $$ p(x=1) = 1/7 + 2/7 * 1/7 + (2/7)^2 * 1/7 + ... \</p>
-<p>= 1/7 * (1 + 2/7 + (2/7)^2+...)\</p>
+<p>产生1的概率：等于第一次产生1的概率，加上第一次生成6，7第二次产生1的概率，加上…<br>$$<br>p(x=1) = 1/7 + 2/7 * 1/7 + (2/7)^2 * 1/7 + … \</p>
+<p>= 1/7 * (1 + 2/7 + (2/7)^2+…)\</p>
 <p>= 1/7 * 1 / (1-2/7)\</p>
-<p>= 1/5\ $$ 其他同理，所以从上面的分析，我们可以得到一个一般的结论，如果a &gt; b，那么一定可以用randa实现randb。其中，randa表示等概率生成1到a的函数，randb表示等概率生成1到b的函数。代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">;<span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randb</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  inx x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line"> <span class="keyword">while</span> (x &gt; b) &#123;</span><br><span class="line">      x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里还有没有优化的空间呢。我们想如果a大于b很多，那么这个循环大多数是无法退出的。这是我们可以找到一个最接近a的b的整数倍<strong>b * (A/b)</strong>，大于这个整数倍就继续循环，否则就返回 <strong>randa()%b + 1 </strong>。代码如下：</p>
+<p>= 1/5\<br>$$<br>其他同理，所以从上面的分析，我们可以得到一个一般的结论，如果a &gt; b，那么一定可以用randa实现randb。其中，randa表示等概率生成1到a的函数，randb表示等概率生成1到b的函数。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">;<span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randb</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    inx x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span> (x &gt; b) &#123;</span><br><span class="line">        x = randa();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里还有没有优化的空间呢。我们想如果a大于b很多，那么这个循环大多数是无法退出的。这是我们可以找到一个最接近a的b的整数倍*<em>b * (A/b)*</em>，大于这个整数倍就继续循环，否则就返回 **randa()%b + 1 **。代码如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randa</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x =  ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">//  max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; b * (a / b)) &#123;</span><br><span class="line">    x = randa();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>好了，a大于b时这个问题得到完美的解决了。那么a小于b的时候呢。</p>
 <p>比如，如何用rand5实现rand7。</p>
 <p>我们只需要将rand5映射到一个能产生更大随机数的randa，a &gt; 7，这个问题就可以解决了。这里要注意，映射之后的randa也应该是等概率生成1到a的。</p>
@@ -268,18 +270,23 @@
 <p>5 * (rand5() - 1) + rand5()，可以等概率的产生1-25之间的数字。</p>
 <p>根据上面的模板我们可以得到以下的代码：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">7</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在根据上面的模板简化：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">21</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % <span class="number">7</span> +<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过上文分析，我们可以得到步骤如下：</p>
-<ol type="1">
+
+
+
+</li>
+</ol>
+<p>   在根据上面的模板简化：</p>
+   <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> x = ~(<span class="number">1</span> &lt;&lt; <span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">  <span class="keyword">while</span> (x &gt; <span class="number">21</span>) &#123;</span><br><span class="line">    x = <span class="number">5</span> * (rand5() - <span class="number">1</span>) + rand5();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> x % <span class="number">7</span> +<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>   通过上文分析，我们可以得到步骤如下：</p>
+<ol>
 <li>如果a &gt; b，进入步骤2；否则构造Randa2 = a * (Randa – 1) + Randa， 表示生成1到a2 随机数的函数。如果a2 仍小于b，继教构造 Randa3 = a * (Randa2 - 1) + Randa…直到ak &gt; b，这时我们得到Randak , 我们记为RandA。</li>
 <li>步骤1中我们得到了RandA(可能是Randa或Randak )，其中A &gt; b， 我们用下述代码构造Randb：</li>
 </ol>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// A &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Randb</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span>(x &gt; b*(A/b)) <span class="comment">// b*(A/b)表示最接近A且小于A的b的倍数</span></span><br><span class="line">        x = RandA();</span><br><span class="line">    <span class="keyword">return</span> x%b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure></li>
-</ol>
+   <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// A &gt; b</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Randb</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x = ~(<span class="number">1</span>&lt;&lt;<span class="number">31</span>); <span class="comment">// max int</span></span><br><span class="line">    <span class="keyword">while</span>(x &gt; b*(A/b)) <span class="comment">// b*(A/b)表示最接近A且小于A的b的倍数</span></span><br><span class="line">        x = RandA();</span><br><span class="line">    <span class="keyword">return</span> x%b + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>   从上面一系列的分析可以发现，如果给你两个生成随机数的函数Randa和Randb， 你可以通过以下方式轻松构造Randab，生成1到a*b的随机数。</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Randab &#x3D; b * (Randa - 1) + Randb</span><br><span class="line">Randab &#x3D; a * (Randb - 1) + Randa</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -368,7 +375,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb"><span class="nav-number">1.</span> <span class="nav-text">使用函数randa()来实现函数randb()</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0randa-%E6%9D%A5%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0randb"><span class="nav-number">1.</span> <span class="nav-text">使用函数randa()来实现函数randb()</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

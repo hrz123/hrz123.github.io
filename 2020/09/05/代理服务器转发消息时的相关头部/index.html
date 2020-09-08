@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="在HTTP消息传输过程中，会经历会多正向代理服务器和反向代理服务器，那么这些代理服务器在转发消息时，会涉及到一些HTTP头部，这篇文章中，将会介绍这些HTTP头部。包括由于存在这些代理服务器，所以客户端与源服务器之间有许多条TCP连接，那么有一些HTTP头部是用于将客户端的实际IP地址，传递给服务器做相关用途的。 客户端与源服务器间存在多个代理 rest架构图，客户端与源服务器之间存在许多代理，而">
+  <meta name="description" content="在HTTP消息传输过程中，会经历会多正向代理服务器和反向代理服务器，那么这些代理服务器在转发消息时，会涉及到一些HTTP头部，这篇文章中，将会介绍这些HTTP头部。包括由于存在这些代理服务器，所以客户端与源服务器之间有许多条TCP连接，那么有一些HTTP头部是用于将客户端的实际IP地址，传递给服务器做相关用途的。 客户端与源服务器间存在多个代理rest架构图，客户端与源服务器之间存在许多代理，而客">
 <meta property="og:type" content="article">
 <meta property="og:title" content="代理服务器转发消息时的相关头部">
 <meta property="og:url" content="https://hrz123.github.io/2020/09/05/%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BD%AC%E5%8F%91%E6%B6%88%E6%81%AF%E6%97%B6%E7%9A%84%E7%9B%B8%E5%85%B3%E5%A4%B4%E9%83%A8/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="在HTTP消息传输过程中，会经历会多正向代理服务器和反向代理服务器，那么这些代理服务器在转发消息时，会涉及到一些HTTP头部，这篇文章中，将会介绍这些HTTP头部。包括由于存在这些代理服务器，所以客户端与源服务器之间有许多条TCP连接，那么有一些HTTP头部是用于将客户端的实际IP地址，传递给服务器做相关用途的。 客户端与源服务器间存在多个代理 rest架构图，客户端与源服务器之间存在许多代理，而">
+<meta property="og:description" content="在HTTP消息传输过程中，会经历会多正向代理服务器和反向代理服务器，那么这些代理服务器在转发消息时，会涉及到一些HTTP头部，这篇文章中，将会介绍这些HTTP头部。包括由于存在这些代理服务器，所以客户端与源服务器之间有许多条TCP连接，那么有一些HTTP头部是用于将客户端的实际IP地址，传递给服务器做相关用途的。 客户端与源服务器间存在多个代理rest架构图，客户端与源服务器之间存在许多代理，而客">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-05T09:40:29.000Z">
 <meta property="article:modified_time" content="2020-09-05T13:17:53.543Z">
@@ -242,44 +242,40 @@
 
       
         <p>在HTTP消息传输过程中，会经历会多正向代理服务器和反向代理服务器，那么这些代理服务器在转发消息时，会涉及到一些HTTP头部，这篇文章中，将会介绍这些HTTP头部。包括由于存在这些代理服务器，所以客户端与源服务器之间有许多条TCP连接，那么有一些HTTP头部是用于将客户端的实际IP地址，传递给服务器做相关用途的。</p>
-<h3 id="客户端与源服务器间存在多个代理">客户端与源服务器间存在多个代理</h3>
-<p>rest架构图，客户端与源服务器之间存在许多代理，而客户端每经过一个4层传输层以上的代理就建立一条新的TCP连接，而TCP连接中的源端的IP地址，只是这个TCP连接中的地址。比如说origin server，如果想基于客户端的IP地址来做负载均衡，或者是做限速限流，那么通过TCP连接是拿不到的。因为它只能拿到Gateway的IP地址。那么我们该怎么样传递客户端的IP地址到源服务器呢？我们可以通过一个HTTP头部。</p>
-<h3 id="问题如何传递ip地址">问题：如何传递IP地址？</h3>
-<ol type="1">
+<h3 id="客户端与源服务器间存在多个代理"><a href="#客户端与源服务器间存在多个代理" class="headerlink" title="客户端与源服务器间存在多个代理"></a>客户端与源服务器间存在多个代理</h3><p>rest架构图，客户端与源服务器之间存在许多代理，而客户端每经过一个4层传输层以上的代理就建立一条新的TCP连接，而TCP连接中的源端的IP地址，只是这个TCP连接中的地址。比如说origin server，如果想基于客户端的IP地址来做负载均衡，或者是做限速限流，那么通过TCP连接是拿不到的。因为它只能拿到Gateway的IP地址。那么我们该怎么样传递客户端的IP地址到源服务器呢？我们可以通过一个HTTP头部。</p>
+<h3 id="问题：如何传递IP地址？"><a href="#问题：如何传递IP地址？" class="headerlink" title="问题：如何传递IP地址？"></a>问题：如何传递IP地址？</h3><ol>
 <li>TCP连接四元组（src ip, src port, dst ip, dst port）</li>
 <li>HTTP头部<strong>X-Forwarded-For</strong>用于传递IP</li>
 <li>HTTP头部X-Real-IP用于传递用户IP（非RFC规范中的，比如nginx就经常会使用X-Real-IP来传递用户的IP）</li>
 <li>网络中存在许多反向代理（前提）</li>
 </ol>
-<p>用户 内网IP： 192.168.0.x</p>
+<p>用户 内网IP：             192.168.0.x</p>
 <p>ADSL 运营商公网IP：115.204.33.1</p>
-<p>正向代理：IP地址 1.1.1.1 X-Forwarded-For:115.204.33.1 X-Real-IP: 115.204.33.1</p>
-<p>CDN IP地址： 2.2.2.2 X-Forwarded-For:115.204.33.1 1.1.1.1 X-Real-IP: 115.204.33.1</p>
+<p>正向代理：IP地址      1.1.1.1                              X-Forwarded-For:115.204.33.1                 X-Real-IP: 115.204.33.1</p>
+<p>CDN IP地址：             2.2.2.2                             X-Forwarded-For:115.204.33.1 1.1.1.1    X-Real-IP: 115.204.33.1</p>
 <p>反向代理 用户地址：115.204.33.1 remote_addr变量：2.2.2.2</p>
-<h3 id="消息的转发">消息的转发</h3>
-<ul>
-<li>Max-Forwards头部
-<ul>
+<h3 id="消息的转发"><a href="#消息的转发" class="headerlink" title="消息的转发"></a>消息的转发</h3><ul>
+<li>Max-Forwards头部<ul>
 <li>限制Proxy代理服务器的最大转发次数，仅对TRACE/OPTIONS方法有效（以防止过长的代理服务器的转发）</li>
 <li>Max-Forwards=1*DIGIT （ABNF中的定义是1个数字）</li>
-</ul></li>
-<li>Via头部
-<ul>
-<li>指明经过的代理服务器名称及版本</li>
-<li>Via = 1#（received-protocol RWS received-by [ RWS comment ]）
-<ul>
-<li>received-protocol = [ protocol-name "/" ] protocol-version</li>
-<li>reveived-by = ( uri-host [ ":" port ]) / pseudonym</li>
-<li>pseudonym = token</li>
-</ul></li>
-</ul></li>
-<li>Cache-Control：no-transform（还有很多其他的用途）
-<ul>
-<li>禁止代理服务器修改响应包体（为了防止代理服务器修改服务器发向客户端的响应中的包体内容，那么HTTP规范又引入了一个新的Header字段叫做Cache-Control）</li>
-</ul></li>
 </ul>
-<h3 id="小结">小结</h3>
-<p>这篇文章讨论了HTTP请求在历经重重的代理服务器后，在HTTP header的头部中能够反馈给我们的信息。特别是对于在服务器端获取到客户端的原始IP地址是非常有用的。</p>
+</li>
+<li>Via头部<ul>
+<li>指明经过的代理服务器名称及版本</li>
+<li>Via = 1#（received-protocol RWS received-by [ RWS comment ]）<ul>
+<li>received-protocol =  [ protocol-name “/“ ] protocol-version</li>
+<li>reveived-by = ( uri-host [ “:” port ]) / pseudonym</li>
+<li>pseudonym = token</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Cache-Control：no-transform（还有很多其他的用途）<ul>
+<li>禁止代理服务器修改响应包体（为了防止代理服务器修改服务器发向客户端的响应中的包体内容，那么HTTP规范又引入了一个新的Header字段叫做Cache-Control）</li>
+</ul>
+</li>
+</ul>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>这篇文章讨论了HTTP请求在历经重重的代理服务器后，在HTTP header的头部中能够反馈给我们的信息。特别是对于在服务器端获取到客户端的原始IP地址是非常有用的。</p>
 
     </div>
 
@@ -370,7 +366,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8E%E6%BA%90%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%97%B4%E5%AD%98%E5%9C%A8%E5%A4%9A%E4%B8%AA%E4%BB%A3%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">客户端与源服务器间存在多个代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%A6%82%E4%BD%95%E4%BC%A0%E9%80%92ip%E5%9C%B0%E5%9D%80"><span class="nav-number">2.</span> <span class="nav-text">问题：如何传递IP地址？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E7%9A%84%E8%BD%AC%E5%8F%91"><span class="nav-number">3.</span> <span class="nav-text">消息的转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8E%E6%BA%90%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%97%B4%E5%AD%98%E5%9C%A8%E5%A4%9A%E4%B8%AA%E4%BB%A3%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">客户端与源服务器间存在多个代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BC%A0%E9%80%92IP%E5%9C%B0%E5%9D%80%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">问题：如何传递IP地址？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E7%9A%84%E8%BD%AC%E5%8F%91"><span class="nav-number">3.</span> <span class="nav-text">消息的转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
