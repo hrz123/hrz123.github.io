@@ -24,23 +24,20 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。 三角形不等式：从顶点i到顶点j的最短路径总是直接从i到达j，而不是通过其他顶点k，即dist(i, j)总是小于等于dist(i, k) +">
+  <meta name="description" content="在上一篇文章中，针对接口鉴权的开发，我们讲了如何进行面向对象分析（OOA），也就是需求分析。实际山，需求定义清楚之后，这个问题就已经解决了一大半，这也是为什么要画那么多篇幅来讲解需求分析。今天，我们再来看一下，针对面向对象分析产出的需求，如何来进行面向对象设计（OOD）和面向对象编程（OOP）。 如何进行面向对象设计？ 我们知道，面向对象分析的产出是详细的需求描述，那面向对象设计的产出就是类。在面">
 <meta property="og:type" content="article">
-<meta property="og:title" content="旅行商问题（使用MST的近似算法）">
-<meta property="og:url" content="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/index.html">
+<meta property="og:title" content="如何利用面向对象设计和编程开发接口鉴权功能？">
+<meta property="og:url" content="https://hrz123.github.io/2020/09/08/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%E5%92%8C%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E5%8A%9F%E8%83%BD%EF%BC%9F/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。 三角形不等式：从顶点i到顶点j的最短路径总是直接从i到达j，而不是通过其他顶点k，即dist(i, j)总是小于等于dist(i, k) +">
+<meta property="og:description" content="在上一篇文章中，针对接口鉴权的开发，我们讲了如何进行面向对象分析（OOA），也就是需求分析。实际山，需求定义清楚之后，这个问题就已经解决了一大半，这也是为什么要画那么多篇幅来讲解需求分析。今天，我们再来看一下，针对面向对象分析产出的需求，如何来进行面向对象设计（OOD）和面向对象编程（OOP）。 如何进行面向对象设计？ 我们知道，面向对象分析的产出是详细的需求描述，那面向对象设计的产出就是类。在面">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST1.png">
-<meta property="og:image" content="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST2.png">
-<meta property="article:published_time" content="2020-08-21T07:56:53.000Z">
-<meta property="article:modified_time" content="2020-08-21T08:23:54.615Z">
+<meta property="article:published_time" content="2020-09-08T02:52:39.000Z">
+<meta property="article:modified_time" content="2020-09-08T02:58:06.587Z">
 <meta property="article:author" content="侯瑞哲">
-<meta property="article:tag" content="数据结构与算法">
+<meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST1.png">
 
-<link rel="canonical" href="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/">
+<link rel="canonical" href="https://hrz123.github.io/2020/09/08/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%E5%92%8C%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E5%8A%9F%E8%83%BD%EF%BC%9F/">
 
 
 <script id="page-configurations">
@@ -53,7 +50,7 @@
   };
 </script>
 
-  <title>旅行商问题（使用MST的近似算法） | 侯瑞哲的博客</title>
+  <title>如何利用面向对象设计和编程开发接口鉴权功能？ | 侯瑞哲的博客</title>
   
 
 
@@ -191,7 +188,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/08/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%E5%92%8C%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E5%8A%9F%E8%83%BD%EF%BC%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -204,7 +201,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          旅行商问题（使用MST的近似算法）
+          如何利用面向对象设计和编程开发接口鉴权功能？
         </h1>
 
         <div class="post-meta">
@@ -215,7 +212,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-21 15:56:53 / 修改时间：16:23:54" itemprop="dateCreated datePublished" datetime="2020-08-21T15:56:53+08:00">2020-08-21</time>
+              <time title="创建时间：2020-09-08 10:52:39 / 修改时间：10:58:06" itemprop="dateCreated datePublished" datetime="2020-09-08T10:52:39+08:00">2020-09-08</time>
             </span>
 
           
@@ -227,8 +224,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/09/08/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%E5%92%8C%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E5%8A%9F%E8%83%BD%EF%BC%9F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/08/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%E5%92%8C%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E5%8A%9F%E8%83%BD%EF%BC%9F/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -243,29 +240,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>上一篇中介绍了旅行商问题，并讨论了该问题的朴素和DP解决方案。这两种解决方案都是不可行的。事实上，这个问题没有多项式时间的解决方案，因为这个问题是一个已知的NP-Hard问题。不过有近似算法可以解决这个问题。近似算法只有在问题满足三角形不等式的情况下才有效。</p>
-<p><strong>三角形不等式</strong>：从顶点i到顶点j的最短路径总是直接从i到达j，而不是通过其他顶点k，即dist(i, j)总是小于等于dist(i, k) + dist(k, j)。三角形不等式在很多情况下都是成立的。当成本函数满足三角形不等式时，我们可以为TSP设计一个近似算法，该算法返回的旅游成本永远不会超过最优旅游成本的两倍。其思想是使用最小生成树（Minimum Spanning Tree, MST)。以下是基于MST的算法。</p>
-<h2 id="算法">算法</h2>
-<ol type="1">
-<li>让1成为销售员的起点和终点。</li>
-<li>用Prim's Algorithm以1为根构建MST。</li>
-<li>列出构造的MST的前序遍历中所访问的顶点，并在最后添加1.</li>
-</ol>
-<p>让我们考虑下面的例子。第一张图是给定的图，第二张图是以1为根构建的MST。MST的前序遍历是1-2-4-3。在末尾加1，得到1-2-4-3-1，这就是这个算法的输出。</p>
-<img data-src="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST1.png" class>
-<img data-src="/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98MST2.png" class>
-<p>这种情况下，近似算法会产生最优线路，但未必在所有情况下都能产生最优路径。</p>
-<p><strong>这个算法是如何2倍近似的？</strong>上述算法产生的输出成本永远不会超过最佳可能输出成本的两倍。我们来看看上述算法是如何保证这一点的。</p>
-<p>让我们定义一个术语"full walk"来理解这个问题。一个full walk是当一个顶点被前序遍历访问访问时列出它们，并且当某个顶点的子树被返回时也列出这些顶点。上面树的full walk将是1-2-1-4-1-3-1。下面是证明2-近似性的一些重要事实。</p>
-<ol type="1">
-<li>最好的旅行商路线的成本绝不小于MST的成本。（MST的定义说，它是连接所有顶点的最小成本树。）</li>
-<li>full walk的总成本最多是MST成本的两倍（MST的每条边最多被访问两次）。</li>
-<li>上述算法的输出小于full walk的成本。在上面的算法中，我们打印出preorder walk作为输出。在前序遍历中，full walk的两条或多条边被一条边所取代。例如，2-1和1-4被一条边2-4所取代。所以，如果图形遵循三角形不等式，那么这条结论总是对的。</li>
-</ol>
-<p>从以上三句陈述中，我们可以得出结论，近似算法产生的输出成本永远不会超过最佳可能解成本的两倍。</p>
-<p>我们讨论了一个非常简单的旅行商问题的2-近似算法。对于这个问题还有其他更好的近似算法。例如Christofides算法是1.5近似算法。我们将很快把这些算法作为单独的文章来讨论。</p>
-<h2 id="参考">参考</h2>
-<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-2-approximate-using-mst/?ref=lbp</p>
+        <p>在上一篇文章中，针对接口鉴权的开发，我们讲了如何进行面向对象分析（OOA），也就是需求分析。实际山，需求定义清楚之后，这个问题就已经解决了一大半，这也是为什么要画那么多篇幅来讲解需求分析。今天，我们再来看一下，针对面向对象分析产出的需求，如何来进行面向对象设计（OOD）和面向对象编程（OOP）。</p>
+<h3 id="如何进行面向对象设计">如何进行面向对象设计？</h3>
+<p>我们知道，面向对象分析的产出是详细的需求描述，那面向对象设计的产出就是类。在面对对象设计环节，我们将需求描述转化为具体的类的设计。我们把这一设计环节拆解细化一下，主要包含一些几个部分：</p>
+<ul>
+<li>划分职责进而识别出有哪些类；</li>
+<li>定义类及其属性和方法；</li>
+<li>定义类与类之间的交互关系；</li>
+<li>将类组装起来并提供执行入口。</li>
+</ul>
+<p>实话讲，不管是面向对象分析还是面向对象设计，理论的东西都不多，所以我们还是结合鉴权这个例子，在实战中体会如何做面向对象设计。</p>
+<h4 id="划分之责进而是被">1.划分之责进而是被</h4>
 
     </div>
 
@@ -275,7 +260,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" rel="tag"># 数据结构与算法</a>
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"># 设计模式</a>
           </div>
 
         
@@ -289,13 +274,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/08/20/MySQL%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB/" rel="prev" title="MySQL事务隔离">
-      <i class="fa fa-chevron-left"></i> MySQL事务隔离
+    <a href="/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/" rel="prev" title="如何对接口鉴权这样一个功能开发做面向对象分析？">
+      <i class="fa fa-chevron-left"></i> 如何对接口鉴权这样一个功能开发做面向对象分析？
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/" rel="next" title="并查集侦查无向图中的环">
-      并查集侦查无向图中的环 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -355,7 +337,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">如何进行面向对象设计？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%92%E5%88%86%E4%B9%8B%E8%B4%A3%E8%BF%9B%E8%80%8C%E6%98%AF%E8%A2%AB"><span class="nav-number">1.1.</span> <span class="nav-text">1.划分之责进而是被</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -618,7 +600,7 @@ if (document.querySelectorAll('pre.mermaid').length) {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/08/21/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E4%BD%BF%E7%94%A8MST%E7%9A%84%E8%BF%91%E4%BC%BC%E7%AE%97%E6%B3%95%EF%BC%89/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://hrz123.github.io/2020/09/08/%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%E5%92%8C%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E5%8A%9F%E8%83%BD%EF%BC%9F/',]
       });
       });
   </script>
