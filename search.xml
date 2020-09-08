@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
+    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
+<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
+<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
+<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
+<h2 id="算法">算法</h2>
+<ol type="1">
+<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
+<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
+<li>while sptSet不包含所有的顶点：
+<ul>
+<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
+<li>将u加入到sptSet中。</li>
+<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
+</ul></li>
+</ol>
+<h2 id="代码示例">代码示例</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="参考">参考</h2>
+<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>GC的三种基本实现方式和优缺点</title>
     <url>/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/</url>
     <content><![CDATA[<h3 id="参考">参考：</h3>
@@ -78,33 +105,6 @@
 ]]></content>
       <tags>
         <tag>高级编程语言</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
-    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
-<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
-<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
-<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
-<h2 id="算法">算法</h2>
-<ol type="1">
-<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
-<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
-<li>while sptSet不包含所有的顶点：
-<ul>
-<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
-<li>将u加入到sptSet中。</li>
-<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
-</ul></li>
-</ol>
-<h2 id="代码示例">代码示例</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="参考">参考</h2>
-<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -616,6 +616,18 @@
       </tags>
   </entry>
   <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Prim&#39;s最小生成树算法</title>
     <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
@@ -650,18 +662,6 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2714,7 +2714,117 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <li>将类组装起来并提供执行入口。</li>
 </ul>
 <p>实话讲，不管是面向对象分析还是面向对象设计，理论的东西都不多，所以我们还是结合鉴权这个例子，在实战中体会如何做面向对象设计。</p>
-<h4 id="划分之责进而是被">1.划分之责进而是被</h4>
+<h4 id="划分之责进而识别出有哪些类">1.划分之责进而识别出有哪些类</h4>
+<p>在面向对象有关书籍中经常提到，类是现实世界中事物的一个建模。但是，并不是每个需求都能映射到现实世界，也并不是每个类都与现实世界中的事物一一对应。对于一些抽象的概念，我们是无法通过映射现实世界中的事物的方式来定义类的。</p>
+<p>所以，大多数讲面向对象的书籍中，还会讲到另外一种识别类的方法，那就是把需求描述中的名词罗列出来，作为可能的候选类，然后再进行筛选。对于没有经验的初学者来说，这个方法比较简单、明确，可以直接照着做。</p>
+<p>不过，我个人更喜欢另外一种方法，那就是根据需求描述，把其中涉及的功能点，一个一个罗列出来，然后再去看哪些功能点职责相近，操作同样的属性，是否应该归为同一个类。我们来看一下，针对鉴权这个例子，具体该如何来做。</p>
+<p>在上一篇文章中，我们已经给出了详细的需求描述，为了方便你查看，我把它重新贴在了下面。</p>
+<ul>
+<li>调用方进行接口请求的时候，将URL、AppID、密码、时间戳拼接在一起，通过加密算法生成token，并且将token、AppID、时间戳拼接在URL中，一并发送到微服务端。</li>
+<li>微服务端在接收到调用方的接口请求之后，从请求中拆解出token、AppID、时间戳。</li>
+<li>微服务端首先检查传递过来的时间戳跟当前时间，是否在token失效时间窗口内。如果已经超过失效时间，那就算接口调用鉴权失败，拒绝接口调用请求。</li>
+<li>如果token验证没有过期失效，微服务端再从自己的存储中，取出AppID对应的密码，通过同样的token生成算法，生成另外一个token，与调用方传递过来的token进行匹配。如果一致，则鉴权成功，允许接口调用；否则就拒绝接口调用。</li>
+</ul>
+<p>首先，我们要做的是逐句阅读上面的需求描述，拆解成小的功能点，一条一条罗列下来。注意，拆解出来的每个功能点要尽可能的小。每个功能点只负责做一件很小的事情（专业叫法是“单一职责”，后面章节中我们会讲到）。下面是我逐句拆解上述需求描述之后，得到的功能点列表：</p>
+<ol type="1">
+<li>把URL、AppID、密码、时间戳拼接为一个字符串；</li>
+<li>对字符串进行加密算法加密生成token；</li>
+<li>将token、AppID、时间戳拼接到URL中，形成新的URL；</li>
+<li>解析URL，得到token、AppID、时间戳等信息；</li>
+<li>从存储中取出AppID和对应的密码；</li>
+<li>根据时间戳判断token是否过期失效;</li>
+<li>验证两个token是否匹配；</li>
+</ol>
+<p>从上面的功能列表中，我们发现，1、2、6、7都是跟token有关，负责token的生成、验证；3、4都是在处理URL，负责URL的拼接、解析；5是操作AppID和密码，负责从存储中读取AppID和密码。所以，我们可以粗略的得到三个核心的类：AuthToken、Url、CredentialStorage。AuthToken负责实现1、2、6、7这四个操作；Url负责3、4两个操作；CredentialStorage负责5这个操作。</p>
+<p>当然，这是一个初步的类的划分，其他一些不重要的、边边角角的类，我们可能暂时没法一下想全，但这也没关系，面向对象分析、设计、编程本来就是一个循环迭代、不断优化的过程。根据需求，我们先给出一个粗糙版本的设计方案，然后基于这样一个基础，再去迭代优化，会更容易一些，思路也会更更加清晰一些。</p>
+<p>不过，我还要再强调一点，接口调用鉴权这个开发需求比较简单，所以，需求对应的面向对象设计并不复杂，识别出来的类也并不多。但如果我们面对的是更加大型的软件开发、更加复杂的需求开发，涉及的功能点可能会很多，对应的类也会比较多，像刚刚那样根据需求逐句罗列功能点的方法，最后会得到一个长长的列表，就会有点凌乱、没有规律。针对这种复杂的需求开发，我们受邀作的时进行模块划分，将需求先简单划分成几个小的、独立的功能模块，然后再在模块内部，应用我们刚刚讲的方法，进行面向对象设计。而模块的划分和识别，跟类的划分和识别，是类似的套路。</p>
+<h4 id="定义类及其属性和方法">2.定义类及其属性和方法</h4>
+<p>刚刚我们通过分析需求描述，识别出了三个核心的类，它们分别是AuthToken、Url和CredentialStorage。现在我们来看下，每个类都有哪些属性和方法。我们还是从功能点列表中挖掘。</p>
+<p>AuthToken类相关的功能点有四个：</p>
+<ul>
+<li>把URL、AppID、密码、时间戳拼接为一个字符串；</li>
+<li>对字符串通过加密算法加密生成token；</li>
+<li>根据时间戳判断token是否过期失效；</li>
+<li>验证两个token是否匹配。</li>
+</ul>
+<p>对于方法的识别，很多面向对象相关的数据，一般都是这么讲的，识别出需求描述中的动词，作为候选的方法，再进一步过滤筛选。类比一下方法的识别，我们可以把功能点中涉及的名词，作为候选属性，然后同样进行过滤筛选。</p>
+<p>我们可以借用这个思路，根据功能点描述，识别出来AuthToken类的属性和方法，如下所示：</p>
+
+<p>从上面的类图中，我们可以发现这样三个小细节。</p>
+<ul>
+<li>第一个细节：并不是所有出现的名词都被定义为类的属性，比如URL、AppID、密码、时间戳这几个名词，我们把它作为了方法的参数。</li>
+<li>第二个细节：我们还需要挖掘一些没有出现在功能点描述中属性，比如createTime，expireTimeInterval，它们用在isExpired()函数中，用来判定token是否过期。</li>
+<li>第三个细节：我们还给AUthToken类添加了一个功能点描述中没有提到的方法getToken()。</li>
+</ul>
+<p>第一个细节告诉我们，从业务模型上来说，不应该属于这个类的属性和方法，不应该被放到这个类里。比如URL、AppID这些信息，从业务模型上来说，不应该属于AuthToken，所以我们不应该放到这个类中。</p>
+<p>第二、第三个细节告诉我们，在设计类具有哪些属性和方法的时候，不能单纯地依赖当下的需求，还要分析这个类从业务模型上来讲，理应具有哪些属性和方法。这样可以一方面保证类定义的完整性，另一方面不仅为当下的需求还为未来的需求做些准备。</p>
+<h4 id="url类相关的功能点有两个">Url类相关的功能点有两个：</h4>
+<ul>
+<li>将token、AppID、时间戳拼接到URL中，形成新的URL；</li>
+<li>解析URL，得到token、AppID、时间戳等信息。</li>
+</ul>
+<p>虽然需求描述中，我们都是以URL来代指接口请求，但是，接口请求并不一定是以URL的形式来表达，还有可能是Dubbo、RPC等其他形式。为了让这个类更加通用，命名更加贴切，我们接下来把它命名为ApiRequest。下面是我根据功能点描述设计的ApiRequest类。</p>
+
+<h4 id="credentialstorage类相关的功能点有一个">CredentialStorage类相关的功能点有一个：</h4>
+<ul>
+<li>从存储中取出AppID和对应的密码。</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>设计模式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何对接口鉴权这样一个功能开发做面向对象分析？</title>
+    <url>/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/</url>
+    <content><![CDATA[<p>面向对象分析（OOA）、面向对象设计（OOD）、面向对象编程（OOP），是面向对象开发的三个主要环节。在前面的章节中，我对三者的讲解比较偏理论、偏概括性，目的是让你先有一个宏观的了解，知道什么是OOA、OOD、OOP。不过，光知道”是什么“是不够的，我们更重要的还是要知道”如何做“，也就是，如何进行面向对象分析、设计与编程。</p>
+<p>在过往的工作中，我发现，很多工程是，特别是初级工程师，本身没有太多的项目敬艳艳，或者参与的项目都是基于开发框架填写CRUD模板式的代码，导致分析、设计能力比较欠缺。当他们拿到一个比较笼统的开发需求的时候，往往不知道从何下手。</p>
+<p>对于”如何做需求分析，如何做职责划分？需要定义哪些类？每个类应该具有哪些属性、方法？类与类之间该如何交互？如何组装类成一个可执行的程序？“等等诸多问题，要有清晰的思路，最好利用成熟的设计原则、思想或者设计模式，开发出具有高内聚低耦合、易扩展、易读等优秀特性的代码了。</p>
+<p>所以打算结合一个真实的开发案例，从基础的需求分析、职责划分、类的定义、交互、组装运行讲起，将最基础的面向对象分析、设计、编程的套路讲清楚，为后面学习设计原则、设计模式打好基础。</p>
+<h3 id="案例介绍和难点剖析">案例介绍和难点剖析</h3>
+<p>假设，你正在参与开发一个微服务。微服务通过HTTP协议暴露接口给其他系统调用，说直白点就是，其他系统通过URL来调用微服务的接口。有一天，你的leader找到你说，”为了保证接口调用的安全性，我们希望设计实现一个接口调用鉴权功能，只有经过认证之后的系统才能调我们的接口，没有认证过的系统调用我们的接口会被拒绝。我希望由你来负责这个任务的开发，争取尽快上线。“</p>
+<p>leader丢下这句话就走了。这个时候，你该如何来做呢？有没有脑子里一团浆糊，一时间无从下手的感觉呢？为什么会有这种感觉呢？我个人觉得主要有下面两点原因。</p>
+<h4 id="需求不明确">1.需求不明确</h4>
+<p>leader给到的需求过于模糊、笼统，不够具体、细化，离落地到设计、编码还有一定的距离。而人的大脑不善于思考这种过于抽象的问题。这也是真实的软件开发区别于应试教育的地方。应试教育中的考试题目，一般都是一个非常具体的问题，我们去解答就好了。而真实的软件开发中，需求几乎都不是很明确。</p>
+<p>我们前面讲过，面向对象分析主要的分析对象是”需求“，因此，面向对象分析可以粗略地看成”需求分析“。实际上，不管是需求分析还是面向对象分析，我们首先要做的都是将笼统的需求细化到足够清晰、可执行。我们需要通过沟通、挖掘、分析、假设、梳理，搞清楚具体的需求有哪些，哪些是现在要做的，哪些是未来可能要做的，哪些是不同考虑做的。</p>
+<h4 id="缺少锻炼">2.缺少锻炼</h4>
+<p>相比单纯的业务CRUD开发，鉴权这个开发任务，要更有难度。鉴权作为一个跟具体业务无关的功能，我们完全可以把它开发成一个独立的框架，集成到很多业务系统中。而作为被很多系统复用的通用框架，比起普通的业务代码，我们对框架的代码质量要求要更高。</p>
+<p>开发这样通用的框架，对工程师的需求分析能力、设计能力、编码能力，甚至逻辑思维能力的要求，都是比较高的。如果你平时做的都是简单的CRUD业务开发，那这方面的锻炼肯定不会很多，所以，一旦遇到这种开发需求，很容易因为缺少锻炼，脑子放空，不知道从何入手，完全没有思路。</p>
+<h3 id="对案例进行需求分析">对案例进行需求分析</h3>
+<p>实际上，需求分析的工作很琐碎，也没有太多固定章法可寻，所以，我不打算很牵强的罗列那些听着有用、实际没用的方法论，而是希望通过鉴权这个例子，来给你展示一下，面对需求分析的时候，我的完整的思考路径是什么样的。希望你能自己去体会，举一反三的类比应用到其他项目的需求分析中。</p>
+<p>尽管针对框架、组件、类库等非业务系统的开发，我们一定要有组件化意识、框架意识、抽象意识，开发出来的东西要足够通用，不能局限于单一的某个业务需求，但这并不代表我们就可以脱离具体的应用场景，闷头拍脑袋做需求分析。多跟业务团队聊聊天，甚至自己去参与几个业务系统的开发，只有这样，我们才能真正知道业务系统的痛点，才能分析出最优价值的需求。不过，针对鉴权这一功能的开发，最大的需求方还是我们自己，所以，我们也可以先从满足我们自己系统的需求开始，然后再迭代优化。</p>
+<p>现在，我们来看一下，针对鉴权这个功能的开发，我们该如何做需求分析？</p>
+<p>实际上，这跟做算法题类似，先从最简单的方案想起，然后再优化。所以，我把整个的分析过程分了循序渐进的四轮。每一轮都是对上一轮的迭代优化，最后形成一个可执行、可落地的需求列表。</p>
+<h4 id="第一轮基础分析">1.第一轮基础分析</h4>
+<p>对于如何做鉴权这样一个问题，最简单的解决方案就是，通过用户名加密码来做认证。我们给每个允许访问我们服务的调用方，派发一个应用名（或者叫应用ID、AppID）和一个对应的密码（或者叫密钥）。调用方每次进行接口请求的时候，都携带自己的AppID和密码。微服务在接收到接口调用请求之后，会解析出AppID和密码，跟存储在微服务端的AppID和密码进行比对。如果一致，说明认证成功，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
+<h4 id="第二轮分析优化">2.第二轮分析优化</h4>
+<p>不过，这样的验证方式，每次都要明文传输密码。密码很容易被截获，是不安全的。那如果我们借助加密算法（比如SHA），对密码进行加密之后，再传递到微服务端验证，是不是就可以了呢？实际上，这样也是不安全的，因为加密之后的密码及AppID，照样可以被未认证系统（或者说黑客）接货，未认证系统可以携带这个加密之后的密码以及对应的AppID，伪装成已认证系统来访问我们的接口。这就是典型的"重放攻击"。</p>
+<p>提出问题，然后再解决问题，是一个非常好的迭代优化方法。对于刚刚这个问题，我们可以借助OAuth的验证思路来解决。调用方将请求接口的URL跟AppID、密码拼接在一起，然后进行加密，生成一个token。调用方在进行接口请求的时候，将这个token及AppID，随URL一块传递给为服务端。为服务端接收到这些数据之后，根据AppID从数据库中取出对应的密码，并通过同样的token生成算法，生成另外一个token。用这个新生成的token跟调用方传递过来的token对比。如果一致，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
+<p>这个方案稍微有点复杂，我画了一张示例图，来帮你理解整个流程。</p>
+<img data-src="/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%831.jpg" class>
+<h4 id="第三轮分析优化">3.第三轮分析优化</h4>
+<p>不过，这样的设计仍然存在重放攻击的风险，还是不够安全。每个URL拼接上AppID。密码生成的token都是固定给的。未认证系统截获URL、token和AppID之后，还是可以通过重放攻击的方式，伪装成认证系统，调用这个URL对应的接口。</p>
+<p>为了解决这个问题，我们可以进一步优化token生成算法，引入一个随机变量，让每次接口请求生成的token都不一样。我们可以选择时间戳作为随机变量。原来的token是对URL、AppID、密码三者进行加密生成的，现在我们将URL、AppID、密码、时间戳四者进行加密生成token。调用方在进行接口请求的时候，将token、AppID、时间戳，随URL一并传递给微服务端。</p>
+<p>微服务端在收到这些数据之后，会验证当前时间跟传递过来的时间戳，是否在一定的时间窗口内（比如一分钟）。如果超过一分钟，会判定token过期，拒绝接口请求。如果没有超过一分钟，则说明token没有过期，就再通过同样的token生成算法，在服务端生成新的token，与调用方传递过来的token比对，看是否一致。如果一致，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
+<p>优化之后的认证流程如下图所示。</p>
+<img data-src="/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%832.jpg" class>
+<h4 id="第四轮分析优化">4.第四轮分析优化</h4>
+<p>不过，你可能会说，这样还是不够安全啊。未认证系统还是可以在这一分钟的token失效窗口内，通过截获请求、重放请求，来调用我们的接口啊！（反解密出token算法，解析出时间戳，不停的用此时的时间戳替换，然后重放攻击）</p>
+<p>你说的没错。不过，攻与防之间，本来就没有绝对的安全。我们能做的就是，尽量提高攻击的成本。这个方案虽然还有漏洞，但是实现起来足够简单，而且不会过度影响接口本身的性能（比如响应时间）。所以，权衡安全性、开发成本、对系统性能的影响，这个方案算是比较折中、比较合理的了。</p>
+<p>实际上，还有一个细节我们没有考虑到，那就是，如何在微服务度存储每个授权调用方的AppID和密码。当然，这个问题并不难。最容易想到的方案就是存储到数据库里，比如MySQL。不过，开发像鉴权这样的非业务功能，最好不要与具体的第三方系统有过度的耦合。</p>
+<p>针对AppID和密码的存储，我们最好能灵活的支持各种不同的存储方式，比如ZooKeeper、本地配置文件、自研配置中心、MySQL、Redis等。我们不一定针对每种存储方式都去做代码实现，但起码要留点扩展点，保证系统有足够的灵活性和扩展性，能够在我们切换存储方式的时候，尽可能第减少代码的改动。</p>
+<h4 id="最终确定需求">5.最终确定需求</h4>
+<p>到此，需求已经足够细化和具体了。现在，我们按照鉴权的流程，对需求再重新描述一下。如果你熟悉UML，也可以用时序图、流程图来描述。不过，用什么描述不是重点，描述清楚才是最终要的。考虑到在接下来的面向对象设计环节中，我会基于文字版本的需求描述，来进行类、属性、方法、交互等的设计，所以，这里我给出的最终需求描述是文字版本的。</p>
+<ul>
+<li>调用方进行接口请求的时候，将URL、AppID、密码、时间戳拼接在一起，通过加密算法生成token，并且将token、AppID、时间戳拼接在URL中，一并发送到微服务端。</li>
+<li>微服务端在接收到调用方的接口请求之后，从请求中拆接触token、AppID、时间戳。</li>
+<li>微服务端首先检查传递过来的时间戳跟当前时间，是否在token失效时间窗口内。如果已经超过失效时间，那就算接口调用鉴权失败，拒绝接口调用请求。</li>
+<li>如果token验证没有过期失效，微服务端再从自己的存储中，取出AppID对应的密码，通过同样的token生成算法，生成另外一个token，与调用方传递过来的token进行匹配：如果一致，则鉴权成功，允许接口调用，否则就拒绝接口调用。</li>
+</ul>
+<p>这就是我们需求分析的整个思考过程，从最粗糙、最模糊的需求开始，通过”提出问题-解决问题“的方式，循序渐进的进行优化，最后得到一个足够清晰、可落地的需求描述。</p>
+<h3 id="重点回顾">重点回顾</h3>
+<p>针对框架、类库、组件等非业务系统的开发，其中一个比较大的难点就是，需求一般都比较抽象、模糊，需要你自己去挖掘，做合理取舍、权衡、假设，把抽象的问题具象化，最终产生清晰的、可落地的需求定义。需求定义是否清晰、合理，直接影响了后续的设计、编码实现是否顺畅。所以，作为程序员，你一定不要只关心设计与实现，前期的需求分析同等重要。</p>
+<p>需求分析的过程实际上是一个不断迭代优化的过程。我们不要试图以下就能给出一个完美的解决方案，而是先给出一个粗糙的、基础的方案，有一个迭代的基础，然后再慢慢优化，这样一个思考过程能让我们拜托无从下手的窘境。</p>
 ]]></content>
       <tags>
         <tag>设计模式</tag>
@@ -2821,62 +2931,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>如何对接口鉴权这样一个功能开发做面向对象分析？</title>
-    <url>/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/</url>
-    <content><![CDATA[<p>面向对象分析（OOA）、面向对象设计（OOD）、面向对象编程（OOP），是面向对象开发的三个主要环节。在前面的章节中，我对三者的讲解比较偏理论、偏概括性，目的是让你先有一个宏观的了解，知道什么是OOA、OOD、OOP。不过，光知道”是什么“是不够的，我们更重要的还是要知道”如何做“，也就是，如何进行面向对象分析、设计与编程。</p>
-<p>在过往的工作中，我发现，很多工程是，特别是初级工程师，本身没有太多的项目敬艳艳，或者参与的项目都是基于开发框架填写CRUD模板式的代码，导致分析、设计能力比较欠缺。当他们拿到一个比较笼统的开发需求的时候，往往不知道从何下手。</p>
-<p>对于”如何做需求分析，如何做职责划分？需要定义哪些类？每个类应该具有哪些属性、方法？类与类之间该如何交互？如何组装类成一个可执行的程序？“等等诸多问题，要有清晰的思路，最好利用成熟的设计原则、思想或者设计模式，开发出具有高内聚低耦合、易扩展、易读等优秀特性的代码了。</p>
-<p>所以打算结合一个真实的开发案例，从基础的需求分析、职责划分、类的定义、交互、组装运行讲起，将最基础的面向对象分析、设计、编程的套路讲清楚，为后面学习设计原则、设计模式打好基础。</p>
-<h3 id="案例介绍和难点剖析">案例介绍和难点剖析</h3>
-<p>假设，你正在参与开发一个微服务。微服务通过HTTP协议暴露接口给其他系统调用，说直白点就是，其他系统通过URL来调用微服务的接口。有一天，你的leader找到你说，”为了保证接口调用的安全性，我们希望设计实现一个接口调用鉴权功能，只有经过认证之后的系统才能调我们的接口，没有认证过的系统调用我们的接口会被拒绝。我希望由你来负责这个任务的开发，争取尽快上线。“</p>
-<p>leader丢下这句话就走了。这个时候，你该如何来做呢？有没有脑子里一团浆糊，一时间无从下手的感觉呢？为什么会有这种感觉呢？我个人觉得主要有下面两点原因。</p>
-<h4 id="需求不明确">1.需求不明确</h4>
-<p>leader给到的需求过于模糊、笼统，不够具体、细化，离落地到设计、编码还有一定的距离。而人的大脑不善于思考这种过于抽象的问题。这也是真实的软件开发区别于应试教育的地方。应试教育中的考试题目，一般都是一个非常具体的问题，我们去解答就好了。而真实的软件开发中，需求几乎都不是很明确。</p>
-<p>我们前面讲过，面向对象分析主要的分析对象是”需求“，因此，面向对象分析可以粗略地看成”需求分析“。实际上，不管是需求分析还是面向对象分析，我们首先要做的都是将笼统的需求细化到足够清晰、可执行。我们需要通过沟通、挖掘、分析、假设、梳理，搞清楚具体的需求有哪些，哪些是现在要做的，哪些是未来可能要做的，哪些是不同考虑做的。</p>
-<h4 id="缺少锻炼">2.缺少锻炼</h4>
-<p>相比单纯的业务CRUD开发，鉴权这个开发任务，要更有难度。鉴权作为一个跟具体业务无关的功能，我们完全可以把它开发成一个独立的框架，集成到很多业务系统中。而作为被很多系统复用的通用框架，比起普通的业务代码，我们对框架的代码质量要求要更高。</p>
-<p>开发这样通用的框架，对工程师的需求分析能力、设计能力、编码能力，甚至逻辑思维能力的要求，都是比较高的。如果你平时做的都是简单的CRUD业务开发，那这方面的锻炼肯定不会很多，所以，一旦遇到这种开发需求，很容易因为缺少锻炼，脑子放空，不知道从何入手，完全没有思路。</p>
-<h3 id="对案例进行需求分析">对案例进行需求分析</h3>
-<p>实际上，需求分析的工作很琐碎，也没有太多固定章法可寻，所以，我不打算很牵强的罗列那些听着有用、实际没用的方法论，而是希望通过鉴权这个例子，来给你展示一下，面对需求分析的时候，我的完整的思考路径是什么样的。希望你能自己去体会，举一反三的类比应用到其他项目的需求分析中。</p>
-<p>尽管针对框架、组件、类库等非业务系统的开发，我们一定要有组件化意识、框架意识、抽象意识，开发出来的东西要足够通用，不能局限于单一的某个业务需求，但这并不代表我们就可以脱离具体的应用场景，闷头拍脑袋做需求分析。多跟业务团队聊聊天，甚至自己去参与几个业务系统的开发，只有这样，我们才能真正知道业务系统的痛点，才能分析出最优价值的需求。不过，针对鉴权这一功能的开发，最大的需求方还是我们自己，所以，我们也可以先从满足我们自己系统的需求开始，然后再迭代优化。</p>
-<p>现在，我们来看一下，针对鉴权这个功能的开发，我们该如何做需求分析？</p>
-<p>实际上，这跟做算法题类似，先从最简单的方案想起，然后再优化。所以，我把整个的分析过程分了循序渐进的四轮。每一轮都是对上一轮的迭代优化，最后形成一个可执行、可落地的需求列表。</p>
-<h4 id="第一轮基础分析">1.第一轮基础分析</h4>
-<p>对于如何做鉴权这样一个问题，最简单的解决方案就是，通过用户名加密码来做认证。我们给每个允许访问我们服务的调用方，派发一个应用名（或者叫应用ID、AppID）和一个对应的密码（或者叫密钥）。调用方每次进行接口请求的时候，都携带自己的AppID和密码。微服务在接收到接口调用请求之后，会解析出AppID和密码，跟存储在微服务端的AppID和密码进行比对。如果一致，说明认证成功，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
-<h4 id="第二轮分析优化">2.第二轮分析优化</h4>
-<p>不过，这样的验证方式，每次都要明文传输密码。密码很容易被截获，是不安全的。那如果我们借助加密算法（比如SHA），对密码进行加密之后，再传递到微服务端验证，是不是就可以了呢？实际上，这样也是不安全的，因为加密之后的密码及AppID，照样可以被未认证系统（或者说黑客）接货，未认证系统可以携带这个加密之后的密码以及对应的AppID，伪装成已认证系统来访问我们的接口。这就是典型的"重放攻击"。</p>
-<p>提出问题，然后再解决问题，是一个非常好的迭代优化方法。对于刚刚这个问题，我们可以借助OAuth的验证思路来解决。调用方将请求接口的URL跟AppID、密码拼接在一起，然后进行加密，生成一个token。调用方在进行接口请求的时候，将这个token及AppID，随URL一块传递给为服务端。为服务端接收到这些数据之后，根据AppID从数据库中取出对应的密码，并通过同样的token生成算法，生成另外一个token。用这个新生成的token跟调用方传递过来的token对比。如果一致，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
-<p>这个方案稍微有点复杂，我画了一张示例图，来帮你理解整个流程。</p>
-<img data-src="/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%831.jpg" class>
-<h4 id="第三轮分析优化">3.第三轮分析优化</h4>
-<p>不过，这样的设计仍然存在重放攻击的风险，还是不够安全。每个URL拼接上AppID。密码生成的token都是固定给的。未认证系统截获URL、token和AppID之后，还是可以通过重放攻击的方式，伪装成认证系统，调用这个URL对应的接口。</p>
-<p>为了解决这个问题，我们可以进一步优化token生成算法，引入一个随机变量，让每次接口请求生成的token都不一样。我们可以选择时间戳作为随机变量。原来的token是对URL、AppID、密码三者进行加密生成的，现在我们将URL、AppID、密码、时间戳四者进行加密生成token。调用方在进行接口请求的时候，将token、AppID、时间戳，随URL一并传递给微服务端。</p>
-<p>微服务端在收到这些数据之后，会验证当前时间跟传递过来的时间戳，是否在一定的时间窗口内（比如一分钟）。如果超过一分钟，会判定token过期，拒绝接口请求。如果没有超过一分钟，则说明token没有过期，就再通过同样的token生成算法，在服务端生成新的token，与调用方传递过来的token比对，看是否一致。如果一致，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
-<p>优化之后的认证流程如下图所示。</p>
-<img data-src="/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%832.jpg" class>
-<h4 id="第四轮分析优化">4.第四轮分析优化</h4>
-<p>不过，你可能会说，这样还是不够安全啊。未认证系统还是可以在这一分钟的token失效窗口内，通过截获请求、重放请求，来调用我们的接口啊！（反解密出token算法，解析出时间戳，不停的用此时的时间戳替换，然后重放攻击）</p>
-<p>你说的没错。不过，攻与防之间，本来就没有绝对的安全。我们能做的就是，尽量提高攻击的成本。这个方案虽然还有漏洞，但是实现起来足够简单，而且不会过度影响接口本身的性能（比如响应时间）。所以，权衡安全性、开发成本、对系统性能的影响，这个方案算是比较折中、比较合理的了。</p>
-<p>实际上，还有一个细节我们没有考虑到，那就是，如何在微服务度存储每个授权调用方的AppID和密码。当然，这个问题并不难。最容易想到的方案就是存储到数据库里，比如MySQL。不过，开发像鉴权这样的非业务功能，最好不要与具体的第三方系统有过度的耦合。</p>
-<p>针对AppID和密码的存储，我们最好能灵活的支持各种不同的存储方式，比如ZooKeeper、本地配置文件、自研配置中心、MySQL、Redis等。我们不一定针对每种存储方式都去做代码实现，但起码要留点扩展点，保证系统有足够的灵活性和扩展性，能够在我们切换存储方式的时候，尽可能第减少代码的改动。</p>
-<h4 id="最终确定需求">5.最终确定需求</h4>
-<p>到此，需求已经足够细化和具体了。现在，我们按照鉴权的流程，对需求再重新描述一下。如果你熟悉UML，也可以用时序图、流程图来描述。不过，用什么描述不是重点，描述清楚才是最终要的。考虑到在接下来的面向对象设计环节中，我会基于文字版本的需求描述，来进行类、属性、方法、交互等的设计，所以，这里我给出的最终需求描述是文字版本的。</p>
-<ul>
-<li>调用方进行接口请求的时候，将URL、AppID、密码、时间戳拼接在一起，通过加密算法生成token，并且将token、AppID、时间戳拼接在URL中，一并发送到微服务端。</li>
-<li>微服务端在接收到调用方的接口请求之后，从请求中拆接触token、AppID、时间戳。</li>
-<li>微服务端首先检查传递过来的时间戳跟当前时间，是否在token失效时间窗口内。如果已经超过失效时间，那就算接口调用鉴权失败，拒绝接口调用请求。</li>
-<li>如果token验证没有过期失效，微服务端再从自己的存储中，取出AppID对应的密码，通过同样的token生成算法，生成另外一个token，与调用方传递过来的token进行匹配：如果一致，则鉴权成功，允许接口调用，否则就拒绝接口调用。</li>
-</ul>
-<p>这就是我们需求分析的整个思考过程，从最粗糙、最模糊的需求开始，通过”提出问题-解决问题“的方式，循序渐进的进行优化，最后得到一个足够清晰、可落地的需求描述。</p>
-<h3 id="重点回顾">重点回顾</h3>
-<p>针对框架、类库、组件等非业务系统的开发，其中一个比较大的难点就是，需求一般都比较抽象、模糊，需要你自己去挖掘，做合理取舍、权衡、假设，把抽象的问题具象化，最终产生清晰的、可落地的需求定义。需求定义是否清晰、合理，直接影响了后续的设计、编码实现是否顺畅。所以，作为程序员，你一定不要只关心设计与实现，前期的需求分析同等重要。</p>
-<p>需求分析的过程实际上是一个不断迭代优化的过程。我们不要试图以下就能给出一个完美的解决方案，而是先给出一个粗糙的、基础的方案，有一个迭代的基础，然后再慢慢优化，这样一个思考过程能让我们拜托无从下手的窘境。</p>
-]]></content>
-      <tags>
-        <tag>设计模式</tag>
       </tags>
   </entry>
   <entry>
@@ -3127,78 +3181,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>总结：MySQL中的重要概念（锁，内部临时表等）</title>
-    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
-    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
-<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
-<p>高，并发度最低。</p>
-<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
-<p>低，并发度也最高。</p>
-<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
-<p>锁和行锁之间，并发度一般。</p>
-<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>读锁</th>
-<th>写锁</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>读锁</strong></td>
-<td>不互斥</td>
-<td>互斥</td>
-</tr>
-<tr class="even">
-<td><strong>写锁</strong></td>
-<td>互斥</td>
-<td>互斥</td>
-</tr>
-</tbody>
-</table>
-<h3 id="一些重要的锁">一些重要的锁：</h3>
-<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
-<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
-<p>属于表级锁。</p>
-<h4 id="间隙锁">间隙锁</h4>
-<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
-<h4 id="自增id锁">自增id锁</h4>
-<h4 id="trx_id锁">trx_id锁</h4>
-<p>涉及到竞争资源，很多处都有锁。</p>
-<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
-<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
-<ol type="1">
-<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
-<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
-<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
-</ol>
-<h3 id="mysql常用操作">MySQL常用操作</h3>
-<ol type="1">
-<li>explain查看命令优化器优化结果；</li>
-<li>show engine innodb status;</li>
-<li>show warnings，看优化器改写后的语句；</li>
-<li>show create table t; 查看t的建表语句；</li>
-</ol>
-<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
-<ol type="1">
-<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
-<li>redoLog，undoLog，binLog重要概念。</li>
-<li>WAL (write ahead log 技术)，先将日志写在redolog中</li>
-<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
-<li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
-<li>change buffer</li>
-<li>普通索引和唯一索引尽量选择普通索引</li>
-<li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引，语句为count distinct。预先设定一个可以接受的损失比例。但是使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是你在选择是否使用前缀索引时需要考虑的一个因素。</li>
-<li>脏页和干净页，redo log中的脏页，刷进磁盘才会删除。这时候系统会停止所有更新操作，把 checkpoint 往前推进，redo log 留出空间可以继续写。write_pos， checkpoint</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>怎么最快地复制一张表？</title>
     <url>/2020/08/28/%E6%80%8E%E4%B9%88%E6%9C%80%E5%BF%AB%E5%9C%B0%E5%A4%8D%E5%88%B6%E4%B8%80%E5%BC%A0%E8%A1%A8%EF%BC%9F/</url>
     <content><![CDATA[<p>我在上一篇文章最后，给你留下的问题是怎么在两张表中拷贝数据。如果可以控制对源表的扫描行数和加锁范围很小的话，我们简单地使用insert..select语句即可实现。</p>
@@ -3320,6 +3302,78 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>后两种都是逻辑备份的方式，是可以跨引擎使用的。</p>
 <p>最后，我给你留下一个思考题吧。</p>
 <p>我们前面介绍binlog_format=statement的时候，binlog记录的load data命令是带local的。既然这条命令是发送到备库去执行的，那么备库执行的时候也是本地执行，为什么需要这个local呢？如果写到binlog中的命令不带local，又会出现什么问题呢？</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>总结：MySQL中的重要概念（锁，内部临时表等）</title>
+    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
+    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
+<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
+<p>高，并发度最低。</p>
+<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
+<p>低，并发度也最高。</p>
+<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
+<p>锁和行锁之间，并发度一般。</p>
+<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>读锁</th>
+<th>写锁</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>读锁</strong></td>
+<td>不互斥</td>
+<td>互斥</td>
+</tr>
+<tr class="even">
+<td><strong>写锁</strong></td>
+<td>互斥</td>
+<td>互斥</td>
+</tr>
+</tbody>
+</table>
+<h3 id="一些重要的锁">一些重要的锁：</h3>
+<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
+<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
+<p>属于表级锁。</p>
+<h4 id="间隙锁">间隙锁</h4>
+<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
+<h4 id="自增id锁">自增id锁</h4>
+<h4 id="trx_id锁">trx_id锁</h4>
+<p>涉及到竞争资源，很多处都有锁。</p>
+<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
+<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
+<ol type="1">
+<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
+<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
+<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
+</ol>
+<h3 id="mysql常用操作">MySQL常用操作</h3>
+<ol type="1">
+<li>explain查看命令优化器优化结果；</li>
+<li>show engine innodb status;</li>
+<li>show warnings，看优化器改写后的语句；</li>
+<li>show create table t; 查看t的建表语句；</li>
+</ol>
+<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
+<ol type="1">
+<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
+<li>redoLog，undoLog，binLog重要概念。</li>
+<li>WAL (write ahead log 技术)，先将日志写在redolog中</li>
+<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
+<li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
+<li>change buffer</li>
+<li>普通索引和唯一索引尽量选择普通索引</li>
+<li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引，语句为count distinct。预先设定一个可以接受的损失比例。但是使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是你在选择是否使用前缀索引时需要考虑的一个因素。</li>
+<li>脏页和干净页，redo log中的脏页，刷进磁盘才会删除。这时候系统会停止所有更新操作，把 checkpoint 往前推进，redo log 留出空间可以继续写。write_pos， checkpoint</li>
+</ol>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -3718,6 +3772,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>江湖再见</title>
+    <url>/2020/09/01/%E6%B1%9F%E6%B9%96%E5%86%8D%E8%A7%81/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>深入浅出索引</title>
     <url>/2020/08/31/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%B4%A2%E5%BC%95/</url>
     <content><![CDATA[<p>覆盖索引</p>
@@ -3776,15 +3839,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>江湖再见</title>
-    <url>/2020/09/01/%E6%B1%9F%E6%B9%96%E5%86%8D%E8%A7%81/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>

@@ -32,7 +32,7 @@
 <meta property="og:description" content="在上一篇文章中，针对接口鉴权的开发，我们讲了如何进行面向对象分析（OOA），也就是需求分析。实际山，需求定义清楚之后，这个问题就已经解决了一大半，这也是为什么要画那么多篇幅来讲解需求分析。今天，我们再来看一下，针对面向对象分析产出的需求，如何来进行面向对象设计（OOD）和面向对象编程（OOP）。 如何进行面向对象设计？ 我们知道，面向对象分析的产出是详细的需求描述，那面向对象设计的产出就是类。在面">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-08T02:52:39.000Z">
-<meta property="article:modified_time" content="2020-09-08T02:58:06.587Z">
+<meta property="article:modified_time" content="2020-09-08T03:47:47.640Z">
 <meta property="article:author" content="侯瑞哲">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
@@ -212,7 +212,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-09-08 10:52:39 / 修改时间：10:58:06" itemprop="dateCreated datePublished" datetime="2020-09-08T10:52:39+08:00">2020-09-08</time>
+              <time title="创建时间：2020-09-08 10:52:39 / 修改时间：11:47:47" itemprop="dateCreated datePublished" datetime="2020-09-08T10:52:39+08:00">2020-09-08</time>
             </span>
 
           
@@ -250,7 +250,61 @@
 <li>将类组装起来并提供执行入口。</li>
 </ul>
 <p>实话讲，不管是面向对象分析还是面向对象设计，理论的东西都不多，所以我们还是结合鉴权这个例子，在实战中体会如何做面向对象设计。</p>
-<h4 id="划分之责进而是被">1.划分之责进而是被</h4>
+<h4 id="划分之责进而识别出有哪些类">1.划分之责进而识别出有哪些类</h4>
+<p>在面向对象有关书籍中经常提到，类是现实世界中事物的一个建模。但是，并不是每个需求都能映射到现实世界，也并不是每个类都与现实世界中的事物一一对应。对于一些抽象的概念，我们是无法通过映射现实世界中的事物的方式来定义类的。</p>
+<p>所以，大多数讲面向对象的书籍中，还会讲到另外一种识别类的方法，那就是把需求描述中的名词罗列出来，作为可能的候选类，然后再进行筛选。对于没有经验的初学者来说，这个方法比较简单、明确，可以直接照着做。</p>
+<p>不过，我个人更喜欢另外一种方法，那就是根据需求描述，把其中涉及的功能点，一个一个罗列出来，然后再去看哪些功能点职责相近，操作同样的属性，是否应该归为同一个类。我们来看一下，针对鉴权这个例子，具体该如何来做。</p>
+<p>在上一篇文章中，我们已经给出了详细的需求描述，为了方便你查看，我把它重新贴在了下面。</p>
+<ul>
+<li>调用方进行接口请求的时候，将URL、AppID、密码、时间戳拼接在一起，通过加密算法生成token，并且将token、AppID、时间戳拼接在URL中，一并发送到微服务端。</li>
+<li>微服务端在接收到调用方的接口请求之后，从请求中拆解出token、AppID、时间戳。</li>
+<li>微服务端首先检查传递过来的时间戳跟当前时间，是否在token失效时间窗口内。如果已经超过失效时间，那就算接口调用鉴权失败，拒绝接口调用请求。</li>
+<li>如果token验证没有过期失效，微服务端再从自己的存储中，取出AppID对应的密码，通过同样的token生成算法，生成另外一个token，与调用方传递过来的token进行匹配。如果一致，则鉴权成功，允许接口调用；否则就拒绝接口调用。</li>
+</ul>
+<p>首先，我们要做的是逐句阅读上面的需求描述，拆解成小的功能点，一条一条罗列下来。注意，拆解出来的每个功能点要尽可能的小。每个功能点只负责做一件很小的事情（专业叫法是“单一职责”，后面章节中我们会讲到）。下面是我逐句拆解上述需求描述之后，得到的功能点列表：</p>
+<ol type="1">
+<li>把URL、AppID、密码、时间戳拼接为一个字符串；</li>
+<li>对字符串进行加密算法加密生成token；</li>
+<li>将token、AppID、时间戳拼接到URL中，形成新的URL；</li>
+<li>解析URL，得到token、AppID、时间戳等信息；</li>
+<li>从存储中取出AppID和对应的密码；</li>
+<li>根据时间戳判断token是否过期失效;</li>
+<li>验证两个token是否匹配；</li>
+</ol>
+<p>从上面的功能列表中，我们发现，1、2、6、7都是跟token有关，负责token的生成、验证；3、4都是在处理URL，负责URL的拼接、解析；5是操作AppID和密码，负责从存储中读取AppID和密码。所以，我们可以粗略的得到三个核心的类：AuthToken、Url、CredentialStorage。AuthToken负责实现1、2、6、7这四个操作；Url负责3、4两个操作；CredentialStorage负责5这个操作。</p>
+<p>当然，这是一个初步的类的划分，其他一些不重要的、边边角角的类，我们可能暂时没法一下想全，但这也没关系，面向对象分析、设计、编程本来就是一个循环迭代、不断优化的过程。根据需求，我们先给出一个粗糙版本的设计方案，然后基于这样一个基础，再去迭代优化，会更容易一些，思路也会更更加清晰一些。</p>
+<p>不过，我还要再强调一点，接口调用鉴权这个开发需求比较简单，所以，需求对应的面向对象设计并不复杂，识别出来的类也并不多。但如果我们面对的是更加大型的软件开发、更加复杂的需求开发，涉及的功能点可能会很多，对应的类也会比较多，像刚刚那样根据需求逐句罗列功能点的方法，最后会得到一个长长的列表，就会有点凌乱、没有规律。针对这种复杂的需求开发，我们受邀作的时进行模块划分，将需求先简单划分成几个小的、独立的功能模块，然后再在模块内部，应用我们刚刚讲的方法，进行面向对象设计。而模块的划分和识别，跟类的划分和识别，是类似的套路。</p>
+<h4 id="定义类及其属性和方法">2.定义类及其属性和方法</h4>
+<p>刚刚我们通过分析需求描述，识别出了三个核心的类，它们分别是AuthToken、Url和CredentialStorage。现在我们来看下，每个类都有哪些属性和方法。我们还是从功能点列表中挖掘。</p>
+<p>AuthToken类相关的功能点有四个：</p>
+<ul>
+<li>把URL、AppID、密码、时间戳拼接为一个字符串；</li>
+<li>对字符串通过加密算法加密生成token；</li>
+<li>根据时间戳判断token是否过期失效；</li>
+<li>验证两个token是否匹配。</li>
+</ul>
+<p>对于方法的识别，很多面向对象相关的数据，一般都是这么讲的，识别出需求描述中的动词，作为候选的方法，再进一步过滤筛选。类比一下方法的识别，我们可以把功能点中涉及的名词，作为候选属性，然后同样进行过滤筛选。</p>
+<p>我们可以借用这个思路，根据功能点描述，识别出来AuthToken类的属性和方法，如下所示：</p>
+
+<p>从上面的类图中，我们可以发现这样三个小细节。</p>
+<ul>
+<li>第一个细节：并不是所有出现的名词都被定义为类的属性，比如URL、AppID、密码、时间戳这几个名词，我们把它作为了方法的参数。</li>
+<li>第二个细节：我们还需要挖掘一些没有出现在功能点描述中属性，比如createTime，expireTimeInterval，它们用在isExpired()函数中，用来判定token是否过期。</li>
+<li>第三个细节：我们还给AUthToken类添加了一个功能点描述中没有提到的方法getToken()。</li>
+</ul>
+<p>第一个细节告诉我们，从业务模型上来说，不应该属于这个类的属性和方法，不应该被放到这个类里。比如URL、AppID这些信息，从业务模型上来说，不应该属于AuthToken，所以我们不应该放到这个类中。</p>
+<p>第二、第三个细节告诉我们，在设计类具有哪些属性和方法的时候，不能单纯地依赖当下的需求，还要分析这个类从业务模型上来讲，理应具有哪些属性和方法。这样可以一方面保证类定义的完整性，另一方面不仅为当下的需求还为未来的需求做些准备。</p>
+<h4 id="url类相关的功能点有两个">Url类相关的功能点有两个：</h4>
+<ul>
+<li>将token、AppID、时间戳拼接到URL中，形成新的URL；</li>
+<li>解析URL，得到token、AppID、时间戳等信息。</li>
+</ul>
+<p>虽然需求描述中，我们都是以URL来代指接口请求，但是，接口请求并不一定是以URL的形式来表达，还有可能是Dubbo、RPC等其他形式。为了让这个类更加通用，命名更加贴切，我们接下来把它命名为ApiRequest。下面是我根据功能点描述设计的ApiRequest类。</p>
+
+<h4 id="credentialstorage类相关的功能点有一个">CredentialStorage类相关的功能点有一个：</h4>
+<ul>
+<li>从存储中取出AppID和对应的密码。</li>
+</ul>
 
     </div>
 
@@ -337,7 +391,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">如何进行面向对象设计？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%92%E5%88%86%E4%B9%8B%E8%B4%A3%E8%BF%9B%E8%80%8C%E6%98%AF%E8%A2%AB"><span class="nav-number">1.1.</span> <span class="nav-text">1.划分之责进而是被</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">如何进行面向对象设计？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%92%E5%88%86%E4%B9%8B%E8%B4%A3%E8%BF%9B%E8%80%8C%E8%AF%86%E5%88%AB%E5%87%BA%E6%9C%89%E5%93%AA%E4%BA%9B%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">1.划分之责进而识别出有哪些类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%8F%8A%E5%85%B6%E5%B1%9E%E6%80%A7%E5%92%8C%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">2.定义类及其属性和方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#url%E7%B1%BB%E7%9B%B8%E5%85%B3%E7%9A%84%E5%8A%9F%E8%83%BD%E7%82%B9%E6%9C%89%E4%B8%A4%E4%B8%AA"><span class="nav-number">1.3.</span> <span class="nav-text">Url类相关的功能点有两个：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#credentialstorage%E7%B1%BB%E7%9B%B8%E5%85%B3%E7%9A%84%E5%8A%9F%E8%83%BD%E7%82%B9%E6%9C%89%E4%B8%80%E4%B8%AA"><span class="nav-number">1.4.</span> <span class="nav-text">CredentialStorage类相关的功能点有一个：</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
