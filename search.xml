@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
+    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
+<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
+<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
+<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
+<h2 id="算法">算法</h2>
+<ol type="1">
+<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
+<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
+<li>while sptSet不包含所有的顶点：
+<ul>
+<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
+<li>将u加入到sptSet中。</li>
+<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
+</ul></li>
+</ol>
+<h2 id="代码示例">代码示例</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="参考">参考</h2>
+<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>GC的三种基本实现方式和优缺点</title>
     <url>/2020/07/26/GC%E7%9A%84%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/</url>
     <content><![CDATA[<h3 id="参考">参考：</h3>
@@ -140,33 +167,6 @@
       <tags>
         <tag>计算机网络</tag>
         <tag>HTTP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Dijkstra&#39;s Shortest Path Algorithm|Dijkstra最短路径算法</title>
-    <url>/2020/08/03/Dijkstra-s-Shortest-Path-Algorithm-Dijkstra%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
-<p>给定一个图和图中的源顶点，找到从源到给定图中所有顶点的最短路径。</p>
-<p>Dijkstra的算法与Prim的最小生成树算法非常相似。和Prim的MST一样，我们以给定的源为根，生成一个SPT（shortest path tree 最短路径树）。我们维护两个集合，一个集合包含最短路径树中包含的顶点，另一个集合包含尚未包含在最短路径树中的顶点。在算法的每一步，我们都会找到一个在另一个集合（尚未包含的集合）中的顶点，并且与源的距离最小。</p>
-<p>下面是Dijkstra算法的详细步骤，用于寻找从单个源顶点到给定图中所有其他顶点的最短路径。</p>
-<h2 id="算法">算法</h2>
-<ol type="1">
-<li>创建一个集合sptSet（最短路径树集合），用来跟踪最短路径树中包含的顶点，即这个集合中的点到源的最小距离已经被计算和确定下来。开始的时候，这个集合是空的。</li>
-<li>给输出图中的所有顶点分配一个距离值。初始化所有距离值为INFINITE。为源顶点分配距离值为0，这样它就会被首先选中。</li>
-<li>while sptSet不包含所有的顶点：
-<ul>
-<li>选取一个在sptSet中不存在的顶点u，并且它的距离值最小。</li>
-<li>将u加入到sptSet中。</li>
-<li>更新u的所有相邻顶点的距离值。要更新距离值，需要遍历所有相邻顶点。对于每一个相邻的顶点v，如果u的距离值（从源点）和边的权重之和小于v的距离值，那么更新v的距离值。</li>
-</ul></li>
-</ol>
-<h2 id="代码示例">代码示例</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Python program for Dijkstra&#x27;s single</span></span><br><span class="line"><span class="comment"># source shortest path algorithm. The program is</span></span><br><span class="line"><span class="comment"># for adjacency matrix representation of the graph</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = [[<span class="number">0</span> <span class="keyword">for</span> column <span class="keyword">in</span> range(vertices)]</span><br><span class="line">                      <span class="keyword">for</span> row <span class="keyword">in</span> range(vertices)]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printSolution</span>(<span class="params">self, dist</span>):</span></span><br><span class="line">        print(<span class="string">&quot;Vertex tDistance from Source&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> range(self.V):</span><br><span class="line">            print(node, <span class="string">&quot;t&quot;</span>, dist[node])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># A utility function to find the vertex with</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># minimum distance value, from the set of vertices</span></span><br><span class="line">    <span class="comment"># not yet included in shortest path tree</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">minDistance</span>(<span class="params">self, dist, sptSet</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initilaize minimum distance for next node</span></span><br><span class="line">        min = float(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Search not nearest vertex not in the</span></span><br><span class="line">        <span class="comment"># shortest path tree</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> dist[v] &lt; min <span class="keyword">and</span> sptSet[v] == <span class="literal">False</span>:</span><br><span class="line">                min = dist[v]</span><br><span class="line">                min_index = v</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Funtion that implements Dijkstra&#x27;s single source</span></span><br><span class="line">    <span class="comment"># shortest path algorithm for a graph represented</span></span><br><span class="line">    <span class="comment"># using adjacency matrix representation</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span>(<span class="params">self, src</span>):</span></span><br><span class="line"></span><br><span class="line">        dist = [float(<span class="string">&#x27;inf&#x27;</span>)] * self.V</span><br><span class="line">        dist[src] = <span class="number">0</span></span><br><span class="line">        sptSet = [<span class="literal">False</span>] * self.V</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> cout <span class="keyword">in</span> range(self.V):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Pick the minimum distance vertex from</span></span><br><span class="line">            <span class="comment"># the set of vertices not yet processed.</span></span><br><span class="line">            <span class="comment"># u is always equal to src in first iteration</span></span><br><span class="line">            u = self.minDistance(dist, sptSet)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Put the minimum distance vertex in the</span></span><br><span class="line">            <span class="comment"># shotest path tree</span></span><br><span class="line">            sptSet[u] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update dist value of the adjacent vertices</span></span><br><span class="line">            <span class="comment"># of the picked vertex only if the current</span></span><br><span class="line">            <span class="comment"># distance is greater than new distance and</span></span><br><span class="line">            <span class="comment"># the vertex in not in the shotest path tree</span></span><br><span class="line">            <span class="keyword">for</span> v <span class="keyword">in</span> range(self.V):</span><br><span class="line">                <span class="keyword">if</span> self.graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> \</span><br><span class="line">                        sptSet[v] == <span class="literal">False</span> <span class="keyword">and</span> \</span><br><span class="line">                        dist[v] &gt; dist[u] + self.graph[u][v]:</span><br><span class="line">                    dist[v] = dist[u] + self.graph[u][v]</span><br><span class="line"></span><br><span class="line">        self.printSolution(dist)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Driver program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># This code is contributed by Divyanshu Mehta</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">9</span>)</span><br><span class="line">    g.graph = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">11</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">14</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">4</span>, <span class="number">14</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">11</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">0</span>]</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    g.dijkstra(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Output:</span></span><br><span class="line"><span class="comment"># Vertex tDistance from Source</span></span><br><span class="line"><span class="comment"># 0 t 0</span></span><br><span class="line"><span class="comment"># 1 t 4</span></span><br><span class="line"><span class="comment"># 2 t 12</span></span><br><span class="line"><span class="comment"># 3 t 19</span></span><br><span class="line"><span class="comment"># 4 t 21</span></span><br><span class="line"><span class="comment"># 5 t 11</span></span><br><span class="line"><span class="comment"># 6 t 9</span></span><br><span class="line"><span class="comment"># 7 t 8</span></span><br><span class="line"><span class="comment"># 8 t 14</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="参考">参考</h2>
-<p>geeksForGeeks: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcHl0aG9uLXByb2dyYW0tZm9yLWRpamtzdHJhcy1zaG9ydGVzdC1wYXRoLWFsZ29yaXRobS1ncmVlZHktYWxnby03Lw==">https://www.geeksforgeeks.org/python-program-for-dijkstras-shortest-path-algorithm-greedy-algo-7/<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1077,6 +1077,50 @@
       </tags>
   </entry>
   <entry>
+    <title>epoll的优劣和原理</title>
+    <url>/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<h3 id="epoll-网络事件收集器模型也有分发">epoll 网络事件收集器模型（也有分发）</h3>
+<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
+<p>首先，epoll 和 kqueue（mac os内核才有）随文件描述符（句柄数的增加，也表示并发连接数的增加）的增加，所消耗的时间几乎不变。而Poll和select所消耗的时间是急剧上升的。epoll基本与句柄数增加是无关的，所以它的性能会好很多，而且非常适合做大并发连接的处理。那么，为什么会这样呢？</p>
+<p>Benchmark显示：</p>
+<img data-src="/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/benchmark.png" class>
+<h3 id="前提">前提</h3>
+<p>高并发连接中，每次处理的活跃连接数量占比很小</p>
+<blockquote>
+<p>select 和 poll的实现是有问题的。每一次我去取操作系统的事件的时候，我都需要把这100万个连接通通地扔给操作系统，让它去依次地判断哪些连接上面有事件进来了，所以可以看到这里操作系统做了大量的无用功 ，它扫描了大量不活跃的连接。那么epoll就是用了这样的一个特性，因为每次处理的活跃连接的占比其实非常小，那么，它怎么实现的呢？其实非常简单，因为它维护了一个数据结构叫eventpoll。这里，它通过两个数据结构把这两件事分开了。也就是说，nginx每次取活跃连接的时候，我们只需要去遍历一个链表，这个链表里仅仅只有活跃的连接，这样我们的效率就很高。那么，我们还会经常做的操作是什么呢？比如说，nginx收到80端口建立连接的请求。那么，收到80端口建立连接成功以后呢，我们要添加一个读事件，这个读事件是用来读取HTTP消息的，那这时候呢，我可能会添加一个新的事件，或者写事件添加进来。这个时候添加呢，我只会放到这个红黑树中，这个二叉平衡树，它能保证我的插入效率值是logn。如果我现在不想再处理读事件或者写事件，我只需要从这个平衡二叉树中移除一个节点就可以了，同样是logn的时间复杂度。所以这个效率非常高。那么什么时候这个链表会有所增减呢。当我们读取一个事件的时候，链表中自然就没了。那么，当操作系统接收到网卡中发送来的一个报文的时候，那么这个链表就会增加一个新的元素，所以我们在使用epoll的时候，它的操作，添加修改删除，是非常快的，是logn复杂度的。而我们获取句柄的时候，只是去遍历这个rdllink，也就是ready准备好的所有的连接，是把它读取出来而已。那么，从内核态读取到用户态，只读这么一点东西，它的效率是非常高的。</p>
+</blockquote>
+<h3 id="实现">实现</h3>
+<ul>
+<li>红黑树</li>
+<li>链表</li>
+</ul>
+<h3 id="使用">使用</h3>
+<ul>
+<li>创建</li>
+<li>操作：添加/修改/删除</li>
+<li>获取句柄</li>
+<li>关闭</li>
+</ul>
+<p>以上，简单介绍了epoll的使用方法，它对我们理解nginx的事件驱动模型是有帮助的。</p>
+<h3 id="其他">其他</h3>
+<p>每一个nginx worker进程都有一个独立的ngx_cycle_t这样一个数据结构。有三个主要的数组，connections，read_events，write_events。分别代表预分配的连接、读事件和写事件。三个数组大小和配置是一模一样的，三个数组通过序号对应起来。</p>
+<p>每一个connection到底使用了多大的内存呢？连接使用的核心数据结构是ngx_connection_s，64位操作系统中，大约占用了232个字节，nginx版本不同可能有微小的差异，每一个ngx_connetion_s结构体对应着两个事件，一个读一个写，每一个时间对应的结构体，事件的核心数据结构是ngx_event_s，结构体占用的字节数是96字节。所以当我们使用一个连接的时候，它使用的字节大约是232+96*2，我们的worker connections配置得越大，那么初始化的时候就会预分配这么多内存。</p>
+<p>我们再来看ngx_event_s中有哪些成员，这里我们比较关注的是，有一个handler（ngx_event_gandler_pt）指针，这是一个回调方法，也就是很多第三方模块会把这个handler设为自己的实现；这里还有一个timer（ngx_rbtree_node_t），也就是说，当我们对http请求做读超时写超时等等设置的时候，其实是在操作它的读事件和写事件中的timer，这个timer就是inginx实现超时定时器，也就是基于rbtree就实现的这样一个结构体。那么红黑树中每个成员叫rbtree_node，那么这个timer就是它的node，用来指向我们的读事件是否超时、写事件是否超时，这些定时器其实也是可配的。</p>
+<p>比如client_header_timeout，默认是60s，也就是在我们刚刚某个连接上，在准备读取它的header时，我们在它的读事件上添加了一个60s的定时器。</p>
+<p>当多个事件形成队列的时候，可以用这个ngx_queue_t形成一个队列。</p>
+<p>我们再来简单的看一下，ngx_connection_s有一些什么样的成员。ngx_event_t read，ngx_event_t write分别是它的读写事件，这个刚刚已经说过了。recv和send是它抽象的操作系统的底层方法，怎么样发送和接收。这里还有一个比较有意思的变量，叫做sent，它的类型是off_t，大家可以把它理解成一个无符号的整型，表达的呢就是这个连接上我已经发送了多少字节，也就是，我们在配置中，会经常使用到的bytes_sent变量，那么我们可以先看一看bytes_sent变量到底有什么作用。还是打开ngx_http_core_module的官方文档，我们先找到它的内置变量。可以看到bytes_sent，它表示向客户端发送了多少字节。通常，在access_log记录nginx处理了哪些请求中，我们会记录这么一个变量，比如，在我们查看access_log时。现在我们打开了nginx_conf这个配置文件，在配置文件中，我们有一行log_format main，定义了access_log的日志格式。在日志格式，我们看到有一个 中括号，这个中括号的后半部分我们用了bytes_sent这个内置变量，用来表示我们发送了多少字节。我们看一下在日志中，这个bytes_sent会表现为什么样的形式。</p>
+<p>以上谈了nginx_connection_t和nginx_event连接和事件怎么样对应在一起的，当我们配置高并发的nginx时，必须把connections的数目配置到足够大，而每一个connection相对应两个event，都会消耗一定的内存，需要我们注意。还有nginx中像很多结构体中它们的一些成员和我们内置变量是可以对应起来的，比如说bytes_sent，还有一些比如说body_bytes_sent都是我们在access_log或者说在一些openresty lua写的代码中，我们获取到nginx内置的状态时，经常使用到的方法。</p>
+<p>如果你开发过nginx的第三方开发模块，虽然我们在写C语言代码，但是我们不需要关心内存的释放，那么如果你现在在配置一些比较罕见的nginx使用场景，你可能会需要去修改nginx在请求和连接上初始分配内存池大小。但是nginx官方可能会写着推荐通常不需要去该这样的配置。那么我们究竟要不要这些内存池的大小呢？下面，我们来看一看内存池究竟是怎么样运转的。</p>
+<p>ngx_connection_s这样的结构体中，有一个成员变量就是pool，ngx_pool_t，它对应着这个连接所使用的的内存池。这个内存池可以通过一个配置项叫connection_pool_size去定义。那么，我们为什么会需要内存池呢，如果我们有一些工具的话我们会发现，nginx它所产生的内存碎片其实是非常小的，这就是内存池的一个功了。那么，内存池呢，它会把内存提前分配好一批，而且，当我们使用小块内存的时候 ，它会用next指针一个个连接在一起，每次我们使用的东西比较少的时候呢，第二次再分配小块内存，会连接在一起去使用，这样就大大减少了我们的内存碎片。当然我们如果分配大块内存的时候，还是会走到操作系统的alloc去分配大块的内存。那么对于nginx有什么好处呢？因为它主要在处理web请求，web请求，特别对于http请求，它有两个非常明显的特点。每当我们有一个TCP连接的时候，那么，这个TCP连接上面可能会运行很多http请求，也就是所谓的http keepalive请求，连接没有关闭，执行完一条请求以后还负责执行另外一条请求。 那么有一些内存呢，我为连接分配一次就够了，比如说，我去读取每一个请求的前1k字节，那么在连接内存池上，我分配一次，只要这个连接不关闭，那么这段1k的内存，我永远不需要释放，什么时候需要释放呢？连接关闭的时候我再释放。没有任何问题。请求内存池呢？每一个http请求，我开始分配的时候，我不知道分配多大，但是http请求，特别是http1.1而言，通常我们会分配4k的大小的内存，因为我们的url或者header往往需要分配那么多，如果没有内存池呢，我们可能需要频繁的分配，小块的分配，而分配内存，其实是有代价的，如果我们一次分配，分配较多的内存呢，就没有这样的问题。而请求执行完毕以后，哪怕连接我们还可以复用，我们也可以把请求池销毁，而这样，所有nginx第三方模块开发者，他们就不必关注，内存什么时候会释放，它只要关注，我是从请求内存池里面，申请分配的内存，还是连接内存池里，申请分配的内存。只要这个逻辑讲得通，比如请求结束以后，连接仍然想继续使用，那么你可以在连接内存池里面分配。好我们看一下具体的例子。还是在nginx_http_core_module这个模块中，我们可以看到它有一个叫connection_pool_size，点开以后可以看到默认情况下，它大约是256或者512，这个跟我们的操作系统位数是有关的。那么内存池配置512，并不代表，在这里我只能分配512字节，当我们分配的内存超过预分配的大小的时候，还是可以继续分配的，这里只是说，因为我提前预分配了足够大小的空间，可以减少我分配内存的次数。那我们再来看，另一个配置，叫request pool size也就是我们每一个请求的内存池的大小，这里我们可以看到，它的默认大小是4k，为什么差距会那么大呢？之所以会差距8倍，是因为，对于连接而言，它需要保存的上下文信息非常的少，它只需要帮助后面的请求读取最初一部分字节就可以了，而对于请求而言，我们需要保存大量的上下文信息，比如说所有读取到的url或者header，我需要一直保存下来，url通常还比较长，所以我们需要有4k的大小。当然官方文档中说，它对性能的影响比较小，如果我们在极端场景下，如果你的url特别大，你可以考虑把这个分配得更大，或者说你是很小内存的，url非常小，header也非常少，你可以考虑request_pool_size把它降一降，这样或许nginx消耗的内存会小一些，那么也意味着你可以做更大并发量的请求。</p>
+<p>以上我们介绍了内存池的原理，以及请求内存池和连接内存池，它们的配置代表着怎样的意义。内存池对减少我们的内存碎片，对第三方模块的快速开发，是有很大意义的。可能有一些第三方模块不当使用了内存池，比如本该在请求内存池里分配内存，却在连接内存池分配内存，这可能会导致内存的延期释放，导致nginx的内存无谓的增加，这需要我们注意。</p>
+<h3 id="参考">参考</h3>
+<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyMDMwMS02ODM5NA==">Nginx核心知识100讲<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>grant之后要跟着flush privileges吗？ </title>
     <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
     <content><![CDATA[<p>先说结论：</p>
@@ -1219,50 +1263,6 @@
       </tags>
   </entry>
   <entry>
-    <title>epoll的优劣和原理</title>
-    <url>/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/</url>
-    <content><![CDATA[<h3 id="epoll-网络事件收集器模型也有分发">epoll 网络事件收集器模型（也有分发）</h3>
-<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
-<p>首先，epoll 和 kqueue（mac os内核才有）随文件描述符（句柄数的增加，也表示并发连接数的增加）的增加，所消耗的时间几乎不变。而Poll和select所消耗的时间是急剧上升的。epoll基本与句柄数增加是无关的，所以它的性能会好很多，而且非常适合做大并发连接的处理。那么，为什么会这样呢？</p>
-<p>Benchmark显示：</p>
-<img data-src="/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/benchmark.png" class>
-<h3 id="前提">前提</h3>
-<p>高并发连接中，每次处理的活跃连接数量占比很小</p>
-<blockquote>
-<p>select 和 poll的实现是有问题的。每一次我去取操作系统的事件的时候，我都需要把这100万个连接通通地扔给操作系统，让它去依次地判断哪些连接上面有事件进来了，所以可以看到这里操作系统做了大量的无用功 ，它扫描了大量不活跃的连接。那么epoll就是用了这样的一个特性，因为每次处理的活跃连接的占比其实非常小，那么，它怎么实现的呢？其实非常简单，因为它维护了一个数据结构叫eventpoll。这里，它通过两个数据结构把这两件事分开了。也就是说，nginx每次取活跃连接的时候，我们只需要去遍历一个链表，这个链表里仅仅只有活跃的连接，这样我们的效率就很高。那么，我们还会经常做的操作是什么呢？比如说，nginx收到80端口建立连接的请求。那么，收到80端口建立连接成功以后呢，我们要添加一个读事件，这个读事件是用来读取HTTP消息的，那这时候呢，我可能会添加一个新的事件，或者写事件添加进来。这个时候添加呢，我只会放到这个红黑树中，这个二叉平衡树，它能保证我的插入效率值是logn。如果我现在不想再处理读事件或者写事件，我只需要从这个平衡二叉树中移除一个节点就可以了，同样是logn的时间复杂度。所以这个效率非常高。那么什么时候这个链表会有所增减呢。当我们读取一个事件的时候，链表中自然就没了。那么，当操作系统接收到网卡中发送来的一个报文的时候，那么这个链表就会增加一个新的元素，所以我们在使用epoll的时候，它的操作，添加修改删除，是非常快的，是logn复杂度的。而我们获取句柄的时候，只是去遍历这个rdllink，也就是ready准备好的所有的连接，是把它读取出来而已。那么，从内核态读取到用户态，只读这么一点东西，它的效率是非常高的。</p>
-</blockquote>
-<h3 id="实现">实现</h3>
-<ul>
-<li>红黑树</li>
-<li>链表</li>
-</ul>
-<h3 id="使用">使用</h3>
-<ul>
-<li>创建</li>
-<li>操作：添加/修改/删除</li>
-<li>获取句柄</li>
-<li>关闭</li>
-</ul>
-<p>以上，简单介绍了epoll的使用方法，它对我们理解nginx的事件驱动模型是有帮助的。</p>
-<h3 id="其他">其他</h3>
-<p>每一个nginx worker进程都有一个独立的ngx_cycle_t这样一个数据结构。有三个主要的数组，connections，read_events，write_events。分别代表预分配的连接、读事件和写事件。三个数组大小和配置是一模一样的，三个数组通过序号对应起来。</p>
-<p>每一个connection到底使用了多大的内存呢？连接使用的核心数据结构是ngx_connection_s，64位操作系统中，大约占用了232个字节，nginx版本不同可能有微小的差异，每一个ngx_connetion_s结构体对应着两个事件，一个读一个写，每一个时间对应的结构体，事件的核心数据结构是ngx_event_s，结构体占用的字节数是96字节。所以当我们使用一个连接的时候，它使用的字节大约是232+96*2，我们的worker connections配置得越大，那么初始化的时候就会预分配这么多内存。</p>
-<p>我们再来看ngx_event_s中有哪些成员，这里我们比较关注的是，有一个handler（ngx_event_gandler_pt）指针，这是一个回调方法，也就是很多第三方模块会把这个handler设为自己的实现；这里还有一个timer（ngx_rbtree_node_t），也就是说，当我们对http请求做读超时写超时等等设置的时候，其实是在操作它的读事件和写事件中的timer，这个timer就是inginx实现超时定时器，也就是基于rbtree就实现的这样一个结构体。那么红黑树中每个成员叫rbtree_node，那么这个timer就是它的node，用来指向我们的读事件是否超时、写事件是否超时，这些定时器其实也是可配的。</p>
-<p>比如client_header_timeout，默认是60s，也就是在我们刚刚某个连接上，在准备读取它的header时，我们在它的读事件上添加了一个60s的定时器。</p>
-<p>当多个事件形成队列的时候，可以用这个ngx_queue_t形成一个队列。</p>
-<p>我们再来简单的看一下，ngx_connection_s有一些什么样的成员。ngx_event_t read，ngx_event_t write分别是它的读写事件，这个刚刚已经说过了。recv和send是它抽象的操作系统的底层方法，怎么样发送和接收。这里还有一个比较有意思的变量，叫做sent，它的类型是off_t，大家可以把它理解成一个无符号的整型，表达的呢就是这个连接上我已经发送了多少字节，也就是，我们在配置中，会经常使用到的bytes_sent变量，那么我们可以先看一看bytes_sent变量到底有什么作用。还是打开ngx_http_core_module的官方文档，我们先找到它的内置变量。可以看到bytes_sent，它表示向客户端发送了多少字节。通常，在access_log记录nginx处理了哪些请求中，我们会记录这么一个变量，比如，在我们查看access_log时。现在我们打开了nginx_conf这个配置文件，在配置文件中，我们有一行log_format main，定义了access_log的日志格式。在日志格式，我们看到有一个 中括号，这个中括号的后半部分我们用了bytes_sent这个内置变量，用来表示我们发送了多少字节。我们看一下在日志中，这个bytes_sent会表现为什么样的形式。</p>
-<p>以上谈了nginx_connection_t和nginx_event连接和事件怎么样对应在一起的，当我们配置高并发的nginx时，必须把connections的数目配置到足够大，而每一个connection相对应两个event，都会消耗一定的内存，需要我们注意。还有nginx中像很多结构体中它们的一些成员和我们内置变量是可以对应起来的，比如说bytes_sent，还有一些比如说body_bytes_sent都是我们在access_log或者说在一些openresty lua写的代码中，我们获取到nginx内置的状态时，经常使用到的方法。</p>
-<p>如果你开发过nginx的第三方开发模块，虽然我们在写C语言代码，但是我们不需要关心内存的释放，那么如果你现在在配置一些比较罕见的nginx使用场景，你可能会需要去修改nginx在请求和连接上初始分配内存池大小。但是nginx官方可能会写着推荐通常不需要去该这样的配置。那么我们究竟要不要这些内存池的大小呢？下面，我们来看一看内存池究竟是怎么样运转的。</p>
-<p>ngx_connection_s这样的结构体中，有一个成员变量就是pool，ngx_pool_t，它对应着这个连接所使用的的内存池。这个内存池可以通过一个配置项叫connection_pool_size去定义。那么，我们为什么会需要内存池呢，如果我们有一些工具的话我们会发现，nginx它所产生的内存碎片其实是非常小的，这就是内存池的一个功了。那么，内存池呢，它会把内存提前分配好一批，而且，当我们使用小块内存的时候 ，它会用next指针一个个连接在一起，每次我们使用的东西比较少的时候呢，第二次再分配小块内存，会连接在一起去使用，这样就大大减少了我们的内存碎片。当然我们如果分配大块内存的时候，还是会走到操作系统的alloc去分配大块的内存。那么对于nginx有什么好处呢？因为它主要在处理web请求，web请求，特别对于http请求，它有两个非常明显的特点。每当我们有一个TCP连接的时候，那么，这个TCP连接上面可能会运行很多http请求，也就是所谓的http keepalive请求，连接没有关闭，执行完一条请求以后还负责执行另外一条请求。 那么有一些内存呢，我为连接分配一次就够了，比如说，我去读取每一个请求的前1k字节，那么在连接内存池上，我分配一次，只要这个连接不关闭，那么这段1k的内存，我永远不需要释放，什么时候需要释放呢？连接关闭的时候我再释放。没有任何问题。请求内存池呢？每一个http请求，我开始分配的时候，我不知道分配多大，但是http请求，特别是http1.1而言，通常我们会分配4k的大小的内存，因为我们的url或者header往往需要分配那么多，如果没有内存池呢，我们可能需要频繁的分配，小块的分配，而分配内存，其实是有代价的，如果我们一次分配，分配较多的内存呢，就没有这样的问题。而请求执行完毕以后，哪怕连接我们还可以复用，我们也可以把请求池销毁，而这样，所有nginx第三方模块开发者，他们就不必关注，内存什么时候会释放，它只要关注，我是从请求内存池里面，申请分配的内存，还是连接内存池里，申请分配的内存。只要这个逻辑讲得通，比如请求结束以后，连接仍然想继续使用，那么你可以在连接内存池里面分配。好我们看一下具体的例子。还是在nginx_http_core_module这个模块中，我们可以看到它有一个叫connection_pool_size，点开以后可以看到默认情况下，它大约是256或者512，这个跟我们的操作系统位数是有关的。那么内存池配置512，并不代表，在这里我只能分配512字节，当我们分配的内存超过预分配的大小的时候，还是可以继续分配的，这里只是说，因为我提前预分配了足够大小的空间，可以减少我分配内存的次数。那我们再来看，另一个配置，叫request pool size也就是我们每一个请求的内存池的大小，这里我们可以看到，它的默认大小是4k，为什么差距会那么大呢？之所以会差距8倍，是因为，对于连接而言，它需要保存的上下文信息非常的少，它只需要帮助后面的请求读取最初一部分字节就可以了，而对于请求而言，我们需要保存大量的上下文信息，比如说所有读取到的url或者header，我需要一直保存下来，url通常还比较长，所以我们需要有4k的大小。当然官方文档中说，它对性能的影响比较小，如果我们在极端场景下，如果你的url特别大，你可以考虑把这个分配得更大，或者说你是很小内存的，url非常小，header也非常少，你可以考虑request_pool_size把它降一降，这样或许nginx消耗的内存会小一些，那么也意味着你可以做更大并发量的请求。</p>
-<p>以上我们介绍了内存池的原理，以及请求内存池和连接内存池，它们的配置代表着怎样的意义。内存池对减少我们的内存碎片，对第三方模块的快速开发，是有很大意义的。可能有一些第三方模块不当使用了内存池，比如本该在请求内存池里分配内存，却在连接内存池分配内存，这可能会导致内存的延期释放，导致nginx的内存无谓的增加，这需要我们注意。</p>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyMDMwMS02ODM5NA==">Nginx核心知识100讲<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>jvm内存模型全面解析</title>
     <url>/2020/08/28/jvm%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E5%85%A8%E9%9D%A2%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>jvm在拿到操作系统分配的内存后，将内存分成了5个区域。</p>
@@ -1284,6 +1284,26 @@
 ]]></content>
       <tags>
         <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 1519. 子树中标签相同的节点数</title>
+    <url>/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/</url>
+    <content><![CDATA[<h3 id="原题链接">原题链接</h3>
+<p>https://leetcode-cn.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/</p>
+<h3 id="原题简要描述">原题简要描述</h3>
+<p>给你一棵树（即，一个连通的无环无向图），这棵树由编号从 <code>0</code> 到 <code>n - 1</code> 的 n 个节点组成，且恰好有 <code>n - 1</code> 条 <code>edges</code> 。树的根节点为节点 <code>0</code> ，树上的每一个节点都有一个标签，也就是字符串 <code>labels</code> 中的一个小写字符（编号为 <code>i</code> 的 节点的标签就是 <code>labels[i]</code> ）</p>
+<p>边数组 <code>edges</code> 以 <code>edges[i] = [ai, bi]</code> 的形式给出，该格式表示节点 <code>ai</code> 和 <code>bi</code> 之间存在一条边。</p>
+<p>返回一个大小为 <em><code>n</code></em> 的数组，其中 <code>ans[i]</code> 表示第 <code>i</code> 个节点的子树中与节点 <code>i</code> 标签相同的节点数。</p>
+<p>树 <code>T</code> 中的子树是由 <code>T</code> 中的某个节点及其所有后代节点组成的树。</p>
+<p>这道题目问题的描述有点绕，我第一遍没有读明白，后来才明白。</p>
+<p>其实就是将树变成无环无向图，有一个顶点。所有的边都给你了，顶点用数字表示，数字对应一个字符串的索引，让你写出每个数字的子树上（包括这个数字的顶点本身），有多少个和这个数字对应索引的字符相同的。</p>
+<h3 id="代码">代码</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义一个子函数</span></span><br><span class="line"><span class="comment"># 这个函数计算每一个节点为根的子树，所有标记的计数</span></span><br><span class="line"><span class="comment"># 因为用邻接表表示的边，我们为了防止边的重复访问，需要记录访问节点</span></span><br><span class="line"><span class="comment"># 因为没有环，所以我们只要记住前一个节点，在访问下一个节点的相邻节点的时候</span></span><br><span class="line"><span class="comment"># 不访问这个节点就可以了</span></span><br><span class="line"><span class="comment"># 参数为dfs(i, pre)， i就是这个节点的编号，pre就是前一个节点的编号</span></span><br><span class="line"><span class="comment"># 终止条件就是这个点的相邻节点都访问过了</span></span><br><span class="line"><span class="comment"># 这样我们在全局的一个数组变量中，更新相应的i的值即可</span></span><br><span class="line"><span class="comment"># 最后我们返回这个数组变量就是所求</span></span><br><span class="line"><span class="comment"># 利用了python中Counter有加法的api</span></span><br><span class="line"><span class="comment"># 我们可以简化代码</span></span><br><span class="line"><span class="comment"># 否则我们如果用字典，我们要遍历字典，把存在于本层的加上，不存在于本层的添加进来即可</span></span><br><span class="line"><span class="comment"># 稍微麻烦点</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = &#123;labels[i]: <span class="number">1</span>&#125;</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    <span class="keyword">for</span> k, v <span class="keyword">in</span> dfs(nxt, i).items():</span><br><span class="line">                        <span class="keyword">if</span> k <span class="keyword">in</span> data:</span><br><span class="line">                            data[k] += v</span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            data[k] = v</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = Counter(&#123;labels[i]: <span class="number">1</span>&#125;)</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    data += dfs(nxt, i)</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -1428,26 +1448,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 1519. 子树中标签相同的节点数</title>
-    <url>/2020/08/01/leetcode-1519-%E5%AD%90%E6%A0%91%E4%B8%AD%E6%A0%87%E7%AD%BE%E7%9B%B8%E5%90%8C%E7%9A%84%E8%8A%82%E7%82%B9%E6%95%B0/</url>
-    <content><![CDATA[<h3 id="原题链接">原题链接</h3>
-<p>https://leetcode-cn.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/</p>
-<h3 id="原题简要描述">原题简要描述</h3>
-<p>给你一棵树（即，一个连通的无环无向图），这棵树由编号从 <code>0</code> 到 <code>n - 1</code> 的 n 个节点组成，且恰好有 <code>n - 1</code> 条 <code>edges</code> 。树的根节点为节点 <code>0</code> ，树上的每一个节点都有一个标签，也就是字符串 <code>labels</code> 中的一个小写字符（编号为 <code>i</code> 的 节点的标签就是 <code>labels[i]</code> ）</p>
-<p>边数组 <code>edges</code> 以 <code>edges[i] = [ai, bi]</code> 的形式给出，该格式表示节点 <code>ai</code> 和 <code>bi</code> 之间存在一条边。</p>
-<p>返回一个大小为 <em><code>n</code></em> 的数组，其中 <code>ans[i]</code> 表示第 <code>i</code> 个节点的子树中与节点 <code>i</code> 标签相同的节点数。</p>
-<p>树 <code>T</code> 中的子树是由 <code>T</code> 中的某个节点及其所有后代节点组成的树。</p>
-<p>这道题目问题的描述有点绕，我第一遍没有读明白，后来才明白。</p>
-<p>其实就是将树变成无环无向图，有一个顶点。所有的边都给你了，顶点用数字表示，数字对应一个字符串的索引，让你写出每个数字的子树上（包括这个数字的顶点本身），有多少个和这个数字对应索引的字符相同的。</p>
-<h3 id="代码">代码</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义一个子函数</span></span><br><span class="line"><span class="comment"># 这个函数计算每一个节点为根的子树，所有标记的计数</span></span><br><span class="line"><span class="comment"># 因为用邻接表表示的边，我们为了防止边的重复访问，需要记录访问节点</span></span><br><span class="line"><span class="comment"># 因为没有环，所以我们只要记住前一个节点，在访问下一个节点的相邻节点的时候</span></span><br><span class="line"><span class="comment"># 不访问这个节点就可以了</span></span><br><span class="line"><span class="comment"># 参数为dfs(i, pre)， i就是这个节点的编号，pre就是前一个节点的编号</span></span><br><span class="line"><span class="comment"># 终止条件就是这个点的相邻节点都访问过了</span></span><br><span class="line"><span class="comment"># 这样我们在全局的一个数组变量中，更新相应的i的值即可</span></span><br><span class="line"><span class="comment"># 最后我们返回这个数组变量就是所求</span></span><br><span class="line"><span class="comment"># 利用了python中Counter有加法的api</span></span><br><span class="line"><span class="comment"># 我们可以简化代码</span></span><br><span class="line"><span class="comment"># 否则我们如果用字典，我们要遍历字典，把存在于本层的加上，不存在于本层的添加进来即可</span></span><br><span class="line"><span class="comment"># 稍微麻烦点</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = &#123;labels[i]: <span class="number">1</span>&#125;</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    <span class="keyword">for</span> k, v <span class="keyword">in</span> dfs(nxt, i).items():</span><br><span class="line">                        <span class="keyword">if</span> k <span class="keyword">in</span> data:</span><br><span class="line">                            data[k] += v</span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            data[k] = v</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubTrees</span>(<span class="params">self, n: int, edges: List[List[int]], labels: str</span>) -&gt; \</span></span><br><span class="line"><span class="function">            List[int]:</span></span><br><span class="line">        edge_map = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> edges:</span><br><span class="line">            edge_map[e[<span class="number">0</span>]].append(e[<span class="number">1</span>])</span><br><span class="line">            edge_map[e[<span class="number">1</span>]].append(e[<span class="number">0</span>])</span><br><span class="line">        ans = [<span class="number">1</span>] * n</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, pre</span>):</span></span><br><span class="line">            data = Counter(&#123;labels[i]: <span class="number">1</span>&#125;)</span><br><span class="line">            <span class="keyword">for</span> nxt <span class="keyword">in</span> edge_map[i]:</span><br><span class="line">                <span class="keyword">if</span> nxt != pre:</span><br><span class="line">                    data += dfs(nxt, i)</span><br><span class="line">            ans[i] = data[labels[i]]</span><br><span class="line">            <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">        dfs(<span class="number">0</span>, <span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 329.矩阵中的最长递增路径</title>
     <url>/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/</url>
     <content><![CDATA[<h2 id="问题描述">问题描述</h2>
@@ -1467,6 +1467,53 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = &#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> (i, j) <span class="keyword">in</span> memo:</span><br><span class="line">                <span class="keyword">return</span> memo[i, j]</span><br><span class="line">            memo[i, j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> di, dj <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + di, j + dj</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i, j] = max(memo[i, j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i, j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i <span class="keyword">in</span> range(h) <span class="keyword">for</span> j <span class="keyword">in</span> range(w))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>优化空间使用矩阵来记忆化搜索：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = [[<span class="number">0</span>] * w <span class="keyword">for</span> _ <span class="keyword">in</span> range(h)]</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> memo[i][j]:</span><br><span class="line">                <span class="keyword">return</span> memo[i][j]</span><br><span class="line">            memo[i][j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> dx, dy <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + dx, j + dy</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i][j] = max(memo[i][j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i][j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i, j <span class="keyword">in</span> itertools.product(range(h), range(w)))</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 34.在排序数组中查找元素的第一个和最后一个位置</title>
+    <url>/2020/08/10/leetcode-34-%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE/</url>
+    <content><![CDATA[<h2 id="题目描述">题目描述</h2>
+<ol start="34" type="1">
+<li>在排序数组中查找元素的第一个和最后一个位置</li>
+</ol>
+<p>给定一个按照升序排列的整数数组 <code>nums</code>，和一个目标值 <code>target</code>。找出给定目标值在数组中的开始位置和结束位置。</p>
+<p>你的算法时间复杂度必须是 <em>O</em>(log <em>n</em>) 级别。</p>
+<p>如果数组中不存在目标值，返回 <code>[-1, -1]</code>。</p>
+<p><strong>示例 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8</span><br><span class="line">输出: [3,4]</span><br></pre></td></tr></table></figure>
+<p><strong>示例 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 6</span><br><span class="line">输出: [-1,-1]</span><br></pre></td></tr></table></figure>
+<h2 id="思路">思路</h2>
+<p>这道题目当然可以给找左边界和右边界各写一个二分查找代码，因为比较简单就不写了。我们来看一下如何用一段代码找到临界索引。</p>
+<p>我们有几个前提条件</p>
+<ol type="1">
+<li>数组中可能不出现该值。</li>
+<li>数组中可能有重复元素。</li>
+</ol>
+<p>我们来分析一下：</p>
+<ol type="1">
+<li><p>对于一个元素，我们如果以插入的视角来看的话，这个元素有n+1个插入位置，对应的索引分别是0，1，2...，n。</p>
+<ol type="1">
+<li>如果我们插入的位置，左边都小于该元素，右边都大于等于该元素，那么插入位置的索引，就是第一个大于等于该元素的索引；</li>
+<li>如果我们插入的位置，左边都小于等于该元素，右边都大于该元素，那么插入位置的索引，就是第一个大于该元素的索引，而这个索引减1，就是最后一个小于等于该元素的索引。</li>
+</ol></li>
+<li><p>由于数组中可能不存在该值，我们第一步求得第一个大于等于该元素的索引，</p>
+<ol type="1">
+<li>可能为n，也就是说数组中没有大于等于该值的元素</li>
+<li>可能该索引对应的值不是等于该值，而是大于该值</li>
+</ol>
+<p>在这两种情况下，我们就不用再继续求右边的边界了。直接返回-1，-1</p></li>
+<li><p>这两种情况，仅仅是对于nums[mid] == target时，采取的策略不同，我们可以用一个参数控制不同的表现</p></li>
+</ol>
+<p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">      l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">       <span class="keyword">while</span> l &lt; r:</span><br><span class="line">              mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                        r = mid</span><br><span class="line">               <span class="keyword">else</span>:</span><br><span class="line">                        l = mid + <span class="number">1</span></span><br><span class="line">       <span class="keyword">return</span> l</span><br></pre></td></tr></table></figure>
+<p>这里返回的就是右侧集合的开始位置的下标。</p>
+<h2 id="示例代码">示例代码</h2>
+<p>这道题的解法如下，加上了不在数组的判断</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">searchRange</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; List[int]:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">            l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">            <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                    r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    l = mid + <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> l</span><br><span class="line"></span><br><span class="line">        left = binary_search(nums, target, <span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">if</span> left == len(nums) <span class="keyword">or</span> nums[left] != target:</span><br><span class="line">            <span class="keyword">return</span> [<span class="number">-1</span>, <span class="number">-1</span>]</span><br><span class="line">        <span class="keyword">return</span> [left, binary_search(nums, target, <span class="literal">False</span>) - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -1519,47 +1566,22 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 34.在排序数组中查找元素的第一个和最后一个位置</title>
-    <url>/2020/08/10/leetcode-34-%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE/</url>
-    <content><![CDATA[<h2 id="题目描述">题目描述</h2>
-<ol start="34" type="1">
-<li>在排序数组中查找元素的第一个和最后一个位置</li>
-</ol>
-<p>给定一个按照升序排列的整数数组 <code>nums</code>，和一个目标值 <code>target</code>。找出给定目标值在数组中的开始位置和结束位置。</p>
-<p>你的算法时间复杂度必须是 <em>O</em>(log <em>n</em>) 级别。</p>
-<p>如果数组中不存在目标值，返回 <code>[-1, -1]</code>。</p>
-<p><strong>示例 1:</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 8</span><br><span class="line">输出: [3,4]</span><br></pre></td></tr></table></figure>
-<p><strong>示例 2:</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: nums &#x3D; [5,7,7,8,8,10], target &#x3D; 6</span><br><span class="line">输出: [-1,-1]</span><br></pre></td></tr></table></figure>
-<h2 id="思路">思路</h2>
-<p>这道题目当然可以给找左边界和右边界各写一个二分查找代码，因为比较简单就不写了。我们来看一下如何用一段代码找到临界索引。</p>
-<p>我们有几个前提条件</p>
-<ol type="1">
-<li>数组中可能不出现该值。</li>
-<li>数组中可能有重复元素。</li>
-</ol>
-<p>我们来分析一下：</p>
-<ol type="1">
-<li><p>对于一个元素，我们如果以插入的视角来看的话，这个元素有n+1个插入位置，对应的索引分别是0，1，2...，n。</p>
-<ol type="1">
-<li>如果我们插入的位置，左边都小于该元素，右边都大于等于该元素，那么插入位置的索引，就是第一个大于等于该元素的索引；</li>
-<li>如果我们插入的位置，左边都小于等于该元素，右边都大于该元素，那么插入位置的索引，就是第一个大于该元素的索引，而这个索引减1，就是最后一个小于等于该元素的索引。</li>
-</ol></li>
-<li><p>由于数组中可能不存在该值，我们第一步求得第一个大于等于该元素的索引，</p>
-<ol type="1">
-<li>可能为n，也就是说数组中没有大于等于该值的元素</li>
-<li>可能该索引对应的值不是等于该值，而是大于该值</li>
-</ol>
-<p>在这两种情况下，我们就不用再继续求右边的边界了。直接返回-1，-1</p></li>
-<li><p>这两种情况，仅仅是对于nums[mid] == target时，采取的策略不同，我们可以用一个参数控制不同的表现</p></li>
-</ol>
-<p>示例代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">      l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">       <span class="keyword">while</span> l &lt; r:</span><br><span class="line">              mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                        r = mid</span><br><span class="line">               <span class="keyword">else</span>:</span><br><span class="line">                        l = mid + <span class="number">1</span></span><br><span class="line">       <span class="keyword">return</span> l</span><br></pre></td></tr></table></figure>
-<p>这里返回的就是右侧集合的开始位置的下标。</p>
-<h2 id="示例代码">示例代码</h2>
-<p>这道题的解法如下，加上了不在数组的判断</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">searchRange</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; List[int]:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">binary_search</span>(<span class="params">nums, target, left</span>):</span></span><br><span class="line">            l, r = <span class="number">0</span>, len(nums)</span><br><span class="line">            <span class="keyword">while</span> l &lt; r:</span><br><span class="line">                mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">if</span> nums[mid] &gt; target <span class="keyword">or</span> (left <span class="keyword">and</span> nums[mid] == target):</span><br><span class="line">                    r = mid</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    l = mid + <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> l</span><br><span class="line"></span><br><span class="line">        left = binary_search(nums, target, <span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">if</span> left == len(nums) <span class="keyword">or</span> nums[left] != target:</span><br><span class="line">            <span class="keyword">return</span> [<span class="number">-1</span>, <span class="number">-1</span>]</span><br><span class="line">        <span class="keyword">return</span> [left, binary_search(nums, target, <span class="literal">False</span>) - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+    <title>leetcode 41.缺失的第一个正数</title>
+    <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
+    <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数">leetcode 41 缺失的第一个正数</h3>
+<h3 id="问题描述">问题描述</h3>
+<p>给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。</p>
+<p>示例 1:</p>
+<p>输入: [1,2,0] 输出: 3 示例 2:</p>
+<p>输入: [3,4,-1,1] 输出: 2 示例 3:</p>
+<p>输入: [7,8,9,11,12] 输出: 1</p>
+<p>提示：</p>
+<p>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。</p>
+<h3 id="思路">思路</h3>
+<p>这道题目和不使用任何额外空间的计数排序很像，因为都对时空复杂度做了严格的限制，我们都不得不改变原数组，设法将其改为我们能够利用的数据结构。否则这两道题目都无法有「真正」的解。不使用额外空间计数排序的那道题目规定数组的元素有一定的范围，我们可以利用32位整数的前16位计数，最终输出计数排序的结果。</p>
+<p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
+<h3 id="算法">算法</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -1638,28 +1660,6 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 41.缺失的第一个正数</title>
-    <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
-    <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数">leetcode 41 缺失的第一个正数</h3>
-<h3 id="问题描述">问题描述</h3>
-<p>给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。</p>
-<p>示例 1:</p>
-<p>输入: [1,2,0] 输出: 3 示例 2:</p>
-<p>输入: [3,4,-1,1] 输出: 2 示例 3:</p>
-<p>输入: [7,8,9,11,12] 输出: 1</p>
-<p>提示：</p>
-<p>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。</p>
-<h3 id="思路">思路</h3>
-<p>这道题目和不使用任何额外空间的计数排序很像，因为都对时空复杂度做了严格的限制，我们都不得不改变原数组，设法将其改为我们能够利用的数据结构。否则这两道题目都无法有「真正」的解。不使用额外空间计数排序的那道题目规定数组的元素有一定的范围，我们可以利用32位整数的前16位计数，最终输出计数排序的结果。</p>
-<p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
-<h3 id="算法">算法</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
       </tags>
   </entry>
   <entry>
@@ -1969,16 +1969,6 @@
       </tags>
   </entry>
   <entry>
-    <title>人要多读书</title>
-    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
-    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
-<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>从五种架构风格推导出HTTP的REST架构</title>
     <url>/2020/09/04/%E4%BB%8E%E4%BA%94%E7%A7%8D%E6%9E%B6%E6%9E%84%E9%A3%8E%E6%A0%BC%E6%8E%A8%E5%AF%BC%E5%87%BAHTTP%E7%9A%84REST%E6%9E%B6%E6%9E%84/</url>
     <content><![CDATA[<p>在分布式的Web架构中呢，有5类架构风格。那么什么叫架构风格呢？我们在日常编程中可能会有习惯用法，再高一级在面向对象语言中呢，可能会有设计模式，那么再往上更大粒度的抽象我们可以用到架构。而架构风格是指某一类架构它们具有相同的或者说类似的一些约束，我们把它归纳为一类架构风格。那么我们rest架构，也就是HTTP设计所遵循的这样的架构会使用到我们下面的，或者说参考我们下列5类架构风格中的其中一些架构。</p>
@@ -2130,6 +2120,16 @@
       </tags>
   </entry>
   <entry>
+    <title>人要多读书</title>
+    <url>/2020/07/26/%E4%BA%BA%E8%A6%81%E5%A4%9A%E8%AF%BB%E4%B9%A6/</url>
+    <content><![CDATA[<p>天下没有谁生而知之，都是学而知之。人的学问哪来，您记住，无论谁啊，都算上， 大思想家，大文学家，大作家，也是俩字，记问之学。一个就是看书，《史记》上有这么一句话我把它记下来了，《三国志》有这么句话我把它记下来了。记，还有就是问。这我不懂，哎呦先生您看，这怎么回事。先生告诉你了啊，这个如何如何。所有人的学问，都是这么来的。记问之学，所以要广览多读。</p>
+<p>至于发明创造，也需要了解已有知识，还是需要记 与 问。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>从网络原理来看SSL安全协议</title>
     <url>/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/</url>
     <content><![CDATA[<p>网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。</p>
@@ -2161,15 +2161,6 @@
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>但行好事，莫问前程</title>
-    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2218,6 +2209,15 @@
       <tags>
         <tag>计算机网络</tag>
         <tag>HTTP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>但行好事，莫问前程</title>
+    <url>/2020/07/15/%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2412,6 +2412,37 @@
       </tags>
   </entry>
   <entry>
+    <title>为什么rowid是6个字节</title>
+    <url>/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/</url>
+    <content><![CDATA[<p>首先官方文档是这么写的。参考<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnklMjBJbm5vREIlMjB0YWJsZSUyMGhhcyUyMGEsZm9yJTIwdGhlJTIwcm93cyUyMGlzJTIwc3RvcmVkLiZhbXA7dGV4dD1UaGUlMjByb3clMjBJRCUyMGlzJTIwYSxhcmUlMjBwaHlzaWNhbGx5JTIwaW4lMjBpbnNlcnRpb24lMjBvcmRlci4=">MySQL5.6 Ref manual<i class="fa fa-external-link-alt"></i></span>。</p>
+<p>每个InnoDB表都有一个特殊的索引，称为聚簇索引clustered index，行的数据就存储在这里。通常情况下，聚簇索引是主键的同义词。为了从查询、插入和其他数据库操作中获得最佳性能，你必须理解InnoDB是如何使用聚簇索引来优化每个表的最常见的查找和DML操作的。</p>
+<ul>
+<li>当你在表上定义一个primary key时，InnoDB就会把它作为聚簇索引。为你创建的每一个表定义一个主键。如果没有逻辑上唯一且非空的列或列集合，则添加一个新的自动增加列，其值会自动填入。</li>
+<li>如果你没有为你的表定义primary key，MySQL会定位第一个Unique索引，其中所有的关键列都是Not Null。InnoDB使用它作为聚簇索引。</li>
+<li>如果表没有primary key或合适的unique索引，InnoDB内部会在包含row id值的合成列上生成一个名为GEN_CLUST_INDEX的隐藏聚簇索引。行是由InnoDB分配给这种表中的行的ID来排序的。row id是一个6字节的字段，随着新行的插入而单调增加。因此，按row id排序的行在物理上是按插入顺序排列的。</li>
+</ul>
+<h5 id="聚簇索引是如何加快查询速度的">聚簇索引是如何加快查询速度的？</h5>
+<p>通过聚簇索引访问行的速度很快，因为索引搜索会直接引导到包含所有行数据的页面。如果一张表很大，与使用与索引记录不同的页面存储行数据的存储组织相比，聚簇索引架构往往可以节省一次磁盘I/O操作。</p>
+<h5 id="二级索引与聚簇索引的关系">二级索引与聚簇索引的关系</h5>
+<p>除了聚簇索引以外的所有索引都称为二级索引。在InnoDB中，二级索引中的每条记录都包含改行的主键列，以及二级索引指定的列。InnoDB使用这个主键值来搜索聚簇索引中的行。</p>
+<p>如果主键长，二级索引就会使用更多的空间，所以主键短是有利的。</p>
+<h3 id="回答标题的问题">回答标题的问题</h3>
+<img data-src="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/rowid1.gif" class>
+<p>这里我没有找到mysql的rowid为什么是6个字节的答案，找到是关于oracle rowid的解释，猜测是互通的。</p>
+<p>rowid是伪列。不会真正存在表的data block中，但是它会存在于index中。</p>
+<p>扩展的rowid在磁盘上需要10个字节的存储空间，并使用18个字符来显示。</p>
+<p>解释如下：</p>
+<p>在oracle 8以前，一个rowid占用6个字节大小的存储空间（10 bit file# + 22bit block # + 16 bit row #)，rowid格式为：BBBBBBBB.RRRR.FFFF。</p>
+<p>在oracle 8以后，rowid的存储空间扩大到了10个字节（32 bit object# + 10bit rfile# + 22 bit block# + 16 bit row#)，文件号仍然用10位表示，只是不再需要置换，为了向后兼容，同时引入了相对文件号（rfile#)，所以从Oracle7到Oracle8，rowid仍然无需发生变化。</p>
+<p>这里我猜测，mysql rowid也是存储了 10位的文件号，22位的块号，16位的行号。</p>
+<h3 id="更新已经得到答案">更新：已经得到答案。</h3>
+<p>详见<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MzE4Mw==">文章<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>内容协商与资源表述</title>
     <url>/2020/09/05/%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86%E4%B8%8E%E8%B5%84%E6%BA%90%E8%A1%A8%E8%BF%B0/</url>
     <content><![CDATA[<p>HTTP协议全称是超文本传输协议，超文本也就是对应着我们的一个资源的一种表述，就是我们服务器端一个URI对应的一个页面，我们把它传输到客户端进行渲染显示，那么rest架构呢，也就是我们HTTP协议设计时所遵循的架构，它也是在描述资源状态的一种转移。由于我们一种资源对应着许多种状态，所以我们的客户端在接受我们资源表述的转移时需要进行一种协商。比如：一个来自中国的用户，在他的浏览器访问一个页面时可能得到的是一个中文页面。但是一个其他国家的用户，在用浏览器访问同一个URL时呢，获得的页面可能是用他的本国语言描述的。那么接下来这篇文章中，我们将介绍内容协商是怎样进行的。</p>
@@ -2492,37 +2523,6 @@
       </tags>
   </entry>
   <entry>
-    <title>为什么rowid是6个字节</title>
-    <url>/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/</url>
-    <content><![CDATA[<p>首先官方文档是这么写的。参考<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnklMjBJbm5vREIlMjB0YWJsZSUyMGhhcyUyMGEsZm9yJTIwdGhlJTIwcm93cyUyMGlzJTIwc3RvcmVkLiZhbXA7dGV4dD1UaGUlMjByb3clMjBJRCUyMGlzJTIwYSxhcmUlMjBwaHlzaWNhbGx5JTIwaW4lMjBpbnNlcnRpb24lMjBvcmRlci4=">MySQL5.6 Ref manual<i class="fa fa-external-link-alt"></i></span>。</p>
-<p>每个InnoDB表都有一个特殊的索引，称为聚簇索引clustered index，行的数据就存储在这里。通常情况下，聚簇索引是主键的同义词。为了从查询、插入和其他数据库操作中获得最佳性能，你必须理解InnoDB是如何使用聚簇索引来优化每个表的最常见的查找和DML操作的。</p>
-<ul>
-<li>当你在表上定义一个primary key时，InnoDB就会把它作为聚簇索引。为你创建的每一个表定义一个主键。如果没有逻辑上唯一且非空的列或列集合，则添加一个新的自动增加列，其值会自动填入。</li>
-<li>如果你没有为你的表定义primary key，MySQL会定位第一个Unique索引，其中所有的关键列都是Not Null。InnoDB使用它作为聚簇索引。</li>
-<li>如果表没有primary key或合适的unique索引，InnoDB内部会在包含row id值的合成列上生成一个名为GEN_CLUST_INDEX的隐藏聚簇索引。行是由InnoDB分配给这种表中的行的ID来排序的。row id是一个6字节的字段，随着新行的插入而单调增加。因此，按row id排序的行在物理上是按插入顺序排列的。</li>
-</ul>
-<h5 id="聚簇索引是如何加快查询速度的">聚簇索引是如何加快查询速度的？</h5>
-<p>通过聚簇索引访问行的速度很快，因为索引搜索会直接引导到包含所有行数据的页面。如果一张表很大，与使用与索引记录不同的页面存储行数据的存储组织相比，聚簇索引架构往往可以节省一次磁盘I/O操作。</p>
-<h5 id="二级索引与聚簇索引的关系">二级索引与聚簇索引的关系</h5>
-<p>除了聚簇索引以外的所有索引都称为二级索引。在InnoDB中，二级索引中的每条记录都包含改行的主键列，以及二级索引指定的列。InnoDB使用这个主键值来搜索聚簇索引中的行。</p>
-<p>如果主键长，二级索引就会使用更多的空间，所以主键短是有利的。</p>
-<h3 id="回答标题的问题">回答标题的问题</h3>
-<img data-src="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/rowid1.gif" class>
-<p>这里我没有找到mysql的rowid为什么是6个字节的答案，找到是关于oracle rowid的解释，猜测是互通的。</p>
-<p>rowid是伪列。不会真正存在表的data block中，但是它会存在于index中。</p>
-<p>扩展的rowid在磁盘上需要10个字节的存储空间，并使用18个字符来显示。</p>
-<p>解释如下：</p>
-<p>在oracle 8以前，一个rowid占用6个字节大小的存储空间（10 bit file# + 22bit block # + 16 bit row #)，rowid格式为：BBBBBBBB.RRRR.FFFF。</p>
-<p>在oracle 8以后，rowid的存储空间扩大到了10个字节（32 bit object# + 10bit rfile# + 22 bit block# + 16 bit row#)，文件号仍然用10位表示，只是不再需要置换，为了向后兼容，同时引入了相对文件号（rfile#)，所以从Oracle7到Oracle8，rowid仍然无需发生变化。</p>
-<p>这里我猜测，mysql rowid也是存储了 10位的文件号，22位的块号，16位的行号。</p>
-<h3 id="更新已经得到答案">更新：已经得到答案。</h3>
-<p>详见<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MzE4Mw==">文章<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>分布式全局唯一ID的实现</title>
     <url>/2020/09/05/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%A8%E5%B1%80%E5%94%AF%E4%B8%80ID%E7%9A%84%E5%AE%9E%E7%8E%B0/</url>
     <content><![CDATA[
@@ -2539,6 +2539,38 @@
 ]]></content>
       <tags>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>区间树</title>
+    <url>/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="参考">参考：</h2>
+<p>https://www.geeksforgeeks.org/interval-tree/</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">https://stackoverflow.com/questions/17466218/what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text=Segment%20tree%20stores%20intervals%2C%20and,with%20a%20given%20interval%22%20queries.<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="实际问题简单记类似于点的添加和删除和查找都要快速点的解决办法是平衡bst使得这几种操作都变成ologn区间的添加删除类似查找的是overlap这时就需要用到区间树">实际问题（简单记，类似于点的添加和删除和查找，都要快速，点的解决办法是平衡BST，使得这几种操作都变成O(logn)，区间的添加删除类似，查找的是overlap，这时就需要用到区间树）</h2>
+<p>Consider a situation where we have a set of intervals and we need following operations to be implemented efficiently. <strong>1)</strong> Add an interval <strong>2)</strong> Remove an interval <strong>3)</strong> Given an interval x, find if x overlaps with any of the existing intervals.</p>
+<p>考虑我们有一个集合的区间，并且我们需要以下操作能够有效率的实现：</p>
+<ol type="1">
+<li>添加一个区间</li>
+<li>删除一个区间</li>
+<li>对于一个给定的区间x，找出x是否有和任意一个已经存在的区间有重合。</li>
+</ol>
+<p><strong><em>Interval Tree:</em></strong> The idea is to augment a self-balancing Binary Search Tree (BST) like <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcmVkLWJsYWNrLXRyZWUtc2V0LTEtaW50cm9kdWN0aW9uLTIv">Red Black Tree<i class="fa fa-external-link-alt"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYXZsLXRyZWUtc2V0LTEtaW5zZXJ0aW9uLw==">AVL Tree<i class="fa fa-external-link-alt"></i></span>, etc to maintain set of intervals so that all operations can be done in O(Logn) time.</p>
+<p>Every node of Interval Tree stores following information. a) <strong>i</strong>: An interval which is represented as a pair <em>[low, high]</em> b) <strong>max</strong>: Maximum <em>high</em> value in subtree rooted with this node.</p>
+<p>区间的最小值用作BST的键值来保持BST的顺序。那么插入和删除就和自平衡BST的插入删除一样。</p>
+<img data-src="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png" class>
+<p>那么我们就来看找重合区间的操作。</p>
+<p>Following is algorithm for searching an overlapping interval <em>x</em> in an Interval tree rooted with <em>root</em>.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Interval overlappingIntervalSearch(root, x)</span><br><span class="line">1) If x overlaps with root&#39;s interval, return the root&#39;s interval.</span><br><span class="line"></span><br><span class="line">2) If left child of root is not empty and the max  in left child </span><br><span class="line">is greater than x&#39;s low value, recur for left child</span><br><span class="line"></span><br><span class="line">3) Else recur for right child.</span><br></pre></td></tr></table></figure>
+<p><strong><em>How does the above algorithm work?</em></strong> Let the interval to be searched be x. We need to prove this in for following two cases.</p>
+<p><strong><em>Case 1:</em></strong> <em>When we go to right subtree, one of the following must be true.</em> a) There is an overlap in right subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: We go to right subtree only when either left is NULL or maximum value in left is smaller than <em>x.low</em>. So the interval cannot be present in left subtree.</p>
+<p><strong><em>Case 2:</em></strong> <em>When we go to left subtree, one of the following must be true.</em> a) There is an overlap in left subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: This is the most important part. We need to consider following facts. … We went to left subtree because <em>x.low &lt;= max</em> in left subtree …. max in left subtree is a high of one of the intervals let us say <em>[a, max]</em> in left subtree. …. Since <em>x</em> doesn’t overlap with any node in left subtree <em>x.low</em> must be smaller than ‘<em>a</em>‘. …. All nodes in BST are ordered by low value, so all nodes in right subtree must have low value greater than ‘<em>a</em>‘. …. From above two facts, we can say all intervals in right subtree have low value greater than <em>x.low</em>. So <em>x</em> cannot overlap with any interval in right subtree.</p>
+<p><strong>Applications of Interval Tree:</strong> Interval tree is mainly a geometric data structure and often used for windowing queries, for instance, to find all roads on a computerized map inside a rectangular viewport, or to find all visible elements inside a three-dimensional scene (Source <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9JbnRlcnZhbF90cmVl">Wiki<i class="fa fa-external-link-alt"></i></span>).</p>
+<p><strong>Interval Tree vs <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span></strong> Both segment and interval trees store intervals. Segment tree is mainly optimized for queries for a given point, and interval trees are mainly optimized for overlapping queries for a given interval.</p>
+<p>区间树和线段树都是存储区间的，不同的是线段是针对给定点的查询进行优化，区间树针对给定区间的重叠查询进行优化。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -2615,38 +2647,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <h2 id="转载感谢">转载感谢</h2>
 <p>感谢优秀题解</p>
 <p>https://leetcode.com/problems/super-egg-drop/discuss/159079/Python-DP-from-kn2-to-knlogn-to-kn</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>区间树</title>
-    <url>/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/</url>
-    <content><![CDATA[<h2 id="参考">参考：</h2>
-<p>https://www.geeksforgeeks.org/interval-tree/</p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">https://stackoverflow.com/questions/17466218/what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text=Segment%20tree%20stores%20intervals%2C%20and,with%20a%20given%20interval%22%20queries.<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="实际问题简单记类似于点的添加和删除和查找都要快速点的解决办法是平衡bst使得这几种操作都变成ologn区间的添加删除类似查找的是overlap这时就需要用到区间树">实际问题（简单记，类似于点的添加和删除和查找，都要快速，点的解决办法是平衡BST，使得这几种操作都变成O(logn)，区间的添加删除类似，查找的是overlap，这时就需要用到区间树）</h2>
-<p>Consider a situation where we have a set of intervals and we need following operations to be implemented efficiently. <strong>1)</strong> Add an interval <strong>2)</strong> Remove an interval <strong>3)</strong> Given an interval x, find if x overlaps with any of the existing intervals.</p>
-<p>考虑我们有一个集合的区间，并且我们需要以下操作能够有效率的实现：</p>
-<ol type="1">
-<li>添加一个区间</li>
-<li>删除一个区间</li>
-<li>对于一个给定的区间x，找出x是否有和任意一个已经存在的区间有重合。</li>
-</ol>
-<p><strong><em>Interval Tree:</em></strong> The idea is to augment a self-balancing Binary Search Tree (BST) like <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcmVkLWJsYWNrLXRyZWUtc2V0LTEtaW50cm9kdWN0aW9uLTIv">Red Black Tree<i class="fa fa-external-link-alt"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYXZsLXRyZWUtc2V0LTEtaW5zZXJ0aW9uLw==">AVL Tree<i class="fa fa-external-link-alt"></i></span>, etc to maintain set of intervals so that all operations can be done in O(Logn) time.</p>
-<p>Every node of Interval Tree stores following information. a) <strong>i</strong>: An interval which is represented as a pair <em>[low, high]</em> b) <strong>max</strong>: Maximum <em>high</em> value in subtree rooted with this node.</p>
-<p>区间的最小值用作BST的键值来保持BST的顺序。那么插入和删除就和自平衡BST的插入删除一样。</p>
-<img data-src="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png" class>
-<p>那么我们就来看找重合区间的操作。</p>
-<p>Following is algorithm for searching an overlapping interval <em>x</em> in an Interval tree rooted with <em>root</em>.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Interval overlappingIntervalSearch(root, x)</span><br><span class="line">1) If x overlaps with root&#39;s interval, return the root&#39;s interval.</span><br><span class="line"></span><br><span class="line">2) If left child of root is not empty and the max  in left child </span><br><span class="line">is greater than x&#39;s low value, recur for left child</span><br><span class="line"></span><br><span class="line">3) Else recur for right child.</span><br></pre></td></tr></table></figure>
-<p><strong><em>How does the above algorithm work?</em></strong> Let the interval to be searched be x. We need to prove this in for following two cases.</p>
-<p><strong><em>Case 1:</em></strong> <em>When we go to right subtree, one of the following must be true.</em> a) There is an overlap in right subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: We go to right subtree only when either left is NULL or maximum value in left is smaller than <em>x.low</em>. So the interval cannot be present in left subtree.</p>
-<p><strong><em>Case 2:</em></strong> <em>When we go to left subtree, one of the following must be true.</em> a) There is an overlap in left subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: This is the most important part. We need to consider following facts. … We went to left subtree because <em>x.low &lt;= max</em> in left subtree …. max in left subtree is a high of one of the intervals let us say <em>[a, max]</em> in left subtree. …. Since <em>x</em> doesn’t overlap with any node in left subtree <em>x.low</em> must be smaller than ‘<em>a</em>‘. …. All nodes in BST are ordered by low value, so all nodes in right subtree must have low value greater than ‘<em>a</em>‘. …. From above two facts, we can say all intervals in right subtree have low value greater than <em>x.low</em>. So <em>x</em> cannot overlap with any interval in right subtree.</p>
-<p><strong>Applications of Interval Tree:</strong> Interval tree is mainly a geometric data structure and often used for windowing queries, for instance, to find all roads on a computerized map inside a rectangular viewport, or to find all visible elements inside a three-dimensional scene (Source <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9JbnRlcnZhbF90cmVl">Wiki<i class="fa fa-external-link-alt"></i></span>).</p>
-<p><strong>Interval Tree vs <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span></strong> Both segment and interval trees store intervals. Segment tree is mainly optimized for queries for a given point, and interval trees are mainly optimized for overlapping queries for a given interval.</p>
-<p>区间树和线段树都是存储区间的，不同的是线段是针对给定点的查询进行优化，区间树针对给定区间的重叠查询进行优化。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -2788,62 +2788,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>如何对接口鉴权这样一个功能开发做面向对象分析？</title>
-    <url>/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/</url>
-    <content><![CDATA[<p>面向对象分析（OOA）、面向对象设计（OOD）、面向对象编程（OOP），是面向对象开发的三个主要环节。在前面的章节中，我对三者的讲解比较偏理论、偏概括性，目的是让你先有一个宏观的了解，知道什么是OOA、OOD、OOP。不过，光知道”是什么“是不够的，我们更重要的还是要知道”如何做“，也就是，如何进行面向对象分析、设计与编程。</p>
-<p>在过往的工作中，我发现，很多工程是，特别是初级工程师，本身没有太多的项目敬艳艳，或者参与的项目都是基于开发框架填写CRUD模板式的代码，导致分析、设计能力比较欠缺。当他们拿到一个比较笼统的开发需求的时候，往往不知道从何下手。</p>
-<p>对于”如何做需求分析，如何做职责划分？需要定义哪些类？每个类应该具有哪些属性、方法？类与类之间该如何交互？如何组装类成一个可执行的程序？“等等诸多问题，要有清晰的思路，最好利用成熟的设计原则、思想或者设计模式，开发出具有高内聚低耦合、易扩展、易读等优秀特性的代码了。</p>
-<p>所以打算结合一个真实的开发案例，从基础的需求分析、职责划分、类的定义、交互、组装运行讲起，将最基础的面向对象分析、设计、编程的套路讲清楚，为后面学习设计原则、设计模式打好基础。</p>
-<h3 id="案例介绍和难点剖析">案例介绍和难点剖析</h3>
-<p>假设，你正在参与开发一个微服务。微服务通过HTTP协议暴露接口给其他系统调用，说直白点就是，其他系统通过URL来调用微服务的接口。有一天，你的leader找到你说，”为了保证接口调用的安全性，我们希望设计实现一个接口调用鉴权功能，只有经过认证之后的系统才能调我们的接口，没有认证过的系统调用我们的接口会被拒绝。我希望由你来负责这个任务的开发，争取尽快上线。“</p>
-<p>leader丢下这句话就走了。这个时候，你该如何来做呢？有没有脑子里一团浆糊，一时间无从下手的感觉呢？为什么会有这种感觉呢？我个人觉得主要有下面两点原因。</p>
-<h4 id="需求不明确">1.需求不明确</h4>
-<p>leader给到的需求过于模糊、笼统，不够具体、细化，离落地到设计、编码还有一定的距离。而人的大脑不善于思考这种过于抽象的问题。这也是真实的软件开发区别于应试教育的地方。应试教育中的考试题目，一般都是一个非常具体的问题，我们去解答就好了。而真实的软件开发中，需求几乎都不是很明确。</p>
-<p>我们前面讲过，面向对象分析主要的分析对象是”需求“，因此，面向对象分析可以粗略地看成”需求分析“。实际上，不管是需求分析还是面向对象分析，我们首先要做的都是将笼统的需求细化到足够清晰、可执行。我们需要通过沟通、挖掘、分析、假设、梳理，搞清楚具体的需求有哪些，哪些是现在要做的，哪些是未来可能要做的，哪些是不同考虑做的。</p>
-<h4 id="缺少锻炼">2.缺少锻炼</h4>
-<p>相比单纯的业务CRUD开发，鉴权这个开发任务，要更有难度。鉴权作为一个跟具体业务无关的功能，我们完全可以把它开发成一个独立的框架，集成到很多业务系统中。而作为被很多系统复用的通用框架，比起普通的业务代码，我们对框架的代码质量要求要更高。</p>
-<p>开发这样通用的框架，对工程师的需求分析能力、设计能力、编码能力，甚至逻辑思维能力的要求，都是比较高的。如果你平时做的都是简单的CRUD业务开发，那这方面的锻炼肯定不会很多，所以，一旦遇到这种开发需求，很容易因为缺少锻炼，脑子放空，不知道从何入手，完全没有思路。</p>
-<h3 id="对案例进行需求分析">对案例进行需求分析</h3>
-<p>实际上，需求分析的工作很琐碎，也没有太多固定章法可寻，所以，我不打算很牵强的罗列那些听着有用、实际没用的方法论，而是希望通过鉴权这个例子，来给你展示一下，面对需求分析的时候，我的完整的思考路径是什么样的。希望你能自己去体会，举一反三的类比应用到其他项目的需求分析中。</p>
-<p>尽管针对框架、组件、类库等非业务系统的开发，我们一定要有组件化意识、框架意识、抽象意识，开发出来的东西要足够通用，不能局限于单一的某个业务需求，但这并不代表我们就可以脱离具体的应用场景，闷头拍脑袋做需求分析。多跟业务团队聊聊天，甚至自己去参与几个业务系统的开发，只有这样，我们才能真正知道业务系统的痛点，才能分析出最优价值的需求。不过，针对鉴权这一功能的开发，最大的需求方还是我们自己，所以，我们也可以先从满足我们自己系统的需求开始，然后再迭代优化。</p>
-<p>现在，我们来看一下，针对鉴权这个功能的开发，我们该如何做需求分析？</p>
-<p>实际上，这跟做算法题类似，先从最简单的方案想起，然后再优化。所以，我把整个的分析过程分了循序渐进的四轮。每一轮都是对上一轮的迭代优化，最后形成一个可执行、可落地的需求列表。</p>
-<h4 id="第一轮基础分析">1.第一轮基础分析</h4>
-<p>对于如何做鉴权这样一个问题，最简单的解决方案就是，通过用户名加密码来做认证。我们给每个允许访问我们服务的调用方，派发一个应用名（或者叫应用ID、AppID）和一个对应的密码（或者叫密钥）。调用方每次进行接口请求的时候，都携带自己的AppID和密码。微服务在接收到接口调用请求之后，会解析出AppID和密码，跟存储在微服务端的AppID和密码进行比对。如果一致，说明认证成功，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
-<h4 id="第二轮分析优化">2.第二轮分析优化</h4>
-<p>不过，这样的验证方式，每次都要明文传输密码。密码很容易被截获，是不安全的。那如果我们借助加密算法（比如SHA），对密码进行加密之后，再传递到微服务端验证，是不是就可以了呢？实际上，这样也是不安全的，因为加密之后的密码及AppID，照样可以被未认证系统（或者说黑客）接货，未认证系统可以携带这个加密之后的密码以及对应的AppID，伪装成已认证系统来访问我们的接口。这就是典型的"重放攻击"。</p>
-<p>提出问题，然后再解决问题，是一个非常好的迭代优化方法。对于刚刚这个问题，我们可以借助OAuth的验证思路来解决。调用方将请求接口的URL跟AppID、密码拼接在一起，然后进行加密，生成一个token。调用方在进行接口请求的时候，将这个token及AppID，随URL一块传递给为服务端。为服务端接收到这些数据之后，根据AppID从数据库中取出对应的密码，并通过同样的token生成算法，生成另外一个token。用这个新生成的token跟调用方传递过来的token对比。如果一致，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
-<p>这个方案稍微有点复杂，我画了一张示例图，来帮你理解整个流程。</p>
-<img data-src="/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%831.jpg" class>
-<h4 id="第三轮分析优化">3.第三轮分析优化</h4>
-<p>不过，这样的设计仍然存在重放攻击的风险，还是不够安全。每个URL拼接上AppID。密码生成的token都是固定给的。未认证系统截获URL、token和AppID之后，还是可以通过重放攻击的方式，伪装成认证系统，调用这个URL对应的接口。</p>
-<p>为了解决这个问题，我们可以进一步优化token生成算法，引入一个随机变量，让每次接口请求生成的token都不一样。我们可以选择时间戳作为随机变量。原来的token是对URL、AppID、密码三者进行加密生成的，现在我们将URL、AppID、密码、时间戳四者进行加密生成token。调用方在进行接口请求的时候，将token、AppID、时间戳，随URL一并传递给微服务端。</p>
-<p>微服务端在收到这些数据之后，会验证当前时间跟传递过来的时间戳，是否在一定的时间窗口内（比如一分钟）。如果超过一分钟，会判定token过期，拒绝接口请求。如果没有超过一分钟，则说明token没有过期，就再通过同样的token生成算法，在服务端生成新的token，与调用方传递过来的token比对，看是否一致。如果一致，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
-<p>优化之后的认证流程如下图所示。</p>
-<img data-src="/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%832.jpg" class>
-<h4 id="第四轮分析优化">4.第四轮分析优化</h4>
-<p>不过，你可能会说，这样还是不够安全啊。未认证系统还是可以在这一分钟的token失效窗口内，通过截获请求、重放请求，来调用我们的接口啊！（反解密出token算法，解析出时间戳，不停的用此时的时间戳替换，然后重放攻击）</p>
-<p>你说的没错。不过，攻与防之间，本来就没有绝对的安全。我们能做的就是，尽量提高攻击的成本。这个方案虽然还有漏洞，但是实现起来足够简单，而且不会过度影响接口本身的性能（比如响应时间）。所以，权衡安全性、开发成本、对系统性能的影响，这个方案算是比较折中、比较合理的了。</p>
-<p>实际上，还有一个细节我们没有考虑到，那就是，如何在微服务度存储每个授权调用方的AppID和密码。当然，这个问题并不难。最容易想到的方案就是存储到数据库里，比如MySQL。不过，开发像鉴权这样的非业务功能，最好不要与具体的第三方系统有过度的耦合。</p>
-<p>针对AppID和密码的存储，我们最好能灵活的支持各种不同的存储方式，比如ZooKeeper、本地配置文件、自研配置中心、MySQL、Redis等。我们不一定针对每种存储方式都去做代码实现，但起码要留点扩展点，保证系统有足够的灵活性和扩展性，能够在我们切换存储方式的时候，尽可能第减少代码的改动。</p>
-<h4 id="最终确定需求">5.最终确定需求</h4>
-<p>到此，需求已经足够细化和具体了。现在，我们按照鉴权的流程，对需求再重新描述一下。如果你熟悉UML，也可以用时序图、流程图来描述。不过，用什么描述不是重点，描述清楚才是最终要的。考虑到在接下来的面向对象设计环节中，我会基于文字版本的需求描述，来进行类、属性、方法、交互等的设计，所以，这里我给出的最终需求描述是文字版本的。</p>
-<ul>
-<li>调用方进行接口请求的时候，将URL、AppID、密码、时间戳拼接在一起，通过加密算法生成token，并且将token、AppID、时间戳拼接在URL中，一并发送到微服务端。</li>
-<li>微服务端在接收到调用方的接口请求之后，从请求中拆接触token、AppID、时间戳。</li>
-<li>微服务端首先检查传递过来的时间戳跟当前时间，是否在token失效时间窗口内。如果已经超过失效时间，那就算接口调用鉴权失败，拒绝接口调用请求。</li>
-<li>如果token验证没有过期失效，微服务端再从自己的存储中，取出AppID对应的密码，通过同样的token生成算法，生成另外一个token，与调用方传递过来的token进行匹配：如果一致，则鉴权成功，允许接口调用，否则就拒绝接口调用。</li>
-</ul>
-<p>这就是我们需求分析的整个思考过程，从最粗糙、最模糊的需求开始，通过”提出问题-解决问题“的方式，循序渐进的进行优化，最后得到一个足够清晰、可落地的需求描述。</p>
-<h3 id="重点回顾">重点回顾</h3>
-<p>针对框架、类库、组件等非业务系统的开发，其中一个比较大的难点就是，需求一般都比较抽象、模糊，需要你自己去挖掘，做合理取舍、权衡、假设，把抽象的问题具象化，最终产生清晰的、可落地的需求定义。需求定义是否清晰、合理，直接影响了后续的设计、编码实现是否顺畅。所以，作为程序员，你一定不要只关心设计与实现，前期的需求分析同等重要。</p>
-<p>需求分析的过程实际上是一个不断迭代优化的过程。我们不要试图以下就能给出一个完美的解决方案，而是先给出一个粗糙的、基础的方案，有一个迭代的基础，然后再慢慢优化，这样一个思考过程能让我们拜托无从下手的窘境。</p>
-]]></content>
-      <tags>
-        <tag>设计模式</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>如何管理跨代理服务器的长短连接</title>
     <url>/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/</url>
     <content><![CDATA[<p>HTTP的请求可以在长连接和短连接上执行。这篇文章介绍长连接和短连接的区别，以及如果客户端和源服务器之间有多个代理服务器，那么这些代理服务器会如何处理长连接。</p>
@@ -2944,6 +2888,62 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何对接口鉴权这样一个功能开发做面向对象分析？</title>
+    <url>/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/</url>
+    <content><![CDATA[<p>面向对象分析（OOA）、面向对象设计（OOD）、面向对象编程（OOP），是面向对象开发的三个主要环节。在前面的章节中，我对三者的讲解比较偏理论、偏概括性，目的是让你先有一个宏观的了解，知道什么是OOA、OOD、OOP。不过，光知道”是什么“是不够的，我们更重要的还是要知道”如何做“，也就是，如何进行面向对象分析、设计与编程。</p>
+<p>在过往的工作中，我发现，很多工程是，特别是初级工程师，本身没有太多的项目敬艳艳，或者参与的项目都是基于开发框架填写CRUD模板式的代码，导致分析、设计能力比较欠缺。当他们拿到一个比较笼统的开发需求的时候，往往不知道从何下手。</p>
+<p>对于”如何做需求分析，如何做职责划分？需要定义哪些类？每个类应该具有哪些属性、方法？类与类之间该如何交互？如何组装类成一个可执行的程序？“等等诸多问题，要有清晰的思路，最好利用成熟的设计原则、思想或者设计模式，开发出具有高内聚低耦合、易扩展、易读等优秀特性的代码了。</p>
+<p>所以打算结合一个真实的开发案例，从基础的需求分析、职责划分、类的定义、交互、组装运行讲起，将最基础的面向对象分析、设计、编程的套路讲清楚，为后面学习设计原则、设计模式打好基础。</p>
+<h3 id="案例介绍和难点剖析">案例介绍和难点剖析</h3>
+<p>假设，你正在参与开发一个微服务。微服务通过HTTP协议暴露接口给其他系统调用，说直白点就是，其他系统通过URL来调用微服务的接口。有一天，你的leader找到你说，”为了保证接口调用的安全性，我们希望设计实现一个接口调用鉴权功能，只有经过认证之后的系统才能调我们的接口，没有认证过的系统调用我们的接口会被拒绝。我希望由你来负责这个任务的开发，争取尽快上线。“</p>
+<p>leader丢下这句话就走了。这个时候，你该如何来做呢？有没有脑子里一团浆糊，一时间无从下手的感觉呢？为什么会有这种感觉呢？我个人觉得主要有下面两点原因。</p>
+<h4 id="需求不明确">1.需求不明确</h4>
+<p>leader给到的需求过于模糊、笼统，不够具体、细化，离落地到设计、编码还有一定的距离。而人的大脑不善于思考这种过于抽象的问题。这也是真实的软件开发区别于应试教育的地方。应试教育中的考试题目，一般都是一个非常具体的问题，我们去解答就好了。而真实的软件开发中，需求几乎都不是很明确。</p>
+<p>我们前面讲过，面向对象分析主要的分析对象是”需求“，因此，面向对象分析可以粗略地看成”需求分析“。实际上，不管是需求分析还是面向对象分析，我们首先要做的都是将笼统的需求细化到足够清晰、可执行。我们需要通过沟通、挖掘、分析、假设、梳理，搞清楚具体的需求有哪些，哪些是现在要做的，哪些是未来可能要做的，哪些是不同考虑做的。</p>
+<h4 id="缺少锻炼">2.缺少锻炼</h4>
+<p>相比单纯的业务CRUD开发，鉴权这个开发任务，要更有难度。鉴权作为一个跟具体业务无关的功能，我们完全可以把它开发成一个独立的框架，集成到很多业务系统中。而作为被很多系统复用的通用框架，比起普通的业务代码，我们对框架的代码质量要求要更高。</p>
+<p>开发这样通用的框架，对工程师的需求分析能力、设计能力、编码能力，甚至逻辑思维能力的要求，都是比较高的。如果你平时做的都是简单的CRUD业务开发，那这方面的锻炼肯定不会很多，所以，一旦遇到这种开发需求，很容易因为缺少锻炼，脑子放空，不知道从何入手，完全没有思路。</p>
+<h3 id="对案例进行需求分析">对案例进行需求分析</h3>
+<p>实际上，需求分析的工作很琐碎，也没有太多固定章法可寻，所以，我不打算很牵强的罗列那些听着有用、实际没用的方法论，而是希望通过鉴权这个例子，来给你展示一下，面对需求分析的时候，我的完整的思考路径是什么样的。希望你能自己去体会，举一反三的类比应用到其他项目的需求分析中。</p>
+<p>尽管针对框架、组件、类库等非业务系统的开发，我们一定要有组件化意识、框架意识、抽象意识，开发出来的东西要足够通用，不能局限于单一的某个业务需求，但这并不代表我们就可以脱离具体的应用场景，闷头拍脑袋做需求分析。多跟业务团队聊聊天，甚至自己去参与几个业务系统的开发，只有这样，我们才能真正知道业务系统的痛点，才能分析出最优价值的需求。不过，针对鉴权这一功能的开发，最大的需求方还是我们自己，所以，我们也可以先从满足我们自己系统的需求开始，然后再迭代优化。</p>
+<p>现在，我们来看一下，针对鉴权这个功能的开发，我们该如何做需求分析？</p>
+<p>实际上，这跟做算法题类似，先从最简单的方案想起，然后再优化。所以，我把整个的分析过程分了循序渐进的四轮。每一轮都是对上一轮的迭代优化，最后形成一个可执行、可落地的需求列表。</p>
+<h4 id="第一轮基础分析">1.第一轮基础分析</h4>
+<p>对于如何做鉴权这样一个问题，最简单的解决方案就是，通过用户名加密码来做认证。我们给每个允许访问我们服务的调用方，派发一个应用名（或者叫应用ID、AppID）和一个对应的密码（或者叫密钥）。调用方每次进行接口请求的时候，都携带自己的AppID和密码。微服务在接收到接口调用请求之后，会解析出AppID和密码，跟存储在微服务端的AppID和密码进行比对。如果一致，说明认证成功，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
+<h4 id="第二轮分析优化">2.第二轮分析优化</h4>
+<p>不过，这样的验证方式，每次都要明文传输密码。密码很容易被截获，是不安全的。那如果我们借助加密算法（比如SHA），对密码进行加密之后，再传递到微服务端验证，是不是就可以了呢？实际上，这样也是不安全的，因为加密之后的密码及AppID，照样可以被未认证系统（或者说黑客）接货，未认证系统可以携带这个加密之后的密码以及对应的AppID，伪装成已认证系统来访问我们的接口。这就是典型的"重放攻击"。</p>
+<p>提出问题，然后再解决问题，是一个非常好的迭代优化方法。对于刚刚这个问题，我们可以借助OAuth的验证思路来解决。调用方将请求接口的URL跟AppID、密码拼接在一起，然后进行加密，生成一个token。调用方在进行接口请求的时候，将这个token及AppID，随URL一块传递给为服务端。为服务端接收到这些数据之后，根据AppID从数据库中取出对应的密码，并通过同样的token生成算法，生成另外一个token。用这个新生成的token跟调用方传递过来的token对比。如果一致，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
+<p>这个方案稍微有点复杂，我画了一张示例图，来帮你理解整个流程。</p>
+<img data-src="/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%831.jpg" class>
+<h4 id="第三轮分析优化">3.第三轮分析优化</h4>
+<p>不过，这样的设计仍然存在重放攻击的风险，还是不够安全。每个URL拼接上AppID。密码生成的token都是固定给的。未认证系统截获URL、token和AppID之后，还是可以通过重放攻击的方式，伪装成认证系统，调用这个URL对应的接口。</p>
+<p>为了解决这个问题，我们可以进一步优化token生成算法，引入一个随机变量，让每次接口请求生成的token都不一样。我们可以选择时间戳作为随机变量。原来的token是对URL、AppID、密码三者进行加密生成的，现在我们将URL、AppID、密码、时间戳四者进行加密生成token。调用方在进行接口请求的时候，将token、AppID、时间戳，随URL一并传递给微服务端。</p>
+<p>微服务端在收到这些数据之后，会验证当前时间跟传递过来的时间戳，是否在一定的时间窗口内（比如一分钟）。如果超过一分钟，会判定token过期，拒绝接口请求。如果没有超过一分钟，则说明token没有过期，就再通过同样的token生成算法，在服务端生成新的token，与调用方传递过来的token比对，看是否一致。如果一致，则允许接口调用请求；否则，就拒绝接口调用请求。</p>
+<p>优化之后的认证流程如下图所示。</p>
+<img data-src="/2020/09/08/%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%E8%BF%99%E6%A0%B7%E4%B8%80%E4%B8%AA%E5%8A%9F%E8%83%BD%E5%BC%80%E5%8F%91%E5%81%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%88%86%E6%9E%90%EF%BC%9F/%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%832.jpg" class>
+<h4 id="第四轮分析优化">4.第四轮分析优化</h4>
+<p>不过，你可能会说，这样还是不够安全啊。未认证系统还是可以在这一分钟的token失效窗口内，通过截获请求、重放请求，来调用我们的接口啊！（反解密出token算法，解析出时间戳，不停的用此时的时间戳替换，然后重放攻击）</p>
+<p>你说的没错。不过，攻与防之间，本来就没有绝对的安全。我们能做的就是，尽量提高攻击的成本。这个方案虽然还有漏洞，但是实现起来足够简单，而且不会过度影响接口本身的性能（比如响应时间）。所以，权衡安全性、开发成本、对系统性能的影响，这个方案算是比较折中、比较合理的了。</p>
+<p>实际上，还有一个细节我们没有考虑到，那就是，如何在微服务度存储每个授权调用方的AppID和密码。当然，这个问题并不难。最容易想到的方案就是存储到数据库里，比如MySQL。不过，开发像鉴权这样的非业务功能，最好不要与具体的第三方系统有过度的耦合。</p>
+<p>针对AppID和密码的存储，我们最好能灵活的支持各种不同的存储方式，比如ZooKeeper、本地配置文件、自研配置中心、MySQL、Redis等。我们不一定针对每种存储方式都去做代码实现，但起码要留点扩展点，保证系统有足够的灵活性和扩展性，能够在我们切换存储方式的时候，尽可能第减少代码的改动。</p>
+<h4 id="最终确定需求">5.最终确定需求</h4>
+<p>到此，需求已经足够细化和具体了。现在，我们按照鉴权的流程，对需求再重新描述一下。如果你熟悉UML，也可以用时序图、流程图来描述。不过，用什么描述不是重点，描述清楚才是最终要的。考虑到在接下来的面向对象设计环节中，我会基于文字版本的需求描述，来进行类、属性、方法、交互等的设计，所以，这里我给出的最终需求描述是文字版本的。</p>
+<ul>
+<li>调用方进行接口请求的时候，将URL、AppID、密码、时间戳拼接在一起，通过加密算法生成token，并且将token、AppID、时间戳拼接在URL中，一并发送到微服务端。</li>
+<li>微服务端在接收到调用方的接口请求之后，从请求中拆接触token、AppID、时间戳。</li>
+<li>微服务端首先检查传递过来的时间戳跟当前时间，是否在token失效时间窗口内。如果已经超过失效时间，那就算接口调用鉴权失败，拒绝接口调用请求。</li>
+<li>如果token验证没有过期失效，微服务端再从自己的存储中，取出AppID对应的密码，通过同样的token生成算法，生成另外一个token，与调用方传递过来的token进行匹配：如果一致，则鉴权成功，允许接口调用，否则就拒绝接口调用。</li>
+</ul>
+<p>这就是我们需求分析的整个思考过程，从最粗糙、最模糊的需求开始，通过”提出问题-解决问题“的方式，循序渐进的进行优化，最后得到一个足够清晰、可落地的需求描述。</p>
+<h3 id="重点回顾">重点回顾</h3>
+<p>针对框架、类库、组件等非业务系统的开发，其中一个比较大的难点就是，需求一般都比较抽象、模糊，需要你自己去挖掘，做合理取舍、权衡、假设，把抽象的问题具象化，最终产生清晰的、可落地的需求定义。需求定义是否清晰、合理，直接影响了后续的设计、编码实现是否顺畅。所以，作为程序员，你一定不要只关心设计与实现，前期的需求分析同等重要。</p>
+<p>需求分析的过程实际上是一个不断迭代优化的过程。我们不要试图以下就能给出一个完美的解决方案，而是先给出一个粗糙的、基础的方案，有一个迭代的基础，然后再慢慢优化，这样一个思考过程能让我们拜托无从下手的窘境。</p>
+]]></content>
+      <tags>
+        <tag>设计模式</tag>
       </tags>
   </entry>
   <entry>
@@ -3321,6 +3321,78 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>总结：MySQL中的重要概念（锁，内部临时表等）</title>
+    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
+    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
+<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
+<p>高，并发度最低。</p>
+<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
+<p>低，并发度也最高。</p>
+<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
+<p>锁和行锁之间，并发度一般。</p>
+<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>读锁</th>
+<th>写锁</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>读锁</strong></td>
+<td>不互斥</td>
+<td>互斥</td>
+</tr>
+<tr class="even">
+<td><strong>写锁</strong></td>
+<td>互斥</td>
+<td>互斥</td>
+</tr>
+</tbody>
+</table>
+<h3 id="一些重要的锁">一些重要的锁：</h3>
+<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
+<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
+<p>属于表级锁。</p>
+<h4 id="间隙锁">间隙锁</h4>
+<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
+<h4 id="自增id锁">自增id锁</h4>
+<h4 id="trx_id锁">trx_id锁</h4>
+<p>涉及到竞争资源，很多处都有锁。</p>
+<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
+<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
+<ol type="1">
+<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
+<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
+<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
+</ol>
+<h3 id="mysql常用操作">MySQL常用操作</h3>
+<ol type="1">
+<li>explain查看命令优化器优化结果；</li>
+<li>show engine innodb status;</li>
+<li>show warnings，看优化器改写后的语句；</li>
+<li>show create table t; 查看t的建表语句；</li>
+</ol>
+<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
+<ol type="1">
+<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
+<li>redoLog，undoLog，binLog重要概念。</li>
+<li>WAL (write ahead log 技术)，先将日志写在redolog中</li>
+<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
+<li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
+<li>change buffer</li>
+<li>普通索引和唯一索引尽量选择普通索引</li>
+<li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引，语句为count distinct。预先设定一个可以接受的损失比例。但是使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是你在选择是否使用前缀索引时需要考虑的一个因素。</li>
+<li>脏页和干净页，redo log中的脏页，刷进磁盘才会删除。这时候系统会停止所有更新操作，把 checkpoint 往前推进，redo log 留出空间可以继续写。write_pos， checkpoint</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>我们唯一值得恐惧的就是恐惧本身</title>
     <url>/2020/08/31/%E6%88%91%E4%BB%AC%E5%94%AF%E4%B8%80%E5%80%BC%E5%BE%97%E6%81%90%E6%83%A7%E7%9A%84%E5%B0%B1%E6%98%AF%E6%81%90%E6%83%A7%E6%9C%AC%E8%BA%AB/</url>
     <content><![CDATA[<p>1933年，富兰克林·罗斯福首次总统就职演说</p>
@@ -3350,32 +3422,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
 <p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
 <p>感谢罗翔罗老师。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>拔智齿</title>
-    <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
-    <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
-<p>因为这个手术不大，所以两颗智齿可以一起拔。晚上疼了一会，就过去了。</p>
-<p>下面的两颗智齿，在长的过程中是横着长的，其实这是很常见的现象，如果不管，会挤坏掉好牙。</p>
-<p>上周已经拔掉了一颗，医生在伤口上缝了针，也是疼了一晚上，没吃止痛药，甚至没吃消炎药，也好了。</p>
-<p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
-<p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
-<p>一切都是好兆头。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -3416,6 +3462,32 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>设计模式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>拔智齿</title>
+    <url>/2020/07/11/%E6%8B%94%E6%99%BA%E9%BD%BF/</url>
+    <content><![CDATA[<p>我一共有四颗智齿，上面两颗长的过程中有坏的现象，去年已经一并拔去。</p>
+<p>因为这个手术不大，所以两颗智齿可以一起拔。晚上疼了一会，就过去了。</p>
+<p>下面的两颗智齿，在长的过程中是横着长的，其实这是很常见的现象，如果不管，会挤坏掉好牙。</p>
+<p>上周已经拔掉了一颗，医生在伤口上缝了针，也是疼了一晚上，没吃止痛药，甚至没吃消炎药，也好了。</p>
+<p>今天，要拔最后一颗智齿了，至此困扰我的四颗智齿都将拔除。</p>
+<p>按医生的话，我满口的牙也将从左右上下32颗变成28颗，不会再忍受因为智齿而难以刷干净的牙缝。</p>
+<p>一切都是好兆头。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -3534,78 +3606,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>总结：MySQL中的重要概念（锁，内部临时表等）</title>
-    <url>/2020/08/29/%E6%80%BB%E7%BB%93%EF%BC%9AMySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
-    <content><![CDATA[<p>按照锁的粒度（级别、密度）分，MySQL有三种级别的锁：页级、表级、行级。</p>
-<p>1、表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最</p>
-<p>高，并发度最低。</p>
-<p>2、行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最</p>
-<p>低，并发度也最高。</p>
-<p>3、页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表</p>
-<p>锁和行锁之间，并发度一般。</p>
-<p>按禁止的操作可分为读锁和写锁，其中，互斥的关系如下</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>读锁</th>
-<th>写锁</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>读锁</strong></td>
-<td>不互斥</td>
-<td>互斥</td>
-</tr>
-<tr class="even">
-<td><strong>写锁</strong></td>
-<td>互斥</td>
-<td>互斥</td>
-</tr>
-</tbody>
-</table>
-<h3 id="一些重要的锁">一些重要的锁：</h3>
-<h4 id="mdl锁-metadata-lock-元数据锁">MDL锁 metadata lock 元数据锁</h4>
-<p>用于解决或保证DDL操作与DML操作之间的一致性。</p>
-<p>属于表级锁。</p>
-<h4 id="间隙锁">间隙锁</h4>
-<p>间隙锁加锁规则详见丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83NTY1OQ==">文章<i class="fa fa-external-link-alt"></i></span></p>
-<h4 id="自增id锁">自增id锁</h4>
-<h4 id="trx_id锁">trx_id锁</h4>
-<p>涉及到竞争资源，很多处都有锁。</p>
-<p>小结一下：表锁、行锁、间隙锁（next-key lock）、自增id锁，MDL metadata lock 元数据锁</p>
-<h3 id="mysql什么时候会使用内部临时表">MySQL什么时候会使用内部临时表？</h3>
-<ol type="1">
-<li>如果语句执行过程可以一边读数据，一遍直接得到结果，是不需要额外内存的，否则就需要额外的内存，来保存中间结果；</li>
-<li>join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；</li>
-<li>如果执行逻辑需要用到二维表特性，就会优先考虑使用临时表。比如我们的例子中，union需要用到唯一索引约束，group by还需要用到另外一个字段来存累积计数。</li>
-</ol>
-<h3 id="mysql常用操作">MySQL常用操作</h3>
-<ol type="1">
-<li>explain查看命令优化器优化结果；</li>
-<li>show engine innodb status;</li>
-<li>show warnings，看优化器改写后的语句；</li>
-<li>show create table t; 查看t的建表语句；</li>
-</ol>
-<h3 id="mysql中的重要概念">MySQL中的重要概念</h3>
-<ol type="1">
-<li><strong>MVCC（Multi View Concurrent Control）多视图并发控制</strong>，可重复读（RR，repeatable read）隔离级别下提供一致性视图的重要概念。以及MySQL巧妙的使用了undoLog来完成这些。</li>
-<li>redoLog，undoLog，binLog重要概念。</li>
-<li>WAL (write ahead log 技术)，先将日志写在redolog中</li>
-<li>索引的<strong>最左前缀规则</strong>（前缀索引规则），利用最左前缀规则，节省索引数量，节省空间。</li>
-<li>error log 错误日志，slow log慢查询日志（通过set long_query_time = 0，表示这个线程接下来的语句都会被记录入慢查询日志中；</li>
-<li>change buffer</li>
-<li>普通索引和唯一索引尽量选择普通索引</li>
-<li>对于字符串索引，可以用unique元素的百分比，也就是区分度，确定使用多长的字符串作为索引，语句为count distinct。预先设定一个可以接受的损失比例。但是使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是你在选择是否使用前缀索引时需要考虑的一个因素。</li>
-<li>脏页和干净页，redo log中的脏页，刷进磁盘才会删除。这时候系统会停止所有更新操作，把 checkpoint 往前推进，redo log 留出空间可以继续写。write_pos， checkpoint</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -3785,6 +3785,12 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>每天写150-200行有效代码</title>
+    <url>/2020/09/17/%E6%AF%8F%E5%A4%A9%E5%86%99150-200%E8%A1%8C%E6%9C%89%E6%95%88%E4%BB%A3%E7%A0%81/</url>
+    <content><![CDATA[
+]]></content>
+  </entry>
+  <entry>
     <title>江湖再见</title>
     <url>/2020/09/01/%E6%B1%9F%E6%B9%96%E5%86%8D%E8%A7%81/</url>
     <content><![CDATA[
@@ -3936,22 +3942,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>确保Web安全的HTTPS</title>
-    <url>/2020/09/03/%E7%A1%AE%E4%BF%9DWeb%E5%AE%89%E5%85%A8%E7%9A%84HTTPS/</url>
-    <content><![CDATA[<p>​ HTTP主要有这些不足，列举如下：</p>
-<ul>
-<li><p>通信使用明文（不加密），内容可能会被窃听</p></li>
-<li><p>不验证通信方的身份，因此有可能遭遇伪装</p></li>
-<li><p>无法证明报文的完整性，所以有可能已遭篡改</p></li>
-</ul>
-<p>这些问题不仅在HTTP上出现，其他未加密的协议中也会存在这类问题。</p>
-<p>除此之外，HTTP本身还有很多缺点。而且，还有像某些特定的Web服务器和特定的Web浏览器在实际应用中存在的不足（也可以说成是脆弱性或安全漏洞），另外，用Java和PHP等变成语言开发的Web应用也可能存在安全漏洞。</p>
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>猫抓老鼠的简单讨论</title>
     <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
     <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
@@ -3978,6 +3968,22 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>确保Web安全的HTTPS</title>
+    <url>/2020/09/03/%E7%A1%AE%E4%BF%9DWeb%E5%AE%89%E5%85%A8%E7%9A%84HTTPS/</url>
+    <content><![CDATA[<p>​ HTTP主要有这些不足，列举如下：</p>
+<ul>
+<li><p>通信使用明文（不加密），内容可能会被窃听</p></li>
+<li><p>不验证通信方的身份，因此有可能遭遇伪装</p></li>
+<li><p>无法证明报文的完整性，所以有可能已遭篡改</p></li>
+</ul>
+<p>这些问题不仅在HTTP上出现，其他未加密的协议中也会存在这类问题。</p>
+<p>除此之外，HTTP本身还有很多缺点。而且，还有像某些特定的Web服务器和特定的Web浏览器在实际应用中存在的不足（也可以说成是脆弱性或安全漏洞），另外，用Java和PHP等变成语言开发的Web应用也可能存在安全漏洞。</p>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
       </tags>
   </entry>
   <entry>
@@ -4672,36 +4678,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>阻塞与非阻塞，同步与异步</title>
-    <url>/2020/09/01/%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5/</url>
-    <content><![CDATA[<h3 id="阻塞与非阻塞">阻塞与非阻塞</h3>
-<ol type="1">
-<li>主要是指，操作系统，或者底层的c库，提供的方法，或者是一个系统调用。也就是说我们调用这个方法的时候，这个方法可能会导致我的进程进入sleep状态，为什么会进入sleep状态呢？就是当前的条件不满足的情况下，操作系统主动的把我的进程切换为另外一个进程了，在使用当前的CPU。那么这样就是一个阻塞方法。</li>
-<li>而非阻塞方法就是我们调用该方法，永远不会因为，当我们时间片未用完时，把我们的进程主动切换掉。</li>
-</ol>
-<h3 id="同步与异步">同步与异步</h3>
-<p>而同步和异步则是从我们调用的方式而言，就是我们编码中写我们的业务逻辑这样的一个角度。我们可以从nginx的发展历史趋势上可以看出这一点。那么nginx目前除了官方在提供的javascript利用这样的同步写代码的方式实现非阻塞编码的效果，以及openresty基于lua语言用同步写代码的方式实现非阻塞高并发的一个效果。</p>
-<p>接下来，我们来看一看非阻塞和阻塞以及同步异步，到底有一些什么样具体的区别。</p>
-<p>那么，在阻塞调用中，我们以accept为例。因为绝大多数程序，在调用accept的时候，它都是在使用阻塞socket的。使用阻塞socket的时候呢，当我们调用accept方法的时候，如果说我们监听的端口所对应的accept队列，就是操作系统已经为我们做好了几个三次握手建立成功的socket，那么阻塞方法可能会立刻得到返回，而不会被阻塞。但是，如果accept队列是空的，那么操作系统就会去等待新的三次握手的连接，到达我们的内核中，我们才会去唤醒这个accept调用，这个时间往往是可控的。我们去设置这个阻塞socket最长的超时时间，那么如果没有达到的话，也可以唤醒我们的这样一个调用。所以，这里的流程中，就是会产生进程间的主动切换。而我们之前谈过，像nginx是不能容忍这样的进程间切换的。因为它并发的连接实在是太多了。</p>
-<p>那么非阻塞调用，有什么差别呢？我们先看accept如果你使用了非阻塞套接字，使用accept调用去执行的时候呢，如果accept队列为空，它是不等待立刻返回的。但是它返回的是什么呢？其实是EAGAIN，是一个错误码。所以这个时候呢，我们的代码回收一个错误码，但这个错误码是一个特殊的错误码。需要我们的代码去处理它。如果我们再次调用accept是非阻塞的，如果accept队列不为空的话，则把成功的那一个socket建立好的套接字返回给我们的代码。所以，这里有一个很大的问题，就是由我们的代码决定当accept收到一个EAGAIN这样的错误码时，我们究竟是应该等一会，继续处理这个连接，别不sleep一下，还是先切换到其他的任务，再处理。</p>
-<p>我这里举的是一个非常简单的accept的例子。如果涉及到我们的业务特性，比如http的复杂的子请求、主请求，等等，实际上是会导致我们的代码非常复杂。因此，非阻塞调用呢，是我们的底层实现，如果我们用异步方法去使用非阻塞调用是非常自然而然的。我们可以看一下，是怎样用异步的方式去处理非阻塞连接。</p>
-<p>那么我这里举了一个例子。是一个反向代理的例子，那么nginx做反向代理的时候有一个特点，他会去考虑到上游服务的处理能力相对是不足的，所以，如果是一个有body的http请求，那么，nginx会先把body接收完，再去向上游服务器发起连接，那么我们看右边这段代码。我们可以看到，当我们收完header的时候，我们已经知道，接下来向谁，哪一台服务器去发起反向代理，建立连接了。但是我需要先读取body，所以它调用了这样一个方法，那么这个方法就是一个标准的异步方法。它表达当我执行完read request body之后，再去调用post_handler方法，也就是upstream_init，是我们对上游服务器建立连接的方法，所以当我们调用这样的一个异步调用的时候它其实意味着先把body收完，再调这个方法。非常的复杂。</p>
-<p>这是标准的异步调用</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">rc = ngx_http_read_request_body(r, ngx_http_upsream_init);</span><br><span class="line"><span class="keyword">if</span> (rc &gt;= NGX_HTTP_SRECIAL_RESPONSE) &#123;</span><br><span class="line">  <span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个方法执行完时调用post_handler异步方法</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ngx_init_t</span></span><br><span class="line">ngx_http_read_client_request_body(<span class="keyword">ngx_http_request_t</span> * r, ngx_http_client_body_handler_pt post_handler)</span><br></pre></td></tr></table></figure>
-<p>最终读取完body后调用ngx_http_upstream_init方法</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ngx_http_upstream_init</span><span class="params">(<span class="keyword">ngx_http_request_t</span> *r)</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-<p>我们再来看一看，与此相反的同步调用的方法。比如说openresty写一段lua代码，比如说我现在要对redis建立连接，因为我们建立连接使用的也是TCP，那么TCP一样有三次握手，三次握手基于这种报文，那么我们在基于nginx openresty上也是不能使用阻塞方法的。但是如果你用异步的方式，非常复杂。同步方式呢，可以看到。</p>
-<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="keyword">local</span> cliend = redis:new()</span><br><span class="line">client:set_tmeout(<span class="number">30000</span>)</span><br><span class="line"><span class="keyword">local</span> ok, err = client:connect(ip, port)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> ok <span class="keyword">then</span></span><br><span class="line">    ngx.say(<span class="string">&quot;failed: &quot;</span>, err)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>我们new一个client redis以后，设置好这个连接的超时时间，我们就可以调用connect，这个connect就是一个同步调用，但是它里面走的是非阻塞代码。所以我们在写lua代码的时候，完全可以不必考虑像刚刚我们举的这个例子一样，考虑connect完成以后，再去回调另外一个方法，在另外一个方法中决定，connect是成功了还是失败了。如果成功了，我应该发消息，完全不需要这么做。我们只需要简单的connect，我收到响应值了，那么ok，如果是没有收到ok，那么我们打印一个ngx.say('failed')就可以了。因为在connect方法执行的过程中，当connect没有被满足，也就是我没有收到redis发来的ACK响应，就是成功建立连接时呢。这个connect方法不会返回，但是也不会阻塞nginx的代码，这就叫做同步调用代码。那么它使用了非阻塞的一个方式。</p>
-<p>谈完同步异步阻塞与非阻塞以后我，我相信大家对于如何兼顾开发效率与我们的运行效率应该有了一个很好的认识。实际上，如果我们不是在极端场景下，都会去使用如openresty或者nginx的javascript模块，来使用同步编程的方式，达成我们的目的，这样的开发效率非常的高。</p>
-]]></content>
-      <tags>
-        <tag>操作系统</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>银行家算法</title>
     <url>/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h2 id="一句话">一句话</h2>
@@ -4759,6 +4735,36 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>阻塞与非阻塞，同步与异步</title>
+    <url>/2020/09/01/%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5/</url>
+    <content><![CDATA[<h3 id="阻塞与非阻塞">阻塞与非阻塞</h3>
+<ol type="1">
+<li>主要是指，操作系统，或者底层的c库，提供的方法，或者是一个系统调用。也就是说我们调用这个方法的时候，这个方法可能会导致我的进程进入sleep状态，为什么会进入sleep状态呢？就是当前的条件不满足的情况下，操作系统主动的把我的进程切换为另外一个进程了，在使用当前的CPU。那么这样就是一个阻塞方法。</li>
+<li>而非阻塞方法就是我们调用该方法，永远不会因为，当我们时间片未用完时，把我们的进程主动切换掉。</li>
+</ol>
+<h3 id="同步与异步">同步与异步</h3>
+<p>而同步和异步则是从我们调用的方式而言，就是我们编码中写我们的业务逻辑这样的一个角度。我们可以从nginx的发展历史趋势上可以看出这一点。那么nginx目前除了官方在提供的javascript利用这样的同步写代码的方式实现非阻塞编码的效果，以及openresty基于lua语言用同步写代码的方式实现非阻塞高并发的一个效果。</p>
+<p>接下来，我们来看一看非阻塞和阻塞以及同步异步，到底有一些什么样具体的区别。</p>
+<p>那么，在阻塞调用中，我们以accept为例。因为绝大多数程序，在调用accept的时候，它都是在使用阻塞socket的。使用阻塞socket的时候呢，当我们调用accept方法的时候，如果说我们监听的端口所对应的accept队列，就是操作系统已经为我们做好了几个三次握手建立成功的socket，那么阻塞方法可能会立刻得到返回，而不会被阻塞。但是，如果accept队列是空的，那么操作系统就会去等待新的三次握手的连接，到达我们的内核中，我们才会去唤醒这个accept调用，这个时间往往是可控的。我们去设置这个阻塞socket最长的超时时间，那么如果没有达到的话，也可以唤醒我们的这样一个调用。所以，这里的流程中，就是会产生进程间的主动切换。而我们之前谈过，像nginx是不能容忍这样的进程间切换的。因为它并发的连接实在是太多了。</p>
+<p>那么非阻塞调用，有什么差别呢？我们先看accept如果你使用了非阻塞套接字，使用accept调用去执行的时候呢，如果accept队列为空，它是不等待立刻返回的。但是它返回的是什么呢？其实是EAGAIN，是一个错误码。所以这个时候呢，我们的代码回收一个错误码，但这个错误码是一个特殊的错误码。需要我们的代码去处理它。如果我们再次调用accept是非阻塞的，如果accept队列不为空的话，则把成功的那一个socket建立好的套接字返回给我们的代码。所以，这里有一个很大的问题，就是由我们的代码决定当accept收到一个EAGAIN这样的错误码时，我们究竟是应该等一会，继续处理这个连接，别不sleep一下，还是先切换到其他的任务，再处理。</p>
+<p>我这里举的是一个非常简单的accept的例子。如果涉及到我们的业务特性，比如http的复杂的子请求、主请求，等等，实际上是会导致我们的代码非常复杂。因此，非阻塞调用呢，是我们的底层实现，如果我们用异步方法去使用非阻塞调用是非常自然而然的。我们可以看一下，是怎样用异步的方式去处理非阻塞连接。</p>
+<p>那么我这里举了一个例子。是一个反向代理的例子，那么nginx做反向代理的时候有一个特点，他会去考虑到上游服务的处理能力相对是不足的，所以，如果是一个有body的http请求，那么，nginx会先把body接收完，再去向上游服务器发起连接，那么我们看右边这段代码。我们可以看到，当我们收完header的时候，我们已经知道，接下来向谁，哪一台服务器去发起反向代理，建立连接了。但是我需要先读取body，所以它调用了这样一个方法，那么这个方法就是一个标准的异步方法。它表达当我执行完read request body之后，再去调用post_handler方法，也就是upstream_init，是我们对上游服务器建立连接的方法，所以当我们调用这样的一个异步调用的时候它其实意味着先把body收完，再调这个方法。非常的复杂。</p>
+<p>这是标准的异步调用</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">rc = ngx_http_read_request_body(r, ngx_http_upsream_init);</span><br><span class="line"><span class="keyword">if</span> (rc &gt;= NGX_HTTP_SRECIAL_RESPONSE) &#123;</span><br><span class="line">  <span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法执行完时调用post_handler异步方法</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ngx_init_t</span></span><br><span class="line">ngx_http_read_client_request_body(<span class="keyword">ngx_http_request_t</span> * r, ngx_http_client_body_handler_pt post_handler)</span><br></pre></td></tr></table></figure>
+<p>最终读取完body后调用ngx_http_upstream_init方法</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ngx_http_upstream_init</span><span class="params">(<span class="keyword">ngx_http_request_t</span> *r)</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>我们再来看一看，与此相反的同步调用的方法。比如说openresty写一段lua代码，比如说我现在要对redis建立连接，因为我们建立连接使用的也是TCP，那么TCP一样有三次握手，三次握手基于这种报文，那么我们在基于nginx openresty上也是不能使用阻塞方法的。但是如果你用异步的方式，非常复杂。同步方式呢，可以看到。</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="keyword">local</span> cliend = redis:new()</span><br><span class="line">client:set_tmeout(<span class="number">30000</span>)</span><br><span class="line"><span class="keyword">local</span> ok, err = client:connect(ip, port)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> ok <span class="keyword">then</span></span><br><span class="line">    ngx.say(<span class="string">&quot;failed: &quot;</span>, err)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>我们new一个client redis以后，设置好这个连接的超时时间，我们就可以调用connect，这个connect就是一个同步调用，但是它里面走的是非阻塞代码。所以我们在写lua代码的时候，完全可以不必考虑像刚刚我们举的这个例子一样，考虑connect完成以后，再去回调另外一个方法，在另外一个方法中决定，connect是成功了还是失败了。如果成功了，我应该发消息，完全不需要这么做。我们只需要简单的connect，我收到响应值了，那么ok，如果是没有收到ok，那么我们打印一个ngx.say('failed')就可以了。因为在connect方法执行的过程中，当connect没有被满足，也就是我没有收到redis发来的ACK响应，就是成功建立连接时呢。这个connect方法不会返回，但是也不会阻塞nginx的代码，这就叫做同步调用代码。那么它使用了非阻塞的一个方式。</p>
+<p>谈完同步异步阻塞与非阻塞以后我，我相信大家对于如何兼顾开发效率与我们的运行效率应该有了一个很好的认识。实际上，如果我们不是在极端场景下，都会去使用如openresty或者nginx的javascript模块，来使用同步编程的方式，达成我们的目的，这样的开发效率非常的高。</p>
+]]></content>
+      <tags>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>阿甘正传经典台词-you have to do the best with what God gave you</title>
     <url>/2020/09/04/%E9%98%BF%E7%94%98%E6%AD%A3%E4%BC%A0%E7%BB%8F%E5%85%B8%E5%8F%B0%E8%AF%8D-you-have-to-do-the-best-with-what-God-gave-you/</url>
     <content><![CDATA[<ul>
@@ -4769,12 +4775,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
         <tag>生活</tag>
         <tag>电影</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>非对称密码与RSA算法</title>
-    <url>/2020/09/03/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%B8%8ERSA%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
   <entry>
     <title>青蛙跳荷叶问题</title>
@@ -4795,6 +4795,12 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>非对称密码与RSA算法</title>
+    <url>/2020/09/03/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%B8%8ERSA%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[
+]]></content>
   </entry>
   <entry>
     <title>鲁迅语录</title>
