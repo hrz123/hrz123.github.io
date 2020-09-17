@@ -185,6 +185,86 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/" class="post-title-link" itemprop="url">grant之后要跟着flush privileges吗？ </a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-29 11:13:06 / 修改时间：11:20:30" itemprop="dateCreated datePublished" datetime="2020-08-29T11:13:06+08:00">2020-08-29</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>先说结论：</p>
+<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
+<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
+<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
+<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
+<h3 id="小结">小结</h3>
+<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
+<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1377,107 +1457,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/" class="post-title-link" itemprop="url">为什么rowid是6个字节</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-08-28 09:51:24" itemprop="dateCreated datePublished" datetime="2020-08-28T09:51:24+08:00">2020-08-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-29 22:42:48" itemprop="dateModified" datetime="2020-08-29T22:42:48+08:00">2020-08-29</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>首先官方文档是这么写的。参考<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnklMjBJbm5vREIlMjB0YWJsZSUyMGhhcyUyMGEsZm9yJTIwdGhlJTIwcm93cyUyMGlzJTIwc3RvcmVkLiZhbXA7dGV4dD1UaGUlMjByb3clMjBJRCUyMGlzJTIwYSxhcmUlMjBwaHlzaWNhbGx5JTIwaW4lMjBpbnNlcnRpb24lMjBvcmRlci4=">MySQL5.6 Ref manual<i class="fa fa-external-link-alt"></i></span>。</p>
-<p>每个InnoDB表都有一个特殊的索引，称为聚簇索引clustered index，行的数据就存储在这里。通常情况下，聚簇索引是主键的同义词。为了从查询、插入和其他数据库操作中获得最佳性能，你必须理解InnoDB是如何使用聚簇索引来优化每个表的最常见的查找和DML操作的。</p>
-<ul>
-<li>当你在表上定义一个primary key时，InnoDB就会把它作为聚簇索引。为你创建的每一个表定义一个主键。如果没有逻辑上唯一且非空的列或列集合，则添加一个新的自动增加列，其值会自动填入。</li>
-<li>如果你没有为你的表定义primary key，MySQL会定位第一个Unique索引，其中所有的关键列都是Not Null。InnoDB使用它作为聚簇索引。</li>
-<li>如果表没有primary key或合适的unique索引，InnoDB内部会在包含row id值的合成列上生成一个名为GEN_CLUST_INDEX的隐藏聚簇索引。行是由InnoDB分配给这种表中的行的ID来排序的。row id是一个6字节的字段，随着新行的插入而单调增加。因此，按row id排序的行在物理上是按插入顺序排列的。</li>
-</ul>
-<h5 id="聚簇索引是如何加快查询速度的">聚簇索引是如何加快查询速度的？</h5>
-<p>通过聚簇索引访问行的速度很快，因为索引搜索会直接引导到包含所有行数据的页面。如果一张表很大，与使用与索引记录不同的页面存储行数据的存储组织相比，聚簇索引架构往往可以节省一次磁盘I/O操作。</p>
-<h5 id="二级索引与聚簇索引的关系">二级索引与聚簇索引的关系</h5>
-<p>除了聚簇索引以外的所有索引都称为二级索引。在InnoDB中，二级索引中的每条记录都包含改行的主键列，以及二级索引指定的列。InnoDB使用这个主键值来搜索聚簇索引中的行。</p>
-<p>如果主键长，二级索引就会使用更多的空间，所以主键短是有利的。</p>
-<h3 id="回答标题的问题">回答标题的问题</h3>
-<img data-src="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/rowid1.gif" class>
-<p>这里我没有找到mysql的rowid为什么是6个字节的答案，找到是关于oracle rowid的解释，猜测是互通的。</p>
-<p>rowid是伪列。不会真正存在表的data block中，但是它会存在于index中。</p>
-<p>扩展的rowid在磁盘上需要10个字节的存储空间，并使用18个字符来显示。</p>
-<p>解释如下：</p>
-<p>在oracle 8以前，一个rowid占用6个字节大小的存储空间（10 bit file# + 22bit block # + 16 bit row #)，rowid格式为：BBBBBBBB.RRRR.FFFF。</p>
-<p>在oracle 8以后，rowid的存储空间扩大到了10个字节（32 bit object# + 10bit rfile# + 22 bit block# + 16 bit row#)，文件号仍然用10位表示，只是不再需要置换，为了向后兼容，同时引入了相对文件号（rfile#)，所以从Oracle7到Oracle8，rowid仍然无需发生变化。</p>
-<p>这里我猜测，mysql rowid也是存储了 10位的文件号，22位的块号，16位的行号。</p>
-<h3 id="更新已经得到答案">更新：已经得到答案。</h3>
-<p>详见<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MzE4Mw==">文章<i class="fa fa-external-link-alt"></i></span></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1549,13 +1528,13 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">129</span>
+          <span class="site-state-item-count">130</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

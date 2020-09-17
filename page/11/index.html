@@ -185,6 +185,169 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/" class="post-title-link" itemprop="url">线段树</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-30 11:54:36" itemprop="dateCreated datePublished" datetime="2020-07-30T11:54:36+08:00">2020-07-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-13 18:50:45" itemprop="dateModified" datetime="2020-08-13T18:50:45+08:00">2020-08-13</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="参考">参考：</h2>
+<p><span class="exturl" data-url="aHR0cHM6Ly96aC53aWtpcGVkaWEub3JnL3dpa2kv57ea5q615qi5">https://zh.wikipedia.org/wiki/%E7%B7%9A%E6%AE%B5%E6%A8%B9<i class="fa fa-external-link-alt"></i></span></p>
+<p>https://www.geeksforgeeks.org/segment-tree-set-1-sum-of-given-range/</p>
+<p>原文我觉得挺不错的，暂时觉得先不翻译。</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">链接<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="实际问题简单记想快速知道数组的某一区间和同时数组的修改频繁使得这两种操作都变成ologn用线段树可利用思想解决最大子段和问题">实际问题（简单记，想快速知道数组的某一区间和，同时数组的修改频繁，使得这两种操作都变成O(logn)，用线段树，可利用思想解决最大子段和问题）</h2>
+<p>Let us consider the following problem to understand Segment Trees.</p>
+<p>We have an array arr[0 . . . n-1]. We should be able to <strong>1</strong> Find the sum of elements from index l to r where 0 &lt;= l &lt;= r &lt;= n-1</p>
+<p><strong>2</strong> Change value of a specified element of the array to a new value x. We need to do arr[i] = x where 0 &lt;= i &lt;= n-1.</p>
+<p>A <strong>simple solution</strong> is to run a loop from l to r and calculate the sum of elements in the given range. To update a value, simply do arr[i] = x. The first operation takes O(n) time and the second operation takes O(1) time.</p>
+<p><strong>Another solution</strong> is to create another array and store sum from start to i at the ith index in this array. The sum of a given range can now be calculated in O(1) time, but update operation takes O(n) time now. This works well if the number of query operations is large and very few updates.</p>
+<p>给定一个数组，我们既想快速的知道任意一段区间的总和是多少，也想经常改变其中任何一个元素的值。</p>
+<p>第一种解决办法就是，对每一个l和r，我们计算l和r之间的和，O(n)的复杂度，改变其中任何一个值，O(1)的时间复杂度。</p>
+<p>第二种解决办法就是，我们创建好另一个数组，存储从开始到这个索引的元素和是多少，（前缀和，通常前缀和在数组的前面加上一个0，这样所有lr之间的和等于这个_sum数组的 _sum[r] - _sum[l-1]）。这样求l到r之间的和就变成O(1)的时间复杂度了，但是每改变一个值就变成O(n)的了。</p>
+<p>What if the number of query and updates are equal? <strong>Can we perform both the operations in O(log n) time once given the array?</strong> We can use a Segment Tree to do both operations in O(Logn) time.</p>
+<p><strong>Representation of Segment trees</strong> <strong>1.</strong> Leaf Nodes are the elements of the input array. <strong>2.</strong> Each internal node represents some merging of the leaf nodes. The merging may be different for different problems. For this problem, merging is sum of leaves under a node.</p>
+<p>An array representation of tree is used to represent Segment Trees. For each node at index i, the left child is at index 2<em>i+1, right child at 2</em>i+2 and the parent is at <a target="_blank" rel="noopener" href="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st1.png"><img data-src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st1.png" alt="st1"></a>.</p>
+<img data-src="/2020/07/30/%E7%BA%BF%E6%AE%B5%E6%A0%91/segment-tree1.png" class>
+<p><strong>How does above segment tree look in memory?</strong> Like Heap, the segment tree is also represented as an array. The difference here is, it is not a complete binary tree. It is rather a full binary tree (every node has 0 or 2 children) and all levels are filled except possibly the last level. Unlike Heap, the last level may have gaps between nodes. Below are the values in the segment tree array for the above diagram.</p>
+<blockquote>
+<p><em>Below is memory representation of segment tree for input array {1, 3, 5, 7, 9, 11}</em> <em>st[] = {36, 9, 27, 4, 5, 16, 11, 1, 3, DUMMY, DUMMY, 7, 9, DUMMY, DUMMY}</em></p>
+</blockquote>
+<p>The dummy values are never accessed and have no use. This is some wastage of space due to simple array representation. We may optimize this wastage using some clever implementations, but code for sum and update becomes more complex.</p>
+<p><strong>Construction of Segment Tree from given array</strong> We start with a segment arr[0 . . . n-1]. and every time we divide the current segment into two halves(if it has not yet become a segment of length 1), and then call the same procedure on both halves, and for each such segment, we store the sum in the corresponding node. All levels of the constructed segment tree will be completely filled except the last level. Also, the tree will be a <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYmluYXJ5LXRyZWUtc2V0LTMtdHlwZXMtb2YtYmluYXJ5LXRyZWUv">Full Binary Tree<i class="fa fa-external-link-alt"></i></span> because we always divide segments in two halves at every level. Since the constructed tree is always a full binary tree with n leaves, there will be n-1 internal nodes. So the total number of nodes will be 2*n – 1. Note that this does not include dummy nodes.</p>
+<p><strong>What is the total size of the array representing segment tree?</strong> If n is a power of 2, then there are no dummy nodes. So the size of the segment tree is 2n-1 (n leaf nodes and n-1) internal nodes. If n is not a power of 2, then the size of the tree will be 2*x – 1 where x is the smallest power of 2 greater than n. For example, when n = 10, then size of array representing segment tree is 2*16-1 = 31. An alternate explanation for size is based on heignt. Height of the segment tree will be <a target="_blank" rel="noopener" href="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st2.png"><img data-src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st2.png" alt="st2"></a>. Since the tree is represented using array and relation between parent and child indexes must be maintained, size of memory allocated for segment tree will be <a target="_blank" rel="noopener" href="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st3.png"><img data-src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/st3.png" alt="st3"></a>.</p>
+<p><strong>Query for Sum of given range</strong> Once the tree is constructed, how to get the sum using the constructed segment tree. The following is the algorithm to get the sum of elements.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getSum</span><span class="params">(node, l, r)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">if</span> the range of the node is within l <span class="keyword">and</span> r</span><br><span class="line">        <span class="keyword">return</span> value in the node</span><br><span class="line">   <span class="keyword">else</span> <span class="keyword">if</span> the range of the node is completely outside l <span class="keyword">and</span> r</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">    <span class="keyword">return</span> getSum(node<span class="number">&#x27;</span>s left child, l, r) + </span><br><span class="line">           getSum(node<span class="number">&#x27;</span>s right child, l, r)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Update a value</strong> Like tree construction and query operations, the update can also be done recursively. We are given an index which needs to be updated. Let <em>diff</em> be the value to be added. We start from the root of the segment tree and add <em>diff</em> to all nodes which have given index in their range. If a node doesn’t have a given index in its range, we don’t make any changes to that node.</p>
+<p><strong>Implementation:</strong> Following is the implementation of segment tree. The program implements construction of segment tree for any given array. It also implements query and update operations.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Python3 program to show segment tree operations like </span></span><br><span class="line"><span class="comment"># construction, query and update </span></span><br><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> ceil, log2; </span><br><span class="line"></span><br><span class="line"><span class="comment"># A utility function to get the </span></span><br><span class="line"><span class="comment"># middle index from corner indexes. </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getMid</span>(<span class="params">s, e</span>) :</span> </span><br><span class="line">   <span class="keyword">return</span> s + (e -s) // <span class="number">2</span>; </span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot; A recursive function to get the sum of values </span></span><br><span class="line"><span class="string">   in the given range of the array. The following </span></span><br><span class="line"><span class="string">   are parameters for this function. </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  st --&gt; Pointer to segment tree </span></span><br><span class="line"><span class="string">    si --&gt; Index of current node in the segment tree. </span></span><br><span class="line"><span class="string">     Initially 0 is passed as root is always at index 0 </span></span><br><span class="line"><span class="string">   ss &amp; se --&gt; Starting and ending indexes of the segment </span></span><br><span class="line"><span class="string">                represented by current node, i.e., st[si] </span></span><br><span class="line"><span class="string">    qs &amp; qe --&gt; Starting and ending indexes of query range &quot;&quot;&quot;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getSumUtil</span>(<span class="params">st, ss, se, qs, qe, si</span>) :</span> </span><br><span class="line"></span><br><span class="line">    <span class="comment"># If segment of this node is a part of given range, </span></span><br><span class="line"> <span class="comment"># then return the sum of the segment </span></span><br><span class="line">    <span class="keyword">if</span> (qs &lt;= ss <span class="keyword">and</span> qe &gt;= se) : </span><br><span class="line">     <span class="keyword">return</span> st[si]; </span><br><span class="line"></span><br><span class="line">    <span class="comment"># If segment of this node is </span></span><br><span class="line">    <span class="comment"># outside the given range </span></span><br><span class="line">   <span class="keyword">if</span> (se &lt; qs <span class="keyword">or</span> ss &gt; qe) : </span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line"></span><br><span class="line"> <span class="comment"># If a part of this segment overlaps </span></span><br><span class="line">    <span class="comment"># with the given range </span></span><br><span class="line">  mid = getMid(ss, se); </span><br><span class="line">    </span><br><span class="line">  <span class="keyword">return</span> getSumUtil(st, ss, mid, qs, qe, <span class="number">2</span> * si + <span class="number">1</span>) + \ </span><br><span class="line">      getSumUtil(st, mid + <span class="number">1</span>, se, qs, qe, <span class="number">2</span> * si + <span class="number">2</span>); </span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot; A recursive function to update the nodes </span></span><br><span class="line"><span class="string">which have the given index in their range. </span></span><br><span class="line"><span class="string">The following are parameters st, si, ss and se </span></span><br><span class="line"><span class="string">are same as getSumUtil() </span></span><br><span class="line"><span class="string">i --&gt; index of the element to be updated. </span></span><br><span class="line"><span class="string">    This index is in the input array. </span></span><br><span class="line"><span class="string">diff --&gt; Value to be added to all nodes </span></span><br><span class="line"><span class="string">which have i in range &quot;&quot;&quot;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateValueUtil</span>(<span class="params">st, ss, se, i, diff, si</span>) :</span> </span><br><span class="line"></span><br><span class="line"> <span class="comment"># Base Case: If the input index lies </span></span><br><span class="line">    <span class="comment"># outside the range of this segment </span></span><br><span class="line"> <span class="keyword">if</span> (i &lt; ss <span class="keyword">or</span> i &gt; se) : </span><br><span class="line">      <span class="keyword">return</span>; </span><br><span class="line"></span><br><span class="line">   <span class="comment"># If the input index is in range of this node, </span></span><br><span class="line">  <span class="comment"># then update the value of the node and its children </span></span><br><span class="line">    st[si] = st[si] + diff; </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (se != ss) : </span><br><span class="line"> </span><br><span class="line">      mid = getMid(ss, se); </span><br><span class="line">        updateValueUtil(st, ss, mid, i, </span><br><span class="line">                      diff, <span class="number">2</span> * si + <span class="number">1</span>); </span><br><span class="line">       updateValueUtil(st, mid + <span class="number">1</span>, se, i, </span><br><span class="line">                      diff, <span class="number">2</span> * si + <span class="number">2</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment"># The function to update a value in input array </span></span><br><span class="line"><span class="comment"># and segment tree. It uses updateValueUtil() </span></span><br><span class="line"><span class="comment"># to update the value in segment tree </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateValue</span>(<span class="params">arr, st, n, i, new_val</span>) :</span> </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Check for erroneous input index </span></span><br><span class="line">   <span class="keyword">if</span> (i &lt; <span class="number">0</span> <span class="keyword">or</span> i &gt; n - <span class="number">1</span>) : </span><br><span class="line">        </span><br><span class="line">      print(<span class="string">&quot;Invalid Input&quot;</span>, end = <span class="string">&quot;&quot;</span>); </span><br><span class="line">        <span class="keyword">return</span>; </span><br><span class="line"></span><br><span class="line">   <span class="comment"># Get the difference between </span></span><br><span class="line">    <span class="comment"># new value and old value </span></span><br><span class="line">   diff = new_val - arr[i]; </span><br><span class="line"></span><br><span class="line">   <span class="comment"># Update the value in array </span></span><br><span class="line"> arr[i] = new_val; </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Update the values of nodes in segment tree </span></span><br><span class="line">    updateValueUtil(st, <span class="number">0</span>, n - <span class="number">1</span>, i, diff, <span class="number">0</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment"># Return sum of elements in range from </span></span><br><span class="line"><span class="comment"># index qs (quey start) to qe (query end). </span></span><br><span class="line"><span class="comment"># It mainly uses getSumUtil() </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getSum</span>(<span class="params">st, n, qs, qe</span>) :</span> </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Check for erroneous input values </span></span><br><span class="line">  <span class="keyword">if</span> (qs &lt; <span class="number">0</span> <span class="keyword">or</span> qe &gt; n - <span class="number">1</span> <span class="keyword">or</span> qs &gt; qe) : </span><br><span class="line"></span><br><span class="line">     print(<span class="string">&quot;Invalid Input&quot;</span>, end = <span class="string">&quot;&quot;</span>); </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>; </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> getSumUtil(st, <span class="number">0</span>, n - <span class="number">1</span>, qs, qe, <span class="number">0</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment"># A recursive function that constructs </span></span><br><span class="line"><span class="comment"># Segment Tree for array[ss..se]. </span></span><br><span class="line"><span class="comment"># si is index of current node in segment tree st </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">constructSTUtil</span>(<span class="params">arr, ss, se, st, si</span>) :</span> </span><br><span class="line"></span><br><span class="line">   <span class="comment"># If there is one element in array, </span></span><br><span class="line"> <span class="comment"># store it in current node of </span></span><br><span class="line">   <span class="comment"># segment tree and return </span></span><br><span class="line">   <span class="keyword">if</span> (ss == se) : </span><br><span class="line"> </span><br><span class="line">      st[si] = arr[ss]; </span><br><span class="line">        <span class="keyword">return</span> arr[ss]; </span><br><span class="line"> </span><br><span class="line">  <span class="comment"># If there are more than one elements, </span></span><br><span class="line">  <span class="comment"># then recur for left and right subtrees </span></span><br><span class="line">    <span class="comment"># and store the sum of values in this node </span></span><br><span class="line">  mid = getMid(ss, se); </span><br><span class="line">    </span><br><span class="line">  st[si] = constructSTUtil(arr, ss, mid, st, si * <span class="number">2</span> + <span class="number">1</span>) +\ </span><br><span class="line">            constructSTUtil(arr, mid + <span class="number">1</span>, se, st, si * <span class="number">2</span> + <span class="number">2</span>); </span><br><span class="line">   </span><br><span class="line">  <span class="keyword">return</span> st[si]; </span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot; Function to construct segment tree </span></span><br><span class="line"><span class="string">from given array. This function allocates memory </span></span><br><span class="line"><span class="string">for segment tree and calls constructSTUtil() to </span></span><br><span class="line"><span class="string">fill the allocated memory &quot;&quot;&quot;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">constructST</span>(<span class="params">arr, n</span>) :</span> </span><br><span class="line"></span><br><span class="line"> <span class="comment"># Allocate memory for the segment tree </span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Height of segment tree </span></span><br><span class="line">    x = (int)(ceil(log2(n))); </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Maximum size of segment tree </span></span><br><span class="line">  max_size = <span class="number">2</span> * (int)(<span class="number">2</span>**x) - <span class="number">1</span>; </span><br><span class="line">  </span><br><span class="line">  <span class="comment"># Allocate memory </span></span><br><span class="line">   st = [<span class="number">0</span>] * max_size; </span><br><span class="line"></span><br><span class="line">   <span class="comment"># Fill the allocated memory st </span></span><br><span class="line">  constructSTUtil(arr, <span class="number">0</span>, n - <span class="number">1</span>, st, <span class="number">0</span>); </span><br><span class="line"></span><br><span class="line"> <span class="comment"># Return the constructed segment tree </span></span><br><span class="line">   <span class="keyword">return</span> st; </span><br><span class="line"></span><br><span class="line"><span class="comment"># Driver Code </span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span> : </span><br><span class="line"></span><br><span class="line">    arr = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">11</span>]; </span><br><span class="line">   n = len(arr); </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Build segment tree from given array </span></span><br><span class="line">   st = constructST(arr, n); </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Print sum of values in array from index 1 to 3 </span></span><br><span class="line">    print(<span class="string">&quot;Sum of values in given range = &quot;</span>, </span><br><span class="line">                   getSum(st, n, <span class="number">1</span>, <span class="number">3</span>)); </span><br><span class="line"></span><br><span class="line">  <span class="comment"># Update: set arr[1] = 10 and update </span></span><br><span class="line">    <span class="comment"># corresponding segment tree nodes </span></span><br><span class="line">  updateValue(arr, st, n, <span class="number">1</span>, <span class="number">10</span>); </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Find sum after the value is updated </span></span><br><span class="line">   print(<span class="string">&quot;Updated sum of values in given range = &quot;</span>, </span><br><span class="line">                   getSum(st, n, <span class="number">1</span>, <span class="number">3</span>), end = <span class="string">&quot;&quot;</span>); </span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+<p><strong>Output:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Sum of values in given range &#x3D; 15</span><br><span class="line">Updated sum of values in given range &#x3D; 22</span><br></pre></td></tr></table></figure>
+<p><strong>Time Complexity:</strong> Time Complexity for tree construction is O(n). There are total 2n-1 nodes, and value of every node is calculated only once in tree construction.</p>
+<p>Time complexity to query is O(Logn). To query a sum, we process at most four nodes at every level and number of levels is O(Logn).</p>
+<p>The time complexity of update is also O(Logn). To update a leaf value, we process one node at every level and number of levels is O(Logn).</p>
+<h2 id="示例题目">示例题目</h2>
+<ol type="1">
+<li><h3 id="spoj-gss1">SPOJ-GSS1</h3>
+<p>You are given a sequence A[1], A[2], ..., A[N] . ( |A[i]| ≤ 15007 , 1 ≤ N ≤ 50000 ). A query is defined as follows: Query(x,y) = Max { a[i]+a[i+1]+...+a[j] ; x ≤ i ≤ j ≤ y }. Given M queries, your program must output the results of these queries.</p>
+<h3 id="input">Input</h3>
+<ul>
+<li>The first line of the input file contains the integer N.</li>
+<li>In the second line, N numbers follow.</li>
+<li>The third line contains the integer M.</li>
+<li>M lines follow, where line i contains 2 numbers xi and yi.</li>
+</ul>
+<h3 id="output">Output</h3>
+<p>Your program should output the results of the M queries, one query per line.</p>
+<h3 id="example">Example</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Input:</span><br><span class="line">3 </span><br><span class="line">-1 2 3</span><br><span class="line">1</span><br><span class="line">1 2</span><br><span class="line"></span><br><span class="line">Output:</span><br><span class="line">2</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>大致翻译：给定一段长度为n的序列a1, a2, ..., an （a有正有负），每次询问[L, R] (即aL ~ aR)范围内的最大子段和，并涉及单点修改操作。</p>
+<p>线段树：维护区间最大子段和。</p>
+<p>这里不能用传统的线段树了，我们维护的值要更多。</p>
+<ol type="1">
+<li><p>定义：</p>
+<p>线段树一共要维护4个值，如下：（每个值的含义都是相对于该结点对应区间[l, r]而言）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> sum;       <span class="comment">//[l,r]区间之和</span></span><br><span class="line">    <span class="keyword">int</span> max_sum;   <span class="comment">//[l,r]内的最大子段和</span></span><br><span class="line">    <span class="keyword">int</span> max_pre;   <span class="comment">//[l,r]内的最大前缀和</span></span><br><span class="line">    <span class="keyword">int</span> max_post;  <span class="comment">//[l,r]内的最大后缀和</span></span><br><span class="line">&#125;t[maxn&lt;&lt;<span class="number">2</span>];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol type="1">
+<li>向上传递</li>
+</ol>
+<p>我们采用分治归并的思路，我们知道在l=r时这四个值都是确定的，都等于al。那么通过左右两边的四个值如何求出合并后的值呢。这里我觉得这段话讲的很清楚。</p>
+<p>我们定义一个操作get(a, l, r)表示查询a序列[l, r]区间内的最大子段和。如何分治实现这个操作呢？对于一个区间l, r，我们取m = (l + r)/2， 对区间[l,m] 和 [m+1, r]分治求解。当递归逐层深入直到区间长度缩小为1的时候，递归「开始回升」。这个时候我们考虑如何通过[l, m]区间的信息和[m+1, r]区间的信息合并成区间[l, r]的信息。最关键的两个问题是：</p>
+<ul>
+<li>我们要维护区间的哪些信息呢？</li>
+<li>我们如何合并这些信息？</li>
+</ul>
+<p>对于一个区间[l, r]，我们可以维护四个量：</p>
+<ul>
+<li>lSum表示[l, r]内以l为左端点的最大子段和</li>
+<li>rSum表示[l, r]内以r为右端点的最大字段和</li>
+<li>mSum表示[l, r]内的最大子段和</li>
+<li>iSum表示[l, r]的区间和</li>
+</ul>
+<p>以下简称[l, m]为[l, r]的「左子区间」，[m+1, r]为[l, r]的右子区间。我们考虑如何维护这些量呢（如何通过左右子区间的信息合并得到[l,r]的信息）？对于长度为1的区间[i,i]，四个量的值都和ai相等。对于长度大于1的区间：</p>
+<p>首先最好维护的是iSum，区间[l, r]的iSum就等于「左子区间」的iSum加上「右子区间」的iSum。</p>
+<p>对于[l, r]的lSum，存在两种可能，它要么等于「左子区间」的lSum，要么等于「左子区间」的iSum加上「右子区间」的lSum，两者取大。</p>
+<p>对于[l, r]的rSum，同理，它要么等于「右子区间」的rSum，要么等于「右子区间」的iSum加上「左子区间」的rSum，两者取大。</p>
+<p>当计算好上面的三个量之后，就很好计算[l, r]的mSum了。我们可以考虑[l, r]的mSum对应的区间是否跨越m--它可能不跨越m，也就是说[l, r]的mSum可能是「左子区间」的mSum和「右子区间」的mSum中的一个；它可能跨越m，可能是「左子区间」的rSum和「右子区间」的lSum求和。三者取大。</p>
+<p>我们把这个过程叫做向上传递，英文叫做pushup。</p>
+<p>如果我们把 [0,n−1] 分治下去出现的所有子区间的信息都用堆式存储的方式记忆化下来，即建成一颗真正的树之后，我们就可以在 O(logn) 的时间内求到任意区间内的答案，我们甚至可以修改序列中的值，做一些简单的维护，之后仍然可以在 O(logn) 的时间内求到任意区间内的答案，对于大规模查询的情况下，这种方法的优势便体现了出来。这棵树就是线段树。</p></li>
+<li><p>leetcode，<span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbWF4aW11bS1zdWJhcnJheS8=">53. 最大子序和<i class="fa fa-external-link-alt"></i></span>，可用dp也可用线段树求解。与上一题一样，只不过上一题有多个query，适合把线段树存下来。</p>
+<p>示例解法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 线段树</span></span><br><span class="line"><span class="comment"># 我们定义一个操作get(a, l, r)表示查询a序列[l, r]区间内的最大子段和，</span></span><br><span class="line"><span class="comment"># 那么最终我们要求的答案就是get(arr, 0, n-1)。如何分治实现这个操作呢？</span></span><br><span class="line"><span class="comment"># 对于一个区间l, r，我们取m = (l + r)/2， 对区间[l,m] 和 [m+1, r]分治求解。</span></span><br><span class="line"><span class="comment"># 当递归逐层深入直到区间长度缩小为1的时候，递归「开始回升」。</span></span><br><span class="line"><span class="comment"># 这个时候我们考虑如何通过[l, m]区间的信息和[m+1, r]区间的信息合并成区间[l, r]的信息。</span></span><br><span class="line"><span class="comment"># 最关键的两个问题是：</span></span><br><span class="line"><span class="comment"># 我们要维护区间的哪些信息呢？</span></span><br><span class="line"><span class="comment"># 我们如何合并这些信息？</span></span><br><span class="line"><span class="comment"># 对于一个区间[l, r]，我们可以维护四个量：</span></span><br><span class="line"><span class="comment"># lSum表示[l, r]内以l为左端点的最大子段和</span></span><br><span class="line"><span class="comment"># rSum表示[l, r]内以r为右端点的最大字段和</span></span><br><span class="line"><span class="comment"># mSum表示[l, r]内的最大子段和</span></span><br><span class="line"><span class="comment"># iSum表示[l, r]的区间和</span></span><br><span class="line"><span class="comment"># 以下简称[l, m]为[l, r]的「左子区间」，[m+1, r]为[l, r]的右子区间。</span></span><br><span class="line"><span class="comment"># 我们考虑如何维护这些量呢（如何通过左右子区间的信息合并得到[l,r]的信息）？</span></span><br><span class="line"><span class="comment"># 对于长度为1的区间[start,start]，四个量的值都和ai相等。对于长度大于1的区间：</span></span><br><span class="line"><span class="comment"># 首先最好维护的是iSum，区间[l, r]的iSum就等于「左子区间」的iSum加上「右子区间」的iSum。</span></span><br><span class="line"><span class="comment"># 对于[l, r]的lSum，存在两种可能，它要么等于「左子区间」的lSum，</span></span><br><span class="line"><span class="comment"># 要么等于「左子区间」的iSum加上「右子区间」的lSum，两者取大。</span></span><br><span class="line"><span class="comment"># 对于[l, r]的rSum，同理，它要么等于「右子区间」的rSum，</span></span><br><span class="line"><span class="comment"># 要么等于「右子区间」的iSum加上「左子区间」的rSum，两者取大</span></span><br><span class="line"><span class="comment"># 当计算好上面的三个量之后，就很好计算[l, r]的mSum了。</span></span><br><span class="line"><span class="comment"># 我们可以考虑[l, r]的mSum对应的区间是否跨越m--它可能不跨越m，</span></span><br><span class="line"><span class="comment"># 也就是说[l, r]的mSum可能是「左子区间」的mSum和「右子区间」</span></span><br><span class="line"><span class="comment"># 的mSum中的一个；</span></span><br><span class="line"><span class="comment"># 它可能跨越m，可能是「左子区间」的rSum和「右子区间」的lSum求和。三者取大。</span></span><br><span class="line"><span class="comment"># 时间复杂度，相当于遍历一个二叉树的所有结点，结点最多为2*n个，所以时间为O(n)</span></span><br><span class="line"><span class="comment"># 空间复杂度：递归：O(logn)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxSubArray</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        l, r = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> self.get(nums, l, r)[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l == r:</span><br><span class="line">            <span class="keyword">return</span> [nums[l]] * <span class="number">4</span></span><br><span class="line"></span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        lSum1, rSum1, mSum1, iSum1 = self.get(nums, l, mid)</span><br><span class="line">        lSum2, rSum2, mSum2, iSum2 = self.get(nums, mid + <span class="number">1</span>, r)</span><br><span class="line">        iSum = iSum1 + iSum2</span><br><span class="line">        lSum = max(lSum1, iSum1 + lSum2)</span><br><span class="line">        rSum = max(rSum2, iSum2 + rSum1)</span><br><span class="line">        mSum = max(mSum1, mSum2, rSum1 + lSum2)</span><br><span class="line">        <span class="keyword">return</span> lSum, rSum, mSum, iSum</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 存储一颗线段树</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxSubArray</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        l, r = <span class="number">0</span>, len(nums) - <span class="number">1</span></span><br><span class="line">        memo = &#123;&#125;</span><br><span class="line">        res = self.build(nums, l, r, memo)[<span class="number">2</span>]</span><br><span class="line">        print(memo)</span><br><span class="line">        <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">build</span>(<span class="params">self, nums, l, r, memo</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l == r:</span><br><span class="line">            memo[l, r] = [nums[l]] * <span class="number">4</span></span><br><span class="line">            <span class="keyword">return</span> [nums[l]] * <span class="number">4</span></span><br><span class="line"></span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        lSum1, rSum1, mSum1, iSum1 = self.build(nums, l, mid, memo)</span><br><span class="line">        lSum2, rSum2, mSum2, iSum2 = self.build(nums, mid + <span class="number">1</span>, r, memo)</span><br><span class="line">        iSum = iSum1 + iSum2</span><br><span class="line">        lSum = max(lSum1, iSum1 + lSum2)</span><br><span class="line">        rSum = max(rSum2, iSum2 + rSum1)</span><br><span class="line">        mSum = max(mSum1, mSum2, rSum1 + lSum2)</span><br><span class="line">        memo[l, r] = [lSum, rSum, mSum, iSum]</span><br><span class="line">        <span class="keyword">return</span> lSum, rSum, mSum, iSum</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># f(i) s[:i]的最大子序和，且一定包括i</span></span><br><span class="line"><span class="comment"># f(i) = max(f(i-1), 0) + a[i]</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxSubArray</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        pre, cur = float(<span class="string">&#x27;-inf&#x27;</span>), float(<span class="string">&#x27;-inf&#x27;</span>)</span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">            pre = max(pre + n, n)</span><br><span class="line">            cur = max(cur, pre)</span><br><span class="line">        <span class="keyword">return</span> cur</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 「方法二」相较于「方法一」来说，时间复杂度相同，但是因为使用了递归，并且维护了四个信息的结构体，</span></span><br><span class="line"><span class="comment"># 运行的时间略长，空间复杂度也不如方法一优秀，而且难以理解。</span></span><br><span class="line"><span class="comment"># 那么这种方法存在的意义是什么呢？</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 对于这道题而言，确实是如此的。但是仔细观察「方法二」，它不仅可以解决区间 [0,n−1]，</span></span><br><span class="line"><span class="comment"># 还可以用于解决任意的子区间 [l,r] 的问题。</span></span><br><span class="line"><span class="comment"># 如果我们把 [0,n−1] 分治下去出现的所有子区间的信息都用堆式存储的方式记忆化下来，</span></span><br><span class="line"><span class="comment"># 即建成一颗真正的树之后，我们就可以在 O(logn) 的时间内求到任意区间内的答案，</span></span><br><span class="line"><span class="comment"># 我们甚至可以修改序列中的值，做一些简单的维护，</span></span><br><span class="line"><span class="comment"># 之后仍然可以在 O(logn) 的时间内求到任意区间内的答案，</span></span><br><span class="line"><span class="comment"># 对于大规模查询的情况下，这种方法的优势便体现了出来。</span></span><br><span class="line"><span class="comment"># 这棵树就是上文提及的一种神奇的数据结构——线段树。</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/28/The-Humble-Programmer-by-Edsger-W-Dijkstra-%E4%BC%9F%E5%A4%A7%E7%9A%84-Dijkstra/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1208,275 +1371,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/" class="post-title-link" itemprop="url">搞定计算机网络面试</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-07-23 23:06:09" itemprop="dateCreated datePublished" datetime="2020-07-23T23:06:09+08:00">2020-07-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-06 16:19:01" itemprop="dateModified" datetime="2020-08-06T16:19:01+08:00">2020-08-06</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="一-osi与tcpip各层的结构与功能都有哪些协议">一 OSI与TCP/IP各层的结构与功能，都有哪些协议</h2>
-<h3 id="五层协议的体系结构">五层协议的体系结构</h3>
-<p>学习计算机网络时我们一般采取折中的办法，也就是中和OSI和TCP/IP的优点，采用一种只有五层协议的体系结构，这样既简洁又能将概念阐述清楚。</p>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C1" class>
-<p>结合互联网的情况，自上而下的，非常简要的介绍一下各层的作用。</p>
-<h4 id="应用层">1 应用层</h4>
-<p><strong>应用层（application layer）的任务是通过应用进程间的交互来完成特定网络应用。应用层协议定义的是应用进程（进程：主机中正在运行的程序）间的通信和交互的规则。对于不同的网络应用需要不同的应用层协议。在互联网中应用层协议很多，如域名系统DNS</strong>，支持万维网应用的<strong>HTTP协议</strong>，支持电子邮件的<strong>SMTP协议</strong>等等。我们把应用层交互的数据单元称为报文。</p>
-<h5 id="域名系统">域名系统</h5>
-<p>域名系统（Domain name System缩写DNS，Domain Name被译为域名）是因特网的一项核心服务，它作为可以将域名和IP地址相互映射的一个分布式数据库，能够使人更方便的访问互联网，而不用去记住能够被机器直接读取的IP数串。例如：一个公司的web网站可看做是它在网上的门户，而域名就相当于其门牌地址，通常域名都使用该公司的名称或简称。例如上面提到的微软公司的域名，类似的还有：IBM 公司的域名是 <span class="exturl" data-url="aHR0cDovL3d3dy5pYm0uY29tLw==">www.ibm.com<i class="fa fa-external-link-alt"></i></span>、Oracle 公司的域名是 <span class="exturl" data-url="aHR0cDovL3d3dy5vcmFjbGUuY29tLw==">www.oracle.com<i class="fa fa-external-link-alt"></i></span>、Cisco公司的域名是 <span class="exturl" data-url="aHR0cDovL3d3dy5jaXNjby5jb20v">www.cisco.com<i class="fa fa-external-link-alt"></i></span> 等。</p>
-<h5 id="http协议">HTTP协议</h5>
-<p>超文本传输协议（HTTP，Hypertext Transfer Protocol）是互联网上应用最广泛的一种网络协议。所有的WWW（万维网）文件都必须遵守这个标准。设计HTTP最初的目的是为了提供一种发布和接收HTML页面的方法。</p>
-<h4 id="运输层">2 运输层</h4>
-<p><strong>运输层（transport layer）的主要任务就是负责向两台主机进程之间的通信提供通用的数据传输服务。</strong>应用进程利用该服务传送应用层报文。“通用的”是指并不针对某一个特定的网络应用，而是多种应用可以使用同一个运输层服务。由于一台主机可同时运行多个线程，因此运输层有复用和分用的功能。所谓复用就是指多个应用层进程可同时使用下面运输层的服务，分用和复用相反，是运输层把收到的信息分别交付上面应用层中的相应进程。</p>
-<p><strong>运输层主要使用一下两种协议</strong></p>
-<ol type="1">
-<li><strong>传输控制协议TCP</strong>（Transmisson Control Protocol）--提供<strong>面向连接的，可靠的</strong>数据传输服务。</li>
-<li>用户数据报协议UDP（User Datagram Protocol）--提供<strong>无连接的</strong>，尽最大努力的数据传输服务（<strong>不保证数据传输的可靠性</strong>）</li>
-</ol>
-<p>UDP的主要特点</p>
-<ol type="1">
-<li>UDP是无连接的。</li>
-<li>UDP使用尽最大努力交付，即不保证可靠交付，因此主机不需要维持复杂的连接状态（这里面有许多参数）；</li>
-<li>UDP是面向报文的；</li>
-<li>UDP没有拥塞控制，因此网络出现拥塞不会使源主机的发送速率降低（对实时应用很有用，如直播，实时视频会议等）；</li>
-<li>UDP支持一对一、一对多、多对一和多对多的交互通信；</li>
-<li>UDP的首部开销小，只有8个字节，比TCP的20个字节的首部要短。</li>
-</ol>
-<p>TCP的主要特点</p>
-<ol type="1">
-<li>TCP是面向连接的。（就好像打电话一样，通话前需要先拨号建立连接，通话结束后要挂机释放连接）；</li>
-<li>每一条TCP连接只能有两个端点，每一条TCP连接只能是点对点的（一对一）；</li>
-<li>TCP提供可靠交付的服务。通过TCP连接传送的数据，无差错、不丢失、不重复、并且按序到达；</li>
-<li>TCP提供全双工通信。TCP允许通信双方的应用进程在任何时候都能发送数据。TCP连接的两端都设有发送缓存和接收缓存，用来临时存放双方通信的数据；</li>
-<li>面向字节流。TCP中的“流”（Stream）指的是流入进程或从进程流出的字节序列。“面向字节流”的含义是：虽然应用程序和TCP的交互是一次一个数据块（大小不等），但TCP把应用程序交下来的数据仅仅看成是一连串的无结构的字节流。</li>
-</ol>
-<h4 id="网络层">3 网络层</h4>
-<p><strong>网络层（network layer）负责为分组交换网上的不同主机提供服务</strong>。在发送数据时，网络层把运输层产生的报文段或用户数据封装成分组和包进行传送。在TCP/IP体系结构中，由于网络层使用<strong>IP协议</strong>，因此分组也叫<strong>IP数据报</strong>，简称<strong>数据报</strong>。</p>
-<p>这里要注意：<strong>不要把运输层的“用户数据报UDP”和网络层的“IP数据报”弄混</strong>。另外，无论是哪一层的数据单元，都可笼统地用“分组”来表示。</p>
-<p>网络层的另一个任务就是选择合适的路由，使源主机运输层所传下来的分组，能通过网络层中的路由器找到目的主机。</p>
-<p>这里强调指出，网络层中的“网络”二字已经不是我们通常谈到的具体网络，而是指计算机网络体系结构模型中第三层的名称。</p>
-<p>互联网是由大量的异构（heterogeneous）网络通过路由器（router）相互连接起来的。互联网使用的网络层协议是无连接的网际协议（Internet Protocol）和许多路由选择协议，因此互联网的网络层也叫做<strong>网际层</strong>或<strong>IP层</strong>。</p>
-<h4 id="数据链路层">4 数据链路层</h4>
-<p><strong>数据链路层（data link layer）通常简称为链路层。两台主机之间的数据传输，总是在一段一段的链路上传送的，这就需要使用专门的链路层的协议。</strong>在两个相邻节点之间传送数据时，<strong>数据链路层将网络层交下来的IP数据报组装成帧，</strong>在两个相邻节点间的链路上传送帧。每一帧包括数据和必要的控制信息（如同步信息，地址信息，差错控制等）。</p>
-<p>在接收数据时，控制信息使接收端能够知道一个帧从哪个比特开始和到哪个比特结束。这样，数据链路层在收到一个帧后，就可从中提取数据部分，上交给网络层。控制信息还使接收端能够检测到所收到的帧中有无差错。如果发现差错，数据链路层就简单的丢弃这个出了差错的帧，以避免继续在网络中传送下去白白浪费网络资源。如果需要改正数据在链路层传输时出现的差错（这就是说，数据链路层不仅要检错，而且还要纠错），那么就要采用可靠性传输协议来纠正出现的差错。这种方法会使链路层的协议复杂些。</p>
-<h4 id="物理层">5 物理层</h4>
-<p>在物理层所传送的数据单位是比特。<strong>物理层（physical layer）的作用是实现相邻计算机节点之间比特流的透明传送，尽可能屏蔽掉具体传输介质和物理设备的差异。</strong>使其上面的数据链路层不必考虑网络的具体传输介质是什么。“透明传送比特流”表示经实际电路传送后的比特流没有发生变化，对传送的比特流来说，这个电路好像是看不见的。</p>
-<p>在互联网使用的各种协议中最重要和最著名的就是TCP/IP两个协议。现在人们经常提到的TCP/IP并不一定单指TCP和IP这两个具体的协议，而往往表示互联网所使用的的整个TCP/IP协议簇。</p>
-<h4 id="总结一下">总结一下</h4>
-<p>上面我们对计算机网络的五层体系结构有了初步的了解，下面附送一张七层体系结构图总结一下。</p>
-<p>图片来源：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lhb3BlbmdfMjAwNS9hcnRpY2xlL2RldGFpbHMvNzA2NDg2OQ==">blog.csdn.net/yaopeng_200…<i class="fa fa-external-link-alt"></i></span></p>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C2.gif" class>
-<h2 id="二-tcp三次握手和四次挥手面试常客">二 TCP三次握手和四次挥手（面试常客）</h2>
-<p>为了准确无误地把数据送达目标处，TCP协议采用了三次握手策略。</p>
-<h3 id="漫画图解">漫画图解：</h3>
-<p>图片来源：《图解HTTP》</p>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C3" class>
-<h3 id="简单示意图">简单示意图：</h3>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C4" class>
-<ul>
-<li>客户端-发送带有SYN标志的数据-一次握手-服务端</li>
-<li>服务端-发送带有SYN/ACK标志的数据包-二次握手-客户端</li>
-<li>客户端-发送带有ACK标志的数据包-三次握手-服务端</li>
-</ul>
-<h3 id="为什么要三次握手">为什么要三次握手</h3>
-<p><strong>三次握手的目的是建立可靠的通信通道，说道通讯，简单来说就是数据的发送与接收，而三次握手最主要的目的就是双方确认自己与对方的发送与接收是正常的。</strong></p>
-<p>第一次握手：Client什么都不能确认；Server确认了对方发送正常</p>
-<p>第二次握手：Client确认了：自己发送、接收正常，对方发送、接收正常；Server确认了：自己接收正常，对方发送正常</p>
-<p>第三次握手：Client确认了：自己发送、接收正常，对方发送、接收正常；Server确认了：自己发送、接收正常，对方发送、接收正常</p>
-<p>所以三次握手就能确认双方收发功能都正常，缺一不可。</p>
-<h3 id="为什么要传回syn">为什么要传回SYN</h3>
-<p>接收端传回发送端所发送的SYN是为了告诉发送端，我接收到的信息确实就是你发送的信号。</p>
-<h3 id="传了syn为啥还要传ack">传了SYN，为啥还要传ACK</h3>
-<p>双方通信无误必须是两者互相发送信息都无误。传了SYN，证明发送方到接收方的通道没有问题，但是接收方到发送方的通道（即Server发送正常，Client接收正常）还需要ACK信号来进行验证。</p>
-<blockquote>
-<p>SYN是TCP/IP建立连接时使用的握手信号。在客户机和服务器之间建立正常的TCP网络连接时，客户机首先发出一个SYN消息，服务器使用SYN-ACK应答表示接收到了这个消息，最后客户机再以ACK（Acknowledge，确认字符，在数据通信传输中，接收站发送给发送站的一种传输控制字符。它表示确认发来的数据已经接收无误。）消息响应。这样在客户机和服务器之间才能建立起可靠的TCP连接，数据才可以在客户机和服务器之间传递。</p>
-</blockquote>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C5" class>
-<p>断开一个TCP连接则需要“四次挥手”：</p>
-<ul>
-<li>客户端-发送一个FIN，用来关闭客户端到服务器的数据传送</li>
-<li>服务器-收到这个FIN，它返回一个ACK，确认序号为收到的序号加1。和SYN一样，一个FIN将占用一个序号</li>
-<li>服务器-关闭与客户端的连接，发送一个FIN给客户端</li>
-<li>客户端-发回ACK报文确认，并将确认序号设置为收到序号加1</li>
-</ul>
-<h3 id="为什么要四次挥手">为什么要四次挥手</h3>
-<p>任何一方都可以在数据传送结束后发出连接释放的通知，待对方确认后进入半关闭状态。当另一方也没有数据再发送的时候，则发出连接释放通知，对方确认后就完全关闭了TCP连接。</p>
-<p>举个例子：A和B打电话，通话即将结束后，A说“我没啥要说的了”，B回答说“我知道了”，但是B可能还有要说的话，A不能要求B跟着自己的节奏结束通话，于是B可能又巴拉巴拉说了一通，最后B说”我说完了“，A回答”知道了“，这样通话才算结束。</p>
-<p>上面讲的比较概括，推荐一篇讲得比较细致的文章：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3F6Y3N1L2FydGljbGUvZGV0YWlscy83Mjg2MTg5MQ==">blog.csdn.net/qzcsu/artic…<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="三-tcpudp协议的区别">三 TCP、UDP协议的区别</h2>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C6" class>
-<p>UDP在传送数据之前不需要先建立连接，远地主机在收到UDP报文之后，不需要给出任何确认。虽然UDP不提供可靠交付，但在某些情况下UDP确是一种最有效的工作方式（一般用于即时通讯），比如：QQ语音、QQ视频、直播等等。</p>
-<p>TCP提供面向连接的服务。在传送数据之前必须先建立连接，数据传送结束后要释放连接。TCP不提供广播或多播服务。由于TCP要提供可靠的，面向连接的服务（TCP的可靠体现在TCP在传递数据之前，会有三次握手来建立连接，而且在数据传递时，有确认、窗口、重传、拥塞控制机制，在数据传完后，还会断开连接用来节约系统资源），这些难以避免增加了许多开销，如确认，流量控制，计时器以及连接管理等。这不仅使协议数据单元的首部增大很多，还要占用许多处理机资源。TCP一般用于文件传输、发送和接收邮件、远程登录等场景。</p>
-<h2 id="四-tcp协议如何保证可靠运输">四 TCP协议如何保证可靠运输</h2>
-<ol type="1">
-<li>应用数据被分割成TCP认为最合适发送的数据块。</li>
-<li>TCP给发送的每一个包进行编号，接收方对数据包进行排序，把有序数据传送给应用层。</li>
-<li><strong>校验和</strong>：TCP将保持它首部和数据的校验和。这是一个端到端的校验和，目的是检测数据在传输过程中的任何变化，如果收到段的检验和有差错，TCP将丢弃这个报文段和不确认收到此报文段。</li>
-<li>TCP的接收端会丢弃重复的数据。</li>
-<li><strong>流量控制</strong>：TCP连接的每一方都有固定大小的缓冲空间，TCP的接收端只允许发送端发送接收端缓冲区能接纳的数据。当接收方来不及处理发送方的数据，能提示发送方降低发送的速率，防止包丢失。TCP使用的流量控制协议是一个可变大小的滑动窗口协议。（TCP利用滑动窗口实现流量控制）</li>
-<li><strong>拥塞控制</strong>：当网络拥塞时，减少数据的发送。</li>
-<li><strong>停止等待协议</strong>：也是为了实现可靠传输的，它的基本原理就是每发完一个分组就停止发送，等待对方确认。在收到确认后再发下一个分组。<strong>超时重传</strong>：当TCP发出一个段后，它启动一个定时器，等待目的端确认收到这个报文段。如果不能及时收到一个确认，将重发这个报文段。</li>
-</ol>
-<h3 id="停止等待协议">停止等待协议</h3>
-<ul>
-<li>停止等待协议是为了实现可靠传输的，它的基本原理就是每发完一个分组就停止发送，等待对方确认。在收到确认后再发下一个分组；</li>
-<li>在停止等待协议中，若接收方收到重复分组，就丢弃该分组，但同时还要发送确认；</li>
-</ul>
-<ol type="1">
-<li><strong>无差错情况：</strong></li>
-</ol>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C7" class>
-<p>发送方发送分组，接收方在规定时间内收到，并且回复确认，发送方再次发送。</p>
-<ol start="2" type="1">
-<li><strong>出现差错情况（超时重传）</strong>：</li>
-</ol>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C8" class>
-<p>停止等待协议中超时重传是指只要超过一段时间仍然没有收到确认，就重传前面发送过的分组（认为刚才发送过的分组丢失了）。因此每发送完一个分组需要设置一个超时计时器，其重传时间应比数据在分组传输的平均往返时间更长一些。这种自动重传方式常称为<strong>自动重传请求 ARQ</strong>。另外在停止等待协议中若收到重复分组，就丢弃该分组，但同时还要发送确认。<strong>连续ARQ协议</strong>可提高信道利用率。发送维持一个发送窗口，凡位于发送窗口内的分组可连续发送出去，而不需要等待对方确认。接收方一般采用累积确认，对按序到达的最后一个分组发送确认，表明这个分组位置的所有分组都已经正确收到了。</p>
-<ol start="3" type="1">
-<li><p><strong>确认丢失和确认迟到</strong></p>
-<ul>
-<li><p><strong>确认丢失</strong>：确认消息在传输过程丢失</p>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C9" class>
-<p>当A发送M1消息时，B收到后，B向A发送了一个M1确认消息，但却在传输过程中丢失。而A并不知道，在超时计时过后，A重传M1消息，B再次收到该消息后采取以下两点措施：</p>
-<ol type="1">
-<li>丢弃这个重复的M1消息，不向上层交付。</li>
-<li>向A发送确认消息。（不会认为已经发送过了，就不再发送。A能重传，就证明B的确认消息丢失）。</li>
-</ol></li>
-<li><p><strong>确认迟到</strong>：确认消息在传输过程中迟到</p>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C10" class>
-<p>A发送M1消息，B收到并发送确认。在超时时间内没有收到确认消息，A重传M1消息，B仍然收到并继续发送确认消息（B收到了2份M1）。此时A收到了B第二次发送的确认消息。接着发送其他数据。过了一会，A收到了B第一次发送的对M1的确认消息（A也收到额2份确认消息）。处理如下：</p>
-<ol type="1">
-<li>A收到重复的确认后，直接丢弃。</li>
-<li>B收到重复的M1后，也直接丢弃重复的M1。</li>
-</ol></li>
-</ul></li>
-</ol>
-<h3 id="自动重传请求arq协议">自动重传请求ARQ协议</h3>
-<p>停止等待协议中超时重传是指只要过一段时间仍然没有收到确认，就重传前面发送过的分组（认为刚才发送过的分组丢失了）。因此没发送完一个分组需要设置一个超时计时器，其重传时间应比数据在分组传输的平均往返时间更长一些。这种自动重传方式常称为自动重传请求ARQ。</p>
-<p><strong>优点</strong>：简单</p>
-<p><strong>缺点</strong>：信道利用率低</p>
-<h3 id="连续arq协议">连续ARQ协议</h3>
-<p>连续ARQ协议可提高信道利用率。发送方维持一个发送窗口，凡位于发送窗口内的分组可以连续发送出去，而不需要等待对方确认，接收方一般采用累积确认，对按序到达的最后一个分组发送确认，表明这个分组为止的所有分组都已经正确收到了。</p>
-<p><strong>优点</strong>：信道利用率高，容易实现，即使确认丢失，也不必重传。</p>
-<p><strong>缺点</strong>：不能向发送方反映出接收方已经正确收到的所有分组的信息。比如：发送方发送了5条消息，中间第三条丢失（3号），这是接收方只能对前两个发送确认。发送方无法知道后三个分组的下落，而只好把后三个全部重传一次。这也叫Go-Back-N（回退N），表示需要退回来重传已经发送过的N个消息。</p>
-<h3 id="滑动窗口">滑动窗口</h3>
-<ul>
-<li>TCP利用滑动窗口实现流控的机制。</li>
-<li>滑动窗口（Sliding window）是一种流量控制技术。早期的网络通信中，通信双方不会考虑网络的拥挤情况直接发送数据。由于大家不知道网络拥塞情况，同时发送数据，导致中间节点阻塞掉包，谁也发不了数据，所以就有了滑动窗口机制来解决此问题。</li>
-<li>TCP 中采用滑动窗口来进行传输控制，滑动窗口的大小意味着接收方还有多大的缓冲区可以用于接收数据。发送方可以通过滑动窗口的大小来确定应该发送多少字节的数据。当滑动窗口为 0 时，发送方一般不能再发送数据报，但有两种情况除外，一种情况是可以发送紧急数据，例如，允许用户终止在远端机上的运行进程。另一种情况是发送方可以发送一个 1 字节的数据报来通知接收方重新声明它希望接收的下一字节及发送方的滑动窗口大小。</li>
-</ul>
-<h3 id="流量控制">流量控制</h3>
-<ul>
-<li>TCP 利用滑动窗口实现流量控制。</li>
-<li>流量控制是为了控制发送方发送速率，保证接收方来得及接收。</li>
-<li>接收方发送的确认报文中的窗口字段可以用来控制发送方窗口大小，从而影响发送方的发送速率。将窗口字段设置为 0，则发送方不能发送数据。</li>
-</ul>
-<h3 id="拥塞控制">拥塞控制</h3>
-<p>在某段时间，若对网络中某一资源的需求超过了该资源所能提供的可用部分，网络的性能就要变坏。这种情况就叫拥塞。拥塞控制就是为了防止过多的数据注入到网络中，这样就可以使网络中的路由器或链路不致过载。拥塞控制所要做的都有一个前提，就是网络能够承受现有的网络负荷。拥塞控制是一个全局性的过程，涉及到所有的主机，所有的路由器，以及与降低网络传输性能有关的所有因素。相反，流量控制往往是点对点通信量的控制，是个端到端的问题。流量控制所要做到的就是抑制发送端发送数据的速率，以便使接收端来得及接收。</p>
-<p>为了进行拥塞控制，TCP 发送方要维持一个 <strong>拥塞窗口(cwnd)</strong> 的状态变量。拥塞控制窗口的大小取决于网络的拥塞程度，并且动态变化。发送方让自己的发送窗口取为拥塞窗口和接收方的接受窗口中较小的一个。</p>
-<p>TCP的拥塞控制采用了四种算法，即 <strong>慢开始</strong> 、 <strong>拥塞避免</strong> 、<strong>快重传</strong> 和 <strong>快恢复</strong>。在网络层也可以使路由器采用适当的分组丢弃策略（如主动队列管理 AQM），以减少网络拥塞的发生。</p>
-<ul>
-<li><strong>慢开始：</strong> 慢开始算法的思路是当主机开始发送数据时，如果立即把大量数据字节注入到网络，那么可能会引起网络阻塞，因为现在还不知道网络的负荷情况。经验表明，较好的方法是先探测一下，即由小到大逐渐增大发送窗口，也就是由小到大逐渐增大拥塞窗口数值。cwnd初始值为1，每经过一个传播轮次，cwnd加倍。</li>
-</ul>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C11" class>
-<ul>
-<li><p><strong>拥塞避免：</strong> 拥塞避免算法的思路是让拥塞窗口cwnd缓慢增大，即每经过一个往返时间RTT就把发送方的cwnd加1.</p></li>
-<li><p><strong>快重传与快恢复：</strong> 在 TCP/IP 中，快速重传和恢复（fast retransmit and recovery，FRR）是一种拥塞控制算法，它能快速恢复丢失的数据包。没有 FRR，如果数据包丢失了，TCP 将会使用定时器来要求传输暂停。在暂停的这段时间内，没有新的或复制的数据包被发送。有了 FRR，如果接收机接收到一个不按顺序的数据段，它会立即给发送机发送一个重复确认。如果发送机接收到三个重复确认，它会假定确认件指出的数据段丢失了，并立即重传这些丢失的数据段。有了 FRR，就不会因为重传时要求的暂停被耽误。  当有单独的数据包丢失时，快速重传和恢复（FRR）能最有效地工作。当有多个数据信息包在某一段很短的时间内丢失时，它则不能很有效地工作。</p></li>
-</ul>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C12" class>
-<h2 id="五-在浏览器中输入url地址---显示主页的过程面试常客">五 在浏览器中输入url地址 -&gt;&gt; 显示主页的过程（面试常客）</h2>
-<p>百度好像最喜欢问这个问题。</p>
-<blockquote>
-<p>打开一个网页，整个过程会使用哪些协议</p>
-</blockquote>
-<p>图片来源：《图解HTTP》</p>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C13" class>
-<h2 id="六-状态码">六 状态码</h2>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C14" class>
-<h2 id="七-各种协议与http协议之间的关系">七 各种协议与HTTP协议之间的关系</h2>
-<p>一般面试官会通过这样的问题来考察你对计算机网络知识体系的理解。</p>
-<p>图片来源：《图解HTTP》</p>
-<img data-src="/2020/07/23/%E6%90%9E%E5%AE%9A%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E8%AF%95/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C15" class>
-<h2 id="八-http长连接短连接">八 HTTP长连接、短连接</h2>
-<p>在HTTP/1.0中默认使用短连接。也就是说，客户端和服务器每进行一次HTTP操作，就建立一次连接，任务结束就中断连接。当客户端浏览器访问的某个HTML或其他类型的Web页中包含有其他的Web资源时（如JavaScript文件、图像文件、CSS文件等），每遇到这样一个Web资源，浏览器就会重新建立一个HTTP会话。</p>
-<p>而从HTTP/1.1起，默认使用长连接，用以保持连接特性。使用长连接的HTTP协议，会在响应头加入这行代码：</p>
-<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Connection:keep-alive</span></span><br></pre></td></tr></table></figure>
-<p>在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，客户端再次访问这个服务器时，会继续使用这一条已经建立的连接。Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接需要客户端和服务端都支持长连接。</p>
-<p><strong>HTTP协议的长连接和短连接，实质上是TCP协议的长连接和短连接。</strong></p>
-<p>—— <span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vZ290b2RzcC9wLzYzNjYxNjMuaHRtbA==">《HTTP长连接、短连接究竟是什么？》<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="转载感谢原作者">转载（感谢原作者）：</h2>
-<p>https://juejin.im/post/5b7be0b2e51d4538db34a51e#heading-17</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1548,13 +1442,13 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">129</span>
+          <span class="site-state-item-count">130</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
