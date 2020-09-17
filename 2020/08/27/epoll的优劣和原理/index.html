@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="epoll 网络事件收集器模型（也有分发） nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。 首先，epoll 和 kqueue（mac o">
+  <meta name="description" content="epoll 网络事件收集器模型（也有分发）nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。 首先，epoll 和 kqueue（mac os">
 <meta property="og:type" content="article">
 <meta property="og:title" content="epoll的优劣和原理">
 <meta property="og:url" content="https://hrz123.github.io/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="epoll 网络事件收集器模型（也有分发） nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。 首先，epoll 和 kqueue（mac o">
+<meta property="og:description" content="epoll 网络事件收集器模型（也有分发）nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。 首先，epoll 和 kqueue（mac os">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://hrz123.github.io/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/benchmark.png">
 <meta property="article:published_time" content="2020-08-27T14:28:19.000Z">
@@ -248,31 +248,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="epoll-网络事件收集器模型也有分发">epoll 网络事件收集器模型（也有分发）</h3>
-<p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
+        <h3 id="epoll-网络事件收集器模型（也有分发）"><a href="#epoll-网络事件收集器模型（也有分发）" class="headerlink" title="epoll 网络事件收集器模型（也有分发）"></a>epoll 网络事件收集器模型（也有分发）</h3><p>nginx事件分发机制，在其中的循环流程中，最关键的就是，nginx怎样能够快速的从操作系统的kernal中获取到等待处理的事件，这么一个简单的步骤，其实，经历了很长时间的解决。比如，到现在nginx主要在使用epoll这样一个网络事件收集器的模型。那么，下面我们来简单的回顾下，epoll有些什么样的特点。</p>
 <p>首先，epoll 和 kqueue（mac os内核才有）随文件描述符（句柄数的增加，也表示并发连接数的增加）的增加，所消耗的时间几乎不变。而Poll和select所消耗的时间是急剧上升的。epoll基本与句柄数增加是无关的，所以它的性能会好很多，而且非常适合做大并发连接的处理。那么，为什么会这样呢？</p>
 <p>Benchmark显示：</p>
 <img data-src="/2020/08/27/epoll%E7%9A%84%E4%BC%98%E5%8A%A3%E5%92%8C%E5%8E%9F%E7%90%86/benchmark.png" class>
-<h3 id="前提">前提</h3>
-<p>高并发连接中，每次处理的活跃连接数量占比很小</p>
+
+<h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><p>高并发连接中，每次处理的活跃连接数量占比很小</p>
 <blockquote>
 <p>select 和 poll的实现是有问题的。每一次我去取操作系统的事件的时候，我都需要把这100万个连接通通地扔给操作系统，让它去依次地判断哪些连接上面有事件进来了，所以可以看到这里操作系统做了大量的无用功 ，它扫描了大量不活跃的连接。那么epoll就是用了这样的一个特性，因为每次处理的活跃连接的占比其实非常小，那么，它怎么实现的呢？其实非常简单，因为它维护了一个数据结构叫eventpoll。这里，它通过两个数据结构把这两件事分开了。也就是说，nginx每次取活跃连接的时候，我们只需要去遍历一个链表，这个链表里仅仅只有活跃的连接，这样我们的效率就很高。那么，我们还会经常做的操作是什么呢？比如说，nginx收到80端口建立连接的请求。那么，收到80端口建立连接成功以后呢，我们要添加一个读事件，这个读事件是用来读取HTTP消息的，那这时候呢，我可能会添加一个新的事件，或者写事件添加进来。这个时候添加呢，我只会放到这个红黑树中，这个二叉平衡树，它能保证我的插入效率值是logn。如果我现在不想再处理读事件或者写事件，我只需要从这个平衡二叉树中移除一个节点就可以了，同样是logn的时间复杂度。所以这个效率非常高。那么什么时候这个链表会有所增减呢。当我们读取一个事件的时候，链表中自然就没了。那么，当操作系统接收到网卡中发送来的一个报文的时候，那么这个链表就会增加一个新的元素，所以我们在使用epoll的时候，它的操作，添加修改删除，是非常快的，是logn复杂度的。而我们获取句柄的时候，只是去遍历这个rdllink，也就是ready准备好的所有的连接，是把它读取出来而已。那么，从内核态读取到用户态，只读这么一点东西，它的效率是非常高的。</p>
 </blockquote>
-<h3 id="实现">实现</h3>
-<ul>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><ul>
 <li>红黑树</li>
 <li>链表</li>
 </ul>
-<h3 id="使用">使用</h3>
-<ul>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><ul>
 <li>创建</li>
 <li>操作：添加/修改/删除</li>
 <li>获取句柄</li>
 <li>关闭</li>
 </ul>
 <p>以上，简单介绍了epoll的使用方法，它对我们理解nginx的事件驱动模型是有帮助的。</p>
-<h3 id="其他">其他</h3>
-<p>每一个nginx worker进程都有一个独立的ngx_cycle_t这样一个数据结构。有三个主要的数组，connections，read_events，write_events。分别代表预分配的连接、读事件和写事件。三个数组大小和配置是一模一样的，三个数组通过序号对应起来。</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>每一个nginx worker进程都有一个独立的ngx_cycle_t这样一个数据结构。有三个主要的数组，connections，read_events，write_events。分别代表预分配的连接、读事件和写事件。三个数组大小和配置是一模一样的，三个数组通过序号对应起来。</p>
 <p>每一个connection到底使用了多大的内存呢？连接使用的核心数据结构是ngx_connection_s，64位操作系统中，大约占用了232个字节，nginx版本不同可能有微小的差异，每一个ngx_connetion_s结构体对应着两个事件，一个读一个写，每一个时间对应的结构体，事件的核心数据结构是ngx_event_s，结构体占用的字节数是96字节。所以当我们使用一个连接的时候，它使用的字节大约是232+96*2，我们的worker connections配置得越大，那么初始化的时候就会预分配这么多内存。</p>
 <p>我们再来看ngx_event_s中有哪些成员，这里我们比较关注的是，有一个handler（ngx_event_gandler_pt）指针，这是一个回调方法，也就是很多第三方模块会把这个handler设为自己的实现；这里还有一个timer（ngx_rbtree_node_t），也就是说，当我们对http请求做读超时写超时等等设置的时候，其实是在操作它的读事件和写事件中的timer，这个timer就是inginx实现超时定时器，也就是基于rbtree就实现的这样一个结构体。那么红黑树中每个成员叫rbtree_node，那么这个timer就是它的node，用来指向我们的读事件是否超时、写事件是否超时，这些定时器其实也是可配的。</p>
 <p>比如client_header_timeout，默认是60s，也就是在我们刚刚某个连接上，在准备读取它的header时，我们在它的读事件上添加了一个60s的定时器。</p>
@@ -282,8 +278,7 @@
 <p>如果你开发过nginx的第三方开发模块，虽然我们在写C语言代码，但是我们不需要关心内存的释放，那么如果你现在在配置一些比较罕见的nginx使用场景，你可能会需要去修改nginx在请求和连接上初始分配内存池大小。但是nginx官方可能会写着推荐通常不需要去该这样的配置。那么我们究竟要不要这些内存池的大小呢？下面，我们来看一看内存池究竟是怎么样运转的。</p>
 <p>ngx_connection_s这样的结构体中，有一个成员变量就是pool，ngx_pool_t，它对应着这个连接所使用的的内存池。这个内存池可以通过一个配置项叫connection_pool_size去定义。那么，我们为什么会需要内存池呢，如果我们有一些工具的话我们会发现，nginx它所产生的内存碎片其实是非常小的，这就是内存池的一个功了。那么，内存池呢，它会把内存提前分配好一批，而且，当我们使用小块内存的时候 ，它会用next指针一个个连接在一起，每次我们使用的东西比较少的时候呢，第二次再分配小块内存，会连接在一起去使用，这样就大大减少了我们的内存碎片。当然我们如果分配大块内存的时候，还是会走到操作系统的alloc去分配大块的内存。那么对于nginx有什么好处呢？因为它主要在处理web请求，web请求，特别对于http请求，它有两个非常明显的特点。每当我们有一个TCP连接的时候，那么，这个TCP连接上面可能会运行很多http请求，也就是所谓的http keepalive请求，连接没有关闭，执行完一条请求以后还负责执行另外一条请求。 那么有一些内存呢，我为连接分配一次就够了，比如说，我去读取每一个请求的前1k字节，那么在连接内存池上，我分配一次，只要这个连接不关闭，那么这段1k的内存，我永远不需要释放，什么时候需要释放呢？连接关闭的时候我再释放。没有任何问题。请求内存池呢？每一个http请求，我开始分配的时候，我不知道分配多大，但是http请求，特别是http1.1而言，通常我们会分配4k的大小的内存，因为我们的url或者header往往需要分配那么多，如果没有内存池呢，我们可能需要频繁的分配，小块的分配，而分配内存，其实是有代价的，如果我们一次分配，分配较多的内存呢，就没有这样的问题。而请求执行完毕以后，哪怕连接我们还可以复用，我们也可以把请求池销毁，而这样，所有nginx第三方模块开发者，他们就不必关注，内存什么时候会释放，它只要关注，我是从请求内存池里面，申请分配的内存，还是连接内存池里，申请分配的内存。只要这个逻辑讲得通，比如请求结束以后，连接仍然想继续使用，那么你可以在连接内存池里面分配。好我们看一下具体的例子。还是在nginx_http_core_module这个模块中，我们可以看到它有一个叫connection_pool_size，点开以后可以看到默认情况下，它大约是256或者512，这个跟我们的操作系统位数是有关的。那么内存池配置512，并不代表，在这里我只能分配512字节，当我们分配的内存超过预分配的大小的时候，还是可以继续分配的，这里只是说，因为我提前预分配了足够大小的空间，可以减少我分配内存的次数。那我们再来看，另一个配置，叫request pool size也就是我们每一个请求的内存池的大小，这里我们可以看到，它的默认大小是4k，为什么差距会那么大呢？之所以会差距8倍，是因为，对于连接而言，它需要保存的上下文信息非常的少，它只需要帮助后面的请求读取最初一部分字节就可以了，而对于请求而言，我们需要保存大量的上下文信息，比如说所有读取到的url或者header，我需要一直保存下来，url通常还比较长，所以我们需要有4k的大小。当然官方文档中说，它对性能的影响比较小，如果我们在极端场景下，如果你的url特别大，你可以考虑把这个分配得更大，或者说你是很小内存的，url非常小，header也非常少，你可以考虑request_pool_size把它降一降，这样或许nginx消耗的内存会小一些，那么也意味着你可以做更大并发量的请求。</p>
 <p>以上我们介绍了内存池的原理，以及请求内存池和连接内存池，它们的配置代表着怎样的意义。内存池对减少我们的内存碎片，对第三方模块的快速开发，是有很大意义的。可能有一些第三方模块不当使用了内存池，比如本该在请求内存池里分配内存，却在连接内存池分配内存，这可能会导致内存的延期释放，导致nginx的内存无谓的增加，这需要我们注意。</p>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyMDMwMS02ODM5NA==">Nginx核心知识100讲<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyMDMwMS02ODM5NA==">Nginx核心知识100讲<i class="fa fa-external-link-alt"></i></span></p>
 
     </div>
 
@@ -373,7 +368,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#epoll-%E7%BD%91%E7%BB%9C%E4%BA%8B%E4%BB%B6%E6%94%B6%E9%9B%86%E5%99%A8%E6%A8%A1%E5%9E%8B%E4%B9%9F%E6%9C%89%E5%88%86%E5%8F%91"><span class="nav-number">1.</span> <span class="nav-text">epoll 网络事件收集器模型（也有分发）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E6%8F%90"><span class="nav-number">2.</span> <span class="nav-text">前提</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">5.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#epoll-%E7%BD%91%E7%BB%9C%E4%BA%8B%E4%BB%B6%E6%94%B6%E9%9B%86%E5%99%A8%E6%A8%A1%E5%9E%8B%EF%BC%88%E4%B9%9F%E6%9C%89%E5%88%86%E5%8F%91%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">epoll 网络事件收集器模型（也有分发）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E6%8F%90"><span class="nav-number">2.</span> <span class="nav-text">前提</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">5.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -389,7 +384,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">128</span>
+          <span class="site-state-item-count">129</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
