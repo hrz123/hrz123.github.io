@@ -24,12 +24,12 @@
     var CONFIG = {"hostname":"hrz123.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-2}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="100，200，300系列表示成功的响应码  响应码规范：RFC6585（2012.4）、RFC7231（2014.6） 1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持 100 Continue：上传大文件前使用 由客户端发起请求中携带Expect 100-continue头部触发   101 Switch Protocols：协议升级使用 由客户端发起请求中携带Upgrade">
+  <meta name="description" content="100，200，300系列表示成功的响应码  响应码规范：RFC6585（2012.4）、RFC7231（2014.6） 1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持  100 Continue：上传大文件前使用  由客户端发起请求中携带Expect 100-continue头部触发  101 Switch Protocols：协议升级使用  由客户端发起请求中携带Upgra">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HTTP的正确响应码（For Reference）">
 <meta property="og:url" content="https://hrz123.github.io/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/index.html">
 <meta property="og:site_name" content="侯瑞哲的博客">
-<meta property="og:description" content="100，200，300系列表示成功的响应码  响应码规范：RFC6585（2012.4）、RFC7231（2014.6） 1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持 100 Continue：上传大文件前使用 由客户端发起请求中携带Expect 100-continue头部触发   101 Switch Protocols：协议升级使用 由客户端发起请求中携带Upgrade">
+<meta property="og:description" content="100，200，300系列表示成功的响应码  响应码规范：RFC6585（2012.4）、RFC7231（2014.6） 1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持  100 Continue：上传大文件前使用  由客户端发起请求中携带Expect 100-continue头部触发  101 Switch Protocols：协议升级使用  由客户端发起请求中携带Upgra">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-09-04T14:37:43.000Z">
 <meta property="article:modified_time" content="2020-09-05T03:22:19.184Z">
@@ -249,19 +249,20 @@
         <p>100，200，300系列表示成功的响应码</p>
 <ul>
 <li>响应码规范：RFC6585（2012.4）、RFC7231（2014.6）</li>
-<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持<ul>
-<li>100 Continue：上传大文件前使用<ul>
+<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持
+<ul>
+<li>100 Continue：上传大文件前使用
+<ul>
 <li>由客户端发起请求中携带Expect 100-continue头部触发</li>
-</ul>
-</li>
-<li>101 Switch Protocols：协议升级使用<ul>
+</ul></li>
+<li>101 Switch Protocols：协议升级使用
+<ul>
 <li>由客户端发起请求中携带Upgrade：头部触发，如升级websocket或者http/2.0</li>
-</ul>
-</li>
+</ul></li>
 <li>102 Processing：WebDAV请求可能包含许多涉及文件操作的子请求，需要很长时间才能完成请求。该代码表示服务器已经收到并正在处理请求，但无响应可用。这样可以防止客户端超时，并假设请求丢失</li>
-</ul>
-</li>
-<li>2xx：成功处理请求<ul>
+</ul></li>
+<li>2xx：成功处理请求
+<ul>
 <li>200 OK：成功返回了响应</li>
 <li>201 Created：有新资源在服务器端被成功创建</li>
 <li>202 Accepted：服务端接受并开始处理请求；但请求未处理完成。这样一个模糊的概念是有意如此设计，可以覆盖更多的场景。<strong>例如异步、需要长时间处理的任务。</strong>先给客户端返回202 Accept，而由异步的任务继续去处理这个任务。</li>
@@ -271,9 +272,9 @@
 <li>206 Partial Content：（多线程断点续传下载都会使用到range协议）使用range协议时返回<strong>部分</strong>响应内容时的响应码</li>
 <li>207 Multi-Status：RFC4918，在WEBDAV协议中以XML返回多个资源的状态。（返回目录树的结构的时候，实际上是返回了很多个子目录及其相关的资源描述，那么这个时候我们其实有很多个响应码，那么207就是把这些响应作为一个响应的时候，那么这个响应码我们告诉客户端是207）</li>
 <li>208 Already Reported：RFC5842，为避免相同集合下资源在207响应码下重复上报，使用208可以使用父集合的响应码。</li>
-</ul>
-</li>
-<li>3xx：重定向使用Location指向的资源或者缓存中的资源。在RFC2068中规定客户端重定向次数不应超过5次，以防止死循环。<ul>
+</ul></li>
+<li>3xx：重定向使用Location指向的资源或者缓存中的资源。在RFC2068中规定客户端重定向次数不应超过5次，以防止死循环。
+<ul>
 <li>300 Multiple Choices：资源有多种表述，通过300返回给客户端后其自行选择访问哪一种表述。由于缺乏明确的细节，300很少使用。</li>
 <li>301 Moved Permanently：资源永久性的重定向到另一个URL中。（浏览器可以对永久性的重定向直接缓存）</li>
 <li>302 Found：资源临时的重定向到另一个URL中。</li>
@@ -281,10 +282,10 @@
 <li>304 Not Modified：当客户端拥有可能过期的缓存时，会携带缓存的标识etag、时间等信息询问服务器缓存是否仍可复用，而304是告诉客户端可以复用缓存。</li>
 <li>307 Temporary Redirect：类似302，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
 <li>308 Permanent Redirect：类似301，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
+<h3 id="参考">参考</h3>
+<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
 
     </div>
 
