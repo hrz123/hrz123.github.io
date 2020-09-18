@@ -185,6 +185,180 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/07/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/07/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/" class="post-title-link" itemprop="url">抽象类与接口</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-07 10:23:56 / 修改时间：11:56:39" itemprop="dateCreated datePublished" datetime="2020-09-07T10:23:56+08:00">2020-09-07</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/07/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/07/%E6%8A%BD%E8%B1%A1%E7%B1%BB%E4%B8%8E%E6%8E%A5%E5%8F%A3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 抽象类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> enabled;</span><br><span class="line">  <span class="keyword">private</span> Level minPermittedLevel;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Logger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">    <span class="keyword">this</span>.enabled = enabled;</span><br><span class="line">    <span class="keyword">this</span>.minPermittedLeve = minPermittedLevel;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String message)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> loggable = enabled &amp;&amp; (minPermittedLevel.intValue() &lt;= level.intValue());</span><br><span class="line">    <span class="keyword">if</span> (!loggable) <span class="keyword">return</span>;</span><br><span class="line">    doLog(level, message);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">doLog</span><span class="params">(Level level, String message)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 抽象类的子类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">public</span> Writer fileWriter;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">FileLogger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel, String filepath)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(name, enabled, minPermittedLevel);</span><br><span class="line">    <span class="keyword">this</span>.fileWriter = <span class="keyword">new</span> FileWriter(filepath);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doLog</span><span class="params">(Level level, String message)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 格式化level和message，输出到日志文件</span></span><br><span class="line"><span class="comment">//    fileWriter.write(...);</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageQueueLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> MessageQueueClient msgQueueClient;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MessageQueueLogger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel, MessageQueueClient msgQueueClient)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(anem, enabled, minPermittedLevel);</span><br><span class="line">    <span class="keyword">this</span>.msgQueueClient = msgQueueClient;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doLog</span><span class="params">(Level level, String message)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 格式化level和message，输出到消息中间件</span></span><br><span class="line"><span class="comment">//    msgQueueClient.send(...)</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(RpcRequest req)</span> <span class="keyword">throws</span> RpcException</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 接口实现类：鉴权过滤器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AuthenticationFilter</span> <span class="keyword">implements</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(RpcRequest req)</span> <span class="keyword">throws</span> RpcException </span>&#123;</span><br><span class="line">    <span class="comment">// ...鉴权逻辑...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 接口实现类：限流过滤器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RateLimitFilter</span> <span class="keyword">implements</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(RpcRequest req)</span> <span class="keyword">throws</span> RpcException </span>&#123;</span><br><span class="line">    <span class="comment">// ...限流逻辑...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 过滤器使用demo</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">  <span class="comment">//  filters.add(new AuthenticationFilter());</span></span><br><span class="line"><span class="comment">//  filters.add(new RateLimitFilter());</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> List&lt;Filter&gt; filters = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleRpcRequest</span><span class="params">(RpcRequest req)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">for</span> (Filter filter : filters) &#123;</span><br><span class="line">        filter.doFilter(req);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RpcException e) &#123;</span><br><span class="line">      <span class="comment">// ...处理过滤结果...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...省略其他处理逻辑...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>抽象类实际上就是类，只不过是一种特殊的类，这种类不能被实例化为对象，只能被子类继承。我们知道，继承关系是一种is-a的关系，那抽象类既然属于类是，也表示一种is-a的关系。相对于抽象类的is-a关系来说，接口表示一种has-a关系，表示具有某些工呢过。对于接口，有一个更加形象的叫法，那就是协议（contract）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> enabled;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Level minPermittedLevel;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Logger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 构造函数不变</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isLoggable</span><span class="params">(Level level)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> loggable = enabled $$(minPermittedLevel.intValue() &lt;= level.intValue());</span><br><span class="line">    <span class="keyword">return</span> loggable;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 子类：输出日志到文件</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> Writer fileWriter;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">FileLogger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel, String filepath)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 构造函数不变</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String message)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isLoggable(level)) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 格式化level和message，输出到日志文件</span></span><br><span class="line">    fileWriter.write(...)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// subclass：output message to message middleware</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageQueueLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> MessageQueueClient msgQueueClient;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MessageQueueLogger</span><span class="params">(String name, <span class="keyword">boolean</span> enabled, Level minPermittedLevel, MessageQueueClient msgQueueClient)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 构造函数不变</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String message)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isLoggable()) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// formatting level and message, output to message middleware</span></span><br><span class="line">    msgQueueClient.send(...)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...省略部分代码...</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String mesage)</span> </span>&#123; <span class="comment">// do nothing... &#125;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...省略部分代码...</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String mesage)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isLoggable()) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 格式化level和message,输出到日志文件</span></span><br><span class="line">    fileWriter.write(...);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageQueueLogger</span> <span class="keyword">extends</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...省略部分代码...</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(Level level, String mesage)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isLoggable()) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 格式化level和message,输出到消息中间件</span></span><br><span class="line">    msgQueueClient.send(...);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Logger中并没有定义log()方法。可能会想，在Logger父类中，定义一个空的log()方法，让子类重写父类的log()方法，实现自己的记录日志的逻辑，不就可以了吗？这个设计思路能用，但是，它显然没有之前通过抽象类的实现思路优雅。</p>
+<p>抽象类更多的是为了代码复用，而接口就更侧重于解耦。接口是对行为的一种抽象，相当于一组协议或者契约，你可以联想类比一下API接口。调用者只需要关注抽象的接口，不需要了解具体的实现，具体的实现代码对调用者透明。接口实现了约定和实现相分离，可以降低代码间的耦合性，提高代码的可扩展性。</p>
+<p>实际上，借口是一个比抽象类应用更加广泛、更加重要的知识点。比如，我们经常提到的“基于接口而非实现编程”，就是一条几乎天天会用到，并且能极大地提高代码的灵活性、扩展性的设计思想。</p>
+<h3 id="如何模拟抽象类和接口两个语法概念">如何模拟抽象类和接口两个语法概念？</h3>
+<p>在前面举的例子中，我们使用Java的接口语法实现了一个Filter过滤器。不过，如果你熟悉的是C++这种编程语言，你可能会说，C++只有抽象类，并没有接口，那从代码实现的角度来说，是不是就无法实现Filter的设计思路了呢？</p>
+<p>实际上，我们可以通过抽象类来模拟接口。怎么来模拟呢？</p>
+<p>我们先来回忆一下接口的定义：接口中没有成员变量，只有方法声明，没有方法实现，实现接口的类必须实现接口中的所有方法。只要满足这样几点，从设计的角度上来说，我们就可以把它叫做接口。实际上，要满足接口的这些语法特性并不难。在下面这段C++代码中，我们就用抽象类模拟了一个接口（下面这段代码实际上是策略模式中的一段代码）。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Strategy</span> &#123;</span> <span class="comment">// 用抽象类模拟接口</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ~Strategy();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">algorithm</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    Strategy();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>抽象类Strategy没有定义任何属性，并且所有的方法都声明为virtual类型（等同于Java中的abstract关键字），这样，所有的方法都不能有代码实现，并且所有集成这个抽象类的子类，都要实现这些方法。从语法特性上来看，这个抽象类就相当于一个接口。</p>
+<p>不过，如果你熟悉的既不是Java，也不是C++，而是现在比较流行的动态编程语言，比如Python、Ruby等，你可能还会有疑问：在这些动态语言中，不仅没有接口的概念，也没有类似abstract，virtual这样的关键字来定义抽象类，那该如何实现上面讲到的Filter、Logger的设计思路呢？实际上，除了用抽象类来模拟接口之外，我们还可以用普通类来模拟接口。具体的Java代码实现如下所示。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MockInterface</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="title">MockInterface</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">funcA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> MethodUnSuportedException();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们知道类中的方法必须包含实现，这个不符合接口的定义。但是，我们可以让类中的方法报出MethodUnSupportedException异常，来模拟不包含实现的接口，并且能强迫子类在继承父类的时候，都去主动实现父类的方法，否则就会在运行时抛出异常。那又如何避免这个类被实例化呢？实际上很简单，我们只需要将这个类的构造函数声明为protected访问权限就可以了。</p>
+<p>对动态编程语言来说，还有一种对接口支持的策略就是duck-typing，Go也是这样支持接口的。</p>
+<p>如果我们要表示一种is-a的关系，并且是为了解决代码复用的问题，我们就用抽象类；如果我们要表示一种has-a关系，并且是为了解决抽象而非代码服用的问题，我们就可以使用接口。</p>
+<p>从类的继承层次上来看，抽象类是一种自下而上的设计思路，先有子类的代码复用，然后再抽象成上层的父类（也就是抽象类）。而接口正好相反，它是一种自上而下的设计思路。我们在编程的时候，一般都是先设计接口，再去考虑具体的实现。</p>
+<h3 id="小结">小结</h3>
+<ol type="1">
+<li><p>抽象类和接口的语法特性</p>
+<p>抽象类不允许被实例化，只能被继承。它可以包含属性和方法。方法既可以包含代码实现，也可以不包含代码实现。不包含代码实现的方法叫做抽象方法。子类继承抽象类，必须实现抽象类中的所有抽象方法。接口不能包含属性，只能声明方法，方法不能包含代码实现。类实现接口的时候，必须实现接口中声明的所有方法。</p></li>
+<li><p>抽象类和接口存在的意义</p>
+<p>抽象类是对成员变量和方法的抽象，是一种is-a关系，是为了解决代码复用问题。接口仅仅是对方法的抽象，是一种has-a关系，表示具有某一组行为特性，是为了解决解耦问题，隔离接口和具体的实现，提高代码的扩展性。</p></li>
+<li><p>抽象类和接口的应用场景区别</p>
+<p>什么时候该用抽象类？什么时候该用接口？实际上，判断的标准很简单。如果要表示一种is-a的关系，并且是为了解决代码服用问题，我们就用抽象类；如果要表示一种has-a关系，并且是为了解决抽象而代码复用问题，那我们就用接口。</p></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E7%9A%84%E4%B8%89%E5%A4%A7%E4%BB%B6%E2%80%94%E2%80%94%E8%AE%A1%E7%AE%97%E3%80%81%E5%AD%98%E5%82%A8%E3%80%81%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E7%9A%84%E4%B8%89%E5%A4%A7%E4%BB%B6%E2%80%94%E2%80%94%E8%AE%A1%E7%AE%97%E3%80%81%E5%AD%98%E5%82%A8%E3%80%81%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">计算机基础构架的三大件——计算、存储、网络</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-07 09:40:19 / 修改时间：09:41:57" itemprop="dateCreated datePublished" datetime="2020-09-07T09:40:19+08:00">2020-09-07</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E7%9A%84%E4%B8%89%E5%A4%A7%E4%BB%B6%E2%80%94%E2%80%94%E8%AE%A1%E7%AE%97%E3%80%81%E5%AD%98%E5%82%A8%E3%80%81%E7%BD%91%E7%BB%9C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E7%9A%84%E4%B8%89%E5%A4%A7%E4%BB%B6%E2%80%94%E2%80%94%E8%AE%A1%E7%AE%97%E3%80%81%E5%AD%98%E5%82%A8%E3%80%81%E7%BD%91%E7%BB%9C/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>关于计算机的相关系统，至少要掌握三个系统的基础知识，一个是操作系统，一个是网络系统，还有一个是数据库系统。它们分别代表着计算机基础构架的三大件——计算、存储、网络。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/07/%E7%BB%99%E6%9C%AA%E6%9D%A5%E7%9A%84%E8%87%AA%E5%B7%B1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -974,294 +1148,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/" class="post-title-link" itemprop="url">如何管理跨代理服务器的长短连接</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-09-05 11:19:46 / 修改时间：13:58:47" itemprop="dateCreated datePublished" datetime="2020-09-05T11:19:46+08:00">2020-09-05</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>HTTP的请求可以在长连接和短连接上执行。这篇文章介绍长连接和短连接的区别，以及如果客户端和源服务器之间有多个代理服务器，那么这些代理服务器会如何处理长连接。</p>
-<p>在我们谈HTTP的长连接和短连接的差别之前呢，我们先来看一下之前介绍过的HTTP连接的常见的一个流程。</p>
-<h3 id="http连接的常见流程">HTTP连接的常见流程</h3>
-<p>http://www.joes-hardware.com:80/power-tools.html</p>
-<ol type="1">
-<li>浏览器解析出主机名 www.joes-headware.com</li>
-<li>浏览器查询这个主机名的IP地址（DNS）202.43.78.3</li>
-<li>浏览器获得端口号（80）</li>
-<li>浏览器发起到202.43.78.3端口80的连接（TCP）</li>
-<li>浏览器向服务器发送一条HTTP GET报文（服务器必须在这个连接上立刻的返回一个响应，而不能去插播其他的响应）</li>
-<li>浏览器从服务器读取HTTP响应报文</li>
-<li>浏览器关闭连接</li>
-</ol>
-<p>这就是一个完整的请求的过程，也是一个短连接的流程。</p>
-<h3 id="从tcp编程上看http请求处理">从TCP编程上看HTTP请求处理</h3>
-<p>服务器：</p>
-<ol type="1">
-<li>创建新的套接字（socket）</li>
-<li>将套接字绑定到端口80上去（bind）</li>
-<li>允许套接字进行连接（listen）</li>
-<li>等待连接（accept)</li>
-<li>通知应用程序有连接到来</li>
-<li>开始读取请求（read）</li>
-<li>处理HTTP请求报文</li>
-<li>回送HTTP响应（write）</li>
-<li>关闭连接（close）</li>
-</ol>
-<p>客户端：</p>
-<ol type="1">
-<li>获取IP地址和端口号</li>
-<li>创建新的套接字（socket）</li>
-<li>连接到服务器IP：port上去（connect）</li>
-<li>连接成功</li>
-<li>发送HTTP请求（write）</li>
-<li>等待HTTP响应（read）</li>
-<li>处理HTTP响应</li>
-<li>关闭连接（close）</li>
-</ol>
-<img data-src="/2020/09/05/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E8%B7%A8%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%95%BF%E7%9F%AD%E8%BF%9E%E6%8E%A5/%E4%BB%8ETCP%E7%BC%96%E7%A8%8B%E4%B8%8A%E7%9C%8BHTTP%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86.png" class>
-<h3 id="短连接与长连接">短连接与长连接</h3>
-<p>我们先谈一个事务的概念，我们假定一个事务就是一个请求对应着一个响应。那么什么是短连接呢？就是从时间线上来看，每建立一个连接1，处理一个请求，得到一个响应以后，这个连接就关闭，然后处理事务2的时候，又发起请求2和响应2，连接2也接着关闭，那么这就是一个串行的一个短连接。什么叫长连接呢？现在客户端与服务器建立了一个连接，执行完第一个事务以后，我们又来执行第2个事务、第3个事务、第4个事务，一直执行在同一个连接上，那么这就叫做持久的长连接。长连接是由什么来决定的呢？因为并不是所有的浏览器和客户端都支持长连接，特别是现在有一些非常古老的服务器，是不支持长连接的，那么客户端和服务器需要去沟通，那么沟通是通过什么呢？就通过Connection这样一个头部。Connection头部如果添加了Keep-Alive这样的一个值的时候，就表示长连接的一个意思。如果是请求中携带了Connection: Keep-Alive表示客户端说我希望使用长连接，如果服务器端也支持场链接的话，它会回的响应中也添加Connection: Keep-Alive。那么接下来，我们就可以复用这个长连接，去发送请求了。</p>
-<ul>
-<li>Connection头部
-<ul>
-<li>Keep-Alive：长连接
-<ul>
-<li>客户端请求长连接
-<ul>
-<li>Connection：Keep-Alive</li>
-</ul></li>
-<li>服务器表示支持长连接
-<ul>
-<li>Connection：Keep-Alive</li>
-</ul></li>
-<li>客户端复用连接</li>
-<li>HTTP/1.1默认支持长连接
-<ul>
-<li>Connection: Keep-Alive无意义（所以传递它意义并不大）</li>
-</ul></li>
-</ul></li>
-<li>Close：短连接（如果我们明确地表示不支持长连接呢？特别是在HTTP/1.1中呢，我们可以加Connection：Close。就表示这将是一个短连接。</li>
-<li>（那么Connection除了表示长连接和短连接以外呢，它还有一个功能，就是对于Connection后面列出的头部，它表示的含义是对代理服务器有一些要求，就是代理服务器在转发这个请求的时候，请不要去转发我Connection中列出的头部）对代理服务器的要求
-<ul>
-<li>不转发Connection列出头部，该头部仅与当前连接相关（比如说Connection里面列出了一个Cookie，那么代理服务器转发给源服务器的时候就需要把Cookie这个头部给它去除掉）</li>
-</ul></li>
-</ul></li>
-</ul>
-<h3 id="connection仅针对当前连接有效">Connection仅针对当前连接有效</h3>
-<p>Connection如果中间有代理服务器的时候，其实Connection并不是表示对完整的一个链路上都要使用长连接，而它仅表示是对当前的TCP连接，也就是说我们客户端与代理服务器之间这条连接是使用长连接。客户端中Connection: Keep-Alive只是表示与第一个代理服务器之间使用长连接，代理服务器可能和反向代理服务器呢，是不想使用长连接的，比如说这个代理服务器是一个比较老的版本，直接发了一个Connection: Close。表示我与这个代理服务器不想使用长连接，而这个反向代理服务器和我们企业内网的比如说源服务器之间，都支持长连接，那么这个代理服务器发出一个Connection：Keep-Alive，而源服务器跟这个反向代理服务器告诉说Connection：Keep-Alive，那么它们俩之间就是用这个长连接了。而这个反向代理服务器和这个正向代理服务器之间呢，使用的就是短连接，而这个正向代理服务器，因为它不支持长连接，所以它告诉客户端说，虽然你跟我说需要使用Keep-Alive，但是我是不支持的，所以我返回了一个Connection：Close。</p>
-<p>这个场景中，主要是第一个正向代理服务器不支持长连接，但是它有一个优点，虽然我不支持，但是我认得Connection这个头部，我知道客户端说Keep-Alive时表示它想使用长连接，而接下来我不支持长连接，那么我给我的下游会传一个Connection: Close。如果这个代理服务器是一个非常古老的代理服务器，也就是我们Internet规模下确实存在可能非常古老的这样的代理服务器的场景，那么它其实是不认得Connection这个头部的，因为我们只有在HTTP/1.1协议中才引入了这个Connection头部，所以在它不认识的情况下呢，它会把它的Connection：Keep-Alive原封不动的传到上游去。当然它也不可能支持长连接。</p>
-<h3 id="代理服务器对长连接的支持">代理服务器对长连接的支持</h3>
-<ul>
-<li>问题：各方间错误使用了长连接
-<ul>
-<li>客户端发起长连接</li>
-<li>代理服务器陈旧，不能正确的处理请求的Connection头部，将客户端请求中的Connection:Keep-Alive原样转发给上游服务器</li>
-<li>上游服务器正确的处理了Connection头部，在发送响应后没有关闭连接，而试图保持、复用与不认长连接的代理服务器的连接</li>
-<li>代理服务器收到响应中Connection: Keep-Alive后不认，转发给客户端，同时等待服务器关闭短连接</li>
-<li>客户端收到了Connection：Keep-Alive，认为可以复用长连接，继续在该连接上发起请求</li>
-<li>代理服务器出错，因为短连接上不能发起两次请求</li>
-</ul></li>
-<li>Proxy-Connection
-<ul>
-<li>陈旧的代理服务器不识别该头部：退化为短连接</li>
-<li>新版本的代理服务器理解该头部
-<ul>
-<li>与客户端建立长连接</li>
-<li>与服务器使用Connection替代Proxy_connection头部</li>
-</ul></li>
-</ul></li>
-</ul>
-<h3 id="小结">小结</h3>
-<p>这篇文章介绍HTTP中的keep-alive长连接，长连接可以有效的减少TCP的握手次数，也在拥塞控制上能够提升我们的吞吐量，我们也介绍了如果在网络中，存在非常古老的代理服务器，是需要我们通过Proxy-Connection头部，来替换Connection头部，来完成长连接的处理。</p>
-<h3 id="参考">参考</h3>
-<p>陶辉老师Web协议详解与抓包实战https://time.geekbang.org/course/detail/100026801-94635</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/05/HTTP%E7%9A%84%E9%94%99%E8%AF%AF%E5%93%8D%E5%BA%94%E7%A0%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/05/HTTP%E7%9A%84%E9%94%99%E8%AF%AF%E5%93%8D%E5%BA%94%E7%A0%81/" class="post-title-link" itemprop="url">HTTP的错误响应码（For Reference）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-09-05 10:21:25 / 修改时间：11:22:10" itemprop="dateCreated datePublished" datetime="2020-09-05T10:21:25+08:00">2020-09-05</time>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/09/05/HTTP%E7%9A%84%E9%94%99%E8%AF%AF%E5%93%8D%E5%BA%94%E7%A0%81/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/05/HTTP%E7%9A%84%E9%94%99%E8%AF%AF%E5%93%8D%E5%BA%94%E7%A0%81/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>将介绍400、500系列表示错误的响应码，搞清楚这些错误响应码的含义对于我们快速地定位问题非常有帮助。</p>
-<ul>
-<li>4xx：客户端出现错误
-<ul>
-<li>400 Bad Request：服务器认为客户端出现了错误，但不能明确判断为以下哪种错误时使用此错误码。例如HTTP请求格式错误。</li>
-<li>401 Unauthorized：用户认证信息缺失或者不正确，导致服务器无法处理请求。（比如URI如果需要传递user和password的时候，往往会得到401Unauthorized）</li>
-<li>407 Proxy Authentication Required：（对401的补充，401往往是源服务器返回的用户信息验证不通过，如果代理服务器会首先验证用户的认证信息的话，那么代理服务器没有通过就会返回407。比如将常在机场、网吧等场合下，如果我们信息验证没通过，可能就会收到407）对需要经由代理的请求，认证信息未通过代理服务器的验证</li>
-<li>403 Forbidden：服务器理解请求的含义，但没有权限执行此请求（常见于搭建了一个服务器，但是我对于某个目录下的文件访问可能没有权限，这个时候客户端就会收到403 Forbidden）</li>
-<li>404 Not Found：服务器没有找到对应的资源（对应的资源已经丢失的）</li>
-<li>410 Gone：（对404 Not Found的一个补充，404只是说服务器找不到对应的资源，但是不知道过一会是不是就能再次找到）服务器没有找到对应的资源，且明确的知道该位置永久性找不到该资源。（很少使用到，实际情况中比较难以遇到）</li>
-<li>405 Method Not Allowed：服务器不支持请求行中的method方法（比如trace方法在nginx 0.5版本中已经明确的不支持了，现在访问任何一个这样的服务器使用trace方法都会得到405 method not allowed）</li>
-<li>406 Not Acceptable：对客户端指定的资源表述不存在（例如对语言或者编码有要求），服务器返回表述列表共客户端选择。</li>
-<li>408 Request Timeout：服务器接收请求超时（比如说服务器接收一个请求最长只能用一分钟，但是一分钟还没有发完我们的请求，就用可能发声这样的事情）</li>
-<li>409 Conflict：（post或者put上传一个文件，但是目标位置已经存在了版本更新的一个资源，我们这个资源没有办法去覆盖它，这时候就会拿到409 Conflict）资源冲突，例如上传文件时目标位置已经存在版本更新的资源</li>
-<li>411 Length Required：如果请求含有包体且未携带Content-Length头部，且不属于chunk类请求，返回411（非常容易构造，加入包体但是又不加入conten-length，也不加入chunk类的相关的描述）</li>
-<li>412 Precondition Failed：（条件类请求不满足的时候，就会返回412）复用缓存时传递的If-Unmodified-Since或者If-None-Match头部不被满足</li>
-<li>413 PayloadTooLarge/Request Entity Too Large：请求的包体在超出服务器能处理的最大长度（wordpress默认长传的附件可能只有2M，就是wordpress的插件，通常需要去把默认的2M向上去调整，就不再得到413这样的错误了。）</li>
-<li>414 URI Too Long：请求的URI超出服务器能接受的最大长度（如果是比较老的服务器，那么对URI通常限制是4k，像nginx这样的比较新的版本服务器，通常限制可能达到了32k。所以我们去验证也是很容易的，我们发一个巨大的URI，超出了服务器能处理的最大长度，我们就会得到414）</li>
-<li>415 Unsupported Media Type：（上传的请求包体对应的文件类型，就是mime类型，是不被服务器所支持的，比如说我们搭建了一个wordpress的站点，它就通常默认是拒绝exe这样的可执行文件，直接出传递，防止有安全的风险。这个时候客户端就会收到415这样的一个错误码，我们就知道只因为服务器认为这个文件类型暂时不被支持）上传的文件类型不被服务器支持。</li>
-<li>416 Range Not Satisfiable：（对于多线程断点续传下载，指定中一段包体是不支持的，比如我们指定从1G到2G这段，但实际上这个文件可能只有100M）无法提供Range请求中指定的那段包体</li>
-<li>417 Expectation Failed：（比如客户端发送中包括Expect 100，我要上传一个巨大的文件了，我期待你给我一个100，但是如果说服务器不支持的情况下，没有办法满足这个要求，它就会返回417）对于Expect请求头部期待的情况无法满足时的响应码</li>
-<li>421 Misdirected Request：服务器认为这个请求不该发给它，因为它没有能力处理。（很少能在网络中见到）</li>
-<li>426 Upgrade Required：服务器拒绝基于当前HTTP协议（比如说HTTP 1.1，要求客户端必须基于更新的，比如说websocket，或者是HTTP2.0，我才提供服务，这个时候就会返回426）提供服务，通过Upgrade头部告知客户端必须升级协议才能继续处理。</li>
-<li>428 Precondition Required：用户请求中缺失了条件类头部，例如If-Match（跟条件请求相关）</li>
-<li>429 Too Many Request：客户端发送请求的速率过快（很多服务器限流限速的时候，往往不会给客户端发429，虽然RFC规范中429是更明确的告诉客户端这样一件事情，但是往往我们会发送503，在5系列响应码中再详细介绍）</li>
-<li>431 Request Header Fields Too Large：请求的HEADER头部大小超过限制（可以看出这里的规范定义的实在是太细了，因为我们刚刚去限制了URI如果特别大的时候，返回了一个414的这样的响应码，431又对于Header去做了一个限制，实际上很多服务器是不会去做这么严格的错误码的返回的，通常都只会返回这个414 URI Too Long，因为URI和Request Too Long往往在服务器中作为同一段缓存区去存储处理的）</li>
-<li>451 Unavaiable For Legal Reasons：RFC7725，由于法律原因资源不可访问</li>
-</ul></li>
-<li>5xx：服务器端出现错误
-<ul>
-<li>500 Internal Server Error：（这可能是我们最常见的一种错误，就是这个内部错误已经没有办法细分了）服务器内部错误，且不属于一下错误类型</li>
-<li>501 Not Implemented：服务器不支持实现请求所需要的功能（当前请求执行的功能我们现在还没有去实现，需要服务器端去升级或者说添加相应的功能）</li>
-<li>502 Bad Gateway：（非常常见的错误码，在与服务器之间有代理服务器，但是这个代理服务器连接不上源服务器，或者说代理服务器没有办法从我们的源服务器中获取到合法的一个响应，这是502 Bad Gateway）代理服务器无法获取到合法响应</li>
-<li>503 Service Unavailable：服务器资源尚未准备好处理当前请求（实际上会有很多种原因导致503出现，比如服务器端做请求的限速，或者说去对于用户的ip做并发连接的限制，那么当达到上限的时候呢，都有可能去发送503，表示我们服务器的资源还没有准备好处理当前请求）</li>
-<li>504 Gateway Timeout：代理服务器无法及时的从上游获得响应（代理服务器与我们的源服务器之间出现了超时，比如我们现在上传一个巨大的文件，或者下载一个巨大的文件，但是我们的代理服务器，例如nginx，它配置的超时时间是1分钟，那如果1分钟之内源服务器还没有及时的响应它，那么代理服务器就会给客户端发送一个504 Gateway Timeout。所以看到我们应该立即反应出来，是代理服务器上的超时时间设置的可能过小）</li>
-<li>505 HTTP Version Not Supported：请求使用的HTTP协议版本不支持（比如说有一些服务器不支持HTTP 2.0，但是我们构造了一个2.0的请求，就会得到这样的响应。我们去验证它也非常的容易，比如GET / HTTP/2.0。）</li>
-<li>507 Insufficient Storage：服务器没有足够的空间处理请求（通常是指磁盘空间，所以507这个错误码已经把服务器内部的相关的问题暴露给客户端了，所以通常507是不被我们见到的，因为这里会有安全性的问题）</li>
-<li>508 Loop Detected：访问资源时检测到循环（或者说循环已经超过了最大的限制次数了，就会返回508 Loop Detected）</li>
-<li>511 Network Authentication Required：代理服务器发现客户端需要进行身份验证才能获得网络访问权限（也是同样在机场、网吧等这样的场景我们经常会见到）</li>
-</ul></li>
-</ul>
-<h3 id="小结">小结</h3>
-<p>这篇文章介绍了客户端出现错误时的400系列错误响应码，以及服务端出现错误时的500系列错误响应吗，那么与上篇文章中介绍的100、200、300系列响应码中，它们还遵循一个潜在的规则，就是当客户端接收到了，一个它不认识的响应码，不知道如何处理的时候，将按照它们所在系列的第一个，就是00系列那个响应码逻辑进行去处理，比如说我们现在收到了一个555这样的响应码，客户端不认，就会按照500的处理逻辑。如果收到了一个277，那么也会按照200这个错误码的处理逻辑来处理。</p>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1329,7 +1219,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">130</span>
+          <span class="site-state-item-count">132</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
