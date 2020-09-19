@@ -868,20 +868,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Python的方法解析顺序(MRO)</title>
-    <url>/2020/08/30/Python%E7%9A%84%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F-MRO/</url>
-    <content><![CDATA[<h3 id="参考">参考</h3>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly9oYW5qaWFud2VpLmNvbS8yMDEzLzA3LzI1L3B5dGhvbi1tcm8vIzp+OnRleHQ9JUU1JUFGJUI5JUU0JUJBJThFJUU2JTk0JUFGJUU2JThDJTgxJUU3JUJCJUE3JUU2JTg5JUJGJUU3JTlBJTg0JUU3JUJDJTk2JUU3JUE4JThCLFJlc29sdXRpb24lMjBPcmRlciVFRiVCQyU4QyVFNiU4OCU5Nk1STyVFRiVCQyU4OSVFMyU4MCU4Mg==">链接<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-<p>对于支持继承的编程语言来说，其方法（属性）可能定义在当前类，也可能来自于基类，所以在方法调用时就需要对当前类和基类进行搜索以确定方法所在的位置。而搜索的顺序就是所谓的「方法解析顺序」（Method Resolution Order，或MRO）。对于只支持单继承的语言来说，MRO 一般比较简单；而对于 Python 这种支持多继承的语言来说，MRO 就复杂很多。</p>
-<p>先看一个「菱形继承」的例子：</p>
-]]></content>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Splay Tree-II</title>
     <url>/2020/08/13/Splay-Tree-II/</url>
     <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
@@ -901,6 +887,67 @@
 <p>感觉Splay很大程度上是可以基于AVL树进行修改的，其中左旋、右旋、左右旋、右左旋操作是相同的，只是splay有splay操作。具体实现有时间会仔细看看，在下面参考的链接中有。</p>
 <h2 id="参考">参考</h2>
 <p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMi1pbnNlcnQtZGVsZXRlLz9yZWY9bGJw">https://www.geeksforgeeks.org/splay-tree-set-2-insert-delete/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python的方法解析顺序(MRO)</title>
+    <url>/2020/08/30/Python%E7%9A%84%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F-MRO/</url>
+    <content><![CDATA[<h3 id="参考">参考</h3>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oYW5qaWFud2VpLmNvbS8yMDEzLzA3LzI1L3B5dGhvbi1tcm8vIzp+OnRleHQ9JUU1JUFGJUI5JUU0JUJBJThFJUU2JTk0JUFGJUU2JThDJTgxJUU3JUJCJUE3JUU2JTg5JUJGJUU3JTlBJTg0JUU3JUJDJTk2JUU3JUE4JThCLFJlc29sdXRpb24lMjBPcmRlciVFRiVCQyU4QyVFNiU4OCU5Nk1STyVFRiVCQyU4OSVFMyU4MCU4Mg==">链接<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+<p>对于支持继承的编程语言来说，其方法（属性）可能定义在当前类，也可能来自于基类，所以在方法调用时就需要对当前类和基类进行搜索以确定方法所在的位置。而搜索的顺序就是所谓的「方法解析顺序」（Method Resolution Order，或MRO）。对于只支持单继承的语言来说，MRO 一般比较简单；而对于 Python 这种支持多继承的语言来说，MRO 就复杂很多。</p>
+<p>先看一个「菱形继承」的例子：</p>
+]]></content>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Splay Tree</title>
+    <url>/2020/08/08/Splay-Tree/</url>
+    <content><![CDATA[<p>二叉搜索树最坏的时间复杂度比如查找、删除、插入是O(n)的。最坏的情况发生在这棵树已经倾斜了。我们可以使最坏情况的时间复杂度也为O(logn)使用AVL和红黑树。</p>
+<h2 id="我们可以比avl和红黑树在实践中做得更好吗">我们可以比AVL和红黑树在实践中做得更好吗？</h2>
+<p>像AVL和红黑树一样，splay tree也是自平衡二叉搜索树。splay tree的主要思想是将最近访问的项目放到树的根节点，这使得最近搜索过的项目可以在O(1)的时间复杂度内被搜索到，如果它再次被搜索。思想是使用访问的局部性（在一个典型的应用中，80%的访问是访问其中20%的项目）。想象一个场景，我们有数百万或数十亿的键但是只有它们中很少一部分会被经常访问，这在实际应用中非常有可能发生。</p>
+<p>所有的splay tree操作都平均是O(logn)时间复杂度的，n是树中节点的数量。任何一个操作在最坏的情况下可能使用Theta(n)的时间。</p>
+<h2 id="查找操作">查找操作</h2>
+<p>splay tree的查找操作使用标准的BST查找，在查找同时，它同时还伸展（splay）（将一个节点移到根）。如果查找是成功的，那么找到的那个节点就被伸展并成为新根节点。否则，在到达NULL之前最后被访问的节点被伸展并成为新的根节点。</p>
+<p>被访问的节点有以下几种情况。</p>
+<ol type="1">
+<li><p><strong>节点是根节点。</strong>我们简单地返回根节点，不会做任何事，因为访问的节点已经是根节点。</p></li>
+<li><p>Zig：<strong>节点是root的子节点</strong>（该节点没有祖父母）。节点要么是根的左子节点（我们做右旋），要么是根的右子节点（我们做左旋）。</p>
+<p>T1，T2和T3是树的子树，其根为y（在左侧）或x（在右侧）。</p></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">    y                                     x</span><br><span class="line">   &#x2F; \     Zig (Right Rotation)          &#x2F;  \</span><br><span class="line">  x   T3   – - – - – - – - - -&gt;         T1   y </span><br><span class="line"> &#x2F; \       &lt; - - - - - - - - -              &#x2F; \</span><br><span class="line">T1  T2     Zag (Left Rotation)            T2   T3</span><br></pre></td></tr></table></figure>
+<ol start="3" type="1">
+<li><p><strong>节点既有父节点，也有祖父节点</strong>。可以有以下几种情况。</p>
+<p>3.a. <strong>Zig-Zig和Zag-Zag</strong> 节点是父节点的左儿子而且父节点同样也是祖父节点的左儿子（两次右旋），或者，节点是父节点的右儿子而且父节点也是祖父节点的右儿子（两次左旋）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Zig-Zig (Left Left Case):</span><br><span class="line">       G                        P                           X       </span><br><span class="line">      &#x2F; \                     &#x2F;   \                        &#x2F; \      </span><br><span class="line">     P  T4   rightRotate(G)  X     G     rightRotate(P)  T1   P     </span><br><span class="line">    &#x2F; \      &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;  &#x2F; \   &#x2F; \    &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;       &#x2F; \    </span><br><span class="line">   X  T3                   T1 T2 T3 T4                      T2  G</span><br><span class="line">  &#x2F; \                                                          &#x2F; \ </span><br><span class="line"> T1 T2                                                        T3  T4 </span><br><span class="line"></span><br><span class="line">Zag-Zag (Right Right Case):</span><br><span class="line">  G                          P                           X       </span><br><span class="line"> &#x2F;  \                      &#x2F;   \                        &#x2F; \      </span><br><span class="line">T1   P     leftRotate(G)  G     X     leftRotate(P)    P   T4</span><br><span class="line">    &#x2F; \    &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt; &#x2F; \   &#x2F; \    &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;   &#x2F; \   </span><br><span class="line">   T2   X               T1 T2 T3 T4                  G   T3</span><br><span class="line">       &#x2F; \                                          &#x2F; \ </span><br><span class="line">      T3 T4                                        T1  T2</span><br></pre></td></tr></table></figure>
+<p>3.b. <strong>Zig-Zag and Zag-Zig</strong> 节点是父节点的左儿子，父节点是祖父节点的右儿子（左旋，接着右旋），或者，节点父节点的右儿子，父节点是祖父节点的左儿子（右旋，接着左旋）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Zag-Zig (Left Right Case):</span><br><span class="line">       G                        G                            X       </span><br><span class="line">      &#x2F; \                     &#x2F;   \                        &#x2F;   \      </span><br><span class="line">     P   T4  leftRotate(P)   X     T4    rightRotate(G)   P     G     </span><br><span class="line">   &#x2F;  \      &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;  &#x2F; \          &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;   &#x2F; \   &#x2F;  \    </span><br><span class="line">  T1   X                   P  T3                       T1  T2 T3  T4 </span><br><span class="line">      &#x2F; \                 &#x2F; \                                       </span><br><span class="line">    T2  T3              T1   T2                                     </span><br><span class="line"></span><br><span class="line">Zig-Zag (Right Left Case):</span><br><span class="line">  G                          G                           X       </span><br><span class="line"> &#x2F;  \                      &#x2F;  \                        &#x2F;   \      </span><br><span class="line">T1   P    rightRotate(P)  T1   X     leftRotate(P)    G     P</span><br><span class="line">    &#x2F; \   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;      &#x2F; \    &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;   &#x2F; \   &#x2F; \   </span><br><span class="line">   X  T4                    T2   P                 T1  T2 T3  T4</span><br><span class="line">  &#x2F; \                           &#x2F; \                </span><br><span class="line"> T2  T3                        T3  T4  </span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="例子">例子</h2>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">         100                      100                       [20]</span><br><span class="line">         &#x2F;  \                    &#x2F;   \                        \ </span><br><span class="line">       50   200                50    200                      50</span><br><span class="line">      &#x2F;          search(20)    &#x2F;          search(20)         &#x2F;  \  </span><br><span class="line">     40          &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;     [20]         &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;         30   100</span><br><span class="line">    &#x2F;            1. Zig-Zig    \          2. Zig-Zig         \     \</span><br><span class="line">   30               at 40       30            at 100         40    200  </span><br><span class="line">  &#x2F;                               \     </span><br><span class="line">[20]                              40</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，搜索或splay操作不仅将被搜索的键带到了根节点，还平衡了BST。例如在上面的案例中，BST的高度减少了1。</p>
+<h2 id="实现">实现</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt; </span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// An AVL tree node </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">node</span> </span></span><br><span class="line"><span class="class">&#123;</span> </span><br><span class="line">    <span class="keyword">public</span>: </span><br><span class="line"> <span class="keyword">int</span> key; </span><br><span class="line">    node *left, *right; </span><br><span class="line">&#125;; </span><br><span class="line"></span><br><span class="line"><span class="comment">/* Helper function that allocates </span></span><br><span class="line"><span class="comment">a new node with the given key and </span></span><br><span class="line"><span class="comment">  NULL left and right pointers. */</span></span><br><span class="line"><span class="function">node* <span class="title">newNode</span><span class="params">(<span class="keyword">int</span> key)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line"> node* Node = <span class="keyword">new</span> node(); </span><br><span class="line">    Node-&gt;key = key; </span><br><span class="line">  Node-&gt;left = Node-&gt;right = <span class="literal">NULL</span>; </span><br><span class="line">  <span class="keyword">return</span> (Node); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// A utility function to right </span></span><br><span class="line"><span class="comment">// rotate subtree rooted with y </span></span><br><span class="line"><span class="comment">// See the diagram given above. </span></span><br><span class="line"><span class="function">node *<span class="title">rightRotate</span><span class="params">(node *x)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">  node *y = x-&gt;left; </span><br><span class="line">    x-&gt;left = y-&gt;right; </span><br><span class="line">    y-&gt;right = x; </span><br><span class="line"> <span class="keyword">return</span> y; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// A utility function to left </span></span><br><span class="line"><span class="comment">// rotate subtree rooted with x </span></span><br><span class="line"><span class="comment">// See the diagram given above. </span></span><br><span class="line"><span class="function">node *<span class="title">leftRotate</span><span class="params">(node *x)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line"> node *y = x-&gt;right; </span><br><span class="line">   x-&gt;right = y-&gt;left; </span><br><span class="line">    y-&gt;left = x; </span><br><span class="line">  <span class="keyword">return</span> y; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// This function brings the key at </span></span><br><span class="line"><span class="comment">// root if key is present in tree. </span></span><br><span class="line"><span class="comment">// If key is not present, then it </span></span><br><span class="line"><span class="comment">// brings the last accessed item at </span></span><br><span class="line"><span class="comment">// root. This function modifies the </span></span><br><span class="line"><span class="comment">// tree and returns the new root </span></span><br><span class="line"><span class="function">node *<span class="title">splay</span><span class="params">(node *root, <span class="keyword">int</span> key)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line"> <span class="comment">// Base cases: root is NULL or </span></span><br><span class="line">  <span class="comment">// key is present at root </span></span><br><span class="line">   <span class="keyword">if</span> (root == <span class="literal">NULL</span> || root-&gt;key == key) </span><br><span class="line">       <span class="keyword">return</span> root; </span><br><span class="line"></span><br><span class="line">  <span class="comment">// Key lies in left subtree </span></span><br><span class="line"> <span class="keyword">if</span> (root-&gt;key &gt; key) </span><br><span class="line">  &#123; </span><br><span class="line">       <span class="comment">// Key is not in tree, we are done </span></span><br><span class="line">      <span class="keyword">if</span> (root-&gt;left == <span class="literal">NULL</span>) <span class="keyword">return</span> root; </span><br><span class="line"></span><br><span class="line">     <span class="comment">// Zig-Zig (Left Left) </span></span><br><span class="line">      <span class="keyword">if</span> (root-&gt;left-&gt;key &gt; key) </span><br><span class="line">     &#123; </span><br><span class="line">           <span class="comment">// First recursively bring the </span></span><br><span class="line">          <span class="comment">// key as root of left-left </span></span><br><span class="line">         root-&gt;left-&gt;left = splay(root-&gt;left-&gt;left, key); </span><br><span class="line"></span><br><span class="line">           <span class="comment">// Do first rotation for root, </span></span><br><span class="line">          <span class="comment">// second rotation is done after else </span></span><br><span class="line">           root = rightRotate(root); </span><br><span class="line">        &#125; </span><br><span class="line">       <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;left-&gt;key &lt; key) <span class="comment">// Zig-Zag (Left Right) </span></span><br><span class="line">      &#123; </span><br><span class="line">           <span class="comment">// First recursively bring </span></span><br><span class="line">          <span class="comment">// the key as root of left-right </span></span><br><span class="line">            root-&gt;left-&gt;right = splay(root-&gt;left-&gt;right, key); </span><br><span class="line"></span><br><span class="line">         <span class="comment">// Do first rotation for root-&gt;left </span></span><br><span class="line">          <span class="keyword">if</span> (root-&gt;left-&gt;right != <span class="literal">NULL</span>) </span><br><span class="line">               root-&gt;left = leftRotate(root-&gt;left); </span><br><span class="line">       &#125; </span><br><span class="line"></span><br><span class="line">     <span class="comment">// Do second rotation for root </span></span><br><span class="line">      <span class="keyword">return</span> (root-&gt;left == <span class="literal">NULL</span>)? root: rightRotate(root); </span><br><span class="line">   &#125; </span><br><span class="line">   <span class="keyword">else</span> <span class="comment">// Key lies in right subtree </span></span><br><span class="line">  &#123; </span><br><span class="line">       <span class="comment">// Key is not in tree, we are done </span></span><br><span class="line">      <span class="keyword">if</span> (root-&gt;right == <span class="literal">NULL</span>) <span class="keyword">return</span> root; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Zag-Zig (Right Left) </span></span><br><span class="line">     <span class="keyword">if</span> (root-&gt;right-&gt;key &gt; key) </span><br><span class="line">        &#123; </span><br><span class="line">           <span class="comment">// Bring the key as root of right-left </span></span><br><span class="line">          root-&gt;right-&gt;left = splay(root-&gt;right-&gt;left, key); </span><br><span class="line"></span><br><span class="line">         <span class="comment">// Do first rotation for root-&gt;right </span></span><br><span class="line">         <span class="keyword">if</span> (root-&gt;right-&gt;left != <span class="literal">NULL</span>) </span><br><span class="line">               root-&gt;right = rightRotate(root-&gt;right); </span><br><span class="line">        &#125; </span><br><span class="line">       <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;right-&gt;key &lt; key)<span class="comment">// Zag-Zag (Right Right) </span></span><br><span class="line">     &#123; </span><br><span class="line">           <span class="comment">// Bring the key as root of </span></span><br><span class="line">         <span class="comment">// right-right and do first rotation </span></span><br><span class="line">            root-&gt;right-&gt;right = splay(root-&gt;right-&gt;right, key); </span><br><span class="line">         root = leftRotate(root); </span><br><span class="line">     &#125; </span><br><span class="line"></span><br><span class="line">     <span class="comment">// Do second rotation for root </span></span><br><span class="line">      <span class="keyword">return</span> (root-&gt;right == <span class="literal">NULL</span>)? root: leftRotate(root); </span><br><span class="line">   &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// The search function for Splay tree. </span></span><br><span class="line"><span class="comment">// Note that this function returns the </span></span><br><span class="line"><span class="comment">// new root of Splay Tree. If key is </span></span><br><span class="line"><span class="comment">// present in tree then, it is moved to root. </span></span><br><span class="line"><span class="function">node *<span class="title">search</span><span class="params">(node *root, <span class="keyword">int</span> key)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">  <span class="keyword">return</span> splay(root, key); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// A utility function to print </span></span><br><span class="line"><span class="comment">// preorder traversal of the tree. </span></span><br><span class="line"><span class="comment">// The function also prints height of every node </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">preOrder</span><span class="params">(node *root)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    <span class="keyword">if</span> (root != <span class="literal">NULL</span>) </span><br><span class="line">  &#123; </span><br><span class="line">       <span class="built_in">cout</span>&lt;&lt;root-&gt;key&lt;&lt;<span class="string">&quot; &quot;</span>; </span><br><span class="line">     preOrder(root-&gt;left); </span><br><span class="line">     preOrder(root-&gt;right); </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">/* Driver code*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">   node *root = newNode(<span class="number">100</span>); </span><br><span class="line">   root-&gt;left = newNode(<span class="number">50</span>); </span><br><span class="line"> root-&gt;right = newNode(<span class="number">200</span>); </span><br><span class="line">   root-&gt;left-&gt;left = newNode(<span class="number">40</span>); </span><br><span class="line">    root-&gt;left-&gt;left-&gt;left = newNode(<span class="number">30</span>); </span><br><span class="line">   root-&gt;left-&gt;left-&gt;left-&gt;left = newNode(<span class="number">20</span>); </span><br><span class="line"></span><br><span class="line">    root = search(root, <span class="number">20</span>); </span><br><span class="line"> <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Preorder traversal of the modified Splay tree is \n&quot;</span>; </span><br><span class="line"> preOrder(root); </span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// This code is contributed by rathbhupendra </span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="输出">输出</h3>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Preorder traversal of the modified Splay tree is</span><br><span class="line">20 50 30 40 100 200</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2>
+<ol type="1">
+<li>splay tree有优异的局部性特质。经常访问的元素很容易被找到。不长访问的元素都不在查找的路上。</li>
+<li>所有的splay操作都平均使用O(logn)的时间复杂度。splay tree可以严格的证明，在任何操作的序列上，每次操作的平均时间为O(logn)（假设我们从一颗空树开始）。</li>
+<li>splay tree与AVL树和红黑树相比更简单，因为每个树节点都不需要额外的空间。</li>
+<li>与AVL树不同，splay树即使进行搜索操作等只读操作也可能改变。</li>
+</ol>
+<h2 id="splay-tree-的应用场景">splay tree 的应用场景</h2>
+<p>splay tree已经成为了过去30年中发明的应用最广泛的基本数据结构，因为它是许多应用中最快的平衡搜索树类型。splay tree被用于Windows NT（在虚拟内存、网络和文件系统代码中）、gcc编译器和GNU C++库、sed字符串编辑器、Fore Systems网络路由器、Unix malloc最流行的实现、Linux可加载的内核模块和许多其他软件中（来源：http://www.cs.berkeley.edu/~jrs/61b/lec/36）。</p>
+<h2 id="参考">参考</h2>
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMS1pbnNlcnQvP3JlZj1sYnA=">https://www.geeksforgeeks.org/splay-tree-set-1-insert/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="下一节我们讲splay的插入操作">下一节我们讲splay的插入操作</h2>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -996,53 +1043,6 @@
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Splay Tree</title>
-    <url>/2020/08/08/Splay-Tree/</url>
-    <content><![CDATA[<p>二叉搜索树最坏的时间复杂度比如查找、删除、插入是O(n)的。最坏的情况发生在这棵树已经倾斜了。我们可以使最坏情况的时间复杂度也为O(logn)使用AVL和红黑树。</p>
-<h2 id="我们可以比avl和红黑树在实践中做得更好吗">我们可以比AVL和红黑树在实践中做得更好吗？</h2>
-<p>像AVL和红黑树一样，splay tree也是自平衡二叉搜索树。splay tree的主要思想是将最近访问的项目放到树的根节点，这使得最近搜索过的项目可以在O(1)的时间复杂度内被搜索到，如果它再次被搜索。思想是使用访问的局部性（在一个典型的应用中，80%的访问是访问其中20%的项目）。想象一个场景，我们有数百万或数十亿的键但是只有它们中很少一部分会被经常访问，这在实际应用中非常有可能发生。</p>
-<p>所有的splay tree操作都平均是O(logn)时间复杂度的，n是树中节点的数量。任何一个操作在最坏的情况下可能使用Theta(n)的时间。</p>
-<h2 id="查找操作">查找操作</h2>
-<p>splay tree的查找操作使用标准的BST查找，在查找同时，它同时还伸展（splay）（将一个节点移到根）。如果查找是成功的，那么找到的那个节点就被伸展并成为新根节点。否则，在到达NULL之前最后被访问的节点被伸展并成为新的根节点。</p>
-<p>被访问的节点有以下几种情况。</p>
-<ol type="1">
-<li><p><strong>节点是根节点。</strong>我们简单地返回根节点，不会做任何事，因为访问的节点已经是根节点。</p></li>
-<li><p>Zig：<strong>节点是root的子节点</strong>（该节点没有祖父母）。节点要么是根的左子节点（我们做右旋），要么是根的右子节点（我们做左旋）。</p>
-<p>T1，T2和T3是树的子树，其根为y（在左侧）或x（在右侧）。</p></li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">    y                                     x</span><br><span class="line">   &#x2F; \     Zig (Right Rotation)          &#x2F;  \</span><br><span class="line">  x   T3   – - – - – - – - - -&gt;         T1   y </span><br><span class="line"> &#x2F; \       &lt; - - - - - - - - -              &#x2F; \</span><br><span class="line">T1  T2     Zag (Left Rotation)            T2   T3</span><br></pre></td></tr></table></figure>
-<ol start="3" type="1">
-<li><p><strong>节点既有父节点，也有祖父节点</strong>。可以有以下几种情况。</p>
-<p>3.a. <strong>Zig-Zig和Zag-Zag</strong> 节点是父节点的左儿子而且父节点同样也是祖父节点的左儿子（两次右旋），或者，节点是父节点的右儿子而且父节点也是祖父节点的右儿子（两次左旋）。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Zig-Zig (Left Left Case):</span><br><span class="line">       G                        P                           X       </span><br><span class="line">      &#x2F; \                     &#x2F;   \                        &#x2F; \      </span><br><span class="line">     P  T4   rightRotate(G)  X     G     rightRotate(P)  T1   P     </span><br><span class="line">    &#x2F; \      &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;  &#x2F; \   &#x2F; \    &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;       &#x2F; \    </span><br><span class="line">   X  T3                   T1 T2 T3 T4                      T2  G</span><br><span class="line">  &#x2F; \                                                          &#x2F; \ </span><br><span class="line"> T1 T2                                                        T3  T4 </span><br><span class="line"></span><br><span class="line">Zag-Zag (Right Right Case):</span><br><span class="line">  G                          P                           X       </span><br><span class="line"> &#x2F;  \                      &#x2F;   \                        &#x2F; \      </span><br><span class="line">T1   P     leftRotate(G)  G     X     leftRotate(P)    P   T4</span><br><span class="line">    &#x2F; \    &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt; &#x2F; \   &#x2F; \    &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;   &#x2F; \   </span><br><span class="line">   T2   X               T1 T2 T3 T4                  G   T3</span><br><span class="line">       &#x2F; \                                          &#x2F; \ </span><br><span class="line">      T3 T4                                        T1  T2</span><br></pre></td></tr></table></figure>
-<p>3.b. <strong>Zig-Zag and Zag-Zig</strong> 节点是父节点的左儿子，父节点是祖父节点的右儿子（左旋，接着右旋），或者，节点父节点的右儿子，父节点是祖父节点的左儿子（右旋，接着左旋）。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Zag-Zig (Left Right Case):</span><br><span class="line">       G                        G                            X       </span><br><span class="line">      &#x2F; \                     &#x2F;   \                        &#x2F;   \      </span><br><span class="line">     P   T4  leftRotate(P)   X     T4    rightRotate(G)   P     G     </span><br><span class="line">   &#x2F;  \      &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;  &#x2F; \          &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;   &#x2F; \   &#x2F;  \    </span><br><span class="line">  T1   X                   P  T3                       T1  T2 T3  T4 </span><br><span class="line">      &#x2F; \                 &#x2F; \                                       </span><br><span class="line">    T2  T3              T1   T2                                     </span><br><span class="line"></span><br><span class="line">Zig-Zag (Right Left Case):</span><br><span class="line">  G                          G                           X       </span><br><span class="line"> &#x2F;  \                      &#x2F;  \                        &#x2F;   \      </span><br><span class="line">T1   P    rightRotate(P)  T1   X     leftRotate(P)    G     P</span><br><span class="line">    &#x2F; \   &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;      &#x2F; \    &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;   &#x2F; \   &#x2F; \   </span><br><span class="line">   X  T4                    T2   P                 T1  T2 T3  T4</span><br><span class="line">  &#x2F; \                           &#x2F; \                </span><br><span class="line"> T2  T3                        T3  T4  </span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="例子">例子</h2>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">         100                      100                       [20]</span><br><span class="line">         &#x2F;  \                    &#x2F;   \                        \ </span><br><span class="line">       50   200                50    200                      50</span><br><span class="line">      &#x2F;          search(20)    &#x2F;          search(20)         &#x2F;  \  </span><br><span class="line">     40          &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;     [20]         &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;         30   100</span><br><span class="line">    &#x2F;            1. Zig-Zig    \          2. Zig-Zig         \     \</span><br><span class="line">   30               at 40       30            at 100         40    200  </span><br><span class="line">  &#x2F;                               \     </span><br><span class="line">[20]                              40</span><br></pre></td></tr></table></figure>
-<p>需要注意的是，搜索或splay操作不仅将被搜索的键带到了根节点，还平衡了BST。例如在上面的案例中，BST的高度减少了1。</p>
-<h2 id="实现">实现</h2>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt; </span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// An AVL tree node </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">node</span> </span></span><br><span class="line"><span class="class">&#123;</span> </span><br><span class="line">    <span class="keyword">public</span>: </span><br><span class="line"> <span class="keyword">int</span> key; </span><br><span class="line">    node *left, *right; </span><br><span class="line">&#125;; </span><br><span class="line"></span><br><span class="line"><span class="comment">/* Helper function that allocates </span></span><br><span class="line"><span class="comment">a new node with the given key and </span></span><br><span class="line"><span class="comment">  NULL left and right pointers. */</span></span><br><span class="line"><span class="function">node* <span class="title">newNode</span><span class="params">(<span class="keyword">int</span> key)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line"> node* Node = <span class="keyword">new</span> node(); </span><br><span class="line">    Node-&gt;key = key; </span><br><span class="line">  Node-&gt;left = Node-&gt;right = <span class="literal">NULL</span>; </span><br><span class="line">  <span class="keyword">return</span> (Node); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// A utility function to right </span></span><br><span class="line"><span class="comment">// rotate subtree rooted with y </span></span><br><span class="line"><span class="comment">// See the diagram given above. </span></span><br><span class="line"><span class="function">node *<span class="title">rightRotate</span><span class="params">(node *x)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">  node *y = x-&gt;left; </span><br><span class="line">    x-&gt;left = y-&gt;right; </span><br><span class="line">    y-&gt;right = x; </span><br><span class="line"> <span class="keyword">return</span> y; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// A utility function to left </span></span><br><span class="line"><span class="comment">// rotate subtree rooted with x </span></span><br><span class="line"><span class="comment">// See the diagram given above. </span></span><br><span class="line"><span class="function">node *<span class="title">leftRotate</span><span class="params">(node *x)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line"> node *y = x-&gt;right; </span><br><span class="line">   x-&gt;right = y-&gt;left; </span><br><span class="line">    y-&gt;left = x; </span><br><span class="line">  <span class="keyword">return</span> y; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// This function brings the key at </span></span><br><span class="line"><span class="comment">// root if key is present in tree. </span></span><br><span class="line"><span class="comment">// If key is not present, then it </span></span><br><span class="line"><span class="comment">// brings the last accessed item at </span></span><br><span class="line"><span class="comment">// root. This function modifies the </span></span><br><span class="line"><span class="comment">// tree and returns the new root </span></span><br><span class="line"><span class="function">node *<span class="title">splay</span><span class="params">(node *root, <span class="keyword">int</span> key)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line"> <span class="comment">// Base cases: root is NULL or </span></span><br><span class="line">  <span class="comment">// key is present at root </span></span><br><span class="line">   <span class="keyword">if</span> (root == <span class="literal">NULL</span> || root-&gt;key == key) </span><br><span class="line">       <span class="keyword">return</span> root; </span><br><span class="line"></span><br><span class="line">  <span class="comment">// Key lies in left subtree </span></span><br><span class="line"> <span class="keyword">if</span> (root-&gt;key &gt; key) </span><br><span class="line">  &#123; </span><br><span class="line">       <span class="comment">// Key is not in tree, we are done </span></span><br><span class="line">      <span class="keyword">if</span> (root-&gt;left == <span class="literal">NULL</span>) <span class="keyword">return</span> root; </span><br><span class="line"></span><br><span class="line">     <span class="comment">// Zig-Zig (Left Left) </span></span><br><span class="line">      <span class="keyword">if</span> (root-&gt;left-&gt;key &gt; key) </span><br><span class="line">     &#123; </span><br><span class="line">           <span class="comment">// First recursively bring the </span></span><br><span class="line">          <span class="comment">// key as root of left-left </span></span><br><span class="line">         root-&gt;left-&gt;left = splay(root-&gt;left-&gt;left, key); </span><br><span class="line"></span><br><span class="line">           <span class="comment">// Do first rotation for root, </span></span><br><span class="line">          <span class="comment">// second rotation is done after else </span></span><br><span class="line">           root = rightRotate(root); </span><br><span class="line">        &#125; </span><br><span class="line">       <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;left-&gt;key &lt; key) <span class="comment">// Zig-Zag (Left Right) </span></span><br><span class="line">      &#123; </span><br><span class="line">           <span class="comment">// First recursively bring </span></span><br><span class="line">          <span class="comment">// the key as root of left-right </span></span><br><span class="line">            root-&gt;left-&gt;right = splay(root-&gt;left-&gt;right, key); </span><br><span class="line"></span><br><span class="line">         <span class="comment">// Do first rotation for root-&gt;left </span></span><br><span class="line">          <span class="keyword">if</span> (root-&gt;left-&gt;right != <span class="literal">NULL</span>) </span><br><span class="line">               root-&gt;left = leftRotate(root-&gt;left); </span><br><span class="line">       &#125; </span><br><span class="line"></span><br><span class="line">     <span class="comment">// Do second rotation for root </span></span><br><span class="line">      <span class="keyword">return</span> (root-&gt;left == <span class="literal">NULL</span>)? root: rightRotate(root); </span><br><span class="line">   &#125; </span><br><span class="line">   <span class="keyword">else</span> <span class="comment">// Key lies in right subtree </span></span><br><span class="line">  &#123; </span><br><span class="line">       <span class="comment">// Key is not in tree, we are done </span></span><br><span class="line">      <span class="keyword">if</span> (root-&gt;right == <span class="literal">NULL</span>) <span class="keyword">return</span> root; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Zag-Zig (Right Left) </span></span><br><span class="line">     <span class="keyword">if</span> (root-&gt;right-&gt;key &gt; key) </span><br><span class="line">        &#123; </span><br><span class="line">           <span class="comment">// Bring the key as root of right-left </span></span><br><span class="line">          root-&gt;right-&gt;left = splay(root-&gt;right-&gt;left, key); </span><br><span class="line"></span><br><span class="line">         <span class="comment">// Do first rotation for root-&gt;right </span></span><br><span class="line">         <span class="keyword">if</span> (root-&gt;right-&gt;left != <span class="literal">NULL</span>) </span><br><span class="line">               root-&gt;right = rightRotate(root-&gt;right); </span><br><span class="line">        &#125; </span><br><span class="line">       <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;right-&gt;key &lt; key)<span class="comment">// Zag-Zag (Right Right) </span></span><br><span class="line">     &#123; </span><br><span class="line">           <span class="comment">// Bring the key as root of </span></span><br><span class="line">         <span class="comment">// right-right and do first rotation </span></span><br><span class="line">            root-&gt;right-&gt;right = splay(root-&gt;right-&gt;right, key); </span><br><span class="line">         root = leftRotate(root); </span><br><span class="line">     &#125; </span><br><span class="line"></span><br><span class="line">     <span class="comment">// Do second rotation for root </span></span><br><span class="line">      <span class="keyword">return</span> (root-&gt;right == <span class="literal">NULL</span>)? root: leftRotate(root); </span><br><span class="line">   &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// The search function for Splay tree. </span></span><br><span class="line"><span class="comment">// Note that this function returns the </span></span><br><span class="line"><span class="comment">// new root of Splay Tree. If key is </span></span><br><span class="line"><span class="comment">// present in tree then, it is moved to root. </span></span><br><span class="line"><span class="function">node *<span class="title">search</span><span class="params">(node *root, <span class="keyword">int</span> key)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">  <span class="keyword">return</span> splay(root, key); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// A utility function to print </span></span><br><span class="line"><span class="comment">// preorder traversal of the tree. </span></span><br><span class="line"><span class="comment">// The function also prints height of every node </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">preOrder</span><span class="params">(node *root)</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    <span class="keyword">if</span> (root != <span class="literal">NULL</span>) </span><br><span class="line">  &#123; </span><br><span class="line">       <span class="built_in">cout</span>&lt;&lt;root-&gt;key&lt;&lt;<span class="string">&quot; &quot;</span>; </span><br><span class="line">     preOrder(root-&gt;left); </span><br><span class="line">     preOrder(root-&gt;right); </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">/* Driver code*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">   node *root = newNode(<span class="number">100</span>); </span><br><span class="line">   root-&gt;left = newNode(<span class="number">50</span>); </span><br><span class="line"> root-&gt;right = newNode(<span class="number">200</span>); </span><br><span class="line">   root-&gt;left-&gt;left = newNode(<span class="number">40</span>); </span><br><span class="line">    root-&gt;left-&gt;left-&gt;left = newNode(<span class="number">30</span>); </span><br><span class="line">   root-&gt;left-&gt;left-&gt;left-&gt;left = newNode(<span class="number">20</span>); </span><br><span class="line"></span><br><span class="line">    root = search(root, <span class="number">20</span>); </span><br><span class="line"> <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Preorder traversal of the modified Splay tree is \n&quot;</span>; </span><br><span class="line"> preOrder(root); </span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// This code is contributed by rathbhupendra </span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="输出">输出</h3>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Preorder traversal of the modified Splay tree is</span><br><span class="line">20 50 30 40 100 200</span><br></pre></td></tr></table></figure>
-<h2 id="总结">总结</h2>
-<ol type="1">
-<li>splay tree有优异的局部性特质。经常访问的元素很容易被找到。不长访问的元素都不在查找的路上。</li>
-<li>所有的splay操作都平均使用O(logn)的时间复杂度。splay tree可以严格的证明，在任何操作的序列上，每次操作的平均时间为O(logn)（假设我们从一颗空树开始）。</li>
-<li>splay tree与AVL树和红黑树相比更简单，因为每个树节点都不需要额外的空间。</li>
-<li>与AVL树不同，splay树即使进行搜索操作等只读操作也可能改变。</li>
-</ol>
-<h2 id="splay-tree-的应用场景">splay tree 的应用场景</h2>
-<p>splay tree已经成为了过去30年中发明的应用最广泛的基本数据结构，因为它是许多应用中最快的平衡搜索树类型。splay tree被用于Windows NT（在虚拟内存、网络和文件系统代码中）、gcc编译器和GNU C++库、sed字符串编辑器、Fore Systems网络路由器、Unix malloc最流行的实现、Linux可加载的内核模块和许多其他软件中（来源：http://www.cs.berkeley.edu/~jrs/61b/lec/36）。</p>
-<h2 id="参考">参考</h2>
-<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMS1pbnNlcnQvP3JlZj1sYnA=">https://www.geeksforgeeks.org/splay-tree-set-1-insert/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="下一节我们讲splay的插入操作">下一节我们讲splay的插入操作</h2>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1440,6 +1440,31 @@
       </tags>
   </entry>
   <entry>
+    <title>leetcode 329.矩阵中的最长递增路径</title>
+    <url>/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/</url>
+    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
+<p>https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix</p>
+<p>给定一个整数矩阵，找出最长递增路径的长度。</p>
+<p>对于每个单元格，你可以往上，下，左，右四个方向移动。 你不能在对角线方向上移动或移动到边界外（即不允许环绕）。</p>
+<p>示例 1:</p>
+<p>输入: nums = [ [9,9,4], [6,6,8], [2,1,1]] 输出: 4 解释: 最长递增路径为 [1, 2, 6, 9]。 示例 2:</p>
+<p>输入: nums = [ [3,4,5], [3,2,6], [2,2,1]] 输出: 4 解释: 最长递增路径是 [3, 4, 5, 6]。注意不允许在对角线方向上移动。</p>
+<h2 id="思路">思路</h2>
+<p>我们可以对每一个点求出最长递增路径的长度，这样当相邻的点比该点小的时候，我们将该点的最长递增路径的长度加1，就是这个相邻点的最长递增路径的可能值。</p>
+<p>这里面一定不会有重复访问的现象，因为是最长递增路径，不存在相同的值，我们可以放心的使用其他点已经求出的最长递增路径。</p>
+<p>那么这个函数的参数也就出来了，dfs(i, j)。i，j表示是哪个点，函数求出的结果是这点为起始的最长递增路径长度。这个函数怎么求呢？首先自身就是一条路径，也就是最少是1。然后我们往四个方向扩散，这里判断越界，并且要确定这四个方向的值比当前大，否则不能扩散，假设我们已经求出了其他几个方向（小于等于四）的最长递增路径，这些方向上的点的值都是比当前大的，那么这个点的最长递增路径长度就是，这几个方向的最长递增路径的最大值加1，最终要和1比较一下更大，因为可能所有方向的值都小于等于当前。</p>
+<p>最终我们可以加上记忆化，因为我们一旦算出来i，j的最长递增路径的长度之后，我们就可以重复的使用它，不会改变了。这可以节省时间。</p>
+<h2 id="示例代码">示例代码</h2>
+<p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = &#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> (i, j) <span class="keyword">in</span> memo:</span><br><span class="line">                <span class="keyword">return</span> memo[i, j]</span><br><span class="line">            memo[i, j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> di, dj <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + di, j + dj</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i, j] = max(memo[i, j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i, j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i <span class="keyword">in</span> range(h) <span class="keyword">for</span> j <span class="keyword">in</span> range(w))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>优化空间使用矩阵来记忆化搜索：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = [[<span class="number">0</span>] * w <span class="keyword">for</span> _ <span class="keyword">in</span> range(h)]</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> memo[i][j]:</span><br><span class="line">                <span class="keyword">return</span> memo[i][j]</span><br><span class="line">            memo[i][j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> dx, dy <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + dx, j + dy</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i][j] = max(memo[i][j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i][j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i, j <span class="keyword">in</span> itertools.product(range(h), range(w)))</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>leetcode 23.合并K个排序链表</title>
     <url>/2020/08/11/leetcode-23-%E5%90%88%E5%B9%B6K%E4%B8%AA%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/</url>
     <content><![CDATA[<p>合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。</p>
@@ -1472,31 +1497,6 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        cur = dummy</span><br><span class="line">        <span class="comment"># 这里的i为了排序</span></span><br><span class="line">        heap = [(l.val, i, l) <span class="keyword">for</span> i, l <span class="keyword">in</span> enumerate(lists) <span class="keyword">if</span> l]</span><br><span class="line">        heapq.heapify(heap)</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            val, ind, l = heapq.heappop(heap)</span><br><span class="line">            cur.next = l</span><br><span class="line">            <span class="keyword">if</span> l.next:</span><br><span class="line">                l = l.next</span><br><span class="line">                heapq.heappush(heap, (l.val, ind, l))</span><br><span class="line">            cur = cur.next</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
 <p>分支合并</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        n = len(lists)</span><br><span class="line">        <span class="keyword">return</span> self.merge(lists, <span class="number">0</span>, n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">merge</span>(<span class="params">self, lists, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span> lists[l]</span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        l1 = self.merge(lists, l, mid)</span><br><span class="line">        l2 = self.merge(lists, mid + <span class="number">1</span>, r)</span><br><span class="line">        <span class="keyword">return</span> self.mergeTwoLists(l1, l2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1, l2</span>):</span></span><br><span class="line">        dummy = cur = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val &lt;= l2.val:</span><br><span class="line">                cur.next = l1</span><br><span class="line">                l1 = l1.next</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur.next = l2</span><br><span class="line">                l2 = l2.next</span><br><span class="line">            cur = cur.next</span><br><span class="line">        cur.next = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>leetcode 329.矩阵中的最长递增路径</title>
-    <url>/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/</url>
-    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
-<p>https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix</p>
-<p>给定一个整数矩阵，找出最长递增路径的长度。</p>
-<p>对于每个单元格，你可以往上，下，左，右四个方向移动。 你不能在对角线方向上移动或移动到边界外（即不允许环绕）。</p>
-<p>示例 1:</p>
-<p>输入: nums = [ [9,9,4], [6,6,8], [2,1,1]] 输出: 4 解释: 最长递增路径为 [1, 2, 6, 9]。 示例 2:</p>
-<p>输入: nums = [ [3,4,5], [3,2,6], [2,2,1]] 输出: 4 解释: 最长递增路径是 [3, 4, 5, 6]。注意不允许在对角线方向上移动。</p>
-<h2 id="思路">思路</h2>
-<p>我们可以对每一个点求出最长递增路径的长度，这样当相邻的点比该点小的时候，我们将该点的最长递增路径的长度加1，就是这个相邻点的最长递增路径的可能值。</p>
-<p>这里面一定不会有重复访问的现象，因为是最长递增路径，不存在相同的值，我们可以放心的使用其他点已经求出的最长递增路径。</p>
-<p>那么这个函数的参数也就出来了，dfs(i, j)。i，j表示是哪个点，函数求出的结果是这点为起始的最长递增路径长度。这个函数怎么求呢？首先自身就是一条路径，也就是最少是1。然后我们往四个方向扩散，这里判断越界，并且要确定这四个方向的值比当前大，否则不能扩散，假设我们已经求出了其他几个方向（小于等于四）的最长递增路径，这些方向上的点的值都是比当前大的，那么这个点的最长递增路径长度就是，这几个方向的最长递增路径的最大值加1，最终要和1比较一下更大，因为可能所有方向的值都小于等于当前。</p>
-<p>最终我们可以加上记忆化，因为我们一旦算出来i，j的最长递增路径的长度之后，我们就可以重复的使用它，不会改变了。这可以节省时间。</p>
-<h2 id="示例代码">示例代码</h2>
-<p>示例代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = &#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> (i, j) <span class="keyword">in</span> memo:</span><br><span class="line">                <span class="keyword">return</span> memo[i, j]</span><br><span class="line">            memo[i, j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> di, dj <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + di, j + dj</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i, j] = max(memo[i, j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i, j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i <span class="keyword">in</span> range(h) <span class="keyword">for</span> j <span class="keyword">in</span> range(w))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>优化空间使用矩阵来记忆化搜索：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = [[<span class="number">0</span>] * w <span class="keyword">for</span> _ <span class="keyword">in</span> range(h)]</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> memo[i][j]:</span><br><span class="line">                <span class="keyword">return</span> memo[i][j]</span><br><span class="line">            memo[i][j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> dx, dy <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + dx, j + dy</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i][j] = max(memo[i][j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i][j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i, j <span class="keyword">in</span> itertools.product(range(h), range(w)))</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -1786,15 +1786,6 @@
       </tags>
   </entry>
   <entry>
-    <title>一次犯罪不过是污染了水流，而一次不公正的司法却污染了水源</title>
-    <url>/2020/08/08/%E4%B8%80%E6%AC%A1%E7%8A%AF%E7%BD%AA%E4%B8%8D%E8%BF%87%E6%98%AF%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%B5%81%EF%BC%8C%E8%80%8C%E4%B8%80%E6%AC%A1%E4%B8%8D%E5%85%AC%E6%AD%A3%E7%9A%84%E5%8F%B8%E6%B3%95%E5%8D%B4%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%BA%90/</url>
-    <content><![CDATA[<p>张玉环事件有感</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>《相信未来》——食指</title>
     <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
     <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
@@ -1834,6 +1825,15 @@
       </tags>
   </entry>
   <entry>
+    <title>一次犯罪不过是污染了水流，而一次不公正的司法却污染了水源</title>
+    <url>/2020/08/08/%E4%B8%80%E6%AC%A1%E7%8A%AF%E7%BD%AA%E4%B8%8D%E8%BF%87%E6%98%AF%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%B5%81%EF%BC%8C%E8%80%8C%E4%B8%80%E6%AC%A1%E4%B8%8D%E5%85%AC%E6%AD%A3%E7%9A%84%E5%8F%B8%E6%B3%95%E5%8D%B4%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%BA%90/</url>
+    <content><![CDATA[<p>张玉环事件有感</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>给时光以生命，给岁月以文明</title>
     <url>/2020/08/26/%E4%B8%8D%E6%98%AF%E7%BB%99%E6%96%87%E6%98%8E%E4%BB%A5%E5%B2%81%E6%9C%88%EF%BC%8C%E8%80%8C%E6%98%AF%E7%BB%99%E5%B2%81%E6%9C%88%E4%BB%A5%E6%96%87%E6%98%8E/</url>
     <content><![CDATA[<p><strong>给时光以生命，而不是给生命以时光。</strong>（这句话出自帕斯卡，To the time to life, rather than to life in time.老帕之所以有此言论，大概和他的生命状态有很大关系。帕斯卡从小体质虚弱，又因过度劳累而使疾病缠身。他只活到三十九岁，但一生辉煌，活得虽短却很精彩。正是这短暂的一生让他更清楚的看到生命的本质，福祸相依，这正是上帝的公平，或者说是概率的公平。他还说过一句非常有名的话：“人只不过是一根芦苇，是自然界最脆弱的东西，但他是一根能思想的芦苇。”）</p>
@@ -1843,6 +1843,16 @@
 <p>网上解释：文明的灿烂与否并不是以时间来衡量的，宁可获得短暂的灿烂文明，而不愿苟且偷生。</p>
 <p>我的理解是：努力创造出好的文明，来让岁月精彩，一旦文明终将走向衰败，不要强行延长它的寿命，让更好的文明来替代它，不要把这个文明变得丑陋，成为后来文明的障碍。</p>
 <p>重复一下，<strong>给时光以生命，给岁月以文明</strong>。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>中华民族的脊梁，不是被众人扶持起来的</title>
+    <url>/2020/09/03/%E4%B8%AD%E5%8D%8E%E6%B0%91%E6%97%8F%E7%9A%84%E8%84%8A%E6%A2%81%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%A2%AB%E4%BC%97%E4%BA%BA%E6%89%B6%E6%8C%81%E8%B5%B7%E6%9D%A5%E7%9A%84/</url>
+    <content><![CDATA[<p>中华民族的脊梁，不是被众人扶持起来的，就是因为我们有这样的英雄，这样的精英。我们的民族的脊梁今天才能挺立。-- 纪念杨靖宇和抗日战争胜利75周年</p>
+<p>誓干惊天动地事，敢做隐姓埋名人。 -- 黄旭华</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -1907,16 +1917,6 @@
 ]]></content>
       <tags>
         <tag>设计模式</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>中华民族的脊梁，不是被众人扶持起来的</title>
-    <url>/2020/09/03/%E4%B8%AD%E5%8D%8E%E6%B0%91%E6%97%8F%E7%9A%84%E8%84%8A%E6%A2%81%EF%BC%8C%E4%B8%8D%E6%98%AF%E8%A2%AB%E4%BC%97%E4%BA%BA%E6%89%B6%E6%8C%81%E8%B5%B7%E6%9D%A5%E7%9A%84/</url>
-    <content><![CDATA[<p>中华民族的脊梁，不是被众人扶持起来的，就是因为我们有这样的英雄，这样的精英。我们的民族的脊梁今天才能挺立。-- 纪念杨靖宇和抗日战争胜利75周年</p>
-<p>誓干惊天动地事，敢做隐姓埋名人。 -- 黄旭华</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2442,6 +2442,37 @@
       </tags>
   </entry>
   <entry>
+    <title>为什么rowid是6个字节</title>
+    <url>/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/</url>
+    <content><![CDATA[<p>首先官方文档是这么写的。参考<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnklMjBJbm5vREIlMjB0YWJsZSUyMGhhcyUyMGEsZm9yJTIwdGhlJTIwcm93cyUyMGlzJTIwc3RvcmVkLiZhbXA7dGV4dD1UaGUlMjByb3clMjBJRCUyMGlzJTIwYSxhcmUlMjBwaHlzaWNhbGx5JTIwaW4lMjBpbnNlcnRpb24lMjBvcmRlci4=">MySQL5.6 Ref manual<i class="fa fa-external-link-alt"></i></span>。</p>
+<p>每个InnoDB表都有一个特殊的索引，称为聚簇索引clustered index，行的数据就存储在这里。通常情况下，聚簇索引是主键的同义词。为了从查询、插入和其他数据库操作中获得最佳性能，你必须理解InnoDB是如何使用聚簇索引来优化每个表的最常见的查找和DML操作的。</p>
+<ul>
+<li>当你在表上定义一个primary key时，InnoDB就会把它作为聚簇索引。为你创建的每一个表定义一个主键。如果没有逻辑上唯一且非空的列或列集合，则添加一个新的自动增加列，其值会自动填入。</li>
+<li>如果你没有为你的表定义primary key，MySQL会定位第一个Unique索引，其中所有的关键列都是Not Null。InnoDB使用它作为聚簇索引。</li>
+<li>如果表没有primary key或合适的unique索引，InnoDB内部会在包含row id值的合成列上生成一个名为GEN_CLUST_INDEX的隐藏聚簇索引。行是由InnoDB分配给这种表中的行的ID来排序的。row id是一个6字节的字段，随着新行的插入而单调增加。因此，按row id排序的行在物理上是按插入顺序排列的。</li>
+</ul>
+<h5 id="聚簇索引是如何加快查询速度的">聚簇索引是如何加快查询速度的？</h5>
+<p>通过聚簇索引访问行的速度很快，因为索引搜索会直接引导到包含所有行数据的页面。如果一张表很大，与使用与索引记录不同的页面存储行数据的存储组织相比，聚簇索引架构往往可以节省一次磁盘I/O操作。</p>
+<h5 id="二级索引与聚簇索引的关系">二级索引与聚簇索引的关系</h5>
+<p>除了聚簇索引以外的所有索引都称为二级索引。在InnoDB中，二级索引中的每条记录都包含改行的主键列，以及二级索引指定的列。InnoDB使用这个主键值来搜索聚簇索引中的行。</p>
+<p>如果主键长，二级索引就会使用更多的空间，所以主键短是有利的。</p>
+<h3 id="回答标题的问题">回答标题的问题</h3>
+<img data-src="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/rowid1.gif" class>
+<p>这里我没有找到mysql的rowid为什么是6个字节的答案，找到是关于oracle rowid的解释，猜测是互通的。</p>
+<p>rowid是伪列。不会真正存在表的data block中，但是它会存在于index中。</p>
+<p>扩展的rowid在磁盘上需要10个字节的存储空间，并使用18个字符来显示。</p>
+<p>解释如下：</p>
+<p>在oracle 8以前，一个rowid占用6个字节大小的存储空间（10 bit file# + 22bit block # + 16 bit row #)，rowid格式为：BBBBBBBB.RRRR.FFFF。</p>
+<p>在oracle 8以后，rowid的存储空间扩大到了10个字节（32 bit object# + 10bit rfile# + 22 bit block# + 16 bit row#)，文件号仍然用10位表示，只是不再需要置换，为了向后兼容，同时引入了相对文件号（rfile#)，所以从Oracle7到Oracle8，rowid仍然无需发生变化。</p>
+<p>这里我猜测，mysql rowid也是存储了 10位的文件号，22位的块号，16位的行号。</p>
+<h3 id="更新已经得到答案">更新：已经得到答案。</h3>
+<p>详见<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MzE4Mw==">文章<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>内容协商与资源表述</title>
     <url>/2020/09/05/%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86%E4%B8%8E%E8%B5%84%E6%BA%90%E8%A1%A8%E8%BF%B0/</url>
     <content><![CDATA[<p>HTTP协议全称是超文本传输协议，超文本也就是对应着我们的一个资源的一种表述，就是我们服务器端一个URI对应的一个页面，我们把它传输到客户端进行渲染显示，那么rest架构呢，也就是我们HTTP协议设计时所遵循的架构，它也是在描述资源状态的一种转移。由于我们一种资源对应着许多种状态，所以我们的客户端在接受我们资源表述的转移时需要进行一种协商。比如：一个来自中国的用户，在他的浏览器访问一个页面时可能得到的是一个中文页面。但是一个其他国家的用户，在用浏览器访问同一个URL时呢，获得的页面可能是用他的本国语言描述的。那么接下来这篇文章中，我们将介绍内容协商是怎样进行的。</p>
@@ -2519,37 +2550,6 @@
       <tags>
         <tag>计算机网络</tag>
         <tag>HTTP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>为什么rowid是6个字节</title>
-    <url>/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/</url>
-    <content><![CDATA[<p>首先官方文档是这么写的。参考<span class="exturl" data-url="aHR0cHM6Ly9kZXYubXlzcWwuY29tL2RvYy9yZWZtYW4vNS42L2VuL2lubm9kYi1pbmRleC10eXBlcy5odG1sIzp+OnRleHQ9RXZlcnklMjBJbm5vREIlMjB0YWJsZSUyMGhhcyUyMGEsZm9yJTIwdGhlJTIwcm93cyUyMGlzJTIwc3RvcmVkLiZhbXA7dGV4dD1UaGUlMjByb3clMjBJRCUyMGlzJTIwYSxhcmUlMjBwaHlzaWNhbGx5JTIwaW4lMjBpbnNlcnRpb24lMjBvcmRlci4=">MySQL5.6 Ref manual<i class="fa fa-external-link-alt"></i></span>。</p>
-<p>每个InnoDB表都有一个特殊的索引，称为聚簇索引clustered index，行的数据就存储在这里。通常情况下，聚簇索引是主键的同义词。为了从查询、插入和其他数据库操作中获得最佳性能，你必须理解InnoDB是如何使用聚簇索引来优化每个表的最常见的查找和DML操作的。</p>
-<ul>
-<li>当你在表上定义一个primary key时，InnoDB就会把它作为聚簇索引。为你创建的每一个表定义一个主键。如果没有逻辑上唯一且非空的列或列集合，则添加一个新的自动增加列，其值会自动填入。</li>
-<li>如果你没有为你的表定义primary key，MySQL会定位第一个Unique索引，其中所有的关键列都是Not Null。InnoDB使用它作为聚簇索引。</li>
-<li>如果表没有primary key或合适的unique索引，InnoDB内部会在包含row id值的合成列上生成一个名为GEN_CLUST_INDEX的隐藏聚簇索引。行是由InnoDB分配给这种表中的行的ID来排序的。row id是一个6字节的字段，随着新行的插入而单调增加。因此，按row id排序的行在物理上是按插入顺序排列的。</li>
-</ul>
-<h5 id="聚簇索引是如何加快查询速度的">聚簇索引是如何加快查询速度的？</h5>
-<p>通过聚簇索引访问行的速度很快，因为索引搜索会直接引导到包含所有行数据的页面。如果一张表很大，与使用与索引记录不同的页面存储行数据的存储组织相比，聚簇索引架构往往可以节省一次磁盘I/O操作。</p>
-<h5 id="二级索引与聚簇索引的关系">二级索引与聚簇索引的关系</h5>
-<p>除了聚簇索引以外的所有索引都称为二级索引。在InnoDB中，二级索引中的每条记录都包含改行的主键列，以及二级索引指定的列。InnoDB使用这个主键值来搜索聚簇索引中的行。</p>
-<p>如果主键长，二级索引就会使用更多的空间，所以主键短是有利的。</p>
-<h3 id="回答标题的问题">回答标题的问题</h3>
-<img data-src="/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/rowid1.gif" class>
-<p>这里我没有找到mysql的rowid为什么是6个字节的答案，找到是关于oracle rowid的解释，猜测是互通的。</p>
-<p>rowid是伪列。不会真正存在表的data block中，但是它会存在于index中。</p>
-<p>扩展的rowid在磁盘上需要10个字节的存储空间，并使用18个字符来显示。</p>
-<p>解释如下：</p>
-<p>在oracle 8以前，一个rowid占用6个字节大小的存储空间（10 bit file# + 22bit block # + 16 bit row #)，rowid格式为：BBBBBBBB.RRRR.FFFF。</p>
-<p>在oracle 8以后，rowid的存储空间扩大到了10个字节（32 bit object# + 10bit rfile# + 22 bit block# + 16 bit row#)，文件号仍然用10位表示，只是不再需要置换，为了向后兼容，同时引入了相对文件号（rfile#)，所以从Oracle7到Oracle8，rowid仍然无需发生变化。</p>
-<p>这里我猜测，mysql rowid也是存储了 10位的文件号，22位的块号，16位的行号。</p>
-<h3 id="更新已经得到答案">更新：已经得到答案。</h3>
-<p>详见<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS84MzE4Mw==">文章<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -2683,41 +2683,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>向死而生，面向死亡生活</title>
-    <url>/2020/09/18/%E5%90%91%E6%AD%BB%E8%80%8C%E7%94%9F/</url>
-    <content><![CDATA[<p>第一，存在者（人）的本命工作应该是：在有限的时间里，去呼应和思考存在者自己存在于这个世界上的依据，即存在者（人）要思考“<strong>存在</strong>”问题。</p>
-<p>第二，存在者（人）存在于这个世界上的时间是有限的，因为“死亡”是必然到来和发生的“潜在可能性”，所以存在者（人）会害怕“死亡”。那什么能够让我们暂时遗忘它、不去害怕它呢？那就是让自己忙起来，让自己操劳于世，这样就不会感到害怕。</p>
-<p>当第一种情况遇上第二种情况的时候，有限的时间使得存在者（人）必须二选其一进行工作。海德格尔认为，我们应该选择第一种情况，即在有限的时间里去追问自己存在的依据问题，而不能只是活着（PS：这也是人活着的意义问题、人的安身立命之所和人的价值所在）。</p>
-<p>海德格尔怎么让人摆脱对”死亡“的恐惧状态呢？于是，”向死而生“这个概念就出来了。海德格尔意义上的”向死而生“是为了鼓励人们回归对本命工作的工作状态，继续追问”存在“、关心人的意义问题和价值问题。这是终极问题，而”向死而生“只是这个目标的一个环节中针对某个问题的态度和对策。</p>
-<p>面向死亡生活，面向存在生活。</p>
-<p>链接：https://www.zhihu.com/question/304682444/answer/781917577 来源：知乎</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>向查德维克·博斯曼致敬</title>
-    <url>/2020/09/05/%E5%90%91%E6%9F%A5%E5%BE%B7%E7%BB%B4%E5%85%8B-%E5%8D%9A%E6%96%AF%E6%9B%BC%E8%87%B4%E6%95%AC/</url>
-    <content><![CDATA[<p>向所有在为弱势群体发声、为众人谋幸福的人们致敬。</p>
-<iframe src="//player.bilibili.com/player.html?aid=456881063&amp;bvid=BV145411h7r9&amp;cid=231278018&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
-</iframe>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>电影</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>堆的实现(大顶堆、小顶堆)</title>
-    <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>可不可以使用join</title>
     <url>/2020/08/26/%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8join/</url>
     <content><![CDATA[<ol type="1">
@@ -2743,6 +2708,41 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>向查德维克·博斯曼致敬</title>
+    <url>/2020/09/05/%E5%90%91%E6%9F%A5%E5%BE%B7%E7%BB%B4%E5%85%8B-%E5%8D%9A%E6%96%AF%E6%9B%BC%E8%87%B4%E6%95%AC/</url>
+    <content><![CDATA[<p>向所有在为弱势群体发声、为众人谋幸福的人们致敬。</p>
+<iframe src="//player.bilibili.com/player.html?aid=456881063&amp;bvid=BV145411h7r9&amp;cid=231278018&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>电影</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>向死而生，面向死亡生活</title>
+    <url>/2020/09/18/%E5%90%91%E6%AD%BB%E8%80%8C%E7%94%9F/</url>
+    <content><![CDATA[<p>第一，存在者（人）的本命工作应该是：在有限的时间里，去呼应和思考存在者自己存在于这个世界上的依据，即存在者（人）要思考“<strong>存在</strong>”问题。</p>
+<p>第二，存在者（人）存在于这个世界上的时间是有限的，因为“死亡”是必然到来和发生的“潜在可能性”，所以存在者（人）会害怕“死亡”。那什么能够让我们暂时遗忘它、不去害怕它呢？那就是让自己忙起来，让自己操劳于世，这样就不会感到害怕。</p>
+<p>当第一种情况遇上第二种情况的时候，有限的时间使得存在者（人）必须二选其一进行工作。海德格尔认为，我们应该选择第一种情况，即在有限的时间里去追问自己存在的依据问题，而不能只是活着（PS：这也是人活着的意义问题、人的安身立命之所和人的价值所在）。</p>
+<p>海德格尔怎么让人摆脱对”死亡“的恐惧状态呢？于是，”向死而生“这个概念就出来了。海德格尔意义上的”向死而生“是为了鼓励人们回归对本命工作的工作状态，继续追问”存在“、关心人的意义问题和价值问题。这是终极问题，而”向死而生“只是这个目标的一个环节中针对某个问题的态度和对策。</p>
+<p>面向死亡生活，面向存在生活。</p>
+<p>链接：https://www.zhihu.com/question/304682444/answer/781917577 来源：知乎</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>堆的实现(大顶堆、小顶堆)</title>
+    <url>/2020/08/07/%E5%A0%86%E7%9A%84%E5%AE%9E%E7%8E%B0-%E5%A4%A7%E9%A1%B6%E5%A0%86%E3%80%81%E5%B0%8F%E9%A1%B6%E5%A0%86/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 堆的实现.py</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 大顶堆</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxheap</span>(<span class="params">a, i, size</span>):</span></span><br><span class="line">    l = <span class="number">2</span> * i + <span class="number">1</span></span><br><span class="line">    r = <span class="number">2</span> * i + <span class="number">2</span></span><br><span class="line">    large = i</span><br><span class="line">    <span class="keyword">if</span> l &lt; size <span class="keyword">and</span> a[l] &gt; a[large]:</span><br><span class="line">        large = l</span><br><span class="line">    <span class="keyword">if</span> r &lt; size <span class="keyword">and</span> a[r] &gt; a[large]:</span><br><span class="line">        large = r</span><br><span class="line">    <span class="keyword">if</span> large != i:</span><br><span class="line">        a[i], a[large] = a[large], a[i]</span><br><span class="line">        maxheap(a, large, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">buildheap</span>(<span class="params">a, size</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(size &gt;&gt; <span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">        maxheap(a, i, size)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span>(<span class="params">a, val, size</span>):</span></span><br><span class="line">    a.append(val)</span><br><span class="line">    <span class="keyword">assert</span> a[size - <span class="number">1</span>] == val</span><br><span class="line">    i = size - <span class="number">1</span></span><br><span class="line">    p = i &gt;&gt; <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> p &gt;= <span class="number">0</span> <span class="keyword">and</span> a[p] &lt; a[i]:</span><br><span class="line">        a[p], a[i] = a[i], a[p]</span><br><span class="line">        i = p</span><br><span class="line">        p = i &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 小顶堆</span></span><br><span class="line"><span class="comment"># def minheap(a, i, size):</span></span><br><span class="line"><span class="comment">#     l = 2 * i + 1</span></span><br><span class="line"><span class="comment">#     r = 2 * i + 2</span></span><br><span class="line"><span class="comment">#     small = i</span></span><br><span class="line"><span class="comment">#     if l &lt; size and a[l] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = l</span></span><br><span class="line"><span class="comment">#     if r &lt; size and a[r] &lt; a[small]:</span></span><br><span class="line"><span class="comment">#         small = r</span></span><br><span class="line"><span class="comment">#     if small != i:</span></span><br><span class="line"><span class="comment">#         a[i], a[small] = a[small], a[i]</span></span><br><span class="line"><span class="comment">#         minheap(a, small, size)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># def buildheap(a, size):</span></span><br><span class="line"><span class="comment">#     for i in range(size &gt;&gt; 1, -1, -1):</span></span><br><span class="line"><span class="comment">#         minheap(a, i, size)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># 示例</span></span><br><span class="line">    nums = [<span class="number">3</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>]</span><br><span class="line">    heapsize = len(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 建堆</span></span><br><span class="line">    buildheap(nums, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 4, 3, 1, 2]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 插入</span></span><br><span class="line">    <span class="comment"># nums.append(6)</span></span><br><span class="line">    <span class="comment"># heapsize += 1</span></span><br><span class="line">    <span class="comment"># i = heapsize - 1</span></span><br><span class="line">    <span class="comment"># while i &gt;&gt; 1 &gt;= 0 and nums[i] &gt; nums[i &gt;&gt; 1]:</span></span><br><span class="line">    <span class="comment">#     nums[i], nums[i &gt;&gt; 1] = nums[i &gt;&gt; 1], nums[i]</span></span><br><span class="line">    <span class="comment">#     i &gt;&gt;= 1</span></span><br><span class="line">    <span class="comment"># print(nums)</span></span><br><span class="line">    heapsize += <span class="number">1</span></span><br><span class="line">    insert(nums, <span class="number">6</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [6, 5, 4, 1, 2, 3]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删除</span></span><br><span class="line">    heapsize -= <span class="number">1</span></span><br><span class="line">    nums[<span class="number">0</span>], nums[heapsize] = nums[heapsize], nums[<span class="number">0</span>]</span><br><span class="line">    maxheap(nums, <span class="number">0</span>, heapsize)</span><br><span class="line">    print(nums)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># output:</span></span><br><span class="line">    <span class="comment"># [5, 2, 3, 1, 0, 4]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -3437,20 +3437,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>今生就是我们的哨岗，站好哨就可以了</title>
-    <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
-    <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
-<p>第一还是阅读，跟人类伟大的灵魂对话，因为你的困惑在两千多年前人类就已经有过这样的困惑。人类所有伟大的思想家都试图对抗这种困惑。</p>
-<p>但第二的话更重要的是去做，做一些事情，从身边的小事开始做起。每天都只是一个礼物，昨天的已经成为过去，明天还没有到来，我们唯一能够拥有的就是今天。所以今天是一个礼物，是一个gift，是一个present。所以我们做好每天该做的事情。<strong>今生就是我们的哨岗，站好哨就可以了。</strong></p>
-<p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
-<p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
-<p>感谢罗翔罗老师。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>我们唯一值得恐惧的就是恐惧本身</title>
     <url>/2020/08/31/%E6%88%91%E4%BB%AC%E5%94%AF%E4%B8%80%E5%80%BC%E5%BE%97%E6%81%90%E6%83%A7%E7%9A%84%E5%B0%B1%E6%98%AF%E6%81%90%E6%83%A7%E6%9C%AC%E8%BA%AB/</url>
     <content><![CDATA[<p>1933年，富兰克林·罗斯福首次总统就职演说</p>
@@ -3469,6 +3455,20 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>名人名言录</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>今生就是我们的哨岗，站好哨就可以了</title>
+    <url>/2020/08/27/%E6%88%91%E6%9C%AC%E5%B0%B1%E8%82%A4%E6%B5%85%EF%BC%8C%E4%BD%86%E6%88%91%E5%90%91%E5%BE%80%E5%B4%87%E9%AB%98/</url>
+    <content><![CDATA[<p>人生唯一确定的就是不确定的人生。人的有限性就体现在，我们是无法寻找到从我们自己而来的一个确定。</p>
+<p>第一还是阅读，跟人类伟大的灵魂对话，因为你的困惑在两千多年前人类就已经有过这样的困惑。人类所有伟大的思想家都试图对抗这种困惑。</p>
+<p>但第二的话更重要的是去做，做一些事情，从身边的小事开始做起。每天都只是一个礼物，昨天的已经成为过去，明天还没有到来，我们唯一能够拥有的就是今天。所以今天是一个礼物，是一个gift，是一个present。所以我们做好每天该做的事情。<strong>今生就是我们的哨岗，站好哨就可以了。</strong></p>
+<p>人的内心始终有两面，一面有幽暗的一面，一面有光明的一面，你做哪一面？是做幽暗的一面，还是做光明的一面？<strong>人不是做自己，人是朝着人性中良善的那一面去前进，去尽量地抑制自己内心的幽暗。这个叫做自己。</strong></p>
+<p><strong>接收自己的有限，去迎接未知的无限。</strong></p>
+<p>感谢罗翔罗老师。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -3535,6 +3535,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>拔智齿后记</title>
+    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
+    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>接口限流算法：漏桶算法 &amp; 令牌桶算法</title>
     <url>/2020/07/22/%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81%E7%AE%97%E6%B3%95%EF%BC%9A%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95-%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h2 id="概念">概念</h2>
@@ -3578,15 +3587,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>拔智齿后记</title>
-    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
-    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -3845,6 +3845,15 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
   </entry>
   <entry>
+    <title>江湖再见</title>
+    <url>/2020/09/01/%E6%B1%9F%E6%B9%96%E5%86%8D%E8%A7%81/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>深入浅出索引</title>
     <url>/2020/08/31/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%B4%A2%E5%BC%95/</url>
     <content><![CDATA[<p>覆盖索引</p>
@@ -3903,35 +3912,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>猫抓老鼠的简单讨论</title>
-    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
-    <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
-<ol type="1">
-<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
-<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
-<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
-<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
-<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
-<p>答案是不能。</p>
-<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
-<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
-<p><span class="math display">\[
-\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
-\]</span></p>
-<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
-<p>根据猫的速度是老鼠的4倍，</p>
-<p><span class="math display">\[
-x = \frac{4-\pi}{4}r \approx0.2146r
-\]</span></p>
-<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
-<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -4016,12 +3996,32 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>江湖再见</title>
-    <url>/2020/09/01/%E6%B1%9F%E6%B9%96%E5%86%8D%E8%A7%81/</url>
-    <content><![CDATA[
+    <title>猫抓老鼠的简单讨论</title>
+    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
+    <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
+<ol type="1">
+<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
+<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
+<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
+<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
+<p>答案是不能。</p>
+<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
+<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
+<p><span class="math display">\[
+\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
+\]</span></p>
+<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
+<p>根据猫的速度是老鼠的4倍，</p>
+<p><span class="math display">\[
+x = \frac{4-\pi}{4}r \approx0.2146r
+\]</span></p>
+<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
+<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+</ol>
 ]]></content>
       <tags>
-        <tag>生活</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -4104,6 +4104,12 @@ x = \frac{4-\pi}{4}r \approx0.2146r
         <tag>生活</tag>
         <tag>歌曲</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>背包问题泛型</title>
+    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
+    <content><![CDATA[
+]]></content>
   </entry>
   <entry>
     <title>自增id用完怎么办？</title>
@@ -4219,12 +4225,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>数据库</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>背包问题泛型</title>
-    <url>/2020/08/04/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E6%B3%9B%E5%9E%8B/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
   <entry>
     <title>蓄水池算法</title>
@@ -4676,6 +4676,15 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>这一路走来经历很多伤，不要忘掉它们啊，带着它们走下去！</title>
+    <url>/2020/09/18/%E8%BF%99%E4%B8%80%E8%B7%AF%E8%B5%B0%E6%9D%A5%E7%BB%8F%E5%8E%86%E5%BE%88%E5%A4%9A%E4%BC%A4%EF%BC%8C%E4%B8%8D%E8%A6%81%E5%BF%98%E6%8E%89%E5%AE%83%E4%BB%AC%E5%95%8A%EF%BC%8C%E5%B8%A6%E7%9D%80%E5%AE%83%E4%BB%AC%E8%B5%B0%E4%B8%8B%E5%8E%BB%EF%BC%81/</url>
+    <content><![CDATA[<p>看到少年的自己了吗，你要对得起他。</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>软件=算法+数据结构+文档+数据？</title>
     <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
     <content><![CDATA[<p>软件的开始到后来...</p>
@@ -4691,15 +4700,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>这一路走来经历很多伤，不要忘掉它们啊，带着它们走下去！</title>
-    <url>/2020/09/18/%E8%BF%99%E4%B8%80%E8%B7%AF%E8%B5%B0%E6%9D%A5%E7%BB%8F%E5%8E%86%E5%BE%88%E5%A4%9A%E4%BC%A4%EF%BC%8C%E4%B8%8D%E8%A6%81%E5%BF%98%E6%8E%89%E5%AE%83%E4%BB%AC%E5%95%8A%EF%BC%8C%E5%B8%A6%E7%9D%80%E5%AE%83%E4%BB%AC%E8%B5%B0%E4%B8%8B%E5%8E%BB%EF%BC%81/</url>
-    <content><![CDATA[<p>看到少年的自己了吗，你要对得起他。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
