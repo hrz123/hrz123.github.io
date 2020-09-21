@@ -138,6 +138,54 @@
       </tags>
   </entry>
   <entry>
+    <title>HTTP的正确响应码（For Reference）</title>
+    <url>/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/</url>
+    <content><![CDATA[<p>100，200，300系列表示成功的响应码</p>
+<ul>
+<li>响应码规范：RFC6585（2012.4）、RFC7231（2014.6）</li>
+<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持
+<ul>
+<li>100 Continue：上传大文件前使用
+<ul>
+<li>由客户端发起请求中携带Expect 100-continue头部触发</li>
+</ul></li>
+<li>101 Switch Protocols：协议升级使用
+<ul>
+<li>由客户端发起请求中携带Upgrade：头部触发，如升级websocket或者http/2.0</li>
+</ul></li>
+<li>102 Processing：WebDAV请求可能包含许多涉及文件操作的子请求，需要很长时间才能完成请求。该代码表示服务器已经收到并正在处理请求，但无响应可用。这样可以防止客户端超时，并假设请求丢失</li>
+</ul></li>
+<li>2xx：成功处理请求
+<ul>
+<li>200 OK：成功返回了响应</li>
+<li>201 Created：有新资源在服务器端被成功创建</li>
+<li>202 Accepted：服务端接受并开始处理请求；但请求未处理完成。这样一个模糊的概念是有意如此设计，可以覆盖更多的场景。<strong>例如异步、需要长时间处理的任务。</strong>先给客户端返回202 Accept，而由异步的任务继续去处理这个任务。</li>
+<li>203 Non-Authoritative Information：当代理服务器修改了origin server的原始响应包体时（例如更换了HTML中的元素值），代理服务器可以通过修改200为203的方式告知客户端这一事实，方便客户端为这一行为做出相应的处理。203响应可以被缓存。203这个规范并不被广为接受。</li>
+<li>204 No Content：成功执行了请求且不携带响应包体，并暗示客户端无需更新当前的页面视图。（常见与我们用put等方法post等方法上传了一些资源但是返回的响应告诉不需要去刷新当前的URI等。）</li>
+<li>205 Reset Content：成功执行了请求且不携带响应包体，同时指明客户端需要更新当前页面视图。（比如说URI画图等，可能会遇到）</li>
+<li>206 Partial Content：（多线程断点续传下载都会使用到range协议）使用range协议时返回<strong>部分</strong>响应内容时的响应码</li>
+<li>207 Multi-Status：RFC4918，在WEBDAV协议中以XML返回多个资源的状态。（返回目录树的结构的时候，实际上是返回了很多个子目录及其相关的资源描述，那么这个时候我们其实有很多个响应码，那么207就是把这些响应作为一个响应的时候，那么这个响应码我们告诉客户端是207）</li>
+<li>208 Already Reported：RFC5842，为避免相同集合下资源在207响应码下重复上报，使用208可以使用父集合的响应码。</li>
+</ul></li>
+<li>3xx：重定向使用Location指向的资源或者缓存中的资源。在RFC2068中规定客户端重定向次数不应超过5次，以防止死循环。
+<ul>
+<li>300 Multiple Choices：资源有多种表述，通过300返回给客户端后其自行选择访问哪一种表述。由于缺乏明确的细节，300很少使用。</li>
+<li>301 Moved Permanently：资源永久性的重定向到另一个URL中。（浏览器可以对永久性的重定向直接缓存）</li>
+<li>302 Found：资源临时的重定向到另一个URL中。</li>
+<li>303 See Other：重定向到其他资源，常用语POST/PUT等方法的响应中。</li>
+<li>304 Not Modified：当客户端拥有可能过期的缓存时，会携带缓存的标识etag、时间等信息询问服务器缓存是否仍可复用，而304是告诉客户端可以复用缓存。</li>
+<li>307 Temporary Redirect：类似302，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
+<li>308 Permanent Redirect：类似301，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
+</ul></li>
+</ul>
+<h3 id="参考">参考</h3>
+<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HTTP消息在服务器端的路由</title>
     <url>/2020/09/05/HTTP%E6%B6%88%E6%81%AF%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E7%9A%84%E8%B7%AF%E7%94%B1/</url>
     <content><![CDATA[<p>在上一篇文章中，我们介绍了客户端如何与服务器建立起连接，那么这篇文章中，将介绍服务器接收到连接以后，又怎样把HTTP消息进行路由和处理的常规流程。这里重点将介绍HOST这个请求头部。</p>
@@ -197,54 +245,6 @@
       <tags>
         <tag>计算机网络</tag>
         <tag>HTTP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HTTP的正确响应码（For Reference）</title>
-    <url>/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/</url>
-    <content><![CDATA[<p>100，200，300系列表示成功的响应码</p>
-<ul>
-<li>响应码规范：RFC6585（2012.4）、RFC7231（2014.6）</li>
-<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持
-<ul>
-<li>100 Continue：上传大文件前使用
-<ul>
-<li>由客户端发起请求中携带Expect 100-continue头部触发</li>
-</ul></li>
-<li>101 Switch Protocols：协议升级使用
-<ul>
-<li>由客户端发起请求中携带Upgrade：头部触发，如升级websocket或者http/2.0</li>
-</ul></li>
-<li>102 Processing：WebDAV请求可能包含许多涉及文件操作的子请求，需要很长时间才能完成请求。该代码表示服务器已经收到并正在处理请求，但无响应可用。这样可以防止客户端超时，并假设请求丢失</li>
-</ul></li>
-<li>2xx：成功处理请求
-<ul>
-<li>200 OK：成功返回了响应</li>
-<li>201 Created：有新资源在服务器端被成功创建</li>
-<li>202 Accepted：服务端接受并开始处理请求；但请求未处理完成。这样一个模糊的概念是有意如此设计，可以覆盖更多的场景。<strong>例如异步、需要长时间处理的任务。</strong>先给客户端返回202 Accept，而由异步的任务继续去处理这个任务。</li>
-<li>203 Non-Authoritative Information：当代理服务器修改了origin server的原始响应包体时（例如更换了HTML中的元素值），代理服务器可以通过修改200为203的方式告知客户端这一事实，方便客户端为这一行为做出相应的处理。203响应可以被缓存。203这个规范并不被广为接受。</li>
-<li>204 No Content：成功执行了请求且不携带响应包体，并暗示客户端无需更新当前的页面视图。（常见与我们用put等方法post等方法上传了一些资源但是返回的响应告诉不需要去刷新当前的URI等。）</li>
-<li>205 Reset Content：成功执行了请求且不携带响应包体，同时指明客户端需要更新当前页面视图。（比如说URI画图等，可能会遇到）</li>
-<li>206 Partial Content：（多线程断点续传下载都会使用到range协议）使用range协议时返回<strong>部分</strong>响应内容时的响应码</li>
-<li>207 Multi-Status：RFC4918，在WEBDAV协议中以XML返回多个资源的状态。（返回目录树的结构的时候，实际上是返回了很多个子目录及其相关的资源描述，那么这个时候我们其实有很多个响应码，那么207就是把这些响应作为一个响应的时候，那么这个响应码我们告诉客户端是207）</li>
-<li>208 Already Reported：RFC5842，为避免相同集合下资源在207响应码下重复上报，使用208可以使用父集合的响应码。</li>
-</ul></li>
-<li>3xx：重定向使用Location指向的资源或者缓存中的资源。在RFC2068中规定客户端重定向次数不应超过5次，以防止死循环。
-<ul>
-<li>300 Multiple Choices：资源有多种表述，通过300返回给客户端后其自行选择访问哪一种表述。由于缺乏明确的细节，300很少使用。</li>
-<li>301 Moved Permanently：资源永久性的重定向到另一个URL中。（浏览器可以对永久性的重定向直接缓存）</li>
-<li>302 Found：资源临时的重定向到另一个URL中。</li>
-<li>303 See Other：重定向到其他资源，常用语POST/PUT等方法的响应中。</li>
-<li>304 Not Modified：当客户端拥有可能过期的缓存时，会携带缓存的标识etag、时间等信息询问服务器缓存是否仍可复用，而304是告诉客户端可以复用缓存。</li>
-<li>307 Temporary Redirect：类似302，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
-<li>308 Permanent Redirect：类似301，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
-</ul></li>
-</ul>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
       </tags>
   </entry>
   <entry>
@@ -329,6 +329,38 @@
 ]]></content>
       <tags>
         <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL如何正确地显示随机消息？ </title>
+    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论</p>
+<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
+<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
+<h3 id="正确的方法">正确的方法</h3>
+<p>下面这个流程：</p>
+<ol type="1">
+<li>取得整个表的行数，并记为C。</li>
+<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
+<li>再用limit Y，1 取得一行。</li>
+</ol>
+<p>下面这段代码，就是上面流程的执行语句的序列。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
+<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
+<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
+<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
+<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
+<ol type="1">
+<li>取得整个表的行数，即为C</li>
+<li>按照相同的随机方法得到Y1、Y2、Y3</li>
+<li>再执行三个limit Y, 1语句得到三行数据。</li>
+<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
+</ol>
+<h3 id="参考">参考</h3>
+<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -472,38 +504,6 @@
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> information_schema.innodb_trx <span class="keyword">where</span> TIME_TO_SEC(<span class="keyword">timediff</span>(<span class="keyword">now</span>(),trx_started))&gt;<span class="number">60</span></span><br></pre></td></tr></table></figure>
 <h2 id="小结">小结</h2>
 <p>这篇文章，主要介绍了MySQL的事务隔离级别的现象和实现，根据实现原理分析了长事务存在的风险，以及如何用正确的方式避免长事务，希望举的例子能够帮助你理解事务，并更好的使用MySQL的事务特性。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL如何正确地显示随机消息？ </title>
-    <url>/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论</p>
-<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
-<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
-<h3 id="正确的方法">正确的方法</h3>
-<p>下面这个流程：</p>
-<ol type="1">
-<li>取得整个表的行数，并记为C。</li>
-<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
-<li>再用limit Y，1 取得一行。</li>
-</ol>
-<p>下面这段代码，就是上面流程的执行语句的序列。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
-<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
-<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
-<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
-<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
-<ol type="1">
-<li>取得整个表的行数，即为C</li>
-<li>按照相同的随机方法得到Y1、Y2、Y3</li>
-<li>再执行三个limit Y, 1语句得到三行数据。</li>
-<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
-</ol>
-<h3 id="参考">参考</h3>
-<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -954,6 +954,32 @@
       </tags>
   </entry>
   <entry>
+    <title>TLS握手的优化：session缓存、ticket票据及TLS1.3的0-RTT</title>
+    <url>/2020/09/04/TLS%E6%8F%A1%E6%89%8B%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%9Asession%E7%BC%93%E5%AD%98%E3%80%81ticket%E7%A5%A8%E6%8D%AE%E5%8F%8ATLS1-3%E7%9A%840-RTT/</url>
+    <content><![CDATA[<p>TLS握手中所消耗的一个或者两个RTT的时间，是用于安全性，对于我们应用层的信息传递而言并没有意义。所以TLS提供了许多种手段，比如缓存，ticket等等，用于减少我们TLS握手中所消耗的RTT的时间。接下来简要介绍常用的一些手段，以及它们所存在的问题。</p>
+<h3 id="session缓存以服务器生成的session-id为依据">session缓存：以服务器生成的session ID为依据</h3>
+<p>session resume with session ID</p>
+<p>最常用的叫session 缓存</p>
+<p>第一次握手后，服务器会生成一个session ID，这个session ID会传给浏览器，或者说是client，当在一定的时间以内，比如说几个小时或者几天以内，浏览器或者客户端携带着这个session ID，再次访问服务器的时候，服务器这个时候它从它的内存或者说其他的缓存中，取到了这个session ID所对应的加密密钥，那么服务器就可以跟client说，我们就使用上一次所使用的加密密钥就可以了，没有必要使用DH或者DHCE密钥交换协议再次生成一个加密密钥，这样我们就减少了RTT。那么这里对于client和server都有要求。client需要在一定的时间内缓存住session ID以及它所对应的加密密钥，而服务器也需要在它的缓存中，为session ID缓存一定的时间。</p>
+<p>第二次访问的时候，Client Hello中是有一个session ID的，当然，第一次访问的时候是没有这样的一个数字的。有了这样的一个session ID以后呢，Server Hello返回了Change Cipher Spec Message，而没有发送Server Key Exchange，就是我们DHCE中必须要发送公钥这么的一个步骤。Change Cipher Spec中说了些什么呢？我们可以看到，[Expert Info (Note/Sequence): This session reuses previously negotiated key (Session resumption)]，我们使用上一次所协商过的key就可以了。服务器就使用了内存所缓存的session id所对应的密钥。接下来所有的通讯都是基于我们上一次所使用的密钥进行加密的。</p>
+<p>session ID缓存往往会有两个问题：</p>
+<ol type="1">
+<li>server 往往是在内存中存放session id以及对应的密钥信息的，所以位于不同的主机上的server它们是没有办法去分享它们的session id以及对应的密钥信息，然而实际上我们的服务往往都是服务于成千上万个用户，所以要通过反向代理负载均衡等通过一个ip或者一个域名，来为很多个用户服务，所以我们会有很多台server，这些server中如何去共享这些个session id呢，比如说server A为同一个用户所生成的session id当下一次用户来访问的时候，很可能通过负载均衡，访问到了server b，那么server b又需要重新进行握手了，这是第一个问题。</li>
+<li>第二个问题，server在内存中存储session id是有内存消耗的。那么到底缓存多长时间，过短和过长都不合适。</li>
+</ol>
+<p>这个时候就可以考虑session ticket，session ticket处理方式与session 缓存是完全不同的，那首先我们的每一台server不需要再耗费内存去存放每一个session中所需要的信息，而是基于它所独有一个密码，那么这个密码呢是整个集群中所共同分享的一个密码，基于这个密码把相关的加密信息进行加密，发送给客户端，那么当客户端下一次需要握手的时候呢，把这个相关的加密后的信息发送给服务器，而只有这个集群内的服务器才知道这个密码，那么它基于这个密码解密之后，就获取到上一次握手成功后所需要的密钥，我们就可以基于这个密钥，与client中所缓存的这个密钥进行加密数据的一个通讯。这样我们就解决了session缓存所具有的上面的问题了。</p>
+<h3 id="tls1.3的0rtt握手">TLS1.3的0RTT握手</h3>
+<p>我们知道TLS1.3中只需要一次RTT完成握手。所谓的0RTT是指，第一次握手的时候就携带我们相关的数据，比如说我们有一个Get请求，第一次就发送，那么在一个RTT后呢，我们就可以收到response，所以它实现握手没有占用任何的RTT。我们叫它0RTT。那么它们是怎么实现的呢？实际上，它们是第二次握手才可以完成的，因为当我们第一次握手的时候，我们的client和服务器呢会把相关的密钥信息缓存下来，那么第二次握手的时候我们基于上一次缓存的一定时间内有效的信息，对我们的Get请求进行加密，那么发送给server，如果server也认为这个上一次的密钥相关信息没有过期的话，那么它就可以解密到了，也可以把基于同样的密钥，把相应的response发给client。</p>
+<p>当然，无论是session ID缓存或者是session ticket或者TLS1.3中的0RTT，它们其实都面临着同样一种攻击叫做重放攻击。那么什么叫重放攻击呢？比如说我们的client现在发送了一个post请求，那么这个post请求呢使用上一次中所使用到的密钥进行加密，所以这其实是一个报文，一个packet，这个packet发送给server呢，server是认的，因为它马上利用它所没有过期的密钥进行解密，并处理，通常一个post请求很有可能是改变我们的用户的数据状态的，那么就改变了我们的数据库。如果这个报文被我们的一个中间人在某个路由器或者某一个代理服务器中把这个报文保存下来了，那么它就可以在随后的过程中，不需要去解密相关的信息，我只要这个packet不停地重新地再发送，就可以不停地去改变我们的数据库的状态。这就是一个重放攻击。</p>
+<p>所以我们的0RTT，或者说我们session id、ticket reuse都是需要设定一个合适的合理的过期时间的。</p>
+<h3 id="小结">小结</h3>
+<p>本片文章主要介绍了TLS为了提升握手速度，而进行的性能优化手段，而TLS中所面临的另外一个问题，就是它的安全性，非常依赖于当前最快速的计算机的运行速度。那么有没有一劳永逸的绝对安全的这样的一种通讯手段呢？那么量子通讯可以带给大家全新的思考。</p>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>TLS与量子通讯的原理</title>
     <url>/2020/09/04/TLS%E4%B8%8E%E9%87%8F%E5%AD%90%E9%80%9A%E8%AE%AF%E7%9A%84%E5%8E%9F%E7%90%86/</url>
     <content><![CDATA[<p>TLS保证安全性的最大难题在于如何传递后续对称加密时，所使用的密钥，那么目前所使用的DH或者DHCE协议呢，都存在被快速运算的计算机所破解的一个可能性。那么，接下来将介绍量子通讯协议。当然这里的量子通讯与我们在物理学中所了解到的那个量子力学一点关系都没有，只是借用了其中一些理念而已。</p>
@@ -1014,32 +1040,6 @@
 <p>我们首先使用到了对称加密所使用到的一些技术，尤其我们重点介绍了AES算法，以及GCM分组工作模式，那么接下来我们介绍了非对称加密算法的两种应用。首先是在PKI证书体系，其次是在DH或者DHCE密钥交换协议中得到了大量广泛的使用。我们也介绍了TLS1.3协议，那么在未来TLS1.3协议将会得到大量广泛的使用，我们必须清楚TLS1.3协议究竟做了哪些改进，和优化。</p>
 <p>TLS协议的安全性受限于当下最快的计算机的运行速度，所以呢，我们也介绍了理论上绝对安全的量子通讯方式来传递密钥。</p>
 <p>那么之后我们将介绍TLS层次下的传输层协议（TLS属于表示层协议），我们将重点介绍TCP协议的设计原则和众多特性。</p>
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TLS握手的优化：session缓存、ticket票据及TLS1.3的0-RTT</title>
-    <url>/2020/09/04/TLS%E6%8F%A1%E6%89%8B%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%9Asession%E7%BC%93%E5%AD%98%E3%80%81ticket%E7%A5%A8%E6%8D%AE%E5%8F%8ATLS1-3%E7%9A%840-RTT/</url>
-    <content><![CDATA[<p>TLS握手中所消耗的一个或者两个RTT的时间，是用于安全性，对于我们应用层的信息传递而言并没有意义。所以TLS提供了许多种手段，比如缓存，ticket等等，用于减少我们TLS握手中所消耗的RTT的时间。接下来简要介绍常用的一些手段，以及它们所存在的问题。</p>
-<h3 id="session缓存以服务器生成的session-id为依据">session缓存：以服务器生成的session ID为依据</h3>
-<p>session resume with session ID</p>
-<p>最常用的叫session 缓存</p>
-<p>第一次握手后，服务器会生成一个session ID，这个session ID会传给浏览器，或者说是client，当在一定的时间以内，比如说几个小时或者几天以内，浏览器或者客户端携带着这个session ID，再次访问服务器的时候，服务器这个时候它从它的内存或者说其他的缓存中，取到了这个session ID所对应的加密密钥，那么服务器就可以跟client说，我们就使用上一次所使用的加密密钥就可以了，没有必要使用DH或者DHCE密钥交换协议再次生成一个加密密钥，这样我们就减少了RTT。那么这里对于client和server都有要求。client需要在一定的时间内缓存住session ID以及它所对应的加密密钥，而服务器也需要在它的缓存中，为session ID缓存一定的时间。</p>
-<p>第二次访问的时候，Client Hello中是有一个session ID的，当然，第一次访问的时候是没有这样的一个数字的。有了这样的一个session ID以后呢，Server Hello返回了Change Cipher Spec Message，而没有发送Server Key Exchange，就是我们DHCE中必须要发送公钥这么的一个步骤。Change Cipher Spec中说了些什么呢？我们可以看到，[Expert Info (Note/Sequence): This session reuses previously negotiated key (Session resumption)]，我们使用上一次所协商过的key就可以了。服务器就使用了内存所缓存的session id所对应的密钥。接下来所有的通讯都是基于我们上一次所使用的密钥进行加密的。</p>
-<p>session ID缓存往往会有两个问题：</p>
-<ol type="1">
-<li>server 往往是在内存中存放session id以及对应的密钥信息的，所以位于不同的主机上的server它们是没有办法去分享它们的session id以及对应的密钥信息，然而实际上我们的服务往往都是服务于成千上万个用户，所以要通过反向代理负载均衡等通过一个ip或者一个域名，来为很多个用户服务，所以我们会有很多台server，这些server中如何去共享这些个session id呢，比如说server A为同一个用户所生成的session id当下一次用户来访问的时候，很可能通过负载均衡，访问到了server b，那么server b又需要重新进行握手了，这是第一个问题。</li>
-<li>第二个问题，server在内存中存储session id是有内存消耗的。那么到底缓存多长时间，过短和过长都不合适。</li>
-</ol>
-<p>这个时候就可以考虑session ticket，session ticket处理方式与session 缓存是完全不同的，那首先我们的每一台server不需要再耗费内存去存放每一个session中所需要的信息，而是基于它所独有一个密码，那么这个密码呢是整个集群中所共同分享的一个密码，基于这个密码把相关的加密信息进行加密，发送给客户端，那么当客户端下一次需要握手的时候呢，把这个相关的加密后的信息发送给服务器，而只有这个集群内的服务器才知道这个密码，那么它基于这个密码解密之后，就获取到上一次握手成功后所需要的密钥，我们就可以基于这个密钥，与client中所缓存的这个密钥进行加密数据的一个通讯。这样我们就解决了session缓存所具有的上面的问题了。</p>
-<h3 id="tls1.3的0rtt握手">TLS1.3的0RTT握手</h3>
-<p>我们知道TLS1.3中只需要一次RTT完成握手。所谓的0RTT是指，第一次握手的时候就携带我们相关的数据，比如说我们有一个Get请求，第一次就发送，那么在一个RTT后呢，我们就可以收到response，所以它实现握手没有占用任何的RTT。我们叫它0RTT。那么它们是怎么实现的呢？实际上，它们是第二次握手才可以完成的，因为当我们第一次握手的时候，我们的client和服务器呢会把相关的密钥信息缓存下来，那么第二次握手的时候我们基于上一次缓存的一定时间内有效的信息，对我们的Get请求进行加密，那么发送给server，如果server也认为这个上一次的密钥相关信息没有过期的话，那么它就可以解密到了，也可以把基于同样的密钥，把相应的response发给client。</p>
-<p>当然，无论是session ID缓存或者是session ticket或者TLS1.3中的0RTT，它们其实都面临着同样一种攻击叫做重放攻击。那么什么叫重放攻击呢？比如说我们的client现在发送了一个post请求，那么这个post请求呢使用上一次中所使用到的密钥进行加密，所以这其实是一个报文，一个packet，这个packet发送给server呢，server是认的，因为它马上利用它所没有过期的密钥进行解密，并处理，通常一个post请求很有可能是改变我们的用户的数据状态的，那么就改变了我们的数据库。如果这个报文被我们的一个中间人在某个路由器或者某一个代理服务器中把这个报文保存下来了，那么它就可以在随后的过程中，不需要去解密相关的信息，我只要这个packet不停地重新地再发送，就可以不停地去改变我们的数据库的状态。这就是一个重放攻击。</p>
-<p>所以我们的0RTT，或者说我们session id、ticket reuse都是需要设定一个合适的合理的过期时间的。</p>
-<h3 id="小结">小结</h3>
-<p>本片文章主要介绍了TLS为了提升握手速度，而进行的性能优化手段，而TLS中所面临的另外一个问题，就是它的安全性，非常依赖于当前最快速的计算机的运行速度。那么有没有一劳永逸的绝对安全的这样的一种通讯手段呢？那么量子通讯可以带给大家全新的思考。</p>
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
@@ -1754,38 +1754,6 @@
       </tags>
   </entry>
   <entry>
-    <title>python实现简单布隆过滤器</title>
-    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
-<p>布隆过滤器vshash table</p>
-<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
-<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
-<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
-<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
-<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
-<h2 id="案例">案例</h2>
-<ol type="1">
-<li>比特币网络</li>
-<li>分布式系统（Map-Reduce) - Hadoop、search engine
-<ol type="1">
-<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
-</ol></li>
-<li>Redis缓存</li>
-<li>垃圾邮件、评论等的过滤</li>
-</ol>
-<h2 id="简单实现示例">简单实现示例</h2>
-<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
-<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
-<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
-<p>search是search(s:str) -&gt;bool</p>
-<p>示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>《相信未来》——食指</title>
     <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
     <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
@@ -1822,6 +1790,38 @@
 ]]></content>
       <tags>
         <tag>青春</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python实现简单布隆过滤器</title>
+    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
+<p>布隆过滤器vshash table</p>
+<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
+<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
+<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
+<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
+<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
+<h2 id="案例">案例</h2>
+<ol type="1">
+<li>比特币网络</li>
+<li>分布式系统（Map-Reduce) - Hadoop、search engine
+<ol type="1">
+<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
+</ol></li>
+<li>Redis缓存</li>
+<li>垃圾邮件、评论等的过滤</li>
+</ol>
+<h2 id="简单实现示例">简单实现示例</h2>
+<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
+<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
+<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
+<p>search是search(s:str) -&gt;bool</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -2240,6 +2240,18 @@
       <tags>
         <tag>计算机网络</tag>
         <tag>HTTP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>优秀的学习资源</title>
+    <url>/2020/09/21/%E4%BC%98%E7%A7%80%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90/</url>
+    <content><![CDATA[<h3 id="数据结构与算法">数据结构与算法</h3>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9vaS13aWtpLm9yZy8=">OI Wiki<i class="fa fa-external-link-alt"></i></span></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>计算机科学</tag>
       </tags>
   </entry>
   <entry>
@@ -3091,6 +3103,35 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
+    <title>并查集侦查无向图中的环</title>
+    <url>/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/</url>
+    <content><![CDATA[<p>并查集是一种数据结构，它跟踪一个集合的元素被分割成若干不相干（不重叠）的子集。union-find算法是一种对这种数据结构执行两种有用操作的算法：</p>
+<p>Find：确定一个特定的元素在哪个子集里。这可以用来确定两个元素是否在同一个子集中。</p>
+<p>Union：将两个子集连接成一个单一的子集。</p>
+<p>在这篇文章中，我们将讨论并查集的应用。这个应用就是检查一个给定的图是否有环。</p>
+<p>UnionFInd算法可以检查一个无向图是否有环。注意到我们已经讨论过一种检查环的<span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvZGV0ZWN0LWN5Y2xlLXVuZGlyZWN0ZWQtZ3JhcGgvP3JlZj1sYnA=">方法<i class="fa fa-external-link-alt"></i></span>。这是另一种使用并查集的防范。这个方法假设图中没有自环。</p>
+<p>我们可以在一个1D数组中跟踪子集，我们称它为parent[]。</p>
+<p>我们考虑如下图：</p>
+<img data-src="/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF.png" class>
+<p>对于每条边，用边的两个顶点做子集。如果两个顶点都已经在同一个子集中，就发现了一个环。</p>
+<p>初始化时，parent的所有槽位都初始化为-1（意味着每个子集中只有一个项目）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2</span><br><span class="line">-1 -1  -1 </span><br></pre></td></tr></table></figure>
+<p>现在逐一处理所有的边。</p>
+<p>边0-1：找到顶点0和1所在的子集。由于它们在不同的子集中，我们对它们进行union操作。为了取union，可以让结点0作为节点1的父结点，或者反之。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 1 is made parent of 0 (1 is now representative of subset &#123;0, 1&#125;)</span><br><span class="line">1  -1  -1</span><br></pre></td></tr></table></figure>
+<p>边1-2：1已经在subset 1中，2在subset 2中，所以取union</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 2 is made parent of 1 (2 is now representative of subset &#123;0, 1, 2&#125;)</span><br><span class="line">1   2  -1</span><br></pre></td></tr></table></figure>
+<p>边0-2：0在subset 2中，2也在subset 2中。因此，包括这条边形成了一个环。</p>
+<p>为什么0的子集和和2相同？</p>
+<p>0-&gt;1-&gt;2 // 1是0的父结点2是1的父结点。</p>
+<p>根据以上解释，下面是实现。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># undirected_graph.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, k</span>):</span></span><br><span class="line">        self.uf = [<span class="number">-1</span>] * (k + <span class="number">1</span>)</span><br><span class="line">        self.sets_count = k</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        p_root = self.find(p)</span><br><span class="line">        q_root = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> p_root == q_root:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p_root] &gt; self.uf[q_root]:</span><br><span class="line">            self.uf[q_root] += self.uf[p_root]</span><br><span class="line">            self.uf[p_root] = q_root</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[p_root] += self.uf[q_root]</span><br><span class="line">            self.uf[q_root] = p_root</span><br><span class="line">        self.sets_count -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.uf = UnionFind(vertices)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isCyclic</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.graph:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> self.graph[i]:</span><br><span class="line">                <span class="keyword">if</span> self.uf.is_connected(i, j):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">                self.uf.union(i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">3</span>)</span><br><span class="line">    g.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    print(g.isCyclic())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>平衡二叉搜索树、B树、B+树、B*树理解</title>
     <url>/2020/07/21/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81B%E6%A0%91%E3%80%81B-%E6%A0%91%E3%80%81B-%E6%A0%91%E7%90%86%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="平衡二叉搜索树">平衡二叉搜索树</h2>
@@ -3185,35 +3226,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>并查集侦查无向图中的环</title>
-    <url>/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/</url>
-    <content><![CDATA[<p>并查集是一种数据结构，它跟踪一个集合的元素被分割成若干不相干（不重叠）的子集。union-find算法是一种对这种数据结构执行两种有用操作的算法：</p>
-<p>Find：确定一个特定的元素在哪个子集里。这可以用来确定两个元素是否在同一个子集中。</p>
-<p>Union：将两个子集连接成一个单一的子集。</p>
-<p>在这篇文章中，我们将讨论并查集的应用。这个应用就是检查一个给定的图是否有环。</p>
-<p>UnionFInd算法可以检查一个无向图是否有环。注意到我们已经讨论过一种检查环的<span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvZGV0ZWN0LWN5Y2xlLXVuZGlyZWN0ZWQtZ3JhcGgvP3JlZj1sYnA=">方法<i class="fa fa-external-link-alt"></i></span>。这是另一种使用并查集的防范。这个方法假设图中没有自环。</p>
-<p>我们可以在一个1D数组中跟踪子集，我们称它为parent[]。</p>
-<p>我们考虑如下图：</p>
-<img data-src="/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF.png" class>
-<p>对于每条边，用边的两个顶点做子集。如果两个顶点都已经在同一个子集中，就发现了一个环。</p>
-<p>初始化时，parent的所有槽位都初始化为-1（意味着每个子集中只有一个项目）。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2</span><br><span class="line">-1 -1  -1 </span><br></pre></td></tr></table></figure>
-<p>现在逐一处理所有的边。</p>
-<p>边0-1：找到顶点0和1所在的子集。由于它们在不同的子集中，我们对它们进行union操作。为了取union，可以让结点0作为节点1的父结点，或者反之。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 1 is made parent of 0 (1 is now representative of subset &#123;0, 1&#125;)</span><br><span class="line">1  -1  -1</span><br></pre></td></tr></table></figure>
-<p>边1-2：1已经在subset 1中，2在subset 2中，所以取union</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0   1   2    &lt;----- 2 is made parent of 1 (2 is now representative of subset &#123;0, 1, 2&#125;)</span><br><span class="line">1   2  -1</span><br></pre></td></tr></table></figure>
-<p>边0-2：0在subset 2中，2也在subset 2中。因此，包括这条边形成了一个环。</p>
-<p>为什么0的子集和和2相同？</p>
-<p>0-&gt;1-&gt;2 // 1是0的父结点2是1的父结点。</p>
-<p>根据以上解释，下面是实现。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># undirected_graph.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, k</span>):</span></span><br><span class="line">        self.uf = [<span class="number">-1</span>] * (k + <span class="number">1</span>)</span><br><span class="line">        self.sets_count = k</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        p_root = self.find(p)</span><br><span class="line">        q_root = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> p_root == q_root:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p_root] &gt; self.uf[q_root]:</span><br><span class="line">            self.uf[q_root] += self.uf[p_root]</span><br><span class="line">            self.uf[p_root] = q_root</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[p_root] += self.uf[q_root]</span><br><span class="line">            self.uf[q_root] = p_root</span><br><span class="line">        self.sets_count -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.uf = UnionFind(vertices)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isCyclic</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.graph:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> self.graph[i]:</span><br><span class="line">                <span class="keyword">if</span> self.uf.is_connected(i, j):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">                self.uf.union(i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">3</span>)</span><br><span class="line">    g.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    print(g.isCyclic())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -3685,34 +3697,13 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>旅行商问题（朴素和dp方法）</title>
-    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
-    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
-<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
-<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
-<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
-<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
-<p>以下是旅行商问题的不同解法。</p>
-<p><strong>朴素的解法：</strong></p>
-<ol type="1">
-<li>将城市1作为起点和终点</li>
-<li>生成所有（n-1）！城市的排列组合</li>
-<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
-<li>返回成本最小的排列组合</li>
-</ol>
-<p>时间复杂度：O(n!)</p>
-<p><strong>DP 动态递推</strong></p>
-<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
-<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
-<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
-<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
-<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
-<p><strong>参考：</strong></p>
-<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
+    <title>曾经我也想过一了百了--中岛美嘉</title>
+    <url>/2020/09/17/%E6%9B%BE%E7%BB%8F%E6%88%91%E4%B9%9F%E6%83%B3%E8%BF%87%E4%B8%80%E4%BA%86%E7%99%BE%E4%BA%86-%E4%B8%AD%E5%B2%9B%E7%BE%8E%E5%98%89/</url>
+    <content><![CDATA[<iframe src="//player.bilibili.com/player.html?aid=17340330&amp;bvid=BV1oW411b7hx&amp;cid=28330126&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
 ]]></content>
       <tags>
-        <tag>数据结构与算法</tag>
+        <tag>音乐</tag>
       </tags>
   </entry>
   <entry>
@@ -3779,13 +3770,34 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>曾经我也想过一了百了--中岛美嘉</title>
-    <url>/2020/09/17/%E6%9B%BE%E7%BB%8F%E6%88%91%E4%B9%9F%E6%83%B3%E8%BF%87%E4%B8%80%E4%BA%86%E7%99%BE%E4%BA%86-%E4%B8%AD%E5%B2%9B%E7%BE%8E%E5%98%89/</url>
-    <content><![CDATA[<iframe src="//player.bilibili.com/player.html?aid=17340330&amp;bvid=BV1oW411b7hx&amp;cid=28330126&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
-</iframe>
+    <title>旅行商问题（朴素和dp方法）</title>
+    <url>/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/</url>
+    <content><![CDATA[<p>Travelling Salesman Problem(TSP)旅行商问题：给定一个集合的城市和每一对城市之间的距离，问题是找到最短可能的路径，访问每个城市恰好一次，并且返回出发的城市。</p>
+<p>注意汉密尔顿循环问题和TSP问题的区别。汉密尔顿循环问题是要找到是否存在一条完全访问每个城市一次的旅游路线。这里我们知道汉密尔顿循环路线存在（因为图是完整的），事实上很多这样的环存在，问题是找到一个最小权重的汉密尔顿循环。</p>
+<img data-src="/2020/08/20/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%98%EF%BC%88%E6%9C%B4%E7%B4%A0%E5%92%8Cdp%E6%96%B9%E6%B3%95%EF%BC%89/%E6%97%85%E8%A1%8C%E5%95%86%E9%97%AE%E9%A2%981.png" class>
+<p>比如，考虑右图所示的图形。图中一个TSP循环是1-2-4-3-1。旅行的费用是10+25+30+15即80。</p>
+<p>这个问题是一个著名的NP问题。这个问题没有多项式时间的已知解。</p>
+<p>以下是旅行商问题的不同解法。</p>
+<p><strong>朴素的解法：</strong></p>
+<ol type="1">
+<li>将城市1作为起点和终点</li>
+<li>生成所有（n-1）！城市的排列组合</li>
+<li>计算每个排列组合的成本，并跟踪成本最小的排列组合</li>
+<li>返回成本最小的排列组合</li>
+</ol>
+<p>时间复杂度：O(n!)</p>
+<p><strong>DP 动态递推</strong></p>
+<p>让给定的顶点集为{1, 2, 3, 4, ..., n}。让我们把1作为输出的起点和终点。对于每一个其他的顶点i（1除外），我们找到以1为起点，i为终点，且所有顶点只出现一次的最小成本路径。让这条路径的成本为cost(i)。对应CUcle的成本将是cost(i) + dist(i, 1)，其中dist(i, 1)是i到1的距离。最后我们返回所有[cost(i) + dist(i, 1)]值的最小值。到目前为止，这看起来很简单。现在的问题是如何得到cost(i)？</p>
+<p>为了使用DP计算cost(i)，我们需要在子问题方面有一些地推关系。让我们定义一个术语C(S, i)为从1开始，到i结束，精确访问集S中每个顶点一次的最小成本路径的成本。我们从大小为2的所有子集开始，计算S为子集的所有子集的C(S, i)，然后我们计算大小为3的所有子集S的C(S, i)，以此类推。注意，每个子集中必须有1.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If size of S is 2, then S must be &#123;1, i&#125;,</span><br><span class="line"> C(S, i) &#x3D; dist(1, i) </span><br><span class="line">Else if size of S is greater than 2.</span><br><span class="line"> C(S, i) &#x3D; min &#123; C(S-&#123;i&#125;, j) + dist(j, i)&#125; where j belongs to S, j !&#x3D; i and j !&#x3D; 1.</span><br></pre></td></tr></table></figure>
+<p>对于一个大小为n的集合，我们考虑每个大小为n-1的n-2个子集，使所有子集中没有t（代表集合的排序）。</p>
+<p>利用上述递归关系，我们可以写出基于DP的解决方案。最多有O(n*2^n)个子问题，每个子问题的求解都需要线性时间。因此，总的运行时间是O(n^2*2^n)。时间复杂度远小于O(n!)，但仍是指数级的。所需空间也是指数级的。所以这种方法即使对于稍高的顶点数量也是不可行的。</p>
+<p>我们很快就会讨论旅行推销员问题的近似算法。</p>
+<p><strong>参考：</strong></p>
+<p>https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/</p>
 ]]></content>
       <tags>
-        <tag>音乐</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -4334,6 +4346,12 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>要理解递归，就得先了解什么是递归。</title>
+    <url>/2020/09/21/%E8%A6%81%E7%90%86%E8%A7%A3%E9%80%92%E5%BD%92%EF%BC%8C%E5%B0%B1%E5%BE%97%E5%85%88%E4%BA%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AF%E9%80%92%E5%BD%92%E3%80%82/</url>
+    <content><![CDATA[
+]]></content>
+  </entry>
+  <entry>
     <title>要不要使用分区表？</title>
     <url>/2020/08/29/%E8%A6%81%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%86%E5%8C%BA%E8%A1%A8%EF%BC%9F/</url>
     <content><![CDATA[<h3 id="分区表是什么">分区表是什么？</h3>
@@ -4435,12 +4453,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>数据库</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>要理解递归，就得先了解什么是递归。</title>
-    <url>/2020/09/21/%E8%A6%81%E7%90%86%E8%A7%A3%E9%80%92%E5%BD%92%EF%BC%8C%E5%B0%B1%E5%BE%97%E5%85%88%E4%BA%86%E8%A7%A3%E4%BB%80%E4%B9%88%E6%98%AF%E9%80%92%E5%BD%92%E3%80%82/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
   <entry>
     <title>解决博弈问题的动态规划通用思路</title>
@@ -5641,11 +5653,5 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       <tags>
         <tag>数据结构与算法</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>优秀的学习资源</title>
-    <url>/2020/09/21/%E4%BC%98%E7%A7%80%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
 </search>
