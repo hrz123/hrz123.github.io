@@ -200,54 +200,6 @@
       </tags>
   </entry>
   <entry>
-    <title>HTTP的正确响应码（For Reference）</title>
-    <url>/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/</url>
-    <content><![CDATA[<p>100，200，300系列表示成功的响应码</p>
-<ul>
-<li>响应码规范：RFC6585（2012.4）、RFC7231（2014.6）</li>
-<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持
-<ul>
-<li>100 Continue：上传大文件前使用
-<ul>
-<li>由客户端发起请求中携带Expect 100-continue头部触发</li>
-</ul></li>
-<li>101 Switch Protocols：协议升级使用
-<ul>
-<li>由客户端发起请求中携带Upgrade：头部触发，如升级websocket或者http/2.0</li>
-</ul></li>
-<li>102 Processing：WebDAV请求可能包含许多涉及文件操作的子请求，需要很长时间才能完成请求。该代码表示服务器已经收到并正在处理请求，但无响应可用。这样可以防止客户端超时，并假设请求丢失</li>
-</ul></li>
-<li>2xx：成功处理请求
-<ul>
-<li>200 OK：成功返回了响应</li>
-<li>201 Created：有新资源在服务器端被成功创建</li>
-<li>202 Accepted：服务端接受并开始处理请求；但请求未处理完成。这样一个模糊的概念是有意如此设计，可以覆盖更多的场景。<strong>例如异步、需要长时间处理的任务。</strong>先给客户端返回202 Accept，而由异步的任务继续去处理这个任务。</li>
-<li>203 Non-Authoritative Information：当代理服务器修改了origin server的原始响应包体时（例如更换了HTML中的元素值），代理服务器可以通过修改200为203的方式告知客户端这一事实，方便客户端为这一行为做出相应的处理。203响应可以被缓存。203这个规范并不被广为接受。</li>
-<li>204 No Content：成功执行了请求且不携带响应包体，并暗示客户端无需更新当前的页面视图。（常见与我们用put等方法post等方法上传了一些资源但是返回的响应告诉不需要去刷新当前的URI等。）</li>
-<li>205 Reset Content：成功执行了请求且不携带响应包体，同时指明客户端需要更新当前页面视图。（比如说URI画图等，可能会遇到）</li>
-<li>206 Partial Content：（多线程断点续传下载都会使用到range协议）使用range协议时返回<strong>部分</strong>响应内容时的响应码</li>
-<li>207 Multi-Status：RFC4918，在WEBDAV协议中以XML返回多个资源的状态。（返回目录树的结构的时候，实际上是返回了很多个子目录及其相关的资源描述，那么这个时候我们其实有很多个响应码，那么207就是把这些响应作为一个响应的时候，那么这个响应码我们告诉客户端是207）</li>
-<li>208 Already Reported：RFC5842，为避免相同集合下资源在207响应码下重复上报，使用208可以使用父集合的响应码。</li>
-</ul></li>
-<li>3xx：重定向使用Location指向的资源或者缓存中的资源。在RFC2068中规定客户端重定向次数不应超过5次，以防止死循环。
-<ul>
-<li>300 Multiple Choices：资源有多种表述，通过300返回给客户端后其自行选择访问哪一种表述。由于缺乏明确的细节，300很少使用。</li>
-<li>301 Moved Permanently：资源永久性的重定向到另一个URL中。（浏览器可以对永久性的重定向直接缓存）</li>
-<li>302 Found：资源临时的重定向到另一个URL中。</li>
-<li>303 See Other：重定向到其他资源，常用语POST/PUT等方法的响应中。</li>
-<li>304 Not Modified：当客户端拥有可能过期的缓存时，会携带缓存的标识etag、时间等信息询问服务器缓存是否仍可复用，而304是告诉客户端可以复用缓存。</li>
-<li>307 Temporary Redirect：类似302，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
-<li>308 Permanent Redirect：类似301，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
-</ul></li>
-</ul>
-<h3 id="参考">参考</h3>
-<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>HTTP的错误响应码（For Reference）</title>
     <url>/2020/09/05/HTTP%E7%9A%84%E9%94%99%E8%AF%AF%E5%93%8D%E5%BA%94%E7%A0%81/</url>
     <content><![CDATA[<p>将介绍400、500系列表示错误的响应码，搞清楚这些错误响应码的含义对于我们快速地定位问题非常有帮助。</p>
@@ -301,6 +253,54 @@
       </tags>
   </entry>
   <entry>
+    <title>HTTP的正确响应码（For Reference）</title>
+    <url>/2020/09/04/HTTP%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%93%8D%E5%BA%94%E7%A0%81/</url>
+    <content><![CDATA[<p>100，200，300系列表示成功的响应码</p>
+<ul>
+<li>响应码规范：RFC6585（2012.4）、RFC7231（2014.6）</li>
+<li>1xx：请求已接收到，需要进一步处理才能完成，HTTP1.0不支持
+<ul>
+<li>100 Continue：上传大文件前使用
+<ul>
+<li>由客户端发起请求中携带Expect 100-continue头部触发</li>
+</ul></li>
+<li>101 Switch Protocols：协议升级使用
+<ul>
+<li>由客户端发起请求中携带Upgrade：头部触发，如升级websocket或者http/2.0</li>
+</ul></li>
+<li>102 Processing：WebDAV请求可能包含许多涉及文件操作的子请求，需要很长时间才能完成请求。该代码表示服务器已经收到并正在处理请求，但无响应可用。这样可以防止客户端超时，并假设请求丢失</li>
+</ul></li>
+<li>2xx：成功处理请求
+<ul>
+<li>200 OK：成功返回了响应</li>
+<li>201 Created：有新资源在服务器端被成功创建</li>
+<li>202 Accepted：服务端接受并开始处理请求；但请求未处理完成。这样一个模糊的概念是有意如此设计，可以覆盖更多的场景。<strong>例如异步、需要长时间处理的任务。</strong>先给客户端返回202 Accept，而由异步的任务继续去处理这个任务。</li>
+<li>203 Non-Authoritative Information：当代理服务器修改了origin server的原始响应包体时（例如更换了HTML中的元素值），代理服务器可以通过修改200为203的方式告知客户端这一事实，方便客户端为这一行为做出相应的处理。203响应可以被缓存。203这个规范并不被广为接受。</li>
+<li>204 No Content：成功执行了请求且不携带响应包体，并暗示客户端无需更新当前的页面视图。（常见与我们用put等方法post等方法上传了一些资源但是返回的响应告诉不需要去刷新当前的URI等。）</li>
+<li>205 Reset Content：成功执行了请求且不携带响应包体，同时指明客户端需要更新当前页面视图。（比如说URI画图等，可能会遇到）</li>
+<li>206 Partial Content：（多线程断点续传下载都会使用到range协议）使用range协议时返回<strong>部分</strong>响应内容时的响应码</li>
+<li>207 Multi-Status：RFC4918，在WEBDAV协议中以XML返回多个资源的状态。（返回目录树的结构的时候，实际上是返回了很多个子目录及其相关的资源描述，那么这个时候我们其实有很多个响应码，那么207就是把这些响应作为一个响应的时候，那么这个响应码我们告诉客户端是207）</li>
+<li>208 Already Reported：RFC5842，为避免相同集合下资源在207响应码下重复上报，使用208可以使用父集合的响应码。</li>
+</ul></li>
+<li>3xx：重定向使用Location指向的资源或者缓存中的资源。在RFC2068中规定客户端重定向次数不应超过5次，以防止死循环。
+<ul>
+<li>300 Multiple Choices：资源有多种表述，通过300返回给客户端后其自行选择访问哪一种表述。由于缺乏明确的细节，300很少使用。</li>
+<li>301 Moved Permanently：资源永久性的重定向到另一个URL中。（浏览器可以对永久性的重定向直接缓存）</li>
+<li>302 Found：资源临时的重定向到另一个URL中。</li>
+<li>303 See Other：重定向到其他资源，常用语POST/PUT等方法的响应中。</li>
+<li>304 Not Modified：当客户端拥有可能过期的缓存时，会携带缓存的标识etag、时间等信息询问服务器缓存是否仍可复用，而304是告诉客户端可以复用缓存。</li>
+<li>307 Temporary Redirect：类似302，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
+<li>308 Permanent Redirect：类似301，但明确重定向后请求方法必须与原请求方法相同，不得改变。</li>
+</ul></li>
+</ul>
+<h3 id="参考">参考</h3>
+<p>陶辉老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb3Vyc2UvZGV0YWlsLzEwMDAyNjgwMS05NDYzMw==">Web协议详解与抓包实战<i class="fa fa-external-link-alt"></i></span>课程</p>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>K个一组翻转链表</title>
     <url>/2020/07/20/K%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
     <content><![CDATA[<p>思路， 首先一个哨兵结点可以帮我们省去判断边界的代码，建立哨兵，并且令dummy.next = head</p>
@@ -329,74 +329,6 @@
 ]]></content>
       <tags>
         <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL中的锁</title>
-    <url>/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
-    <content><![CDATA[<h2 id="全局锁表锁行锁间隙锁">全局锁、表锁、行锁、间隙锁。</h2>
-<h4 id="全局锁flush-tables-with-read-lock">全局锁：flush tables with read lock</h4>
-<h4 id="表级锁">表级锁：</h4>
-<ol type="1">
-<li>表锁：lock tables ... read/write</li>
-<li>MDL（metadata lock）：server层，增删改查DML语句添加读锁，修改表结构定义DDL语句加写锁。更加详细的可以看这个链接<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3EyODc4OTQ4L2FydGljbGUvZGV0YWlscy85NjQzMDEyOQ==">https://blog.csdn.net/q2878948/article/details/96430129<i class="fa fa-external-link-alt"></i></span></li>
-</ol>
-<p>间隙锁为了解决幻读，比较不同。</p>
-<p>比如行锁，分成读锁（共享锁）和写锁（排他锁）。下图就是这两种类型行锁的冲突关系。</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/MySQL%E4%B8%AD%E7%9A%84%E9%94%81.png" class>
-<p>也就是说，跟行锁有冲突关系的是“另外一个行锁”。</p>
-<p>但是间隙锁不一样，<strong>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作</strong>。间隙锁之间都不存在冲突关系。</p>
-<p>这句话不太好理解，举个例子：</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%812.png" class>
-<p>这里session B并不会被堵住，因为表t里并没有c=7这个记录，因此session A加的是间隙锁（5，10）。而session B也是在这个间隙加的间隙锁。它们有共同的目标，即：保护这个间隙，不允许插入值。但，它们之间不是冲突的。</p>
-<p>间隙锁和行锁合称 next-key lock，每个 next-key lock 是前开后闭区间。也就是说，我们的表 t 初始化以后，如果用 select * from t for update 要把整个表所有记录锁起来，就形成了 7 个 next-key lock，分别是 (-∞,0]、(0,5]、(5,10]、(10,15]、(15,20]、(20, 25]、(25, +supremum]。</p>
-<blockquote>
-<p>备注：这篇文章中，如果没有特别说明，我们把间隙锁记为开区间，把 next-key lock 记为前开后闭区间。</p>
-</blockquote>
-<p>你可能会问说，这个 supremum 从哪儿来的呢？</p>
-<p>这是因为 +∞是开区间。实现上，InnoDB 给每个索引加了一个不存在的最大值 supremum，这样才符合我们前面说的“都是前开后闭区间”。</p>
-<p><strong>间隙锁和next-key lock的引入，帮我们解决了幻读的问题，但同时也带来了一些“困扰”。</strong></p>
-<p>在前面的文章中，就用同学提到了这个问题。我把他的问题转述一下，对应到我们这个例子的表来说，业务逻辑是这样额：任意锁住一行，如果这一行不存在的话就插入，如果存在这一行就更新它的数据，代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">begin;</span><br><span class="line">select * from t where id&#x3D;N for update;</span><br><span class="line"></span><br><span class="line">&#x2F;*如果行不存在*&#x2F;</span><br><span class="line">insert into t values(N,N,N);</span><br><span class="line">&#x2F;*如果行存在*&#x2F;</span><br><span class="line">update t set d&#x3D;N set id&#x3D;N;</span><br><span class="line"></span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
-<p>可能你会说，这个不是insert .. on duplicate key update 就能解决吗？但其实在有多个唯一键的时候，这个方法是不能满足这位提问同学的需求的。至于为什么，我会在后面的文章中再展开说明。</p>
-<p>现在，我们就只讨论这个逻辑。</p>
-<p>这个同学碰到的现象是，这个逻辑一旦有并发，就会碰到死锁。你一定也觉得奇怪，这个逻辑每次操作前用 for update 锁起来，已经是最严格的模式了，怎么还会有死锁呢？</p>
-<p>这里，我用两个 session 来模拟并发，并假设 N=9。</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%813.png" class>
-<p>你看到了，其实都不需要用到后面的update语句，就已经形成死锁了。我们按语句执行顺序来分析一下：</p>
-<ol type="1">
-<li>session A执行select ... for update 语句，由于id=9这一行并不存在，因此会加上间隙锁（5，10；</li>
-<li>session B执行select ... for update 语句，同样会加上间隙锁（5，10），间隙锁之间不会冲突，因此这个语句可以执行成功；</li>
-<li>session B试图插入一行（9，9，9），被session A的间隙锁挡住了，只好进入等待；</li>
-<li>session A试图插入一行（9，9，9），被session B的间隙锁挡住了。</li>
-</ol>
-<p>至此，两个session进入互相等待的状态，形成死锁。当然，InnoDB的死锁检测马上就发现了这对死锁关系，让session A的insert语句返回了。</p>
-<p>你现在知道了，<strong>间隙锁的引入，可能会导致同样的语句锁住更大的范围，这其实是影响了并发度的</strong>。其实，这还只是一个简单的例子，在下一篇文章中我们还会碰到更多、更复杂的例子。</p>
-<p>你可能会说，为了解决幻读的问题，我们引入了这么一大串内容，有没有更简单一点的处理方法呢。</p>
-<p>今天和你分析的问题都是在可重复读隔离级别下的，间隙锁是在可重复读隔离级别下才会生效的。所以，你如果把隔离级别设置为读提交的话，就没有间隙锁了。但同时，你要解决可能出现的数据和日志不一致问题，需要把 binlog 格式设置为 row。这，也是现在不少公司使用的配置组合。</p>
-<p>比如说，大家都用读提交，可是逻辑备份的时候，mysqldump 为什么要把备份线程设置成可重复读呢？（这个我在前面的文章中已经解释过了，你可以再回顾下第 6 篇文章《全局锁和表锁 ：给表加个字段怎么有这么多阻碍？》的内容）</p>
-<p>然后，在备份期间，备份线程用的是可重复读，而业务线程用的是读提交。同时存在两种事务隔离级别，会不会有问题？</p>
-<p>进一步地，这两个不同的隔离级别现象有什么不一样的，关于我们的业务，“用读提交就够了”这个结论是怎么得到的？</p>
-<h2 id="加锁规则的经验总结">加锁规则的经验总结</h2>
-<p>首先说明一下，这些加锁规则我没在别的地方看到过有类似的总结，以前我自己判断的时候都是想着代码里面的实现来脑补的。这次为了总结成不看代码的同学也能理解的规则，是我又重新刷了代码临时总结出来的。所以，这个规则有以下两条前提说明：</p>
-<ol type="1">
-<li>MySQL 后面的版本可能会改变加锁策略，所以这个规则只限于截止到现在的最新版本，即 5.x 系列 &lt;=5.7.24，8.0 系列 &lt;=8.0.13。</li>
-<li>如果大家在验证中有发现 bad case 的话，请提出来，我会再补充进这篇文章，使得一起学习本专栏的所有同学都能受益。</li>
-</ol>
-<p>因为间隙锁在可重复读隔离级别下才有效，所以本篇文章接下来的描述，若没有特殊说明，默认是可重复读隔离级别。</p>
-<p><strong>我总结的加锁规则里面，包含了两个“原则”、两个“优化”和一个“bug”。</strong></p>
-<ol type="1">
-<li>原则 1：加锁的基本单位是 next-key lock。 next-key lock 是前开后闭区间。</li>
-<li>原则 2：查找过程中访问到的对象才会加锁。</li>
-<li>优化 1：索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。</li>
-<li>优化 2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</li>
-<li>一个 bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。</li>
-</ol>
-<h2 id="参考">参考</h2>
-<p>感谢丁奇老师的专栏，摘录部分，如有不妥，请通知我立即删除。https://time.geekbang.org/column/article/75659</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -472,6 +404,74 @@
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> information_schema.innodb_trx <span class="keyword">where</span> TIME_TO_SEC(<span class="keyword">timediff</span>(<span class="keyword">now</span>(),trx_started))&gt;<span class="number">60</span></span><br></pre></td></tr></table></figure>
 <h2 id="小结">小结</h2>
 <p>这篇文章，主要介绍了MySQL的事务隔离级别的现象和实现，根据实现原理分析了长事务存在的风险，以及如何用正确的方式避免长事务，希望举的例子能够帮助你理解事务，并更好的使用MySQL的事务特性。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL中的锁</title>
+    <url>/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
+    <content><![CDATA[<h2 id="全局锁表锁行锁间隙锁">全局锁、表锁、行锁、间隙锁。</h2>
+<h4 id="全局锁flush-tables-with-read-lock">全局锁：flush tables with read lock</h4>
+<h4 id="表级锁">表级锁：</h4>
+<ol type="1">
+<li>表锁：lock tables ... read/write</li>
+<li>MDL（metadata lock）：server层，增删改查DML语句添加读锁，修改表结构定义DDL语句加写锁。更加详细的可以看这个链接<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3EyODc4OTQ4L2FydGljbGUvZGV0YWlscy85NjQzMDEyOQ==">https://blog.csdn.net/q2878948/article/details/96430129<i class="fa fa-external-link-alt"></i></span></li>
+</ol>
+<p>间隙锁为了解决幻读，比较不同。</p>
+<p>比如行锁，分成读锁（共享锁）和写锁（排他锁）。下图就是这两种类型行锁的冲突关系。</p>
+<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/MySQL%E4%B8%AD%E7%9A%84%E9%94%81.png" class>
+<p>也就是说，跟行锁有冲突关系的是“另外一个行锁”。</p>
+<p>但是间隙锁不一样，<strong>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作</strong>。间隙锁之间都不存在冲突关系。</p>
+<p>这句话不太好理解，举个例子：</p>
+<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%812.png" class>
+<p>这里session B并不会被堵住，因为表t里并没有c=7这个记录，因此session A加的是间隙锁（5，10）。而session B也是在这个间隙加的间隙锁。它们有共同的目标，即：保护这个间隙，不允许插入值。但，它们之间不是冲突的。</p>
+<p>间隙锁和行锁合称 next-key lock，每个 next-key lock 是前开后闭区间。也就是说，我们的表 t 初始化以后，如果用 select * from t for update 要把整个表所有记录锁起来，就形成了 7 个 next-key lock，分别是 (-∞,0]、(0,5]、(5,10]、(10,15]、(15,20]、(20, 25]、(25, +supremum]。</p>
+<blockquote>
+<p>备注：这篇文章中，如果没有特别说明，我们把间隙锁记为开区间，把 next-key lock 记为前开后闭区间。</p>
+</blockquote>
+<p>你可能会问说，这个 supremum 从哪儿来的呢？</p>
+<p>这是因为 +∞是开区间。实现上，InnoDB 给每个索引加了一个不存在的最大值 supremum，这样才符合我们前面说的“都是前开后闭区间”。</p>
+<p><strong>间隙锁和next-key lock的引入，帮我们解决了幻读的问题，但同时也带来了一些“困扰”。</strong></p>
+<p>在前面的文章中，就用同学提到了这个问题。我把他的问题转述一下，对应到我们这个例子的表来说，业务逻辑是这样额：任意锁住一行，如果这一行不存在的话就插入，如果存在这一行就更新它的数据，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">begin;</span><br><span class="line">select * from t where id&#x3D;N for update;</span><br><span class="line"></span><br><span class="line">&#x2F;*如果行不存在*&#x2F;</span><br><span class="line">insert into t values(N,N,N);</span><br><span class="line">&#x2F;*如果行存在*&#x2F;</span><br><span class="line">update t set d&#x3D;N set id&#x3D;N;</span><br><span class="line"></span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
+<p>可能你会说，这个不是insert .. on duplicate key update 就能解决吗？但其实在有多个唯一键的时候，这个方法是不能满足这位提问同学的需求的。至于为什么，我会在后面的文章中再展开说明。</p>
+<p>现在，我们就只讨论这个逻辑。</p>
+<p>这个同学碰到的现象是，这个逻辑一旦有并发，就会碰到死锁。你一定也觉得奇怪，这个逻辑每次操作前用 for update 锁起来，已经是最严格的模式了，怎么还会有死锁呢？</p>
+<p>这里，我用两个 session 来模拟并发，并假设 N=9。</p>
+<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%813.png" class>
+<p>你看到了，其实都不需要用到后面的update语句，就已经形成死锁了。我们按语句执行顺序来分析一下：</p>
+<ol type="1">
+<li>session A执行select ... for update 语句，由于id=9这一行并不存在，因此会加上间隙锁（5，10；</li>
+<li>session B执行select ... for update 语句，同样会加上间隙锁（5，10），间隙锁之间不会冲突，因此这个语句可以执行成功；</li>
+<li>session B试图插入一行（9，9，9），被session A的间隙锁挡住了，只好进入等待；</li>
+<li>session A试图插入一行（9，9，9），被session B的间隙锁挡住了。</li>
+</ol>
+<p>至此，两个session进入互相等待的状态，形成死锁。当然，InnoDB的死锁检测马上就发现了这对死锁关系，让session A的insert语句返回了。</p>
+<p>你现在知道了，<strong>间隙锁的引入，可能会导致同样的语句锁住更大的范围，这其实是影响了并发度的</strong>。其实，这还只是一个简单的例子，在下一篇文章中我们还会碰到更多、更复杂的例子。</p>
+<p>你可能会说，为了解决幻读的问题，我们引入了这么一大串内容，有没有更简单一点的处理方法呢。</p>
+<p>今天和你分析的问题都是在可重复读隔离级别下的，间隙锁是在可重复读隔离级别下才会生效的。所以，你如果把隔离级别设置为读提交的话，就没有间隙锁了。但同时，你要解决可能出现的数据和日志不一致问题，需要把 binlog 格式设置为 row。这，也是现在不少公司使用的配置组合。</p>
+<p>比如说，大家都用读提交，可是逻辑备份的时候，mysqldump 为什么要把备份线程设置成可重复读呢？（这个我在前面的文章中已经解释过了，你可以再回顾下第 6 篇文章《全局锁和表锁 ：给表加个字段怎么有这么多阻碍？》的内容）</p>
+<p>然后，在备份期间，备份线程用的是可重复读，而业务线程用的是读提交。同时存在两种事务隔离级别，会不会有问题？</p>
+<p>进一步地，这两个不同的隔离级别现象有什么不一样的，关于我们的业务，“用读提交就够了”这个结论是怎么得到的？</p>
+<h2 id="加锁规则的经验总结">加锁规则的经验总结</h2>
+<p>首先说明一下，这些加锁规则我没在别的地方看到过有类似的总结，以前我自己判断的时候都是想着代码里面的实现来脑补的。这次为了总结成不看代码的同学也能理解的规则，是我又重新刷了代码临时总结出来的。所以，这个规则有以下两条前提说明：</p>
+<ol type="1">
+<li>MySQL 后面的版本可能会改变加锁策略，所以这个规则只限于截止到现在的最新版本，即 5.x 系列 &lt;=5.7.24，8.0 系列 &lt;=8.0.13。</li>
+<li>如果大家在验证中有发现 bad case 的话，请提出来，我会再补充进这篇文章，使得一起学习本专栏的所有同学都能受益。</li>
+</ol>
+<p>因为间隙锁在可重复读隔离级别下才有效，所以本篇文章接下来的描述，若没有特殊说明，默认是可重复读隔离级别。</p>
+<p><strong>我总结的加锁规则里面，包含了两个“原则”、两个“优化”和一个“bug”。</strong></p>
+<ol type="1">
+<li>原则 1：加锁的基本单位是 next-key lock。 next-key lock 是前开后闭区间。</li>
+<li>原则 2：查找过程中访问到的对象才会加锁。</li>
+<li>优化 1：索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。</li>
+<li>优化 2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</li>
+<li>一个 bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。</li>
+</ol>
+<h2 id="参考">参考</h2>
+<p>感谢丁奇老师的专栏，摘录部分，如有不妥，请通知我立即删除。https://time.geekbang.org/column/article/75659</p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -695,49 +695,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Python函数参数默认值的陷阱和原理深究</title>
-    <url>/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/</url>
-    <content><![CDATA[<h3 id="参考">参考</h3>
-<p>http://cenalulu.github.io/python/default-mutable-arguments/</p>
-<p>本文将介绍使用mutable对象作为Python函数参数默认值潜在的危害，以及其实现原理和设计目的</p>
-<h3 id="陷阱重现">陷阱重现</h3>
-<p>我们用实际的例子演示一下我们今天所要讨论的主要内容。下面一段代码定义了一个名为generate_new_list_with的函数。该函数的本意是在每次都调用时都新建一个包含有给定element值的list。而实际运行结果如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=[], element=None</span>):</span></span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    list1 = generate_new_list_with(element=<span class="number">1</span>)</span><br><span class="line">    print(list1)</span><br><span class="line">    <span class="comment"># [1]</span></span><br><span class="line">    list2 = generate_new_list_with(element=<span class="number">2</span>)</span><br><span class="line">    print(list2)</span><br><span class="line">    <span class="comment"># [1, 2]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
-<p>可见代码运行结果并不和我们预期的一样。list_2在函数的第二次调用时并没有得到一个新的list并填入2，而是在第一次调用结果的基础上append了一个2。为什么会发生这样在其他编程语言中简直像bug一样的问题呢？</p>
-<h3 id="准备知识python变量的实质">准备知识：Python变量的实质</h3>
-<p>要了解这个问题的原因我们现需要一个准备知识，那就是：Python变量到底是如何实现的？Python变量区别与其他编程语言的声明&amp;赋值方式，采用的是创建&amp;指向的类似于指针的方式实现的。即Python中的变量实际上是对值或者对象的一个指针（简单的说他们是指的一个名字）。我们来看一个例子。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">p = <span class="number">1</span></span><br><span class="line">p = p + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<p>对于传统语言，上面这段代码的执行方式将会是，现在内存中声明得到一个p的变量，然后将1存入变量p所在内存。执行家法操作的时候得到2的结果，将2这个数值再次存入到p所在内存地址中。可见整个执行活成中，<strong>变化的是变量p所在内存地址上的值。</strong></p>
-<p>上面这段代码中，Python实际上是现在执行内存中创建了一个1的对象，并将p指向了它。在执行加法操作的时候，实际上通过加法操作得到了一个2的新对象，并将p指向这个新的对象。<strong>可见整个执行过程中，变化的是p指向的内存地址。</strong></p>
-<h3 id="函数参数默认值陷阱的根本原因">函数参数默认值陷阱的根本原因</h3>
-<p>一句话来解释：Python函数的参数默认值，是在编译阶段就绑定的。</p>
-<p>现在，我们先从一段摘录来详细分析这个陷阱的原因。下面是一段从Python Common Gotchas中摘录的原因解释：</p>
-<blockquote>
-<p>Python's default arguments are evaluated once when the function is defined, not each time the function is called(like it is in say, Ruby). This means that if you use a mutable default argument and mutate it, you will and have mutated that object for all future calls to the function as well.</p>
-</blockquote>
-<p><strong>可见如果参数默认值是在函数编译compile阶段就已经被确定。之后所有的函数调用时，如果参数不显示的给予赋值，那么所谓的参数默认值不过是一个指向那个在compile阶段就已经存在的对象的指针。</strong>如果调用函数时，没有显示指定传入参数值的话。那么所有这种情况下的该参数都会作为编译时创建的那个对象的一种别名存在。<strong>如果参数的默认值是一个不可变（Immutable）数值，那么在函数体内如果修改了该参数，那么参数就会重新指向另一个新的不可变值，而如果参数默认值是和本文最开始的举例一样，是一个可变对象（Mutable），那么情况就比较糟糕了。所有函数体内对于该参数的修改，实际上都是对compile阶段就已经确定的那个对象的修改。</strong>对于这么一个陷阱在Python官方文档中也有特别提示：</p>
-<blockquote>
-<p>Important warning: The default value is evaluated only once. This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes.</p>
-</blockquote>
-<h3 id="如何避免这个陷阱带来不必要麻烦">如何避免这个陷阱带来不必要麻烦</h3>
-<p>当然最好的方式是不要使用可变对象作为函数默认值。如果非要这么用的话，下面是一种解决方案。还是以文章开头的需求为例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=None, element=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> my_list <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        my_list = []</span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br></pre></td></tr></table></figure>
-<h3 id="为什么python要这么设计">为什么Python要这么设计</h3>
-<p>这个问题的答案在 STackOverFlow上可以找到答案。这里将得票数最多的答案最重要的部分摘录如下：</p>
-<blockquote>
-<p>Actually, this is not a design flaw, and it is not because of internals, or performance. It comes simply from the fact that functions in Python are first-class objects, and not only a piece of code. As soon as you get to think into this way, then it completely makes sense: a function is an object being evaluated on its definition; default parameters are kind of "member data" and therefore their state may change from one call to the other - exactly as in any other object. In any case, Effbot has a very nice explanation of the reasons for this behavior in Default Parameter Values in Python. I found is very clear, and I really suggest reading it for a better knowledge og how function objects work.</p>
-</blockquote>
-<p>在这个回答中，答者认为是出于Python编译器的实现方式考虑，函数是一个内部一级对象。而参数默认值是这个对象的属性。在其他任何语言中，对象属性都是在对象创建时做绑定的。因此，函数参数默认值是在编译时绑定就不足为奇了。然而，也有很多一些回答者不买账，认为即使是first-class object也可以使用closure的方式在执行绑定。</p>
-<blockquote>
-<p>This is not a design flaw. It is a design decision; perhaps a bad one, but not an accident. The state thing is just like any other closure: a closure is not a function, and a function with mutable default argument is not a function.</p>
-</blockquote>
-<p>甚至还有反驳这抛开实现逻辑，单纯从设计角度认为：只要有违背程序员基本思考逻辑的行为，都是设计缺陷。</p>
-]]></content>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Python----socket编程</title>
     <url>/2020/08/28/Python-socket%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<h3 id="基于tcp的套接字编程">基于TCP的套接字编程：</h3>
@@ -856,6 +813,49 @@
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python函数参数默认值的陷阱和原理深究</title>
+    <url>/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/</url>
+    <content><![CDATA[<h3 id="参考">参考</h3>
+<p>http://cenalulu.github.io/python/default-mutable-arguments/</p>
+<p>本文将介绍使用mutable对象作为Python函数参数默认值潜在的危害，以及其实现原理和设计目的</p>
+<h3 id="陷阱重现">陷阱重现</h3>
+<p>我们用实际的例子演示一下我们今天所要讨论的主要内容。下面一段代码定义了一个名为generate_new_list_with的函数。该函数的本意是在每次都调用时都新建一个包含有给定element值的list。而实际运行结果如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=[], element=None</span>):</span></span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    list1 = generate_new_list_with(element=<span class="number">1</span>)</span><br><span class="line">    print(list1)</span><br><span class="line">    <span class="comment"># [1]</span></span><br><span class="line">    list2 = generate_new_list_with(element=<span class="number">2</span>)</span><br><span class="line">    print(list2)</span><br><span class="line">    <span class="comment"># [1, 2]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>可见代码运行结果并不和我们预期的一样。list_2在函数的第二次调用时并没有得到一个新的list并填入2，而是在第一次调用结果的基础上append了一个2。为什么会发生这样在其他编程语言中简直像bug一样的问题呢？</p>
+<h3 id="准备知识python变量的实质">准备知识：Python变量的实质</h3>
+<p>要了解这个问题的原因我们现需要一个准备知识，那就是：Python变量到底是如何实现的？Python变量区别与其他编程语言的声明&amp;赋值方式，采用的是创建&amp;指向的类似于指针的方式实现的。即Python中的变量实际上是对值或者对象的一个指针（简单的说他们是指的一个名字）。我们来看一个例子。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">p = <span class="number">1</span></span><br><span class="line">p = p + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>对于传统语言，上面这段代码的执行方式将会是，现在内存中声明得到一个p的变量，然后将1存入变量p所在内存。执行家法操作的时候得到2的结果，将2这个数值再次存入到p所在内存地址中。可见整个执行活成中，<strong>变化的是变量p所在内存地址上的值。</strong></p>
+<p>上面这段代码中，Python实际上是现在执行内存中创建了一个1的对象，并将p指向了它。在执行加法操作的时候，实际上通过加法操作得到了一个2的新对象，并将p指向这个新的对象。<strong>可见整个执行过程中，变化的是p指向的内存地址。</strong></p>
+<h3 id="函数参数默认值陷阱的根本原因">函数参数默认值陷阱的根本原因</h3>
+<p>一句话来解释：Python函数的参数默认值，是在编译阶段就绑定的。</p>
+<p>现在，我们先从一段摘录来详细分析这个陷阱的原因。下面是一段从Python Common Gotchas中摘录的原因解释：</p>
+<blockquote>
+<p>Python's default arguments are evaluated once when the function is defined, not each time the function is called(like it is in say, Ruby). This means that if you use a mutable default argument and mutate it, you will and have mutated that object for all future calls to the function as well.</p>
+</blockquote>
+<p><strong>可见如果参数默认值是在函数编译compile阶段就已经被确定。之后所有的函数调用时，如果参数不显示的给予赋值，那么所谓的参数默认值不过是一个指向那个在compile阶段就已经存在的对象的指针。</strong>如果调用函数时，没有显示指定传入参数值的话。那么所有这种情况下的该参数都会作为编译时创建的那个对象的一种别名存在。<strong>如果参数的默认值是一个不可变（Immutable）数值，那么在函数体内如果修改了该参数，那么参数就会重新指向另一个新的不可变值，而如果参数默认值是和本文最开始的举例一样，是一个可变对象（Mutable），那么情况就比较糟糕了。所有函数体内对于该参数的修改，实际上都是对compile阶段就已经确定的那个对象的修改。</strong>对于这么一个陷阱在Python官方文档中也有特别提示：</p>
+<blockquote>
+<p>Important warning: The default value is evaluated only once. This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes.</p>
+</blockquote>
+<h3 id="如何避免这个陷阱带来不必要麻烦">如何避免这个陷阱带来不必要麻烦</h3>
+<p>当然最好的方式是不要使用可变对象作为函数默认值。如果非要这么用的话，下面是一种解决方案。还是以文章开头的需求为例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new_list_with</span>(<span class="params">my_list=None, element=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> my_list <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        my_list = []</span><br><span class="line">    my_list.append(element)</span><br><span class="line">    <span class="keyword">return</span> my_list</span><br></pre></td></tr></table></figure>
+<h3 id="为什么python要这么设计">为什么Python要这么设计</h3>
+<p>这个问题的答案在 STackOverFlow上可以找到答案。这里将得票数最多的答案最重要的部分摘录如下：</p>
+<blockquote>
+<p>Actually, this is not a design flaw, and it is not because of internals, or performance. It comes simply from the fact that functions in Python are first-class objects, and not only a piece of code. As soon as you get to think into this way, then it completely makes sense: a function is an object being evaluated on its definition; default parameters are kind of "member data" and therefore their state may change from one call to the other - exactly as in any other object. In any case, Effbot has a very nice explanation of the reasons for this behavior in Default Parameter Values in Python. I found is very clear, and I really suggest reading it for a better knowledge og how function objects work.</p>
+</blockquote>
+<p>在这个回答中，答者认为是出于Python编译器的实现方式考虑，函数是一个内部一级对象。而参数默认值是这个对象的属性。在其他任何语言中，对象属性都是在对象创建时做绑定的。因此，函数参数默认值是在编译时绑定就不足为奇了。然而，也有很多一些回答者不买账，认为即使是first-class object也可以使用closure的方式在执行绑定。</p>
+<blockquote>
+<p>This is not a design flaw. It is a design decision; perhaps a bad one, but not an accident. The state thing is just like any other closure: a closure is not a function, and a function with mutable default argument is not a function.</p>
+</blockquote>
+<p>甚至还有反驳这抛开实现逻辑，单纯从设计角度认为：只要有违背程序员基本思考逻辑的行为，都是设计缺陷。</p>
+]]></content>
+      <tags>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1151,22 +1151,6 @@
       </tags>
   </entry>
   <entry>
-    <title>grant之后要跟着flush privileges吗？ </title>
-    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论：</p>
-<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
-<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
-<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
-<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
-<h3 id="小结">小结</h3>
-<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
-<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>insert语句的锁为什么这么多？</title>
     <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/</url>
     <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
@@ -1287,6 +1271,22 @@
 <p>如果现在有这么一个需求：要往表t2中插入一行数据，这一行的c值是表t中c值的最大值加1。</p>
 <p>此时，我们可以这么写这条SQL语句：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>grant之后要跟着flush privileges吗？ </title>
+    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论：</p>
+<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
+<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
+<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
+<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
+<h3 id="小结">小结</h3>
+<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
+<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -1693,6 +1693,47 @@
       </tags>
   </entry>
   <entry>
+    <title>python实现简单布隆过滤器</title>
+    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
+<p>布隆过滤器vshash table</p>
+<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
+<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
+<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
+<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
+<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
+<h2 id="案例">案例</h2>
+<ol type="1">
+<li>比特币网络</li>
+<li>分布式系统（Map-Reduce) - Hadoop、search engine
+<ol type="1">
+<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
+</ol></li>
+<li>Redis缓存</li>
+<li>垃圾邮件、评论等的过滤</li>
+</ol>
+<h2 id="简单实现示例">简单实现示例</h2>
+<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
+<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
+<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
+<p>search是search(s:str) -&gt;bool</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一次犯罪不过是污染了水流，而一次不公正的司法却污染了水源</title>
+    <url>/2020/08/08/%E4%B8%80%E6%AC%A1%E7%8A%AF%E7%BD%AA%E4%B8%8D%E8%BF%87%E6%98%AF%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%B5%81%EF%BC%8C%E8%80%8C%E4%B8%80%E6%AC%A1%E4%B8%8D%E5%85%AC%E6%AD%A3%E7%9A%84%E5%8F%B8%E6%B3%95%E5%8D%B4%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%BA%90/</url>
+    <content><![CDATA[<p>张玉环事件有感</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python实现并查集</title>
     <url>/2020/07/15/python%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86/</url>
     <content><![CDATA[<h1 id="python实现并查集">python实现并查集</h1>
@@ -1754,35 +1795,18 @@
       </tags>
   </entry>
   <entry>
-    <title>python实现简单布隆过滤器</title>
-    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
-<p>布隆过滤器vshash table</p>
-<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
-<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
-<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
-<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
-<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
-<h2 id="案例">案例</h2>
-<ol type="1">
-<li>比特币网络</li>
-<li>分布式系统（Map-Reduce) - Hadoop、search engine
-<ol type="1">
-<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
-</ol></li>
-<li>Redis缓存</li>
-<li>垃圾邮件、评论等的过滤</li>
-</ol>
-<h2 id="简单实现示例">简单实现示例</h2>
-<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
-<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
-<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
-<p>search是search(s:str) -&gt;bool</p>
-<p>示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
+    <title>给时光以生命，给岁月以文明</title>
+    <url>/2020/08/26/%E4%B8%8D%E6%98%AF%E7%BB%99%E6%96%87%E6%98%8E%E4%BB%A5%E5%B2%81%E6%9C%88%EF%BC%8C%E8%80%8C%E6%98%AF%E7%BB%99%E5%B2%81%E6%9C%88%E4%BB%A5%E6%96%87%E6%98%8E/</url>
+    <content><![CDATA[<p><strong>给时光以生命，而不是给生命以时光。</strong>（这句话出自帕斯卡，To the time to life, rather than to life in time.老帕之所以有此言论，大概和他的生命状态有很大关系。帕斯卡从小体质虚弱，又因过度劳累而使疾病缠身。他只活到三十九岁，但一生辉煌，活得虽短却很精彩。正是这短暂的一生让他更清楚的看到生命的本质，福祸相依，这正是上帝的公平，或者说是概率的公平。他还说过一句非常有名的话：“人只不过是一根芦苇，是自然界最脆弱的东西，但他是一根能思想的芦苇。”）</p>
+<p>网上的解释是：活着的每时每刻都要精彩，而不是让生命虚度，随着时光衰老。</p>
+<p>我的理解是：给每一个此时此刻赋予生命的精彩，只要活得精彩就美好，不必强行续命。正如有些年老的人，其实与其在病床上忍受病痛的折磨，他们更愿意让自己在睡梦或者昏迷中死去。见过很多这样的老者。不愿接受病痛的折磨，这其实也体现了生命的尊严。比如，今年听说一位澳大利亚的老教授，100多岁，但是已没有故友活在人世，自己也疾病缠身，他选择到了可以执行安乐死的国家安乐死。他的原话说，没有人deserve这样的对待，这不是人该接受的对待，他宁可选择死亡。世界上没有感同身受，但是从他的话里也能知道在生命的最后，他宁可提前结束掉它。</p>
+<p><strong>给岁月以文明，而不是给文明以岁月。</strong></p>
+<p>网上解释：文明的灿烂与否并不是以时间来衡量的，宁可获得短暂的灿烂文明，而不愿苟且偷生。</p>
+<p>我的理解是：努力创造出好的文明，来让岁月精彩，一旦文明终将走向衰败，不要强行延长它的寿命，让更好的文明来替代它，不要把这个文明变得丑陋，成为后来文明的障碍。</p>
+<p>重复一下，<strong>给时光以生命，给岁月以文明</strong>。</p>
 ]]></content>
       <tags>
-        <tag>数据结构与算法</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1822,30 +1846,6 @@
 ]]></content>
       <tags>
         <tag>青春</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一次犯罪不过是污染了水流，而一次不公正的司法却污染了水源</title>
-    <url>/2020/08/08/%E4%B8%80%E6%AC%A1%E7%8A%AF%E7%BD%AA%E4%B8%8D%E8%BF%87%E6%98%AF%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%B5%81%EF%BC%8C%E8%80%8C%E4%B8%80%E6%AC%A1%E4%B8%8D%E5%85%AC%E6%AD%A3%E7%9A%84%E5%8F%B8%E6%B3%95%E5%8D%B4%E6%B1%A1%E6%9F%93%E4%BA%86%E6%B0%B4%E6%BA%90/</url>
-    <content><![CDATA[<p>张玉环事件有感</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>给时光以生命，给岁月以文明</title>
-    <url>/2020/08/26/%E4%B8%8D%E6%98%AF%E7%BB%99%E6%96%87%E6%98%8E%E4%BB%A5%E5%B2%81%E6%9C%88%EF%BC%8C%E8%80%8C%E6%98%AF%E7%BB%99%E5%B2%81%E6%9C%88%E4%BB%A5%E6%96%87%E6%98%8E/</url>
-    <content><![CDATA[<p><strong>给时光以生命，而不是给生命以时光。</strong>（这句话出自帕斯卡，To the time to life, rather than to life in time.老帕之所以有此言论，大概和他的生命状态有很大关系。帕斯卡从小体质虚弱，又因过度劳累而使疾病缠身。他只活到三十九岁，但一生辉煌，活得虽短却很精彩。正是这短暂的一生让他更清楚的看到生命的本质，福祸相依，这正是上帝的公平，或者说是概率的公平。他还说过一句非常有名的话：“人只不过是一根芦苇，是自然界最脆弱的东西，但他是一根能思想的芦苇。”）</p>
-<p>网上的解释是：活着的每时每刻都要精彩，而不是让生命虚度，随着时光衰老。</p>
-<p>我的理解是：给每一个此时此刻赋予生命的精彩，只要活得精彩就美好，不必强行续命。正如有些年老的人，其实与其在病床上忍受病痛的折磨，他们更愿意让自己在睡梦或者昏迷中死去。见过很多这样的老者。不愿接受病痛的折磨，这其实也体现了生命的尊严。比如，今年听说一位澳大利亚的老教授，100多岁，但是已没有故友活在人世，自己也疾病缠身，他选择到了可以执行安乐死的国家安乐死。他的原话说，没有人deserve这样的对待，这不是人该接受的对待，他宁可选择死亡。世界上没有感同身受，但是从他的话里也能知道在生命的最后，他宁可提前结束掉它。</p>
-<p><strong>给岁月以文明，而不是给文明以岁月。</strong></p>
-<p>网上解释：文明的灿烂与否并不是以时间来衡量的，宁可获得短暂的灿烂文明，而不愿苟且偷生。</p>
-<p>我的理解是：努力创造出好的文明，来让岁月精彩，一旦文明终将走向衰败，不要强行延长它的寿命，让更好的文明来替代它，不要把这个文明变得丑陋，成为后来文明的障碍。</p>
-<p>重复一下，<strong>给时光以生命，给岁月以文明</strong>。</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2161,6 +2161,40 @@
       </tags>
   </entry>
   <entry>
+    <title>从网络原理来看SSL安全协议</title>
+    <url>/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[<p>网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。</p>
+<p>SSL的全称是（secure sockets layer），而现在我们很多时候在使用TLS（transport layer security）。我们简单看一下它的发展过程。</p>
+<p>SSL协议是由网景公司在1995年推出的，那么在3.0获得了一个非常大的一个发展，但是接下来，微软把它的ie浏览器捆绑windows，一起卖出以后呢。导致网景遇到了很大的一个困境，网景在把SSL协议交给IETF组织以后呢，在1999年，应微软的要求，IETF把SSL改名为TLS1.0。后面在06年、08年到18年，TLS分别发展了1.1，1.2，1.3协议。那么TLS协议，究竟是怎样保证HTTP的明文消息被加密的呢？我们可以看一下TLS的通用模型，在OSI七层模型中，应用层是HTTP协议，那么HTTP协议之下，我们的表示层，也就是SSL协议所发挥作用的这一层，它通过握手、交换密钥、告警、对称加密的方式，使HTTP层没有感知的情况下，做到了数据的安全加密。那么TLS究竟是怎样做到了数据的安全加密的呢？</p>
+<p>我们可以看一下TLS的安全密码套件。当我们抓包，或者观察服务器端的配置时，我们可以看到类似于这张图中的这样的一个配置。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</span><br></pre></td></tr></table></figure>
+<p>这个安全密码的配置呢，它决定了我们的TLS协议是怎样保证明文被加密的。</p>
+<p>这里大概有四个组成部分，第一个组成部分叫密钥交换，也就是ECDHE，这实际上是一个椭圆曲线加密算法的表达，密钥交换是为了解决浏览器和服务器之间是怎样各自独立的生成密钥，而最后生成的密钥，是相同的。接下来它们会用这个密钥去加密数据，那么在密钥交换这个过程中呢，我们需要去让各自双方去验证对方的身份，而验证身份，是需要一个算法，而这个算法叫RSA。它用于身份验证。接下来我们执行数据加密解密这样的通讯的时候呢，我们需要用到对称加密算法，而对称加密算法AES_128_GCM就是表达这样的一个对称加密算法，其中第一个部分AES它表达了是怎样一种算法，第二个部分128它表示了AES算法里支持了三种加密强度，那么我们使用了128位这样的一个加密强度。那么AES中，它有很多分组模式，其中GCM是比较新的一种分组模式，它可以提高多核CPU情况下加密和解密的一个性能。SSA256是一个摘要算法，它用来把不定长度的字符串，生成固定长度的更短的一个摘要。</p>
+<p>那么，以上是TLS算法的一个概要介绍。之后我们再来看一下对称加密算法和非对称加密算法有什么不同。</p>
+<p>在对称加密这样的一个场景中，是两个想要通信的人bob和alice共同持有同一把密钥，那么bob可以把原始明文的文档通过这一把密钥加密生成一个密文文档，而alice拿到这个密文文档以后呢，他用这把密钥还原，转化为原始的明文文档，而中间的任何人，如果没有持有这把密钥，即使他知道了对称加密的算法，他也没有办法把密文还原成原始文档，对称加密究竟是怎么实现的呢？</p>
+<p>我们可以以RC4这样一个对称加密的序列算法，来看一下。</p>
+<p>1010 密钥序列（共同持有密钥）</p>
+<p>异或</p>
+<p>0110 明文</p>
+<p>等于</p>
+<p>1100 密文</p>
+<p>异或有一个对称的特性。</p>
+<p>对称加密，性能非常的好，加密解密都只需要遍历一次。</p>
+<p>而非对称加密性能就会差很多。</p>
+<p>我们看一下非对称加密的算法，它根据一个数学原理啊，它会生成一对密钥。这一对密钥中，如果我们称其中的一个叫做公钥，那么另一个就叫做私钥，那么公钥和私钥有什么特性呢，就是同一份明文文档，如果用公钥加密，如果用公钥加密，那么只有用私钥才能解密，同样的道理，如果文档用私钥加密了，用公钥才能解密，可能大家有些疑惑。那么我们来说一下具体的场景。</p>
+<p>比如说alice他有一对公钥和私钥，那么他就可以把他的公钥发布给大家，比如bob是其中一个人，他拿到了alice的公钥，那么这个时候的加密操作是怎么做的呢？比如bob如果想传递一份原始文档给alice，那么bob就拿到alice的公钥，对于原始文档进行加密，把密文再发送给alice，alice拿他的私钥才能进行解密，其他人用了公钥以后都没有办法解密。那么公钥和私钥还有第二种用法，就是身份验证，比如现在有一段信息，alice用他的私钥，进行了加密，然后把密文发给了bob或者任何人，只要bob拿到了alice的公钥，因为公钥本身就是公开的，那么用公钥能成功的解开这段密文，就证明这段密文确实是由alice发出的，这为我们接下来TLS的密钥交换算法提供了基本的签名保障。</p>
+<p>以上就是对称加密和非对称加密的基本原理。</p>
+<p>SSL证书的公信力</p>
+<p>在之前的加密过程中，我们谈到了Alice和bob中间进行通信，但其实它们有一个前提条件，alice必须知道，bob就是bob，也就是他收到的信息，必须是bob发来的。那么这样的一个新的问题，在多方通信的过程中，必须有一个公信机构，这样的一个机构就是CA机构。接下里我们就来看看CA是怎么样颁发证书以及怎么样让证书过期的。</p>
+<p>那么，CA就是CA机构，我们作为一个站点的维护者，我们就是一个证书的订阅人，首先我们必须去申请一个证书，为了申请这个证书，我们可能必要登记，我是谁，我属于什么组织，我想做什么。到了登记机构，通过CSR（request certificate issuance, CSR）发给CA，那么CA中心通过以后呢，它会去生成一对公钥和私钥，那么公钥会在CA的证书之内保存着呢，私钥证书订阅人拿到以后，就会把它部署到自己的web服务器中，比如说nginx。当浏览器通过第一步，访问我们的https站点的时候，那么它会去请求我们的证书，而nginx这样的web服务器，会把我们的公钥证书发给我们的浏览器，而浏览器需要去验证我们的证书是不是合法有效的，但是如果我们用lets encrypt我们会发现，这个证书只有三个月的有效期，如果通过大部分其他SSL CA这样的颁发证书，一般是一年的有效期，那么这个有效期是怎样体现的呢？那么CA中心会把过期的证书放到CRL服务器，这个服务器会把所有过期的证书形成一条链条，所以它的性能非常的差。所以它又推出了一个OCSP程序，OCSP可以就一个证书去查询它是否过期。所以浏览器是可以去直接去查询OCSP响应程序的。但OCSP性能还不是很高，所以往往，比如我们的nginx，会有一个OCSP的开关，当我们打开开关以后，会由nginx主动的去OCSP去查询，这样大量的客户端就可以直接从nginx获取到证书是否有效。</p>
+<p>那么证书究竟是怎样组成的呢？接下来，我们看一下证书究竟有哪几种类型。第一种证书叫做域名验证DV，也就是说这个整数，它只会去验证我们域名的归属是否正确。比如我们在lets encrypt申请证书的时候会发现。只要你的域名指向的服务器是你正在申请证书的服务器，那你就可以成功的申请到证书。如果你使用其他的一些CA机构颁发的一些证书，可能会去验证你注册的那个邮箱是否正确。第二种证书叫做组织验证，OV验证证书，组织验证呢就是我们在申请证书的时候会去验证我们填写的机构企业名称是否是正确的，所以OV证书的申请往往需要几天的时间，不像DV证书，基本上实时就可以获取到了。而OV证书他的价格，也要远远高于DV证书。DV证书很多都是免费的。那么，比OV证书做了更严格的验证，就是扩展验证EV证书，因为EV证书做了更严格的验证，所以大部分浏览器会对EV证书的显示非常的友好，它会把我们申请证书时所填写的机构名称，在浏览器的地址栏中的，最左侧显示出来。而对DV或者OV证书，浏览器是没有这个优待的。</p>
+<p>那么，我们获取到这样的证书之后，究竟是怎样生效的呢？浏览器实际上从安全角度来说对DVOV或者EV证书，它的效果是一样的。</p>
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>代理服务器转发消息时的相关头部</title>
     <url>/2020/09/05/%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BD%AC%E5%8F%91%E6%B6%88%E6%81%AF%E6%97%B6%E7%9A%84%E7%9B%B8%E5%85%B3%E5%A4%B4%E9%83%A8/</url>
     <content><![CDATA[<p>在HTTP消息传输过程中，会经历会多正向代理服务器和反向代理服务器，那么这些代理服务器在转发消息时，会涉及到一些HTTP头部，这篇文章中，将会介绍这些HTTP头部。包括由于存在这些代理服务器，所以客户端与源服务器之间有许多条TCP连接，那么有一些HTTP头部是用于将客户端的实际IP地址，传递给服务器做相关用途的。</p>
@@ -2206,40 +2240,6 @@
       <tags>
         <tag>计算机网络</tag>
         <tag>HTTP</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>从网络原理来看SSL安全协议</title>
-    <url>/2020/09/01/%E4%BB%8E%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E6%9D%A5%E7%9C%8BSSL%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE/</url>
-    <content><![CDATA[<p>网络安全是当前收到关注的一个问题，大部分站点都是https来实现自己的数据安全的。那么怎么样才能把自己的站点变成https站点呢？我们需要了解SSL协议。</p>
-<p>SSL的全称是（secure sockets layer），而现在我们很多时候在使用TLS（transport layer security）。我们简单看一下它的发展过程。</p>
-<p>SSL协议是由网景公司在1995年推出的，那么在3.0获得了一个非常大的一个发展，但是接下来，微软把它的ie浏览器捆绑windows，一起卖出以后呢。导致网景遇到了很大的一个困境，网景在把SSL协议交给IETF组织以后呢，在1999年，应微软的要求，IETF把SSL改名为TLS1.0。后面在06年、08年到18年，TLS分别发展了1.1，1.2，1.3协议。那么TLS协议，究竟是怎样保证HTTP的明文消息被加密的呢？我们可以看一下TLS的通用模型，在OSI七层模型中，应用层是HTTP协议，那么HTTP协议之下，我们的表示层，也就是SSL协议所发挥作用的这一层，它通过握手、交换密钥、告警、对称加密的方式，使HTTP层没有感知的情况下，做到了数据的安全加密。那么TLS究竟是怎样做到了数据的安全加密的呢？</p>
-<p>我们可以看一下TLS的安全密码套件。当我们抓包，或者观察服务器端的配置时，我们可以看到类似于这张图中的这样的一个配置。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</span><br></pre></td></tr></table></figure>
-<p>这个安全密码的配置呢，它决定了我们的TLS协议是怎样保证明文被加密的。</p>
-<p>这里大概有四个组成部分，第一个组成部分叫密钥交换，也就是ECDHE，这实际上是一个椭圆曲线加密算法的表达，密钥交换是为了解决浏览器和服务器之间是怎样各自独立的生成密钥，而最后生成的密钥，是相同的。接下来它们会用这个密钥去加密数据，那么在密钥交换这个过程中呢，我们需要去让各自双方去验证对方的身份，而验证身份，是需要一个算法，而这个算法叫RSA。它用于身份验证。接下来我们执行数据加密解密这样的通讯的时候呢，我们需要用到对称加密算法，而对称加密算法AES_128_GCM就是表达这样的一个对称加密算法，其中第一个部分AES它表达了是怎样一种算法，第二个部分128它表示了AES算法里支持了三种加密强度，那么我们使用了128位这样的一个加密强度。那么AES中，它有很多分组模式，其中GCM是比较新的一种分组模式，它可以提高多核CPU情况下加密和解密的一个性能。SSA256是一个摘要算法，它用来把不定长度的字符串，生成固定长度的更短的一个摘要。</p>
-<p>那么，以上是TLS算法的一个概要介绍。之后我们再来看一下对称加密算法和非对称加密算法有什么不同。</p>
-<p>在对称加密这样的一个场景中，是两个想要通信的人bob和alice共同持有同一把密钥，那么bob可以把原始明文的文档通过这一把密钥加密生成一个密文文档，而alice拿到这个密文文档以后呢，他用这把密钥还原，转化为原始的明文文档，而中间的任何人，如果没有持有这把密钥，即使他知道了对称加密的算法，他也没有办法把密文还原成原始文档，对称加密究竟是怎么实现的呢？</p>
-<p>我们可以以RC4这样一个对称加密的序列算法，来看一下。</p>
-<p>1010 密钥序列（共同持有密钥）</p>
-<p>异或</p>
-<p>0110 明文</p>
-<p>等于</p>
-<p>1100 密文</p>
-<p>异或有一个对称的特性。</p>
-<p>对称加密，性能非常的好，加密解密都只需要遍历一次。</p>
-<p>而非对称加密性能就会差很多。</p>
-<p>我们看一下非对称加密的算法，它根据一个数学原理啊，它会生成一对密钥。这一对密钥中，如果我们称其中的一个叫做公钥，那么另一个就叫做私钥，那么公钥和私钥有什么特性呢，就是同一份明文文档，如果用公钥加密，如果用公钥加密，那么只有用私钥才能解密，同样的道理，如果文档用私钥加密了，用公钥才能解密，可能大家有些疑惑。那么我们来说一下具体的场景。</p>
-<p>比如说alice他有一对公钥和私钥，那么他就可以把他的公钥发布给大家，比如bob是其中一个人，他拿到了alice的公钥，那么这个时候的加密操作是怎么做的呢？比如bob如果想传递一份原始文档给alice，那么bob就拿到alice的公钥，对于原始文档进行加密，把密文再发送给alice，alice拿他的私钥才能进行解密，其他人用了公钥以后都没有办法解密。那么公钥和私钥还有第二种用法，就是身份验证，比如现在有一段信息，alice用他的私钥，进行了加密，然后把密文发给了bob或者任何人，只要bob拿到了alice的公钥，因为公钥本身就是公开的，那么用公钥能成功的解开这段密文，就证明这段密文确实是由alice发出的，这为我们接下来TLS的密钥交换算法提供了基本的签名保障。</p>
-<p>以上就是对称加密和非对称加密的基本原理。</p>
-<p>SSL证书的公信力</p>
-<p>在之前的加密过程中，我们谈到了Alice和bob中间进行通信，但其实它们有一个前提条件，alice必须知道，bob就是bob，也就是他收到的信息，必须是bob发来的。那么这样的一个新的问题，在多方通信的过程中，必须有一个公信机构，这样的一个机构就是CA机构。接下里我们就来看看CA是怎么样颁发证书以及怎么样让证书过期的。</p>
-<p>那么，CA就是CA机构，我们作为一个站点的维护者，我们就是一个证书的订阅人，首先我们必须去申请一个证书，为了申请这个证书，我们可能必要登记，我是谁，我属于什么组织，我想做什么。到了登记机构，通过CSR（request certificate issuance, CSR）发给CA，那么CA中心通过以后呢，它会去生成一对公钥和私钥，那么公钥会在CA的证书之内保存着呢，私钥证书订阅人拿到以后，就会把它部署到自己的web服务器中，比如说nginx。当浏览器通过第一步，访问我们的https站点的时候，那么它会去请求我们的证书，而nginx这样的web服务器，会把我们的公钥证书发给我们的浏览器，而浏览器需要去验证我们的证书是不是合法有效的，但是如果我们用lets encrypt我们会发现，这个证书只有三个月的有效期，如果通过大部分其他SSL CA这样的颁发证书，一般是一年的有效期，那么这个有效期是怎样体现的呢？那么CA中心会把过期的证书放到CRL服务器，这个服务器会把所有过期的证书形成一条链条，所以它的性能非常的差。所以它又推出了一个OCSP程序，OCSP可以就一个证书去查询它是否过期。所以浏览器是可以去直接去查询OCSP响应程序的。但OCSP性能还不是很高，所以往往，比如我们的nginx，会有一个OCSP的开关，当我们打开开关以后，会由nginx主动的去OCSP去查询，这样大量的客户端就可以直接从nginx获取到证书是否有效。</p>
-<p>那么证书究竟是怎样组成的呢？接下来，我们看一下证书究竟有哪几种类型。第一种证书叫做域名验证DV，也就是说这个整数，它只会去验证我们域名的归属是否正确。比如我们在lets encrypt申请证书的时候会发现。只要你的域名指向的服务器是你正在申请证书的服务器，那你就可以成功的申请到证书。如果你使用其他的一些CA机构颁发的一些证书，可能会去验证你注册的那个邮箱是否正确。第二种证书叫做组织验证，OV验证证书，组织验证呢就是我们在申请证书的时候会去验证我们填写的机构企业名称是否是正确的，所以OV证书的申请往往需要几天的时间，不像DV证书，基本上实时就可以获取到了。而OV证书他的价格，也要远远高于DV证书。DV证书很多都是免费的。那么，比OV证书做了更严格的验证，就是扩展验证EV证书，因为EV证书做了更严格的验证，所以大部分浏览器会对EV证书的显示非常的友好，它会把我们申请证书时所填写的机构名称，在浏览器的地址栏中的，最左侧显示出来。而对DV或者OV证书，浏览器是没有这个优待的。</p>
-<p>那么，我们获取到这样的证书之后，究竟是怎样生效的呢？浏览器实际上从安全角度来说对DVOV或者EV证书，它的效果是一样的。</p>
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
       </tags>
   </entry>
   <entry>
@@ -2585,6 +2585,38 @@
       </tags>
   </entry>
   <entry>
+    <title>区间树</title>
+    <url>/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/</url>
+    <content><![CDATA[<h2 id="参考">参考：</h2>
+<p>https://www.geeksforgeeks.org/interval-tree/</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">https://stackoverflow.com/questions/17466218/what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text=Segment%20tree%20stores%20intervals%2C%20and,with%20a%20given%20interval%22%20queries.<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="实际问题简单记类似于点的添加和删除和查找都要快速点的解决办法是平衡bst使得这几种操作都变成ologn区间的添加删除类似查找的是overlap这时就需要用到区间树">实际问题（简单记，类似于点的添加和删除和查找，都要快速，点的解决办法是平衡BST，使得这几种操作都变成O(logn)，区间的添加删除类似，查找的是overlap，这时就需要用到区间树）</h2>
+<p>Consider a situation where we have a set of intervals and we need following operations to be implemented efficiently. <strong>1)</strong> Add an interval <strong>2)</strong> Remove an interval <strong>3)</strong> Given an interval x, find if x overlaps with any of the existing intervals.</p>
+<p>考虑我们有一个集合的区间，并且我们需要以下操作能够有效率的实现：</p>
+<ol type="1">
+<li>添加一个区间</li>
+<li>删除一个区间</li>
+<li>对于一个给定的区间x，找出x是否有和任意一个已经存在的区间有重合。</li>
+</ol>
+<p><strong><em>Interval Tree:</em></strong> The idea is to augment a self-balancing Binary Search Tree (BST) like <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcmVkLWJsYWNrLXRyZWUtc2V0LTEtaW50cm9kdWN0aW9uLTIv">Red Black Tree<i class="fa fa-external-link-alt"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYXZsLXRyZWUtc2V0LTEtaW5zZXJ0aW9uLw==">AVL Tree<i class="fa fa-external-link-alt"></i></span>, etc to maintain set of intervals so that all operations can be done in O(Logn) time.</p>
+<p>Every node of Interval Tree stores following information. a) <strong>i</strong>: An interval which is represented as a pair <em>[low, high]</em> b) <strong>max</strong>: Maximum <em>high</em> value in subtree rooted with this node.</p>
+<p>区间的最小值用作BST的键值来保持BST的顺序。那么插入和删除就和自平衡BST的插入删除一样。</p>
+<img data-src="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png" class>
+<p>那么我们就来看找重合区间的操作。</p>
+<p>Following is algorithm for searching an overlapping interval <em>x</em> in an Interval tree rooted with <em>root</em>.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Interval overlappingIntervalSearch(root, x)</span><br><span class="line">1) If x overlaps with root&#39;s interval, return the root&#39;s interval.</span><br><span class="line"></span><br><span class="line">2) If left child of root is not empty and the max  in left child </span><br><span class="line">is greater than x&#39;s low value, recur for left child</span><br><span class="line"></span><br><span class="line">3) Else recur for right child.</span><br></pre></td></tr></table></figure>
+<p><strong><em>How does the above algorithm work?</em></strong> Let the interval to be searched be x. We need to prove this in for following two cases.</p>
+<p><strong><em>Case 1:</em></strong> <em>When we go to right subtree, one of the following must be true.</em> a) There is an overlap in right subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: We go to right subtree only when either left is NULL or maximum value in left is smaller than <em>x.low</em>. So the interval cannot be present in left subtree.</p>
+<p><strong><em>Case 2:</em></strong> <em>When we go to left subtree, one of the following must be true.</em> a) There is an overlap in left subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: This is the most important part. We need to consider following facts. … We went to left subtree because <em>x.low &lt;= max</em> in left subtree …. max in left subtree is a high of one of the intervals let us say <em>[a, max]</em> in left subtree. …. Since <em>x</em> doesn’t overlap with any node in left subtree <em>x.low</em> must be smaller than ‘<em>a</em>‘. …. All nodes in BST are ordered by low value, so all nodes in right subtree must have low value greater than ‘<em>a</em>‘. …. From above two facts, we can say all intervals in right subtree have low value greater than <em>x.low</em>. So <em>x</em> cannot overlap with any interval in right subtree.</p>
+<p><strong>Applications of Interval Tree:</strong> Interval tree is mainly a geometric data structure and often used for windowing queries, for instance, to find all roads on a computerized map inside a rectangular viewport, or to find all visible elements inside a three-dimensional scene (Source <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9JbnRlcnZhbF90cmVl">Wiki<i class="fa fa-external-link-alt"></i></span>).</p>
+<p><strong>Interval Tree vs <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span></strong> Both segment and interval trees store intervals. Segment tree is mainly optimized for queries for a given point, and interval trees are mainly optimized for overlapping queries for a given interval.</p>
+<p>区间树和线段树都是存储区间的，不同的是线段是针对给定点的查询进行优化，区间树针对给定区间的重叠查询进行优化。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>双蛋问题以及更主要的其更通用化且有用的问题的解</title>
     <url>/2020/07/26/%E5%8F%8C%E8%9B%8B%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E6%9B%B4%E4%B8%BB%E8%A6%81%E7%9A%84%E5%85%B6%E6%9B%B4%E9%80%9A%E7%94%A8%E5%8C%96%E4%B8%94%E6%9C%89%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="题目leetcode-887.-鸡蛋掉落">题目：LeetCode <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc3VwZXItZWdnLWRyb3Av">887. 鸡蛋掉落<i class="fa fa-external-link-alt"></i></span></h2>
@@ -2658,38 +2690,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <h2 id="转载感谢">转载感谢</h2>
 <p>感谢优秀题解</p>
 <p>https://leetcode.com/problems/super-egg-drop/discuss/159079/Python-DP-from-kn2-to-knlogn-to-kn</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>区间树</title>
-    <url>/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/</url>
-    <content><![CDATA[<h2 id="参考">参考：</h2>
-<p>https://www.geeksforgeeks.org/interval-tree/</p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTc0NjYyMTgvd2hhdC1hcmUtdGhlLWRpZmZlcmVuY2VzLWJldHdlZW4tc2VnbWVudC10cmVlcy1pbnRlcnZhbC10cmVlcy1iaW5hcnktaW5kZXhlZC10Izp+OnRleHQ9U2VnbWVudCUyMHRyZWUlMjBzdG9yZXMlMjBpbnRlcnZhbHMlMkMlMjBhbmQsd2l0aCUyMGElMjBnaXZlbiUyMGludGVydmFsJTIyJTIwcXVlcmllcy4=">https://stackoverflow.com/questions/17466218/what-are-the-differences-between-segment-trees-interval-trees-binary-indexed-t#:~:text=Segment%20tree%20stores%20intervals%2C%20and,with%20a%20given%20interval%22%20queries.<i class="fa fa-external-link-alt"></i></span></p>
-<h2 id="实际问题简单记类似于点的添加和删除和查找都要快速点的解决办法是平衡bst使得这几种操作都变成ologn区间的添加删除类似查找的是overlap这时就需要用到区间树">实际问题（简单记，类似于点的添加和删除和查找，都要快速，点的解决办法是平衡BST，使得这几种操作都变成O(logn)，区间的添加删除类似，查找的是overlap，这时就需要用到区间树）</h2>
-<p>Consider a situation where we have a set of intervals and we need following operations to be implemented efficiently. <strong>1)</strong> Add an interval <strong>2)</strong> Remove an interval <strong>3)</strong> Given an interval x, find if x overlaps with any of the existing intervals.</p>
-<p>考虑我们有一个集合的区间，并且我们需要以下操作能够有效率的实现：</p>
-<ol type="1">
-<li>添加一个区间</li>
-<li>删除一个区间</li>
-<li>对于一个给定的区间x，找出x是否有和任意一个已经存在的区间有重合。</li>
-</ol>
-<p><strong><em>Interval Tree:</em></strong> The idea is to augment a self-balancing Binary Search Tree (BST) like <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvcmVkLWJsYWNrLXRyZWUtc2V0LTEtaW50cm9kdWN0aW9uLTIv">Red Black Tree<i class="fa fa-external-link-alt"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvYXZsLXRyZWUtc2V0LTEtaW5zZXJ0aW9uLw==">AVL Tree<i class="fa fa-external-link-alt"></i></span>, etc to maintain set of intervals so that all operations can be done in O(Logn) time.</p>
-<p>Every node of Interval Tree stores following information. a) <strong>i</strong>: An interval which is represented as a pair <em>[low, high]</em> b) <strong>max</strong>: Maximum <em>high</em> value in subtree rooted with this node.</p>
-<p>区间的最小值用作BST的键值来保持BST的顺序。那么插入和删除就和自平衡BST的插入删除一样。</p>
-<img data-src="/2020/07/30/%E5%8C%BA%E9%97%B4%E6%A0%91/%E5%8C%BA%E9%97%B4%E6%A0%911.png" class>
-<p>那么我们就来看找重合区间的操作。</p>
-<p>Following is algorithm for searching an overlapping interval <em>x</em> in an Interval tree rooted with <em>root</em>.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Interval overlappingIntervalSearch(root, x)</span><br><span class="line">1) If x overlaps with root&#39;s interval, return the root&#39;s interval.</span><br><span class="line"></span><br><span class="line">2) If left child of root is not empty and the max  in left child </span><br><span class="line">is greater than x&#39;s low value, recur for left child</span><br><span class="line"></span><br><span class="line">3) Else recur for right child.</span><br></pre></td></tr></table></figure>
-<p><strong><em>How does the above algorithm work?</em></strong> Let the interval to be searched be x. We need to prove this in for following two cases.</p>
-<p><strong><em>Case 1:</em></strong> <em>When we go to right subtree, one of the following must be true.</em> a) There is an overlap in right subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: We go to right subtree only when either left is NULL or maximum value in left is smaller than <em>x.low</em>. So the interval cannot be present in left subtree.</p>
-<p><strong><em>Case 2:</em></strong> <em>When we go to left subtree, one of the following must be true.</em> a) There is an overlap in left subtree: This is fine as we need to return one overlapping interval. b) There is no overlap in either subtree: This is the most important part. We need to consider following facts. … We went to left subtree because <em>x.low &lt;= max</em> in left subtree …. max in left subtree is a high of one of the intervals let us say <em>[a, max]</em> in left subtree. …. Since <em>x</em> doesn’t overlap with any node in left subtree <em>x.low</em> must be smaller than ‘<em>a</em>‘. …. All nodes in BST are ordered by low value, so all nodes in right subtree must have low value greater than ‘<em>a</em>‘. …. From above two facts, we can say all intervals in right subtree have low value greater than <em>x.low</em>. So <em>x</em> cannot overlap with any interval in right subtree.</p>
-<p><strong>Applications of Interval Tree:</strong> Interval tree is mainly a geometric data structure and often used for windowing queries, for instance, to find all roads on a computerized map inside a rectangular viewport, or to find all visible elements inside a three-dimensional scene (Source <span class="exturl" data-url="aHR0cDovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9JbnRlcnZhbF90cmVl">Wiki<i class="fa fa-external-link-alt"></i></span>).</p>
-<p><strong>Interval Tree vs <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc2VnbWVudC10cmVlLXNldC0xLXN1bS1vZi1naXZlbi1yYW5nZS8=">Segment Tree<i class="fa fa-external-link-alt"></i></span></strong> Both segment and interval trees store intervals. Segment tree is mainly optimized for queries for a given point, and interval trees are mainly optimized for overlapping queries for a given interval.</p>
-<p>区间树和线段树都是存储区间的，不同的是线段是针对给定点的查询进行优化，区间树针对给定区间的重叠查询进行优化。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -3546,20 +3546,20 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>拔智齿后记</title>
-    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
-    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
       </tags>
   </entry>
   <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
+    <title>拔智齿后记</title>
+    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
+    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -4567,35 +4567,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>软件=算法+数据结构+文档+数据？</title>
-    <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
-    <content><![CDATA[<p>软件的开始到后来...</p>
-<p>开始：</p>
-<p>软件=代码？</p>
-<p>软件=算法+数据结构？</p>
-<p>软件=算法+数据结构+文档？</p>
-<p>软件=算法+数据结构+文档+数据？</p>
-<p>后来：</p>
-<p>软件=算法+数据结构+文档+数据 + 单元测试 + workflow ？</p>
-<p>对自己的要求，至少要做到</p>
-<p>软件=算法+数据结构+文档。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>避免熵增</title>
-    <url>/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/</url>
-    <content><![CDATA[<ul>
-<li>心流的状态</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>转：说一说这些好问题</title>
     <url>/2020/08/29/%E8%BD%AC%EF%BC%9A%E8%AF%B4%E4%B8%80%E8%AF%B4%E8%BF%99%E4%BA%9B%E5%A5%BD%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p>在我看来，能够帮我们扩展一个逻辑的边界的问题，就是好问题。因为通过解决这样的问题，<strong>能够加深我们对这个逻辑的理解，或者帮我们关联到另外一个知识点，进而可以帮助我们建立起自己的知识网络。</strong></p>
@@ -4745,6 +4716,35 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>软件=算法+数据结构+文档+数据？</title>
+    <url>/2020/08/17/%E8%BD%AF%E4%BB%B6-%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%96%87%E6%A1%A3-%E6%95%B0%E6%8D%AE%EF%BC%9F/</url>
+    <content><![CDATA[<p>软件的开始到后来...</p>
+<p>开始：</p>
+<p>软件=代码？</p>
+<p>软件=算法+数据结构？</p>
+<p>软件=算法+数据结构+文档？</p>
+<p>软件=算法+数据结构+文档+数据？</p>
+<p>后来：</p>
+<p>软件=算法+数据结构+文档+数据 + 单元测试 + workflow ？</p>
+<p>对自己的要求，至少要做到</p>
+<p>软件=算法+数据结构+文档。</p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>避免熵增</title>
+    <url>/2020/09/04/%E9%81%BF%E5%85%8D%E7%86%B5%E5%A2%9E/</url>
+    <content><![CDATA[<ul>
+<li>心流的状态</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>那时我，也曾想过，坠入无边星河。活着要比死亡有更大的勇气吧，虽然没死过。但是死亡就可以不用面对，而活着就要面对一切。或许是活着的人觉得死亡需要勇气，而自杀的人的觉得活着需要勇气。只要活着，就积极的活着吧！像中岛美嘉一样！</title>
     <url>/2020/09/17/%E9%82%A3%E6%97%B6%E6%88%91%EF%BC%8C%E4%B9%9F%E6%9B%BE%E6%83%B3%E8%BF%87%EF%BC%8C%E5%9D%A0%E5%85%A5%E6%97%A0%E8%BE%B9%E6%98%9F%E6%B2%B3%E3%80%82%E6%B4%BB%E7%9D%80%E8%A6%81%E6%AF%94%E6%AD%BB%E4%BA%A1%E6%9C%89%E6%9B%B4%E5%A4%A7%E7%9A%84%E5%8B%87%E6%B0%94%E5%90%A7%EF%BC%8C%E8%99%BD%E7%84%B6%E6%B2%A1%E6%AD%BB%E8%BF%87%E3%80%82%E4%BD%86%E6%98%AF%E6%AD%BB%E4%BA%A1%E5%B0%B1%E5%8F%AF%E4%BB%A5%E4%B8%8D%E7%94%A8%E9%9D%A2%E5%AF%B9%EF%BC%8C%E8%80%8C%E6%B4%BB%E7%9D%80%E5%B0%B1%E8%A6%81%E9%9D%A2%E5%AF%B9%E4%B8%80%E5%88%87/</url>
     <content><![CDATA[<iframe src="//player.bilibili.com/player.html?aid=372124818&amp;bvid=BV1eZ4y1N7fJ&amp;cid=235684736&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
@@ -4840,6 +4840,36 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
+    <title>阻塞与非阻塞，同步与异步</title>
+    <url>/2020/09/01/%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5/</url>
+    <content><![CDATA[<h3 id="阻塞与非阻塞">阻塞与非阻塞</h3>
+<ol type="1">
+<li>主要是指，操作系统，或者底层的c库，提供的方法，或者是一个系统调用。也就是说我们调用这个方法的时候，这个方法可能会导致我的进程进入sleep状态，为什么会进入sleep状态呢？就是当前的条件不满足的情况下，操作系统主动的把我的进程切换为另外一个进程了，在使用当前的CPU。那么这样就是一个阻塞方法。</li>
+<li>而非阻塞方法就是我们调用该方法，永远不会因为，当我们时间片未用完时，把我们的进程主动切换掉。</li>
+</ol>
+<h3 id="同步与异步">同步与异步</h3>
+<p>而同步和异步则是从我们调用的方式而言，就是我们编码中写我们的业务逻辑这样的一个角度。我们可以从nginx的发展历史趋势上可以看出这一点。那么nginx目前除了官方在提供的javascript利用这样的同步写代码的方式实现非阻塞编码的效果，以及openresty基于lua语言用同步写代码的方式实现非阻塞高并发的一个效果。</p>
+<p>接下来，我们来看一看非阻塞和阻塞以及同步异步，到底有一些什么样具体的区别。</p>
+<p>那么，在阻塞调用中，我们以accept为例。因为绝大多数程序，在调用accept的时候，它都是在使用阻塞socket的。使用阻塞socket的时候呢，当我们调用accept方法的时候，如果说我们监听的端口所对应的accept队列，就是操作系统已经为我们做好了几个三次握手建立成功的socket，那么阻塞方法可能会立刻得到返回，而不会被阻塞。但是，如果accept队列是空的，那么操作系统就会去等待新的三次握手的连接，到达我们的内核中，我们才会去唤醒这个accept调用，这个时间往往是可控的。我们去设置这个阻塞socket最长的超时时间，那么如果没有达到的话，也可以唤醒我们的这样一个调用。所以，这里的流程中，就是会产生进程间的主动切换。而我们之前谈过，像nginx是不能容忍这样的进程间切换的。因为它并发的连接实在是太多了。</p>
+<p>那么非阻塞调用，有什么差别呢？我们先看accept如果你使用了非阻塞套接字，使用accept调用去执行的时候呢，如果accept队列为空，它是不等待立刻返回的。但是它返回的是什么呢？其实是EAGAIN，是一个错误码。所以这个时候呢，我们的代码回收一个错误码，但这个错误码是一个特殊的错误码。需要我们的代码去处理它。如果我们再次调用accept是非阻塞的，如果accept队列不为空的话，则把成功的那一个socket建立好的套接字返回给我们的代码。所以，这里有一个很大的问题，就是由我们的代码决定当accept收到一个EAGAIN这样的错误码时，我们究竟是应该等一会，继续处理这个连接，别不sleep一下，还是先切换到其他的任务，再处理。</p>
+<p>我这里举的是一个非常简单的accept的例子。如果涉及到我们的业务特性，比如http的复杂的子请求、主请求，等等，实际上是会导致我们的代码非常复杂。因此，非阻塞调用呢，是我们的底层实现，如果我们用异步方法去使用非阻塞调用是非常自然而然的。我们可以看一下，是怎样用异步的方式去处理非阻塞连接。</p>
+<p>那么我这里举了一个例子。是一个反向代理的例子，那么nginx做反向代理的时候有一个特点，他会去考虑到上游服务的处理能力相对是不足的，所以，如果是一个有body的http请求，那么，nginx会先把body接收完，再去向上游服务器发起连接，那么我们看右边这段代码。我们可以看到，当我们收完header的时候，我们已经知道，接下来向谁，哪一台服务器去发起反向代理，建立连接了。但是我需要先读取body，所以它调用了这样一个方法，那么这个方法就是一个标准的异步方法。它表达当我执行完read request body之后，再去调用post_handler方法，也就是upstream_init，是我们对上游服务器建立连接的方法，所以当我们调用这样的一个异步调用的时候它其实意味着先把body收完，再调这个方法。非常的复杂。</p>
+<p>这是标准的异步调用</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">rc = ngx_http_read_request_body(r, ngx_http_upsream_init);</span><br><span class="line"><span class="keyword">if</span> (rc &gt;= NGX_HTTP_SRECIAL_RESPONSE) &#123;</span><br><span class="line">  <span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法执行完时调用post_handler异步方法</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ngx_init_t</span></span><br><span class="line">ngx_http_read_client_request_body(<span class="keyword">ngx_http_request_t</span> * r, ngx_http_client_body_handler_pt post_handler)</span><br></pre></td></tr></table></figure>
+<p>最终读取完body后调用ngx_http_upstream_init方法</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ngx_http_upstream_init</span><span class="params">(<span class="keyword">ngx_http_request_t</span> *r)</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>我们再来看一看，与此相反的同步调用的方法。比如说openresty写一段lua代码，比如说我现在要对redis建立连接，因为我们建立连接使用的也是TCP，那么TCP一样有三次握手，三次握手基于这种报文，那么我们在基于nginx openresty上也是不能使用阻塞方法的。但是如果你用异步的方式，非常复杂。同步方式呢，可以看到。</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="keyword">local</span> cliend = redis:new()</span><br><span class="line">client:set_tmeout(<span class="number">30000</span>)</span><br><span class="line"><span class="keyword">local</span> ok, err = client:connect(ip, port)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> ok <span class="keyword">then</span></span><br><span class="line">    ngx.say(<span class="string">&quot;failed: &quot;</span>, err)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>我们new一个client redis以后，设置好这个连接的超时时间，我们就可以调用connect，这个connect就是一个同步调用，但是它里面走的是非阻塞代码。所以我们在写lua代码的时候，完全可以不必考虑像刚刚我们举的这个例子一样，考虑connect完成以后，再去回调另外一个方法，在另外一个方法中决定，connect是成功了还是失败了。如果成功了，我应该发消息，完全不需要这么做。我们只需要简单的connect，我收到响应值了，那么ok，如果是没有收到ok，那么我们打印一个ngx.say('failed')就可以了。因为在connect方法执行的过程中，当connect没有被满足，也就是我没有收到redis发来的ACK响应，就是成功建立连接时呢。这个connect方法不会返回，但是也不会阻塞nginx的代码，这就叫做同步调用代码。那么它使用了非阻塞的一个方式。</p>
+<p>谈完同步异步阻塞与非阻塞以后我，我相信大家对于如何兼顾开发效率与我们的运行效率应该有了一个很好的认识。实际上，如果我们不是在极端场景下，都会去使用如openresty或者nginx的javascript模块，来使用同步编程的方式，达成我们的目的，这样的开发效率非常的高。</p>
+]]></content>
+      <tags>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>阿甘正传经典台词-you have to do the best with what God gave you</title>
     <url>/2020/09/04/%E9%98%BF%E7%94%98%E6%AD%A3%E4%BC%A0%E7%BB%8F%E5%85%B8%E5%8F%B0%E8%AF%8D-you-have-to-do-the-best-with-what-God-gave-you/</url>
     <content><![CDATA[<ul>
@@ -4869,36 +4899,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>阻塞与非阻塞，同步与异步</title>
-    <url>/2020/09/01/%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%EF%BC%8C%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5/</url>
-    <content><![CDATA[<h3 id="阻塞与非阻塞">阻塞与非阻塞</h3>
-<ol type="1">
-<li>主要是指，操作系统，或者底层的c库，提供的方法，或者是一个系统调用。也就是说我们调用这个方法的时候，这个方法可能会导致我的进程进入sleep状态，为什么会进入sleep状态呢？就是当前的条件不满足的情况下，操作系统主动的把我的进程切换为另外一个进程了，在使用当前的CPU。那么这样就是一个阻塞方法。</li>
-<li>而非阻塞方法就是我们调用该方法，永远不会因为，当我们时间片未用完时，把我们的进程主动切换掉。</li>
-</ol>
-<h3 id="同步与异步">同步与异步</h3>
-<p>而同步和异步则是从我们调用的方式而言，就是我们编码中写我们的业务逻辑这样的一个角度。我们可以从nginx的发展历史趋势上可以看出这一点。那么nginx目前除了官方在提供的javascript利用这样的同步写代码的方式实现非阻塞编码的效果，以及openresty基于lua语言用同步写代码的方式实现非阻塞高并发的一个效果。</p>
-<p>接下来，我们来看一看非阻塞和阻塞以及同步异步，到底有一些什么样具体的区别。</p>
-<p>那么，在阻塞调用中，我们以accept为例。因为绝大多数程序，在调用accept的时候，它都是在使用阻塞socket的。使用阻塞socket的时候呢，当我们调用accept方法的时候，如果说我们监听的端口所对应的accept队列，就是操作系统已经为我们做好了几个三次握手建立成功的socket，那么阻塞方法可能会立刻得到返回，而不会被阻塞。但是，如果accept队列是空的，那么操作系统就会去等待新的三次握手的连接，到达我们的内核中，我们才会去唤醒这个accept调用，这个时间往往是可控的。我们去设置这个阻塞socket最长的超时时间，那么如果没有达到的话，也可以唤醒我们的这样一个调用。所以，这里的流程中，就是会产生进程间的主动切换。而我们之前谈过，像nginx是不能容忍这样的进程间切换的。因为它并发的连接实在是太多了。</p>
-<p>那么非阻塞调用，有什么差别呢？我们先看accept如果你使用了非阻塞套接字，使用accept调用去执行的时候呢，如果accept队列为空，它是不等待立刻返回的。但是它返回的是什么呢？其实是EAGAIN，是一个错误码。所以这个时候呢，我们的代码回收一个错误码，但这个错误码是一个特殊的错误码。需要我们的代码去处理它。如果我们再次调用accept是非阻塞的，如果accept队列不为空的话，则把成功的那一个socket建立好的套接字返回给我们的代码。所以，这里有一个很大的问题，就是由我们的代码决定当accept收到一个EAGAIN这样的错误码时，我们究竟是应该等一会，继续处理这个连接，别不sleep一下，还是先切换到其他的任务，再处理。</p>
-<p>我这里举的是一个非常简单的accept的例子。如果涉及到我们的业务特性，比如http的复杂的子请求、主请求，等等，实际上是会导致我们的代码非常复杂。因此，非阻塞调用呢，是我们的底层实现，如果我们用异步方法去使用非阻塞调用是非常自然而然的。我们可以看一下，是怎样用异步的方式去处理非阻塞连接。</p>
-<p>那么我这里举了一个例子。是一个反向代理的例子，那么nginx做反向代理的时候有一个特点，他会去考虑到上游服务的处理能力相对是不足的，所以，如果是一个有body的http请求，那么，nginx会先把body接收完，再去向上游服务器发起连接，那么我们看右边这段代码。我们可以看到，当我们收完header的时候，我们已经知道，接下来向谁，哪一台服务器去发起反向代理，建立连接了。但是我需要先读取body，所以它调用了这样一个方法，那么这个方法就是一个标准的异步方法。它表达当我执行完read request body之后，再去调用post_handler方法，也就是upstream_init，是我们对上游服务器建立连接的方法，所以当我们调用这样的一个异步调用的时候它其实意味着先把body收完，再调这个方法。非常的复杂。</p>
-<p>这是标准的异步调用</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">rc = ngx_http_read_request_body(r, ngx_http_upsream_init);</span><br><span class="line"><span class="keyword">if</span> (rc &gt;= NGX_HTTP_SRECIAL_RESPONSE) &#123;</span><br><span class="line">  <span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个方法执行完时调用post_handler异步方法</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ngx_init_t</span></span><br><span class="line">ngx_http_read_client_request_body(<span class="keyword">ngx_http_request_t</span> * r, ngx_http_client_body_handler_pt post_handler)</span><br></pre></td></tr></table></figure>
-<p>最终读取完body后调用ngx_http_upstream_init方法</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ngx_http_upstream_init</span><span class="params">(<span class="keyword">ngx_http_request_t</span> *r)</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-<p>我们再来看一看，与此相反的同步调用的方法。比如说openresty写一段lua代码，比如说我现在要对redis建立连接，因为我们建立连接使用的也是TCP，那么TCP一样有三次握手，三次握手基于这种报文，那么我们在基于nginx openresty上也是不能使用阻塞方法的。但是如果你用异步的方式，非常复杂。同步方式呢，可以看到。</p>
-<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="keyword">local</span> cliend = redis:new()</span><br><span class="line">client:set_tmeout(<span class="number">30000</span>)</span><br><span class="line"><span class="keyword">local</span> ok, err = client:connect(ip, port)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> ok <span class="keyword">then</span></span><br><span class="line">    ngx.say(<span class="string">&quot;failed: &quot;</span>, err)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>我们new一个client redis以后，设置好这个连接的超时时间，我们就可以调用connect，这个connect就是一个同步调用，但是它里面走的是非阻塞代码。所以我们在写lua代码的时候，完全可以不必考虑像刚刚我们举的这个例子一样，考虑connect完成以后，再去回调另外一个方法，在另外一个方法中决定，connect是成功了还是失败了。如果成功了，我应该发消息，完全不需要这么做。我们只需要简单的connect，我收到响应值了，那么ok，如果是没有收到ok，那么我们打印一个ngx.say('failed')就可以了。因为在connect方法执行的过程中，当connect没有被满足，也就是我没有收到redis发来的ACK响应，就是成功建立连接时呢。这个connect方法不会返回，但是也不会阻塞nginx的代码，这就叫做同步调用代码。那么它使用了非阻塞的一个方式。</p>
-<p>谈完同步异步阻塞与非阻塞以后我，我相信大家对于如何兼顾开发效率与我们的运行效率应该有了一个很好的认识。实际上，如果我们不是在极端场景下，都会去使用如openresty或者nginx的javascript模块，来使用同步编程的方式，达成我们的目的，这样的开发效率非常的高。</p>
-]]></content>
-      <tags>
-        <tag>操作系统</tag>
       </tags>
   </entry>
   <entry>
