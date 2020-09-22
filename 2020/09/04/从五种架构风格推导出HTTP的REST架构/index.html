@@ -243,147 +243,150 @@
       
         <p>在分布式的Web架构中呢，有5类架构风格。那么什么叫架构风格呢？我们在日常编程中可能会有习惯用法，再高一级在面向对象语言中呢，可能会有设计模式，那么再往上更大粒度的抽象我们可以用到架构。而架构风格是指某一类架构它们具有相同的或者说类似的一些约束，我们把它归纳为一类架构风格。那么我们rest架构，也就是HTTP设计所遵循的这样的架构会使用到我们下面的，或者说参考我们下列5类架构风格中的其中一些架构。</p>
 <p>那么这5类架构风格呢，主要包括：</p>
-<ol type="1">
-<li>数据流风格 Data-flow Styles（协议的分层，nginx）
-<ul>
+<ol>
+<li>数据流风格 Data-flow Styles（协议的分层，nginx）<ul>
 <li>优点：简单性、可进化性、可扩展性、可配置性、可重用性</li>
-</ul></li>
-<li>复制风格 Replication Styles
-<ul>
+</ul>
+</li>
+<li>复制风格 Replication Styles<ul>
 <li>优点：用户可察觉的性能、可伸缩性、网络效率、可靠性也可以得到提升</li>
-</ul></li>
-<li>分层风格 Hierarchical Styles
-<ul>
+</ul>
+</li>
+<li>分层风格 Hierarchical Styles<ul>
 <li>优点：简单性、可进化性、可伸缩性</li>
-</ul></li>
-<li>移动代码风格 Mobile Code Styles
-<ul>
+</ul>
+</li>
+<li>移动代码风格 Mobile Code Styles<ul>
 <li>优点：可移植性、可扩展性、网络效率</li>
-</ul></li>
-<li>点对点风格 Peer-to-Peer Styles
-<ul>
+</ul>
+</li>
+<li>点对点风格 Peer-to-Peer Styles<ul>
 <li>优点：可进化性、可重用性、可扩展性、可配置性</li>
-</ul></li>
+</ul>
+</li>
 </ol>
-<h3 id="数据流风格data-flow-styles">数据流风格Data-flow Styles</h3>
-<ul>
-<li>管道和过滤器Pipe And Filter，PF
-<ul>
+<h3 id="数据流风格Data-flow-Styles"><a href="#数据流风格Data-flow-Styles" class="headerlink" title="数据流风格Data-flow Styles"></a>数据流风格Data-flow Styles</h3><ul>
+<li>管道和过滤器Pipe And Filter，PF<ul>
 <li>每个Filter都有输入端和输出端，只能从输入端读取数据，处理后再从输出端产生数据（协议，TCP-ip-数据链路层协议，只能从输入端到输出端）</li>
-</ul></li>
-<li>统一接口的管道与过滤器 Uniform Pipe And Filter, UPF
-<ul>
+</ul>
+</li>
+<li>统一接口的管道与过滤器 Uniform Pipe And Filter, UPF<ul>
 <li>在PF上增加了统一接口的约束，所有Filter过滤器必须具备同样的接口</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p>主要这种数据流风格会对简单性上有所体现，特别是UPF以后简单性会有很大的提升，我们每一个模块每一个Filter都可以独自的去升级进化不影响。那么我们再增加一个新的功能，比如说增加一个新的协议层，或者说nginx增加一个新的模块，都是很容易的，所以可扩展性也是非常好的。那么可配置性也是一样的，我们可以通过配置文件灵活的去增加我们的Filter或者说我们的协议层级，而在我们的可重用性上面也是非常好的。每一个Filter我们会独立的拿下来以后给新的这样的一种架构去使用。</p>
-<h3 id="复制风格replication-styles">复制风格Replication Styles</h3>
-<ul>
-<li>复制仓库Replicated Repository，RR
-<ul>
+<h3 id="复制风格Replication-Styles"><a href="#复制风格Replication-Styles" class="headerlink" title="复制风格Replication Styles"></a>复制风格Replication Styles</h3><ul>
+<li>复制仓库Replicated Repository，RR<ul>
 <li>多个进程提供相同的服务，通过反向代理对外提供集中服务（MySQL冷热备份，Web app同时提供很多服务、使用nginx反向代理）</li>
-</ul></li>
-<li>缓存$
-<ul>
+</ul>
+</li>
+<li>缓存$<ul>
 <li>RR的变体，通过复制请求的结果，为后续请求复用</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p>复制仓库与缓存这两种架构，对于用户可察觉的网络性能，RR和$风格因为都会对用户能够觉察到的性能有一个提升。缓存风格呢，因为直接减少了网络的传输量，所以网络效率会更高一些，那scalability呢，可伸缩性，因为有很多可以复制的进程或者可以复制的数据，也会导致我们scalability更好。简单性上，缓存风格也会表现更好一些。因为我有多个进程多个服务，所以可靠性上也会更好一些。</p>
-<h3 id="分层风格hierarchical-styles">分层风格Hierarchical Styles</h3>
-<ul>
-<li>客户端服务器Client-Server, CS（HTTP）
-<ul>
+<h3 id="分层风格Hierarchical-Styles"><a href="#分层风格Hierarchical-Styles" class="headerlink" title="分层风格Hierarchical Styles"></a>分层风格Hierarchical Styles</h3><ul>
+<li>客户端服务器Client-Server, CS（HTTP）<ul>
 <li>由Client触发请求，Server监听到请求后产生响应，Client一直等待收到响应后，会话结束</li>
 <li>分离关注点隐藏细节，良好的简单性、可伸缩性、可进化性（Server只关注资源的响应的生成，资源的管理，Client就关注于网络和结果可视化的渲染。向对方都隐藏了各自的细节，所以它们的简单性相对比较好，我们只关注中间的协议，而不关注可视化或者说数据库的管理。可伸缩性：比如Server在不停地增加更多的服务的节点，我们就可以为client提供更高可用性的服务。可进化性，意味着我们client和server都可以独立的进行进展）</li>
-</ul></li>
-<li>分层系统Layered System, LS
-<ul>
+</ul>
+</li>
+<li>分层系统Layered System, LS<ul>
 <li>每一层为其上的层服务，并使用在其之下的层所提供的服务，例如TCP/IP，OSI</li>
-</ul></li>
-<li>分层客户端服务器Layered Client-Server, LCS
-<ul>
+</ul>
+</li>
+<li>分层客户端服务器Layered Client-Server, LCS<ul>
 <li>LS+CS，例如正向代理和反向代理，从空间上分为外部层与内部层（正向代理，客户端和整个网络环境分离，反向代理把企业内网和整个企业外面的Internet网络进行了分层</li>
-</ul></li>
-<li>无状态、客户端服务器Client-Stateless-Server CSS
-<ul>
+</ul>
+</li>
+<li>无状态、客户端服务器Client-Stateless-Server CSS<ul>
 <li>基于CS，服务器上不允许有session state会话状态</li>
 <li>提升了可见性、可伸缩性、可靠性，但重复数据导致降低网络性能（HTTP 2.0的很多升级都体现在这几个方面，HTTP2.0中不希望重复的传递HTTP的头部，因为HTTP的头部特别是Cookie占用了网络资源，就是HTTP2.0已经做不到无状态了，所以它的重复数据相对比较少，网络性能更高，但是可见性、可伸缩性、可靠性上，相对较差一些。</li>
-</ul></li>
-<li>缓存、无状态、客户端服务器Client-Cache-Stateless-Server-C$SS
-<ul>
+</ul>
+</li>
+<li>缓存、无状态、客户端服务器Client-Cache-Stateless-Server-C$SS<ul>
 <li>提升性能（因为有重复数据，因为反复传递相同的header，环节可能导致的问题）</li>
-</ul></li>
+</ul>
+</li>
 <li>分层、缓存、无状态、客户端服务器Layered-Client-Cache-Stateless-Server, LC$SS</li>
 </ul>
 <p>client connector, client+cache, server connector, server+cache</p>
 <ul>
-<li>远程会话Remote Session, RS
-<ul>
+<li>远程会话Remote Session, RS<ul>
 <li>CS变体，服务器保存Application State应用状态（FTP）</li>
 <li>可伸缩性（不可能任意扩充服务器而对客户端没有影响）、可见性差（因为我单独的抓取一个报文，分析一个报文是没有办法得到完整的请求信息的）</li>
-</ul></li>
-<li>远程数据访问Remote Data Access, RDA
-<ul>
+</ul>
+</li>
+<li>远程数据访问Remote Data Access, RDA<ul>
 <li>CS变体，Application state应用状态同时分布在客户端与服务器（SQL访问，因为我们的查询集可能包含几百万条数据，所以我们必须要用到游标cursor，反复的一页一页地获取数据，也就是使得我们的客户端保存了一个应用的状态，我当前查询到第几页，而服务器端也需要为游标来保存这样的相应的数据）</li>
 <li>巨大的数据集有可能通过迭代而减少整个数据集</li>
 <li>简单性、可伸缩性差（我们传统的关系型数据库很少能够支持这种高可用性，基于数据仓库的多个热备份的分布式架构，是很难达到的）</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p>由服务器来保存客户端的架构都会导致scalability很差，所以我们HTTP协议所依赖的Rest架构不使用这两种方式。特别是加入分层，加入CS架构以后，scalability是非常优秀的，简单性也是因为我们加入分层统一无状态以后，得到了很大的提升。可进化性因为所有基于client server这种分离关注点的情况下，我们的可进化性都是比较优秀的。而在可重复使用上，特别是基于分层属性后，都会有很大的一个提升。而在可见性上，因为我加入了一个stateless，无状态，无状态的情况下每一条请求都携带了全部的信息，所以我的可见性会更好。那么可移植性，也是基于分层以后可移植性有了很大的提升。可靠性呢，因为我们有了无状态有了缓存以后，我们的可靠性也得到了提升。</p>
-<h3 id="移动代码风格mobile-code-styles">移动代码风格Mobile Code Styles</h3>
-<p>（表示实际程序要执行的那个代码是可以任意的从客户端到服务器端移动的）</p>
+<h3 id="移动代码风格Mobile-Code-Styles"><a href="#移动代码风格Mobile-Code-Styles" class="headerlink" title="移动代码风格Mobile Code Styles"></a>移动代码风格Mobile Code Styles</h3><p>（表示实际程序要执行的那个代码是可以任意的从客户端到服务器端移动的）</p>
 <ul>
 <li><p>虚拟机Virtual Machibe, VM</p>
 <ul>
 <li>分离指令与实现（公有云、基于KVM，Java的虚拟机）</li>
-</ul></li>
+</ul>
+</li>
 <li><p>远程求值Remote Evaluation, REV</p>
 <ul>
 <li>基于CS的VM，将代码发送至服务器执行</li>
-</ul></li>
+</ul>
+</li>
 <li><p>按需代码Code on Demand，COD</p>
 <ul>
 <li>服务器在响应中发回处理代码，在客户端执行（JS脚本）</li>
 <li>优秀的可扩展性和可配置性，提升用户可察觉性能和网络效率</li>
-</ul></li>
+</ul>
+</li>
 <li><p>分层、按需代码、缓存、无状态、客户端服务器</p>
 <p>Layered-Code-on-Demand-Client-Cache-Stateless-Server, LCODC$SS</p>
 <ul>
 <li>LC$SS+COD</li>
-</ul></li>
+</ul>
+</li>
 <li><p>移动代理Mobile Agent，MA</p>
 <ul>
 <li>相当于REV+COD</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p>REV的安全性风险太大</p>
 <p>统一接口的LC$SS+COD的架构</p>
 <p>用户可察觉的网络性能，网络性能，可伸缩性，可进化型，可扩展性，可配置性，可见性，可重用性</p>
-<h3 id="peer-to-peer-styles">Peer-to-Peer Styles</h3>
-<ul>
+<h3 id="Peer-to-Peer-Styles"><a href="#Peer-to-Peer-Styles" class="headerlink" title="Peer-to-Peer Styles"></a>Peer-to-Peer Styles</h3><ul>
 <li><p>Event-based Integration，EBI</p>
 <ul>
 <li>基于事件集成系统，如由类似kafka，Rabbit MQ这样的消息系统+分发订阅来消除耦合</li>
 <li>优秀的可重用性、可扩展性、可进化性</li>
 <li>缺乏可理解性</li>
 <li>由于消息广播等因素造成的消息风暴，可伸缩性差</li>
-</ul></li>
+</ul>
+</li>
 <li><p>Chiron-2，C2</p>
 <p>参见论文《A Component-and Message-Based Architectual Style for GUI Software</p>
 <ul>
 <li>相当于EBI+LCS，控制了消息的方向</li>
-</ul></li>
+</ul>
+</li>
 <li><p>Distruibuted Objects，DO</p>
 <ul>
 <li>组件结对交互</li>
-</ul></li>
+</ul>
+</li>
 <li><p>Brokered Distributed Object，BDO</p>
 <ul>
 <li>引入名字解析组件来简化DO，例如CORBA</li>
-</ul></li>
 </ul>
-<h3 id="风格演化到rest">风格演化到rest</h3>
-
+</li>
+</ul>
+<h3 id="风格演化到rest"><a href="#风格演化到rest" class="headerlink" title="风格演化到rest"></a>风格演化到rest</h3>
     </div>
 
     
@@ -473,7 +476,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E9%A3%8E%E6%A0%BCdata-flow-styles"><span class="nav-number">1.</span> <span class="nav-text">数据流风格Data-flow Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E9%A3%8E%E6%A0%BCreplication-styles"><span class="nav-number">2.</span> <span class="nav-text">复制风格Replication Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B1%82%E9%A3%8E%E6%A0%BChierarchical-styles"><span class="nav-number">3.</span> <span class="nav-text">分层风格Hierarchical Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%E4%BB%A3%E7%A0%81%E9%A3%8E%E6%A0%BCmobile-code-styles"><span class="nav-number">4.</span> <span class="nav-text">移动代码风格Mobile Code Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#peer-to-peer-styles"><span class="nav-number">5.</span> <span class="nav-text">Peer-to-Peer Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A3%8E%E6%A0%BC%E6%BC%94%E5%8C%96%E5%88%B0rest"><span class="nav-number">6.</span> <span class="nav-text">风格演化到rest</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E9%A3%8E%E6%A0%BCData-flow-Styles"><span class="nav-number">1.</span> <span class="nav-text">数据流风格Data-flow Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E9%A3%8E%E6%A0%BCReplication-Styles"><span class="nav-number">2.</span> <span class="nav-text">复制风格Replication Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B1%82%E9%A3%8E%E6%A0%BCHierarchical-Styles"><span class="nav-number">3.</span> <span class="nav-text">分层风格Hierarchical Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%E4%BB%A3%E7%A0%81%E9%A3%8E%E6%A0%BCMobile-Code-Styles"><span class="nav-number">4.</span> <span class="nav-text">移动代码风格Mobile Code Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Peer-to-Peer-Styles"><span class="nav-number">5.</span> <span class="nav-text">Peer-to-Peer Styles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A3%8E%E6%A0%BC%E6%BC%94%E5%8C%96%E5%88%B0rest"><span class="nav-number">6.</span> <span class="nav-text">风格演化到rest</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -489,7 +492,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">136</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

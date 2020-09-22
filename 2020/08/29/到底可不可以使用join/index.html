@@ -241,31 +241,34 @@
 
       
         <p>问题：</p>
-<ol type="1">
+<ol>
 <li>能不能使用join？</li>
 <li>两个大小不同的表，应该用哪个表做驱动表？</li>
 </ol>
 <p>为了便于量化分析，我建两个表t1和t2来和你说明。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`t2`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`a`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`b`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`a`</span> (<span class="string">`a`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">procedure</span> idata;</span><br><span class="line">delimiter ;;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">procedure</span> idata()</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">  <span class="keyword">declare</span> i <span class="built_in">int</span>;</span><br><span class="line">  <span class="keyword">set</span> i=<span class="number">1</span>;</span><br><span class="line">  while(i&lt;=1000)do</span><br><span class="line">    <span class="keyword">insert</span> <span class="keyword">into</span> t2 <span class="keyword">values</span>(i, i, i);</span><br><span class="line">    <span class="keyword">set</span> i=i+<span class="number">1</span>;</span><br><span class="line">  <span class="keyword">end</span> <span class="keyword">while</span>;</span><br><span class="line"><span class="keyword">end</span>;;</span><br><span class="line">delimiter ;</span><br><span class="line"><span class="keyword">call</span> idata();</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t1 <span class="keyword">like</span> t2;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t1 (<span class="keyword">select</span> * <span class="keyword">from</span> t2 <span class="keyword">where</span> <span class="keyword">id</span>&lt;=<span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+
 <p>可以看到，这两个表都有一个主键索引id和一个索引a，字段b上无索引。存储过程idata()往表t2里插入了1000行数据，在表t1里插入的是100行数据。</p>
-<h3 id="index-nested-loop-join">Index Nested-Loop Join</h3>
-<p>我们来看一下这个语句：</p>
+<h3 id="Index-Nested-Loop-Join"><a href="#Index-Nested-Loop-Join" class="headerlink" title="Index Nested-Loop Join"></a>Index Nested-Loop Join</h3><p>我们来看一下这个语句：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t1 <span class="keyword">straight_join</span> t2 <span class="keyword">on</span> (t1.a=t2.a);</span><br></pre></td></tr></table></figure>
+
 <p>如果直接使用join语句，MySQL优化器可能会选择表t1或t2作为驱动表，这样会影响我们分析SQL语句的执行过程。所以，为了便于分析执行过程中的性能问题，我改用strainght_join让MySQL使用固定的连接方式执行查询，这样优化器只会按照我们指定的方式去join。在这个语句里，t1是驱动表，t2是被驱动表。</p>
 <p>现在，我们来看一下这条语句的explain结果。</p>
 
+
 <p>可以看到，在这条语句里，被驱动表t2的字段a上有索引，join过程用上了这个索引，因此这个语句的执行流程是这样的：</p>
-<ol type="1">
+<ol>
 <li>从表t1中读入一行数据R；</li>
 <li>从数据行R中，取出a字段到表t2里查找；</li>
 <li>取出表t2中满足条件的行，跟R组成一行，作为结果集的一部分；</li>
 <li>重复执行步骤1到3，直到表t1的末尾循环结束。</li>
 </ol>
-<p>这个过程是先遍历表t1，然后根据从表t1中取出的每行数据中的a值，去表t2中查找满足条件的记录。在形式上，这个过程就跟我们写程序时的嵌套查询类似，并且可以用上被驱动表的索引，所以我们称之为"Index Nested-Loop Join"，简称NLJ。</p>
+<p>这个过程是先遍历表t1，然后根据从表t1中取出的每行数据中的a值，去表t2中查找满足条件的记录。在形式上，这个过程就跟我们写程序时的嵌套查询类似，并且可以用上被驱动表的索引，所以我们称之为”Index Nested-Loop Join”，简称NLJ。</p>
 <p>它对应的流程图如下所示：</p>
 
+
 <p>在这个流程里：</p>
-<ol type="1">
+<ol>
 <li>对驱动表t1做了全表扫描，这个过程需要扫描100行；</li>
 <li>而对于每一行R，根据a字段去表t2查找，走的是树搜索过程。由于我们构造的数据都是一一对应的，因此每次搜索过程都只扫描一行，也是总共扫描100行；</li>
 <li>所以，整个执行流程，总扫描行数是200。</li>
@@ -273,14 +276,14 @@
 <p>现在我们知道了这个过程，再试着回答一下文章开头的两个问题。</p>
 <p>先看第一个问题，<strong>能不能使用join？</strong></p>
 <p>假设不使用join，那我们就只能单表查询，我们看看上面这条语句的需求，用单表查询怎么实现。</p>
-<ol type="1">
+<ol>
 <li>执行select * from t1，查出表t1的所有数据，这里有100行；</li>
-<li>循环遍历这100行数据：
-<ul>
+<li>循环遍历这100行数据：<ul>
 <li>从每一行R取出字段a的值$R.a；</li>
 <li>执行select * from t2 where a=$R.a；</li>
 <li>把返回的结果和R构成结果集的一行。</li>
-</ul></li>
+</ul>
+</li>
 </ol>
 <p>可以看到，在这个查询过程，也是扫描了200行，但是总共执行了101条语句，比直接join多了100次交互。除此之外，客户端还要自己拼接SQL语句和结果。</p>
 <p>显然，这么做还不如直接join好。</p>
@@ -291,35 +294,36 @@
 <p>因此整个执行过程，近似复杂度是N+N<em>2</em>log2M。</p>
 <p>显然，N对扫描行数的影响更大，因此应该让小表来做驱动表。</p>
 <p>到这里小结一下，通过上面的分析我们得到了两个结论：</p>
-<ol type="1">
+<ol>
 <li>使用join语句，性能比强拆成多个单表执行SQL语句的性能要好；</li>
 <li>如果使用join语句的话，需要让小表做驱动表。</li>
 </ol>
 <p>但是，你需要注意，这个结论的前提是“可以使用被驱动表的索引”。</p>
 <p>接下来，我们再看看被驱动表用不上索引的情况。</p>
-<h3 id="simple-nested-loop-join">Simple Nested-Loop Join</h3>
-<p>现在，我们把SQL语句改成这样：</p>
+<h3 id="Simple-Nested-Loop-Join"><a href="#Simple-Nested-Loop-Join" class="headerlink" title="Simple Nested-Loop Join"></a>Simple Nested-Loop Join</h3><p>现在，我们把SQL语句改成这样：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t1 <span class="keyword">straight_join</span> t2 <span class="keyword">on</span> (t1.a=t2.b);</span><br></pre></td></tr></table></figure>
+
 <p>由于表t2的字段b上没有索引，因此再用图2的执行流程时，每次到t2去匹配的时候，就要做一次全表扫描。</p>
 <p>你可以设想一下这个问题，继续使用图2的算法，是不是可以得到正确的结果呢？如果只看结果的话，这个算法是正确的，而且这个算法也有一个名字，叫做“Simple Nested-Loop Join”。</p>
 <p>但是，这样算来，这个SQL请求就要扫描表t2多达100次，总共扫描100*1000=10万行。</p>
 <p>这还只是两个小表，如果t1和t2都是10万行的表（当然了，这也还是属于小表的范围，在现在的硬件条件下，1千万行一下的表都可以认为是小表），就要扫描100亿行，这个算法看上去太“笨重”了。</p>
-<p>当然，MySQL也没有使用这个Simple Nested-Loop Join算法，而是使用了另一个叫做“Block Nested-Loop Join"的算法，简称BNL。</p>
-<h3 id="block-nested-loop-join">Block Nested-Loop Join</h3>
-<p>这时候，被驱动表上没有可用的索引，算法的流程是这样的：</p>
-<ol type="1">
+<p>当然，MySQL也没有使用这个Simple Nested-Loop Join算法，而是使用了另一个叫做“Block Nested-Loop Join”的算法，简称BNL。</p>
+<h3 id="Block-Nested-Loop-Join"><a href="#Block-Nested-Loop-Join" class="headerlink" title="Block Nested-Loop Join"></a>Block Nested-Loop Join</h3><p>这时候，被驱动表上没有可用的索引，算法的流程是这样的：</p>
+<ol>
 <li>把表t1的数据读入线程内存join_buffer中，由于我们这个语句中写的是select *，因此是把整个表t1放入了内存；</li>
 <li>扫描表t2，把表t2中的每一行取出来，跟join_buffer中的数据作对比，满足join条件的，作为结果集的一部分返回。</li>
 </ol>
 <p>这个过程的流程图如下：</p>
 
+
 <p>对应地，这条SQL语句的explain结果如下所示：</p>
+
 
 <p>可以看到，在这个过程中，对表t1和t2都做了一次全表扫描，因此总的扫描行数是1100。由于join_buffer是以无序数组的方式组织的，因此对表t2中的每一行，都要做100次判断，总共需要在内存中做得判断次数是：100*1000=10万次。</p>
 <p>前面我们说过，如果使用Simple Nested-Loop Join算法进行查询，扫描行数也是10万行。因此，从时间复杂度上来说，这两个算法是一样的。<strong>但是，Block Nested-Loop 算法的这10万次判断是内存操作，速度上会快很多，性能也更好。</strong>（原因在这里，我们把小表的数据放到了内存中。而对于Simple Nested-Loop Join算法，是对表t2做了全表扫面，每次拿出一个数据页到内存中，再做判断，这样增加了磁盘IO次数，就比较慢）</p>
 <p>接下来，我们来看一下，在这种情况下，应该选择哪个表做驱动表。</p>
 <p>假设小表的行数是N，大表的行数是M，那么在这个算法里：</p>
-<ol type="1">
+<ol>
 <li>两个表都做一次全表扫描，所以总的扫描行数是M+N；</li>
 <li>内存中判断的次数时M*N。</li>
 </ol>
@@ -327,8 +331,9 @@
 <p>然后，你可能马上就会问了，这个例子里表t1才100行，要是t1是一个大表，join_buffer放不下怎么办呢？</p>
 <p>join_buffer的大小是由参数join_buffer_size设定的，默认值是256k。<strong>如果放不下表t1的所有数据的话，策略很简单，就是分段放。</strong>我把join_buffer_size改成1200，再执行：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t1 <span class="keyword">straight_join</span> t2 <span class="keyword">on</span> (t1.a=t2.b);</span><br></pre></td></tr></table></figure>
+
 <p>执行过程就变成了：</p>
-<ol type="1">
+<ol>
 <li>扫描表t1，顺序读取数据行放入join_buffer中，放完第88行join_buffer满了，继续第2步；</li>
 <li>扫描表t2，把t2中的每一行取出来，跟join_buffer中的数据作对比，满足join条件的，作为结果集的一部分返回；</li>
 <li>清空join_buffer;</li>
@@ -336,14 +341,15 @@
 </ol>
 <p>执行流程图也就变成这样：</p>
 
+
 <p>图中的步骤4和5，表示清空join_buffer再复用。</p>
-<p>这个流程才体现出了这个算法名字中"Block"的由来，表示“分块去join"。</p>
+<p>这个流程才体现出了这个算法名字中”Block”的由来，表示“分块去join”。</p>
 <p>可以看到，这时候由于表t1被分成了两次放入join_buffer中，导致表t2会被扫描两次。虽然分成两次放入join_buffer，但是判断等之条件的次数还是不变的，依然是(88+12)*1000=10万次。</p>
 <p>我们再来看下，在这种情况下驱动表的选择问题。</p>
 <p>假设，驱动表的数据行数是N，需要分K段才能完成算法流程，被驱动表的数据行数是M。</p>
 <p>注意，这里的K不是常数，N越大K就会越大，因此把K表示为λ*N，显然λ的取值范围是（0， 1）。</p>
 <p>所以，在这个算法的执行过程中：</p>
-<ol type="1">
+<ol>
 <li>扫描行数是N+λ*N*M；</li>
 <li>内存判断N*M次。</li>
 </ol>
@@ -353,40 +359,41 @@
 <p>刚刚我们说了N越大，分段数K越大。那么，N固定的时候，什么参数会影响K的大小呢？（也就是λ的大小）Join_buffer_size。join_buffer_size越大，一次可以放入的行越多，分成的段数也就越少，对被驱动表的全表扫描次数就越少。</p>
 <p>这就是为什么，你可能看到一些建议说，如果你的join语句很慢，就把join_buffer_size改大。</p>
 <p>理解了MySQL执行join的两种算法，现在我们再来试着回答文章开头的两个问题。</p>
-<p>第一个问题：能不能使用join'语句？</p>
-<ol type="1">
+<p>第一个问题：能不能使用join’语句？</p>
+<ol>
 <li>如果可以使用Index Nested-Loop Join算法，也就是说可以用上被驱动表上的索引，其实是没问题的；</li>
 <li>如果使用Block Nested-Loop Join算法，扫描行数就会过多。尤其是在大表上的join操作，这样可能要扫描被驱动表很多次，会占用大量的系统资源。所以这种join尽量不要用。</li>
 </ol>
-<p>所以你在判断要不要使用join语句时，就是看explain结果里面，Extra字段里面有没有出现“Block Nested Loop"字样。</p>
+<p>所以你在判断要不要使用join语句时，就是看explain结果里面，Extra字段里面有没有出现“Block Nested Loop”字样。</p>
 <p>第二个问题：如果要使用join，应该选择大表做驱动表还是选择小表做驱动表？</p>
-<ol type="1">
+<ol>
 <li>如果是Index Nested-Loop Join算法，应该选择小表做驱动表；</li>
-<li>如果是Block Nested-Loop Join算法：
-<ul>
+<li>如果是Block Nested-Loop Join算法：<ul>
 <li>在join_buffer_size足够大的时候，是一样的；</li>
 <li>在join_buffer_size不够大的时候（这种情况才是更为常见的），应该选择小表做驱动表。</li>
-</ul></li>
+</ul>
+</li>
 </ol>
 <p>所以，这个问题的结论就是，总是应该选择小表做驱动表。</p>
-<p>当然，这里我需要说明下，<strong>什么叫做"小表"？</strong></p>
+<p>当然，这里我需要说明下，<strong>什么叫做”小表”？</strong></p>
 <p>我们前面的例子是没有加条件的。如果我在语句的where条件加上t2.id&lt;=50这个限定条件，再来看下这两条语句：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t1 <span class="keyword">straight_join</span> t2 <span class="keyword">on</span> (t1.b=t2.b) <span class="keyword">where</span> t2.id&lt;=<span class="number">50</span>;</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t2 <span class="keyword">straight_join</span> t1 <span class="keyword">on</span> (t1.b=t2.b) <span class="keyword">where</span> t2.id&lt;=<span class="number">50</span>;</span><br></pre></td></tr></table></figure>
+
 <p>注意，为了让两条语句的被驱动表都用不上索引，所以join字段都使用了没有索引的字段b。</p>
-<p>但如果是用第二个语句的话，join_buffer只需要放入t2的前50行，显然是更好的。所以这里，"t2的前50行"是那个相对小的表，也就是"小表"。</p>
+<p>但如果是用第二个语句的话，join_buffer只需要放入t2的前50行，显然是更好的。所以这里，”t2的前50行”是那个相对小的表，也就是”小表”。</p>
 <p>我们再来看另外一组例子：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> t1.b,t2.* <span class="keyword">from</span> t1 <span class="keyword">straight_join</span> t2 <span class="keyword">on</span> (t1.b=t2.b) <span class="keyword">where</span> t2.id&lt;=<span class="number">100</span>;</span><br><span class="line"><span class="keyword">select</span> t1.b,t2.* <span class="keyword">from</span> t2 <span class="keyword">straight_join</span> t1 <span class="keyword">on</span> (t1.b=t2.b) <span class="keyword">where</span> t2.id&lt;=<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+
 <p>这个例子里，表t1和t2都是只有100行参加join。但是，这两条语句每次查询放入join_buffer中的数据是不一样的：</p>
-<ol type="1">
+<ol>
 <li>表t1只查字段b，因此如果把t1放到join_buffer中，则join_buffer中只需要放入b的值；</li>
 <li>表t2需要查所有的字段，因此如果把表t2放到join_buffer中的话，就需要放入三个字段为id、a、b。</li>
 </ol>
-<p>这里，我们应该选择表t1作为驱动表。也就是说在这个例子里，"只需要一列参与join的表t1"是那个相对小的表。</p>
-<p>所以，更准确的说，<strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个子弹的总数据量，数据量小的那个表，就是"小表"，应该作为驱动表。</strong></p>
-<h3 id="小结">小结</h3>
-<p>今天，我和你介绍了MySQL执行join语句的两种可能算法，这两种算法，是由能否使用被驱动表的索引决定的。而能否用上被驱动表的索引，对join语句的性能影响很大。</p>
+<p>这里，我们应该选择表t1作为驱动表。也就是说在这个例子里，”只需要一列参与join的表t1”是那个相对小的表。</p>
+<p>所以，更准确的说，<strong>在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个子弹的总数据量，数据量小的那个表，就是”小表”，应该作为驱动表。</strong></p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>今天，我和你介绍了MySQL执行join语句的两种可能算法，这两种算法，是由能否使用被驱动表的索引决定的。而能否用上被驱动表的索引，对join语句的性能影响很大。</p>
 <p>通过对Index Nested-Loop Join和Block Nested-Loop Join两个算法执行过程的分析，我们也得到了文章开头两个问题的答案：</p>
-<ol type="1">
+<ol>
 <li>如果可以使用被驱动表的索引，join语句还是有其优势的；</li>
 <li>不能使用被驱动表的索引，只能使用Block Nested-Loop Join算法，这样的语句尽量不要使用；</li>
 <li>在使用join的时候，应该让小表做驱动表。</li>
@@ -405,7 +412,7 @@
 <p><strong>大表join操作虽然对IO有影响，但是在语句执行结束后，对IO的影响也就结束了。但是，对Buffer Pool的影响就是持续性的，需要依靠后续的查询请求慢慢恢复内存命中率。</strong></p>
 <p>为了减少这种影响，你可以考虑增大join_buffer_size的值，减少对被驱动表的扫描次数。</p>
 <p>也就是说，BNL算法对系统的影响主要包括三个方面：</p>
-<ol type="1">
+<ol>
 <li>可能会多次扫描被驱动表，占用磁盘IO资源；</li>
 <li>判断join条件需要执行M*N次对比（M、N分别是两张表的行数），如果是大表就会占用非常多的CPU资源；</li>
 <li>可能会导致Buffer Pool的热数据被淘汰，影响内存命中率。</li>
@@ -501,7 +508,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#index-nested-loop-join"><span class="nav-number">1.</span> <span class="nav-text">Index Nested-Loop Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#simple-nested-loop-join"><span class="nav-number">2.</span> <span class="nav-text">Simple Nested-Loop Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#block-nested-loop-join"><span class="nav-number">3.</span> <span class="nav-text">Block Nested-Loop Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Index-Nested-Loop-Join"><span class="nav-number">1.</span> <span class="nav-text">Index Nested-Loop Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Simple-Nested-Loop-Join"><span class="nav-number">2.</span> <span class="nav-text">Simple Nested-Loop Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Block-Nested-Loop-Join"><span class="nav-number">3.</span> <span class="nav-text">Block Nested-Loop Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -517,7 +524,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">136</span>
+          <span class="site-state-item-count">137</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
