@@ -1171,22 +1171,6 @@
       </tags>
   </entry>
   <entry>
-    <title>grant之后要跟着flush privileges吗？ </title>
-    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
-    <content><![CDATA[<p>先说结论：</p>
-<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
-<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
-<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
-<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
-<h3 id="小结">小结</h3>
-<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
-<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
-]]></content>
-      <tags>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>insert语句的锁为什么这么多？</title>
     <url>/2020/08/28/insert%E8%AF%AD%E5%8F%A5%E7%9A%84%E9%94%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%A4%9A%EF%BC%9F/</url>
     <content><![CDATA[<p>在上一篇文章中，我提到MySQL对自增主键锁做了优化，尽量在申请到自增id以后，就释放自增锁。</p>
@@ -1279,6 +1263,22 @@
 <p>你平时在两个表之间拷贝数据用的是什么方法，有什么注意事项吗？在你的应用场景里，这个方法，相较于其他方法的优势是什么呢？</p>
 <p>另外，insert..select执行期间，有其他线程操作原表，会导致逻辑错误。其实这是不会的，如果不加锁，就是快照读。</p>
 <p>一条语句执行期间，它的一致性视图是不会修改的，所以即使有其他事务修改了原表的数据，也不会影响这条语句看到的数据。</p>
+]]></content>
+      <tags>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>grant之后要跟着flush privileges吗？ </title>
+    <url>/2020/08/29/grant%E4%B9%8B%E5%90%8E%E8%A6%81%E8%B7%9F%E7%9D%80flush-privileges%E5%90%97%EF%BC%9F/</url>
+    <content><![CDATA[<p>先说结论：</p>
+<p><strong>正常情况下，grant命令之后，没有必要跟着执行flush privileges命令。</strong></p>
+<p>那么，flush privileges是什么时候使用呢？显然，当数据表中的权限数据根内存中的权限数据不一样的时候，flush privileges语句可以用来重建内存数据，达到一致状态。</p>
+<p>这种不一致往往是由不规范的操作导致的，比如直接用DML语句操作系统权限表。</p>
+<p>直接操作系统表是不规范的操作。这个不一致状态也会导致一些更“诡异”的现象发生。不要直接操作系统表。</p>
+<h3 id="小结">小结</h3>
+<p>grant 语句会同时修改数据表和内存，判断权限的时候使用的是内存数据。因此，规范地使用 grant 和 revoke 语句，是不需要随后加上 flush privileges 语句的。</p>
+<p>flush privileges 语句本身会用数据表的数据重建一份内存权限数据，所以在权限数据可能存在不一致的情况下再使用。而这种不一致往往是由于直接用 DML 语句操作系统权限表导致的，所以我们尽量不要使用这类语句。</p>
 ]]></content>
       <tags>
         <tag>数据库</tag>
@@ -1774,6 +1774,38 @@
       </tags>
   </entry>
   <entry>
+    <title>python实现简单布隆过滤器</title>
+    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
+<p>布隆过滤器vshash table</p>
+<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
+<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
+<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
+<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
+<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
+<h2 id="案例">案例</h2>
+<ol type="1">
+<li>比特币网络</li>
+<li>分布式系统（Map-Reduce) - Hadoop、search engine
+<ol type="1">
+<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
+</ol></li>
+<li>Redis缓存</li>
+<li>垃圾邮件、评论等的过滤</li>
+</ol>
+<h2 id="简单实现示例">简单实现示例</h2>
+<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
+<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
+<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
+<p>search是search(s:str) -&gt;bool</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《相信未来》——食指</title>
     <url>/2019/12/05/%E3%80%8A%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5%E3%80%8B%E2%80%94%E2%80%94%E9%A3%9F%E6%8C%87/</url>
     <content><![CDATA[<p>当蜘蛛网无情地查封了我的炉台</p>
@@ -1810,38 +1842,6 @@
 ]]></content>
       <tags>
         <tag>青春</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>python实现简单布隆过滤器</title>
-    <url>/2020/08/05/python%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-    <content><![CDATA[<h2 id="布隆过滤器">布隆过滤器</h2>
-<p>布隆过滤器vshash table</p>
-<p>布隆过滤器本质上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。</p>
-<p>优点：<strong>空间效率</strong>和<strong>查询时间</strong>都<strong>远远超过</strong>一般的算法</p>
-<p>缺点：有<strong>一定的误识别率</strong>和<strong>删除困难</strong></p>
-<p>对于测试元素，当它验证这个元素所对应的⼆进制位是1的时候，那么它可能存在在布隆过滤器⾥⾯， 当它验证这个元素所对应的⼆进制位只要有⼀个不为1的话，那么我们可以百分之百肯定它不在。</p>
-<p>那么接下来要怎么判断它到底是否存在？布隆过滤器只是放在最外⾯当⼀个缓存使的，当⼀个很快速的判断使的。当B查到了之后，布隆过滤器⾥⾯是存在的，那么B会继续到这台机器的DB⾥⾯去查。C不在布隆过滤器中，就不⽤查了。</p>
-<h2 id="案例">案例</h2>
-<ol type="1">
-<li>比特币网络</li>
-<li>分布式系统（Map-Reduce) - Hadoop、search engine
-<ol type="1">
-<li>搜索引擎，经常需要把大量的网页信息，图片信息存到整个服务器里面，一般来说，不同的网页是存在不同的集群里面的。那么就先去这个集群的布隆过滤器里面查一下。</li>
-</ol></li>
-<li>Redis缓存</li>
-<li>垃圾邮件、评论等的过滤</li>
-</ol>
-<h2 id="简单实现示例">简单实现示例</h2>
-<p>布隆过滤器主要有构造函数，和add一个元素，search一个元素，三个API需要实现。</p>
-<p>构造函数，我们可以假定传入二进制数组的长度（工业实现中可能会传如元素的数量，然后推断出人禁止数组的长度），需要的哈希函数数量。</p>
-<p>add的函数签名是 add(s:str) -&gt; None，我们假定查询的是字符串</p>
-<p>search是search(s:str) -&gt;bool</p>
-<p>示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> mmh3</span><br><span class="line"><span class="keyword">from</span> bitarray <span class="keyword">import</span> bitarray</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BloomFilter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, size: int, hash_num: int</span>):</span></span><br><span class="line">        self.size = size</span><br><span class="line">        self.hash_num = hash_num</span><br><span class="line">        self.bit_array = bitarray(size)</span><br><span class="line">        self.bit_array.setall(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self, s: str</span>) -&gt; <span class="keyword">None</span>:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            self.bit_array[result] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, s: str</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">for</span> seed <span class="keyword">in</span> range(self.hash_num):</span><br><span class="line">            result = mmh3.hash(s, seed) % self.size</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> self.bit_array[result]:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">                <span class="comment"># Nope</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="comment"># Probably</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -2637,6 +2637,31 @@
       </tags>
   </entry>
   <entry>
+    <title>又因为看国家大事睡不着了</title>
+    <url>/2020/09/22/%E5%8F%88%E5%9B%A0%E4%B8%BA%E7%9C%8B%E5%9B%BD%E5%AE%B6%E5%A4%A7%E4%BA%8B%E7%9D%A1%E4%B8%8D%E7%9D%80%E4%BA%86/</url>
+    <content><![CDATA[<p>上帝，请赐予我平静，</p>
+<p>去接受我无法改变的。</p>
+<p>给予我勇气，</p>
+<p>去改变我能改变的，</p>
+<p>赐我智慧，</p>
+<p>分辨这两者的区别。</p>
+<p>过好我的每一天，</p>
+<p>享受你所赐每一刻，</p>
+<p>把困苦当成通往平安的道路，</p>
+<p>像主耶稣那样，接受这罪恶的世界，</p>
+<p>按其现实本相，而非如我所愿</p>
+<p>相信他会使一切变得美好，</p>
+<p>只要我顺服他的旨意；</p>
+<p>我可以在此生有合宜的欢乐，</p>
+<p>并在永生里，与他永享至福。</p>
+<p>阿门。</p>
+<p>无神论者，只是汲取其中的营养</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>双蛋问题以及更主要的其更通用化且有用的问题的解</title>
     <url>/2020/07/26/%E5%8F%8C%E8%9B%8B%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E6%9B%B4%E4%B8%BB%E8%A6%81%E7%9A%84%E5%85%B6%E6%9B%B4%E9%80%9A%E7%94%A8%E5%8C%96%E4%B8%94%E6%9C%89%E7%94%A8%E7%9A%84%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="题目leetcode-887.-鸡蛋掉落">题目：LeetCode <span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvc3VwZXItZWdnLWRyb3Av">887. 鸡蛋掉落<i class="fa fa-external-link-alt"></i></span></h2>
@@ -2713,31 +2738,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>又因为看国家大事睡不着了</title>
-    <url>/2020/09/22/%E5%8F%88%E5%9B%A0%E4%B8%BA%E7%9C%8B%E5%9B%BD%E5%AE%B6%E5%A4%A7%E4%BA%8B%E7%9D%A1%E4%B8%8D%E7%9D%80%E4%BA%86/</url>
-    <content><![CDATA[<p>上帝，请赐予我平静，</p>
-<p>去接受我无法改变的。</p>
-<p>给予我勇气，</p>
-<p>去改变我能改变的，</p>
-<p>赐我智慧，</p>
-<p>分辨这两者的区别。</p>
-<p>过好我的每一天，</p>
-<p>享受你所赐每一刻，</p>
-<p>把困苦当成通往平安的道路，</p>
-<p>像主耶稣那样，接受这罪恶的世界，</p>
-<p>按其现实本相，而非如我所愿</p>
-<p>相信他会使一切变得美好，</p>
-<p>只要我顺服他的旨意；</p>
-<p>我可以在此生有合宜的欢乐，</p>
-<p>并在永生里，与他永享至福。</p>
-<p>阿门。</p>
-<p>无神论者，只是汲取其中的营养</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -3254,28 +3254,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
-    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>快速排序的多种写法</title>
-    <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
-    <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
-<p>以下给出python版本的实现代码。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSort</span>(<span class="params">self, nums: List[int]</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.quickSortHelper(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSortHelper</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        pivot = self.partition(nums, l, r)</span><br><span class="line">        self.quickSortHelper(nums, l, pivot - <span class="number">1</span>)</span><br><span class="line">        self.quickSortHelper(nums, pivot + <span class="number">1</span>, r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># def partition(self, nums, l, r):</span></span><br><span class="line">    <span class="comment">#     ran = random.randint(l, r)</span></span><br><span class="line">    <span class="comment">#     nums[r], nums[ran] = nums[ran], nums[r]</span></span><br><span class="line">    <span class="comment">#     pivot = r</span></span><br><span class="line">    <span class="comment">#     right = l</span></span><br><span class="line">    <span class="comment">#     for i in range(l, r):</span></span><br><span class="line">    <span class="comment">#         if nums[i] &lt;= nums[pivot]:</span></span><br><span class="line">    <span class="comment">#             nums[i], nums[right] = nums[right], nums[i]</span></span><br><span class="line">    <span class="comment">#             right += 1</span></span><br><span class="line">    <span class="comment">#     nums[right], nums[pivot] = nums[pivot], nums[right]</span></span><br><span class="line">    <span class="comment">#     return right</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        ran = random.randint(l, r)</span><br><span class="line">        nums[l], nums[ran] = nums[ran], nums[l]</span><br><span class="line">        pivot = l</span><br><span class="line">        left = r</span><br><span class="line">        i = l + <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= left:</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt;= nums[pivot]:</span><br><span class="line">                nums[i], nums[left] = nums[left], nums[i]</span><br><span class="line">                left -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">        nums[left], nums[pivot] = nums[pivot], nums[left]</span><br><span class="line">        <span class="keyword">return</span> left</span><br></pre></td></tr></table></figure>
-<p>两个partition的效果是一样的。</p>
-<p>注意，我们使用一种随机方法，保证了我们的快排在遇到严格递增序列或者严格递减序列的时候，期望也是O(nlogn)时间复杂度的。这是一种随机方法，还有其他随机算法的实现。这种比较简单。而这个随机的步骤，也使得我们的快排不是稳定。</p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>并查集侦查无向图中的环</title>
     <url>/2020/08/21/%E5%B9%B6%E6%9F%A5%E9%9B%86%E4%BE%A6%E6%9F%A5%E6%97%A0%E5%90%91%E5%9B%BE%E4%B8%AD%E7%9A%84%E7%8E%AF/</url>
     <content><![CDATA[<p>并查集是一种数据结构，它跟踪一个集合的元素被分割成若干不相干（不重叠）的子集。union-find算法是一种对这种数据结构执行两种有用操作的算法：</p>
@@ -3299,6 +3277,28 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
 <p>0-&gt;1-&gt;2 // 1是0的父结点2是1的父结点。</p>
 <p>根据以上解释，下面是实现。</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># undirected_graph.py</span></span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, k</span>):</span></span><br><span class="line">        self.uf = [<span class="number">-1</span>] * (k + <span class="number">1</span>)</span><br><span class="line">        self.sets_count = k</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">find</span>(<span class="params">self, p</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p] &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        self.uf[p] = self.find(self.uf[p])</span><br><span class="line">        <span class="keyword">return</span> self.uf[p]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">union</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        p_root = self.find(p)</span><br><span class="line">        q_root = self.find(q)</span><br><span class="line">        <span class="keyword">if</span> p_root == q_root:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">if</span> self.uf[p_root] &gt; self.uf[q_root]:</span><br><span class="line">            self.uf[q_root] += self.uf[p_root]</span><br><span class="line">            self.uf[p_root] = q_root</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.uf[p_root] += self.uf[q_root]</span><br><span class="line">            self.uf[q_root] = p_root</span><br><span class="line">        self.sets_count -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_connected</span>(<span class="params">self, p, q</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.find(p) == self.find(q)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.graph = defaultdict(list)</span><br><span class="line">        self.uf = UnionFind(vertices)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, u, v</span>):</span></span><br><span class="line">        self.graph[u].append(v)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">isCyclic</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> self.graph:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> self.graph[i]:</span><br><span class="line">                <span class="keyword">if</span> self.uf.is_connected(i, j):</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">                self.uf.union(i, j)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g = Graph(<span class="number">3</span>)</span><br><span class="line">    g.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    print(g.isCyclic())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>弱小和无知不是生存的障碍，傲慢才是--《三体》</title>
+    <url>/2020/02/25/%E5%BC%B1%E5%B0%8F%E5%92%8C%E6%97%A0%E7%9F%A5%E4%B8%8D%E6%98%AF%E7%94%9F%E5%AD%98%E7%9A%84%E9%9A%9C%E7%A2%8D%EF%BC%8C%E5%82%B2%E6%85%A2%E6%89%8D%E6%98%AF-%E3%80%8A%E4%B8%89%E4%BD%93%E3%80%8B/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>快速排序的多种写法</title>
+    <url>/2020/08/11/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%86%99%E6%B3%95/</url>
+    <content><![CDATA[<p>快速排序作为一种基础的算法，广泛用于各种语言的内置排序库中，其中java使用了双基准快速排序（主要是双基准更有效的利用了计算机的缓存机制）。它是一种原地的，空间复杂度为O(1)、时间复杂度O(nlogn)、不稳定的排序算法。分为切分，和递归两个步骤。其中切分的步骤可以帮助我们以O(n)的时间复杂度找到数组中某种排名为K的元素。然而在实际实现中，快排有一些小技巧，也是我们必须要掌握的一种算法。</p>
+<p>以下给出python版本的实现代码。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSort</span>(<span class="params">self, nums: List[int]</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.quickSortHelper(nums, <span class="number">0</span>, len(nums) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">quickSortHelper</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        pivot = self.partition(nums, l, r)</span><br><span class="line">        self.quickSortHelper(nums, l, pivot - <span class="number">1</span>)</span><br><span class="line">        self.quickSortHelper(nums, pivot + <span class="number">1</span>, r)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># def partition(self, nums, l, r):</span></span><br><span class="line">    <span class="comment">#     ran = random.randint(l, r)</span></span><br><span class="line">    <span class="comment">#     nums[r], nums[ran] = nums[ran], nums[r]</span></span><br><span class="line">    <span class="comment">#     pivot = r</span></span><br><span class="line">    <span class="comment">#     right = l</span></span><br><span class="line">    <span class="comment">#     for i in range(l, r):</span></span><br><span class="line">    <span class="comment">#         if nums[i] &lt;= nums[pivot]:</span></span><br><span class="line">    <span class="comment">#             nums[i], nums[right] = nums[right], nums[i]</span></span><br><span class="line">    <span class="comment">#             right += 1</span></span><br><span class="line">    <span class="comment">#     nums[right], nums[pivot] = nums[pivot], nums[right]</span></span><br><span class="line">    <span class="comment">#     return right</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">partition</span>(<span class="params">self, nums, l, r</span>):</span></span><br><span class="line">        ran = random.randint(l, r)</span><br><span class="line">        nums[l], nums[ran] = nums[ran], nums[l]</span><br><span class="line">        pivot = l</span><br><span class="line">        left = r</span><br><span class="line">        i = l + <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> i &lt;= left:</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt;= nums[pivot]:</span><br><span class="line">                nums[i], nums[left] = nums[left], nums[i]</span><br><span class="line">                left -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">        nums[left], nums[pivot] = nums[pivot], nums[left]</span><br><span class="line">        <span class="keyword">return</span> left</span><br></pre></td></tr></table></figure>
+<p>两个partition的效果是一样的。</p>
+<p>注意，我们使用一种随机方法，保证了我们的快排在遇到严格递增序列或者严格递减序列的时候，期望也是O(nlogn)时间复杂度的。这是一种随机方法，还有其他随机算法的实现。这种比较简单。而这个随机的步骤，也使得我们的快排不是稳定。</p>
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
@@ -3591,20 +3591,20 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>拔智齿后记</title>
-    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
-    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
+    <title>拔智齿II</title>
+    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
+    <content><![CDATA[<p>上午11：30</p>
+<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
+<p>现在敷着冰袋。没什么痛感。挺好的。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
       </tags>
   </entry>
   <entry>
-    <title>拔智齿II</title>
-    <url>/2020/07/12/%E6%8B%94%E6%99%BA%E9%BD%BFII/</url>
-    <content><![CDATA[<p>上午11：30</p>
-<p>大约10点开始拔的智齿，医生很温柔。用针都是很慢的，一针麻醉之后，渐渐的从舌根麻到舌尖。我这时心里挺安定的，既来之则安之。医生大概就用了20分钟。左下这颗智齿就拔完了。缝合的医生来缝了两针，就咬上了棉花止血。我出去坐在了椅子上，使劲咬着，没什么痛感，就是麻。这时大概10点40。坐了好一会，大概11点20，我打开手机，买了医生叮嘱昨天去药店还没买到的替硝唑，加上昨天买的罗红霉素，两种消炎药已经备齐了。拔牙的时候，听见医生说，现在手段都高级了，以前他拔牙的时候，北大医学院的医生，也要上锤子去拔，他疼了半个月。今天他给我做的是最微创的一种。两三天就好了，一天就能吃东西了。大概到了11点半，棉花咬得差不多了，医生叫进屋里要看一看血止的情况。我吐掉棉花球，医生看了看，血已经不流了。挺好，就可以走了。在11点半左右，我感谢了医生，走出了医院。伴随我的四颗智齿至此都已拔除。人的牙一共有32颗，我完成了很多人都会做的拔智齿，也和很多人一样还剩下28颗。</p>
-<p>现在敷着冰袋。没什么痛感。挺好的。</p>
+    <title>拔智齿后记</title>
+    <url>/2020/07/17/%E6%8B%94%E6%99%BA%E9%BD%BF%E5%90%8E%E8%AE%B0/</url>
+    <content><![CDATA[<p>还记得刚拔完最后一颗智齿那天，去超市买了一个西瓜，虽然不能张口吃东西，甚至不能说话，但是买了西瓜，冰镇着，心里就很高兴。</p>
 ]]></content>
       <tags>
         <tag>生活</tag>
@@ -3994,35 +3994,6 @@ dp[i] [j] = 1 + min(max(dp[i-1] [k-1], dp[i] [j-k]))， k = 1, 2, ...，j
       </tags>
   </entry>
   <entry>
-    <title>猫抓老鼠的简单讨论</title>
-    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
-    <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
-<ol type="1">
-<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
-<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
-<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
-<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
-<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
-<p>答案是不能。</p>
-<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
-<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
-<p><span class="math display">\[
-\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
-\]</span></p>
-<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
-<p>根据猫的速度是老鼠的4倍，</p>
-<p><span class="math display">\[
-x = \frac{4-\pi}{4}r \approx0.2146r
-\]</span></p>
-<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
-<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>深入理解MySQL索引底层实现原理丨技术干货</title>
     <url>/2020/07/24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3MySQL%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%A8%E6%8A%80%E6%9C%AF%E5%B9%B2%E8%B4%A7/</url>
     <content><![CDATA[<h3 id="转载">转载：</h3>
@@ -4101,6 +4072,35 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>猫抓老鼠的简单讨论</title>
+    <url>/2020/07/27/%E7%8C%AB%E6%8A%93%E8%80%81%E9%BC%A0%E7%9A%84%E7%AE%80%E5%8D%95%E8%AE%A8%E8%AE%BA/</url>
+    <content><![CDATA[<h2 id="两个问题以及其解答">两个问题以及其解答</h2>
+<ol type="1">
+<li><p><strong>问题一：有一个圆形的操场，四周都是墙壁，无法逾越。操场里面有一只老鼠和一只猫，猫在努力的捉老鼠。如果老鼠和猫的奔跑速度一样，那么猫一定能够追到老鼠吗？</strong></p>
+<p><strong>正确的结论正是猫永远也追不上老鼠</strong>。</p>
+<p>我们可以通过数学证明证明出，只要老鼠时刻沿着猫的位置到圆心的位置的连线的垂直方向跑，可以证明出永远也不会追上。数学证明见<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+<li><p><strong>在一个圆形池塘中有一只老鼠，池塘岸边有一只不会游泳的猫。这只老鼠游泳的速度比猫在岸上奔跑的速度要小，但其在岸上奔跑的速度却大于猫的速度。所以，只要老鼠能够在猫还没跑过来的时候游到岸边，那么老鼠就得救了。问，猫的奔跑速度要至少是老鼠游泳速度的多少倍，才能确保抓得住老鼠？</strong></p>
+<p>这道问题的一个简单问法是，假如猫在岸上的速度时老鼠游泳的4倍，那么猫能抓到老鼠吗？</p>
+<p>答案是不能。</p>
+<p>我们可以这么想，老鼠只要在小于1/4r处做绕圆心的圆运动，猫就跟不上老鼠，最终老鼠和猫和圆心会在一条直线上，圆心在老鼠和猫的中间。</p>
+<p>这时候只要老鼠沿着这条直线向远离猫的圆周跑去，假设老鼠的位置距离圆心为x，那么只要</p>
+<p><span class="math display">\[
+\frac{r-x}{v_{老鼠}} &lt; \frac{\pi r}{v_{猫}}
+\]</span></p>
+<p>老鼠就会比猫先到岸边，这时猫就再也抓不到老鼠了。</p>
+<p>根据猫的速度是老鼠的4倍，</p>
+<p><span class="math display">\[
+x = \frac{4-\pi}{4}r \approx0.2146r
+\]</span></p>
+<p>所以，只要老鼠在0.2146r到0.25r之间，走到和猫与圆心呈一条直线的位置，猫和老鼠分别在圆心两侧，老鼠往远离猫的方向走，就可以走出。</p>
+<p>原问题问猫的最小速度是多少，才能保证抓住老鼠，依然可以看这篇文章的数学推导<span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC84MDcwMTA2OA==">https://zhuanlan.zhihu.com/p/80701068<i class="fa fa-external-link-alt"></i></span>。</p></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -4535,15 +4535,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>计算机网络学习之-TCP协议1-TCP历史及其设计哲学</title>
-    <url>/2020/09/25/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E4%B9%8B-TCP%E5%8D%8F%E8%AE%AE1-TCP%E5%8E%86%E5%8F%B2%E5%8F%8A%E5%85%B6%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>计算机基础构架的三大件——计算、存储、网络</title>
     <url>/2020/09/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E7%9A%84%E4%B8%89%E5%A4%A7%E4%BB%B6%E2%80%94%E2%80%94%E8%AE%A1%E7%AE%97%E3%80%81%E5%AD%98%E5%82%A8%E3%80%81%E7%BD%91%E7%BB%9C/</url>
     <content><![CDATA[<p>关于计算机的相关系统，至少要掌握三个系统的基础知识，一个是操作系统，一个是网络系统，还有一个是数据库系统。它们分别代表着计算机基础构架的三大件——计算、存储、网络。</p>
@@ -4562,6 +4553,15 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机网络学习之-TCP协议1-TCP历史及其设计哲学</title>
+    <url>/2020/09/25/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E4%B9%8B-TCP%E5%8D%8F%E8%AE%AE1-TCP%E5%8E%86%E5%8F%B2%E5%8F%8A%E5%85%B6%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
       </tags>
   </entry>
   <entry>
@@ -4837,18 +4837,6 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>阿甘正传经典台词-you have to do the best with what God gave you</title>
-    <url>/2020/09/04/%E9%98%BF%E7%94%98%E6%AD%A3%E4%BC%A0%E7%BB%8F%E5%85%B8%E5%8F%B0%E8%AF%8D-you-have-to-do-the-best-with-what-God-gave-you/</url>
-    <content><![CDATA[<ul>
-<li>Well...I happen to believe you make your own destiny. You have to do the best with what God gave you.</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-        <tag>电影</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>银行家算法</title>
     <url>/2020/07/27/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h2 id="一句话">一句话</h2>
@@ -4972,6 +4960,18 @@ x = \frac{4-\pi}{4}r \approx0.2146r
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>阿甘正传经典台词-you have to do the best with what God gave you</title>
+    <url>/2020/09/04/%E9%98%BF%E7%94%98%E6%AD%A3%E4%BC%A0%E7%BB%8F%E5%85%B8%E5%8F%B0%E8%AF%8D-you-have-to-do-the-best-with-what-God-gave-you/</url>
+    <content><![CDATA[<ul>
+<li>Well...I happen to believe you make your own destiny. You have to do the best with what God gave you.</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+        <tag>电影</tag>
       </tags>
   </entry>
   <entry>
