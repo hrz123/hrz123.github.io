@@ -185,6 +185,86 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/10/04/%E7%AC%AC-36-%E5%9C%BA%E5%8F%8C%E5%91%A8%E8%B5%9B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/04/%E7%AC%AC-36-%E5%9C%BA%E5%8F%8C%E5%91%A8%E8%B5%9B/" class="post-title-link" itemprop="url">第 36 场双周赛</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-04 12:21:35 / 修改时间：12:26:19" itemprop="dateCreated datePublished" datetime="2020-10-04T12:21:35+08:00">2020-10-04</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/10/04/%E7%AC%AC-36-%E5%9C%BA%E5%8F%8C%E5%91%A8%E8%B5%9B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/10/04/%E7%AC%AC-36-%E5%9C%BA%E5%8F%8C%E5%91%A8%E8%B5%9B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="设计停车系统">5515. 设计停车系统</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ParkingSystem</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, big: int, medium: int, small: int</span>):</span></span><br><span class="line">        self.big = big</span><br><span class="line">        self.medium = medium</span><br><span class="line">        self.small = small</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addCar</span>(<span class="params">self, carType: int</span>) -&gt; bool:</span></span><br><span class="line">        <span class="keyword">if</span> carType == <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">if</span> self.big == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            self.big -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">elif</span> carType == <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">if</span> self.medium == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            self.medium -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> self.small == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">            self.small -= <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<h3 id="警告一小时内使用相同员工卡大于等于三次的人">5516. 警告一小时内使用相同员工卡大于等于三次的人</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">alertNames</span>(<span class="params">self, keyName: List[str], keyTime: List[str]</span>) -&gt; List[str]:</span></span><br><span class="line">        res = set()</span><br><span class="line">        record = defaultdict(list)</span><br><span class="line">        <span class="keyword">for</span> name, time <span class="keyword">in</span> zip(keyName, keyTime):</span><br><span class="line">            <span class="keyword">if</span> name <span class="keyword">in</span> res:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            tmp = self.to_minute(time)</span><br><span class="line">            loc = bisect.bisect_left(record[name], tmp)</span><br><span class="line">            record[name].insert(loc, tmp)</span><br><span class="line">            <span class="keyword">if</span> loc - <span class="number">2</span> &gt;= <span class="number">0</span> <span class="keyword">and</span> tmp - record[name][loc - <span class="number">2</span>] &lt;= <span class="number">60</span>:</span><br><span class="line">                res.add(name)</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">if</span> loc - <span class="number">1</span> &gt;= <span class="number">0</span> <span class="keyword">and</span> loc + <span class="number">1</span> &lt; len(record[name]) <span class="keyword">and</span> record[name][</span><br><span class="line">                loc + <span class="number">1</span>] - record[name][loc - <span class="number">1</span>] &lt;= <span class="number">60</span>:</span><br><span class="line">                res.add(name)</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">if</span> loc + <span class="number">2</span> &lt; len(record[name]) <span class="keyword">and</span> record[name][loc + <span class="number">2</span>] - tmp &lt;= \</span><br><span class="line">                    <span class="number">60</span>:</span><br><span class="line">                res.add(name)</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">        res = list(res)</span><br><span class="line">        res.sort()</span><br><span class="line">        <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">to_minute</span>(<span class="params">self, time_str</span>):</span></span><br><span class="line">        h, m = map(int, time_str.split(<span class="string">&quot;:&quot;</span>))</span><br><span class="line">        <span class="keyword">return</span> h * <span class="number">60</span> + m</span><br></pre></td></tr></table></figure>
+<h3 id="给定行和列的和求可行矩阵">5518. 给定行和列的和求可行矩阵</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">restoreMatrix</span>(<span class="params">self, rowSum: List[int],</span></span></span><br><span class="line"><span class="function"><span class="params">                      colSum: List[int]</span>) -&gt; List[List[int]]:</span></span><br><span class="line">        m = len(rowSum)</span><br><span class="line">        n = len(colSum)</span><br><span class="line">        res = [[<span class="number">0</span>] * n <span class="keyword">for</span> _ <span class="keyword">in</span> range(m)]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(n):</span><br><span class="line">                res[i][j] = min(rowSum[i], colSum[j])</span><br><span class="line">                rowSum[i] -= res[i][j]</span><br><span class="line">                colSum[j] -= res[i][j]</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="找到处理最多请求的服务器">5517. 找到处理最多请求的服务器</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">busiestServers</span>(<span class="params">self, ks: int, a: List[int], d: List[int]</span>) -&gt; List[int]:</span></span><br><span class="line">        <span class="keyword">from</span> sortedcontainers <span class="keyword">import</span> SortedList</span><br><span class="line">        ans = [<span class="number">0</span>] * ks</span><br><span class="line">        pq = []</span><br><span class="line">        fu = SortedList(range(ks))</span><br><span class="line">        v = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i, j <span class="keyword">in</span> zip(a, d):</span><br><span class="line">            heappush(pq, [i, <span class="number">1</span>, i + j, v])</span><br><span class="line">            v += <span class="number">1</span></span><br><span class="line">        <span class="comment"># print(pq,fu)</span></span><br><span class="line">        <span class="keyword">while</span> pq:</span><br><span class="line">            i, k, j, num = heappop(pq)</span><br><span class="line">            <span class="keyword">if</span> k == <span class="number">1</span> <span class="keyword">and</span> fu:</span><br><span class="line">                v = fu.bisect_left(num % ks)</span><br><span class="line">                <span class="keyword">if</span> v == len(fu):</span><br><span class="line">                    v = <span class="number">0</span></span><br><span class="line">                v = fu[v]</span><br><span class="line">                fu.remove(v)</span><br><span class="line">                ans[v] += <span class="number">1</span></span><br><span class="line">                heappush(pq, [j, <span class="number">0</span>, v, num])</span><br><span class="line">            <span class="keyword">elif</span> k == <span class="number">0</span>:</span><br><span class="line">                fu.add(j)</span><br><span class="line">            <span class="comment"># print(pq,fu)</span></span><br><span class="line">        <span class="comment"># print(ans)</span></span><br><span class="line">        t = max(ans)</span><br><span class="line">        <span class="keyword">return</span> [i <span class="keyword">for</span> i <span class="keyword">in</span> range(ks) <span class="keyword">if</span> ans[i] == t]</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/10/04/LeetCode-209-%E5%91%A8%E8%B5%9B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -909,90 +989,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/18/%E5%90%91%E6%AD%BB%E8%80%8C%E7%94%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/18/%E5%90%91%E6%AD%BB%E8%80%8C%E7%94%9F/" class="post-title-link" itemprop="url">向死而生，面向死亡生活</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-09-18 22:18:23" itemprop="dateCreated datePublished" datetime="2020-09-18T22:18:23+08:00">2020-09-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-21 21:16:34" itemprop="dateModified" datetime="2020-09-21T21:16:34+08:00">2020-09-21</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/09/18/%E5%90%91%E6%AD%BB%E8%80%8C%E7%94%9F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/18/%E5%90%91%E6%AD%BB%E8%80%8C%E7%94%9F/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>第一，存在者（人）的本命工作应该是：在有限的时间里，去呼应和思考存在者自己存在于这个世界上的依据，即存在者（人）要思考“<strong>存在</strong>”问题。</p>
-<p>第二，存在者（人）存在于这个世界上的时间是有限的，因为“死亡”是必然到来和发生的“潜在可能性”，所以存在者（人）会害怕“死亡”。那什么能够让我们暂时遗忘它、不去害怕它呢？那就是让自己忙起来，让自己操劳于世，这样就不会感到害怕。</p>
-<p>当第一种情况遇上第二种情况的时候，有限的时间使得存在者（人）必须二选其一进行工作。海德格尔认为，我们应该选择第一种情况，即在有限的时间里去追问自己存在的依据问题，而不能只是活着（PS：这也是人活着的意义问题、人的安身立命之所和人的价值所在）。</p>
-<p>海德格尔怎么让人摆脱对”死亡“的恐惧状态呢？于是，”向死而生“这个概念就出来了。海德格尔意义上的”向死而生“是为了鼓励人们回归对本命工作的工作状态，继续追问”存在“、关心人的意义问题和价值问题。这是终极问题，而”向死而生“只是这个目标的一个环节中针对某个问题的态度和对策。</p>
-<p>面向死亡生活，面向存在生活。不是害怕，是不停的问自己存在的意义。</p>
-<p>链接：https://www.zhihu.com/question/304682444/answer/781917577 来源：知乎</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1064,7 +1060,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">141</span>
+          <span class="site-state-item-count">142</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
