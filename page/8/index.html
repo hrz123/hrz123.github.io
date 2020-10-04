@@ -185,6 +185,102 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/" class="post-title-link" itemprop="url">MySQL如何正确地显示随机消息？ </a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-28 10:39:09 / 修改时间：16:24:29" itemprop="dateCreated datePublished" datetime="2020-08-28T10:39:09+08:00">2020-08-28</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/28/MySQL%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%9C%B0%E6%98%BE%E7%A4%BA%E9%9A%8F%E6%9C%BA%E6%B6%88%E6%81%AF%EF%BC%9F/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>先说结论</p>
+<p>如果你直接使用order by rand()，这个语句需要Using temporary和Using filesort，查询的执行代价往往是比较大的。所以，在设计的时候你要尽量避开这种写法。</p>
+<p><strong>在实际应用的过程中，比较规范的用法是：尽量将业务逻辑写在业务代码中，让数据库只做”读写数据“的事情。</strong></p>
+<h3 id="正确的方法">正确的方法</h3>
+<p>下面这个流程：</p>
+<ol type="1">
+<li>取得整个表的行数，并记为C。</li>
+<li>取得Y = floor(C * rand())。floor函数在这里的作用，就是取整数部分。</li>
+<li>再用limit Y，1 取得一行。</li>
+</ol>
+<p>下面这段代码，就是上面流程的执行语句的序列。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select count(*) into @C from t;</span><br><span class="line"><span class="keyword">set</span> @Y = <span class="keyword">floor</span>(@C * <span class="keyword">rand</span>());</span><br><span class="line"><span class="keyword">set</span> @<span class="keyword">sql</span> = <span class="keyword">concat</span>(<span class="string">&quot;select * from t limit &quot;</span>, @Y, <span class="string">&quot;,1&quot;</span>);</span><br><span class="line"><span class="keyword">prepare</span> stmt <span class="keyword">from</span> @<span class="keyword">sql</span>;</span><br><span class="line"><span class="keyword">execute</span> stmt;</span><br><span class="line"><span class="keyword">DEALLOCATE</span> <span class="keyword">prepare</span> stmt;</span><br></pre></td></tr></table></figure>
+<p>由于limit后面的参数不能直接跟变量，所以在上面的代码中使用prepare+execute的方法。你也可以把拼接SQL语句的方法写在应用程序中，会更简单些（其实我觉得也更规范，业务逻辑写在业务代码中）。</p>
+<p>MySQL处理limit Y, 1的做法就是按顺序一个一个地读出来，丢掉前Y个，然后把下一个记录作为返回结果，因此这一步需要扫描Y+1行。再加上，第一步扫面的C行，总共需要扫描C+Y+1行。</p>
+<p>跟直接order by rand()比起来，执行代价还是小很多的。</p>
+<p>如果按照这种思路，随机取3个word的值呢？可以这么做：</p>
+<ol type="1">
+<li>取得整个表的行数，即为C</li>
+<li>按照相同的随机方法得到Y1、Y2、Y3</li>
+<li>再执行三个limit Y, 1语句得到三行数据。</li>
+<li>可以优化成，假设Y1，Y2，Y3是由小到大的三个数，则可以优化成这样，这样扫描行数为Y3 id1 = select * from t limit <span class="citation" data-cites="Y1">@Y1</span>，1； id2= select * from t where id &gt; id1 limit <span class="citation" data-cites="Y2">@Y2</span><span class="citation" data-cites="Y1">@Y1</span>，1； select * from t where id &gt; id2 limit <span class="citation" data-cites="Y3">@Y3</span> - <span class="citation" data-cites="Y2">@Y2</span>，1；</li>
+</ol>
+<h3 id="参考">参考</h3>
+<p>丁奇老师的<span class="exturl" data-url="aHR0cHM6Ly90aW1lLmdlZWtiYW5nLm9yZy9jb2x1bW4vYXJ0aWNsZS83Mzc5NQ==">MySQL实战45讲<i class="fa fa-external-link-alt"></i></span></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/28/%E5%85%B3%E4%BA%8EMySQL%E7%9A%84row-ID/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1233,148 +1329,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/" class="post-title-link" itemprop="url">MySQL中的锁</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-08-22 18:18:26" itemprop="dateCreated datePublished" datetime="2020-08-22T18:18:26+08:00">2020-08-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-01 13:08:36" itemprop="dateModified" datetime="2020-09-01T13:08:36+08:00">2020-09-01</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="全局锁表锁行锁间隙锁">全局锁、表锁、行锁、间隙锁。</h2>
-<h4 id="全局锁flush-tables-with-read-lock">全局锁：flush tables with read lock</h4>
-<h4 id="表级锁">表级锁：</h4>
-<ol type="1">
-<li>表锁：lock tables ... read/write</li>
-<li>MDL（metadata lock）：server层，增删改查DML语句添加读锁，修改表结构定义DDL语句加写锁。更加详细的可以看这个链接<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3EyODc4OTQ4L2FydGljbGUvZGV0YWlscy85NjQzMDEyOQ==">https://blog.csdn.net/q2878948/article/details/96430129<i class="fa fa-external-link-alt"></i></span></li>
-</ol>
-<p>间隙锁为了解决幻读，比较不同。</p>
-<p>比如行锁，分成读锁（共享锁）和写锁（排他锁）。下图就是这两种类型行锁的冲突关系。</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/MySQL%E4%B8%AD%E7%9A%84%E9%94%81.png" class>
-<p>也就是说，跟行锁有冲突关系的是“另外一个行锁”。</p>
-<p>但是间隙锁不一样，<strong>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作</strong>。间隙锁之间都不存在冲突关系。</p>
-<p>这句话不太好理解，举个例子：</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%812.png" class>
-<p>这里session B并不会被堵住，因为表t里并没有c=7这个记录，因此session A加的是间隙锁（5，10）。而session B也是在这个间隙加的间隙锁。它们有共同的目标，即：保护这个间隙，不允许插入值。但，它们之间不是冲突的。</p>
-<p>间隙锁和行锁合称 next-key lock，每个 next-key lock 是前开后闭区间。也就是说，我们的表 t 初始化以后，如果用 select * from t for update 要把整个表所有记录锁起来，就形成了 7 个 next-key lock，分别是 (-∞,0]、(0,5]、(5,10]、(10,15]、(15,20]、(20, 25]、(25, +supremum]。</p>
-<blockquote>
-<p>备注：这篇文章中，如果没有特别说明，我们把间隙锁记为开区间，把 next-key lock 记为前开后闭区间。</p>
-</blockquote>
-<p>你可能会问说，这个 supremum 从哪儿来的呢？</p>
-<p>这是因为 +∞是开区间。实现上，InnoDB 给每个索引加了一个不存在的最大值 supremum，这样才符合我们前面说的“都是前开后闭区间”。</p>
-<p><strong>间隙锁和next-key lock的引入，帮我们解决了幻读的问题，但同时也带来了一些“困扰”。</strong></p>
-<p>在前面的文章中，就用同学提到了这个问题。我把他的问题转述一下，对应到我们这个例子的表来说，业务逻辑是这样额：任意锁住一行，如果这一行不存在的话就插入，如果存在这一行就更新它的数据，代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">begin;</span><br><span class="line">select * from t where id&#x3D;N for update;</span><br><span class="line"></span><br><span class="line">&#x2F;*如果行不存在*&#x2F;</span><br><span class="line">insert into t values(N,N,N);</span><br><span class="line">&#x2F;*如果行存在*&#x2F;</span><br><span class="line">update t set d&#x3D;N set id&#x3D;N;</span><br><span class="line"></span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
-<p>可能你会说，这个不是insert .. on duplicate key update 就能解决吗？但其实在有多个唯一键的时候，这个方法是不能满足这位提问同学的需求的。至于为什么，我会在后面的文章中再展开说明。</p>
-<p>现在，我们就只讨论这个逻辑。</p>
-<p>这个同学碰到的现象是，这个逻辑一旦有并发，就会碰到死锁。你一定也觉得奇怪，这个逻辑每次操作前用 for update 锁起来，已经是最严格的模式了，怎么还会有死锁呢？</p>
-<p>这里，我用两个 session 来模拟并发，并假设 N=9。</p>
-<img data-src="/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/%E9%94%813.png" class>
-<p>你看到了，其实都不需要用到后面的update语句，就已经形成死锁了。我们按语句执行顺序来分析一下：</p>
-<ol type="1">
-<li>session A执行select ... for update 语句，由于id=9这一行并不存在，因此会加上间隙锁（5，10；</li>
-<li>session B执行select ... for update 语句，同样会加上间隙锁（5，10），间隙锁之间不会冲突，因此这个语句可以执行成功；</li>
-<li>session B试图插入一行（9，9，9），被session A的间隙锁挡住了，只好进入等待；</li>
-<li>session A试图插入一行（9，9，9），被session B的间隙锁挡住了。</li>
-</ol>
-<p>至此，两个session进入互相等待的状态，形成死锁。当然，InnoDB的死锁检测马上就发现了这对死锁关系，让session A的insert语句返回了。</p>
-<p>你现在知道了，<strong>间隙锁的引入，可能会导致同样的语句锁住更大的范围，这其实是影响了并发度的</strong>。其实，这还只是一个简单的例子，在下一篇文章中我们还会碰到更多、更复杂的例子。</p>
-<p>你可能会说，为了解决幻读的问题，我们引入了这么一大串内容，有没有更简单一点的处理方法呢。</p>
-<p>今天和你分析的问题都是在可重复读隔离级别下的，间隙锁是在可重复读隔离级别下才会生效的。所以，你如果把隔离级别设置为读提交的话，就没有间隙锁了。但同时，你要解决可能出现的数据和日志不一致问题，需要把 binlog 格式设置为 row。这，也是现在不少公司使用的配置组合。</p>
-<p>比如说，大家都用读提交，可是逻辑备份的时候，mysqldump 为什么要把备份线程设置成可重复读呢？（这个我在前面的文章中已经解释过了，你可以再回顾下第 6 篇文章《全局锁和表锁 ：给表加个字段怎么有这么多阻碍？》的内容）</p>
-<p>然后，在备份期间，备份线程用的是可重复读，而业务线程用的是读提交。同时存在两种事务隔离级别，会不会有问题？</p>
-<p>进一步地，这两个不同的隔离级别现象有什么不一样的，关于我们的业务，“用读提交就够了”这个结论是怎么得到的？</p>
-<h2 id="加锁规则的经验总结">加锁规则的经验总结</h2>
-<p>首先说明一下，这些加锁规则我没在别的地方看到过有类似的总结，以前我自己判断的时候都是想着代码里面的实现来脑补的。这次为了总结成不看代码的同学也能理解的规则，是我又重新刷了代码临时总结出来的。所以，这个规则有以下两条前提说明：</p>
-<ol type="1">
-<li>MySQL 后面的版本可能会改变加锁策略，所以这个规则只限于截止到现在的最新版本，即 5.x 系列 &lt;=5.7.24，8.0 系列 &lt;=8.0.13。</li>
-<li>如果大家在验证中有发现 bad case 的话，请提出来，我会再补充进这篇文章，使得一起学习本专栏的所有同学都能受益。</li>
-</ol>
-<p>因为间隙锁在可重复读隔离级别下才有效，所以本篇文章接下来的描述，若没有特殊说明，默认是可重复读隔离级别。</p>
-<p><strong>我总结的加锁规则里面，包含了两个“原则”、两个“优化”和一个“bug”。</strong></p>
-<ol type="1">
-<li>原则 1：加锁的基本单位是 next-key lock。 next-key lock 是前开后闭区间。</li>
-<li>原则 2：查找过程中访问到的对象才会加锁。</li>
-<li>优化 1：索引上的等值查询，给唯一索引加锁的时候，next-key lock 退化为行锁。</li>
-<li>优化 2：索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock 退化为间隙锁。</li>
-<li>一个 bug：唯一索引上的范围查询会访问到不满足条件的第一个值为止。</li>
-</ol>
-<h2 id="参考">参考</h2>
-<p>感谢丁奇老师的专栏，摘录部分，如有不妥，请通知我立即删除。https://time.geekbang.org/column/article/75659</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1442,7 +1400,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">140</span>
+          <span class="site-state-item-count">141</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

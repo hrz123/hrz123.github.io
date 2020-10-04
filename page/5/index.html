@@ -185,6 +185,79 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="侯瑞哲">
+      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="侯瑞哲的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">Python实现重试机制</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-03 13:56:56 / 修改时间：17:54:09" itemprop="dateCreated datePublished" datetime="2020-09-03T13:56:56+08:00">2020-09-03</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/03/Python%E5%AE%9E%E7%8E%B0%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># retry_decorator.py</span></span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">interval, max_retries=<span class="number">3</span>, exceptions=None</span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    res = func(*args, **kwargs)</span><br><span class="line">                    <span class="keyword">return</span> res</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            res = func(*args, **kwargs)</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retry</span>(<span class="params">max_retries=<span class="number">3</span>, exceptions=None, interval=<span class="number">0</span></span>):</span></span><br><span class="line">    <span class="keyword">if</span> exceptions <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        exceptions = Exception</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(max_retries):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">                <span class="keyword">except</span> exceptions:</span><br><span class="line">                    time.sleep(interval)</span><br><span class="line">            <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@retry(interval=0.5)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_func</span>():</span></span><br><span class="line">    <span class="keyword">global</span> i</span><br><span class="line">    i += <span class="number">1</span></span><br><span class="line">    print(i)</span><br><span class="line">    <span class="keyword">raise</span> Exception</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    my_func()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/09/02/Python%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%E7%9A%84%E9%99%B7%E9%98%B1%E5%92%8C%E5%8E%9F%E7%90%86%E6%B7%B1%E7%A9%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1027,126 +1100,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hrz123.github.io/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="侯瑞哲">
-      <meta itemprop="description" content="记录我的工作与生活，分享一些想法">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="侯瑞哲的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">Tarjan寻找图的强连通分量算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-08-31 16:36:36" itemprop="dateCreated datePublished" datetime="2020-08-31T16:36:36+08:00">2020-08-31</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-01 18:16:44" itemprop="dateModified" datetime="2020-09-01T18:16:44+08:00">2020-09-01</time>
-              </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="参考">参考</h3>
-<ul>
-<li><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvdGFyamFuLWFsZ29yaXRobS1maW5kLXN0cm9uZ2x5LWNvbm5lY3RlZC1jb21wb25lbnRzLw==">GeeksforGeeks<i class="fa fa-external-link-alt"></i></span></li>
-</ul>
-<p>如果所有的顶点对之间都有一条路径，那么一个有向图就是强连通的。有向图的强连通分量（strongly connected component，SCC）是一个最大强连通子图。例如，下面的图中有3个SCC。</p>
-<img data-src="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan1.jpg" class>
-<p>我们已经讨论过Kosaraju的强连通分量的算法。前面讨论的算法需要对一个Graph进行两次DFS遍历。在这篇文章中，我们将讨论Tarjan算法，它只需要一次DFS遍历。</p>
-<p>Tarjan算法基于以下事实：</p>
-<ol type="1">
-<li>DFS搜索会产生一个DFS树/森林；</li>
-<li>强连通分量构成DFS树的子树；</li>
-<li>如果我们能找到这种子树的头，就可以打印/存储该子树的所有结点（包括头），这将是一个SCC；</li>
-<li>从一个SCC到另一个SCC没有回溯边（back edge）（可以有交叉边，但在处理图的时候不会用到交叉边）。</li>
-</ol>
-<p>为了找到一个SCC的头部，我们要计算disc和low数组（就像处理衔接点、桥、双连接组件一样）。如前几篇文章所讨论的，low[u]表示从以u为根的子树中可以到达的最早被访问的顶点（发现时间最短的顶点），如果disc[u]=low[u]，则节点u为头部。</p>
-<p>下图是该方法的说明：</p>
-<img data-src="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan2.png" class>
-<p>强连通分量只与有向图有关，但Disc和Low值与有向图和无向图都有关。</p>
-<p>在上图中，我们展示了一个图形和它的一颗DFS树（在同一个图形上可以有不同的DFS树，取决于边被遍历的顺序）。在DFS树中，连续的箭头是树的边，虚线的箭头是back edge</p>
-<p>图中每个节点的disc和low的值显示为disc/low</p>
-<p><strong>Disc:</strong> 是指在DFS遍历时，节点第1次被访问的时间。这是在DFS遍历时，一个节点第一次被访问的时间。对于DFS树中的节点A，B，C，...，J，Disc值为1，2，3，…，10。</p>
-<p><strong>Low:</strong> 在DFS树中，树边带我们向前走，从祖先节点到它的一个子孙节点。例如，从节点C开始，树边可以带我们到节点G、节点I等。回溯边（back edge）带我们往后走，从一个子孙节点到它的一个祖先节点，例如，从节点G出发，back edge带我们到E或C。如果我们把树边和回溯边（back edge）一起看，那么我们可以看到，如果我们从一个节点开始遍历，我们可能会通过树边向下走，然后通过回溯边向上走。例如，从节点E开始，我们可以向下走到I或J，然后向上走到F。一个节点的Low值告诉了我们通过该节点的子树所能到达的最顶层祖先（最小可能的disc值）。所以对于任何一个节点，无论如何Low值都等于它的Disc值（一个节点是它自己的祖先）。然后我们查看它的子树，看看是否有任何节点可以带我们找到它的任何一个祖先。如果在子树中有多条回溯边可以带我们到不同的祖先，那么我们就选取Disc值最小的那条（即最上面的那条）。如果我们看一下节点F，它有两个子树。有节点G的子树，把我们带到E和C，另一个子树只把我们带回F。这里最顶层的祖先是F可以到达的C，所以F的Low值是3（C的Disc值）。</p>
-<p>根据上面的讨论，应该很清楚，B、C、D的Low值是1（因为A是B、C、D可以到达的最上面的节点）。同理，E、F、G的Low值为3，H、I、J的Low值为6。</p>
-<p>对于任何节点u，当DFS开始时，Low将会被设置为其Disc 1st。</p>
-<p>然后对它的每一个子节点v依次进行DFS，u的Low值可以在两种情况下改变：</p>
-<ul>
-<li>Case1（Tree Edge）：如果节点v还没有被访问，那么在v的DFS完成后，low[u] = min(low[u], low[v])</li>
-<li>Case2（Back Edge）：当后代v已经被访问，那么low[u] = min(low[u], disc[v]);</li>
-</ul>
-<p>在第二种情况下，我们是否可以用low[v]代替DIsc[v]？答案是NO。如果你能想到为什么答案是NO，那么你大概明白Low和Disc的概念。（因为是有向图，low[v]是v能访问到的最小节点，u不一定能访问到，u能访问到v，说明disc[v]一定是可以取到的）</p>
-<img data-src="/2020/08/31/Tarjan%E5%AF%BB%E6%89%BE%E5%9B%BE%E7%9A%84%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%AE%97%E6%B3%95/tarjan3.jpg" class>
-<p>相同的Low和Disc值有助于解决其他图的问题，如衔接点、桥和双连接分量。</p>
-<p>为了跟踪以头部为根的子树，我们可以使用栈（在访问时不断推送节点）。当发现一个头部节点时，从堆栈中弹出所有节点，直到从栈中得到头部。</p>
-<p>为了确保不考虑交叉边，当我们到达一个已经被访问过的节点时，只有当栈中存在被访问过的节点时，我们才应该对该节点进行处理，否则忽略该节点。</p>
-<h3 id="实现写一个tarjan算法找到有向图的所有连通分量并打印出来">实现：写一个Tarjan算法找到有向图的所有连通分量并打印出来</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vertices</span>):</span></span><br><span class="line">        self.V = vertices</span><br><span class="line">        self.neigh = defaultdict(list)</span><br><span class="line">        self.Time = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">addEdge</span>(<span class="params">self, x, y</span>):</span></span><br><span class="line">        self.neigh[x].append(y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">scc</span>(<span class="params">self</span>):</span></span><br><span class="line">        disc = [<span class="number">-1</span>] * self.V</span><br><span class="line">        low = [<span class="number">-1</span>] * self.V</span><br><span class="line">        visited = [<span class="literal">False</span>] * self.V</span><br><span class="line">        stack = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(self.V):</span><br><span class="line">            <span class="keyword">if</span> disc[i] == <span class="number">-1</span>:</span><br><span class="line">                self.scc_util(i, low, disc, visited, stack)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">scc_util</span>(<span class="params">self, u, low, disc, visited, stack</span>):</span></span><br><span class="line">        disc[u] = self.Time</span><br><span class="line">        low[u] = self.Time</span><br><span class="line">        self.Time += <span class="number">1</span></span><br><span class="line">        visited[u] = <span class="literal">True</span></span><br><span class="line">        stack.append(u)</span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> self.neigh[u]:</span><br><span class="line">            <span class="keyword">if</span> disc[v] == <span class="number">-1</span>:</span><br><span class="line">                self.scc_util(v, low, disc, visited, stack)</span><br><span class="line">                low[u] = min(low[u], low[v])</span><br><span class="line">            <span class="keyword">elif</span> visited[v]:</span><br><span class="line">                low[u] = min(low[u], disc[v])</span><br><span class="line">        w = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">if</span> disc[u] == low[u]:</span><br><span class="line">            <span class="keyword">while</span> w != u:</span><br><span class="line">                w = stack.pop()</span><br><span class="line">                print(w, end=<span class="string">&#x27; &#x27;</span>)</span><br><span class="line">                visited[w] = <span class="literal">False</span></span><br><span class="line">            print()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    g1 = Graph(<span class="number">5</span>)</span><br><span class="line">    g1.addEdge(<span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">    g1.addEdge(<span class="number">0</span>, <span class="number">2</span>)</span><br><span class="line">    g1.addEdge(<span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">    g1.addEdge(<span class="number">0</span>, <span class="number">3</span>)</span><br><span class="line">    g1.addEdge(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in first graph&quot;</span>)</span><br><span class="line">    g1.scc()</span><br><span class="line"></span><br><span class="line">    g2 = Graph(<span class="number">4</span>)</span><br><span class="line">    g2.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g2.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g2.addEdge(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in second graph&quot;</span>)</span><br><span class="line">    g2.scc()</span><br><span class="line"></span><br><span class="line">    g3 = Graph(<span class="number">7</span>)</span><br><span class="line">    g3.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g3.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g3.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    g3.addEdge(<span class="number">1</span>, <span class="number">3</span>)</span><br><span class="line">    g3.addEdge(<span class="number">1</span>, <span class="number">4</span>)</span><br><span class="line">    g3.addEdge(<span class="number">1</span>, <span class="number">6</span>)</span><br><span class="line">    g3.addEdge(<span class="number">3</span>, <span class="number">5</span>)</span><br><span class="line">    g3.addEdge(<span class="number">4</span>, <span class="number">5</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in third graph&quot;</span>)</span><br><span class="line">    g3.scc()</span><br><span class="line"></span><br><span class="line">    g4 = Graph(<span class="number">11</span>)</span><br><span class="line">    g4.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g4.addEdge(<span class="number">0</span>, <span class="number">3</span>)</span><br><span class="line">    g4.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g4.addEdge(<span class="number">1</span>, <span class="number">4</span>)</span><br><span class="line">    g4.addEdge(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">    g4.addEdge(<span class="number">2</span>, <span class="number">6</span>)</span><br><span class="line">    g4.addEdge(<span class="number">3</span>, <span class="number">2</span>)</span><br><span class="line">    g4.addEdge(<span class="number">4</span>, <span class="number">5</span>)</span><br><span class="line">    g4.addEdge(<span class="number">4</span>, <span class="number">6</span>)</span><br><span class="line">    g4.addEdge(<span class="number">5</span>, <span class="number">6</span>)</span><br><span class="line">    g4.addEdge(<span class="number">5</span>, <span class="number">7</span>)</span><br><span class="line">    g4.addEdge(<span class="number">5</span>, <span class="number">7</span>)</span><br><span class="line">    g4.addEdge(<span class="number">5</span>, <span class="number">8</span>)</span><br><span class="line">    g4.addEdge(<span class="number">5</span>, <span class="number">9</span>)</span><br><span class="line">    g4.addEdge(<span class="number">6</span>, <span class="number">4</span>)</span><br><span class="line">    g4.addEdge(<span class="number">7</span>, <span class="number">9</span>)</span><br><span class="line">    g4.addEdge(<span class="number">8</span>, <span class="number">9</span>)</span><br><span class="line">    g4.addEdge(<span class="number">9</span>, <span class="number">8</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in forth graph&quot;</span>)</span><br><span class="line">    g4.scc()</span><br><span class="line"></span><br><span class="line">    g5 = Graph(<span class="number">5</span>)</span><br><span class="line">    g5.addEdge(<span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    g5.addEdge(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">    g5.addEdge(<span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">    g5.addEdge(<span class="number">2</span>, <span class="number">4</span>)</span><br><span class="line">    g5.addEdge(<span class="number">3</span>, <span class="number">0</span>)</span><br><span class="line">    g5.addEdge(<span class="number">4</span>, <span class="number">2</span>)</span><br><span class="line">    print(<span class="string">&quot;SCC in fifth graph&quot;</span>)</span><br><span class="line">    g5.scc()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># Output</span><br><span class="line">SCC in first graph</span><br><span class="line">4 </span><br><span class="line">3 </span><br><span class="line">1 2 0 </span><br><span class="line">SCC in second graph</span><br><span class="line">3 </span><br><span class="line">2 </span><br><span class="line">1 </span><br><span class="line">0 </span><br><span class="line">SCC in third graph</span><br><span class="line">5 </span><br><span class="line">3 </span><br><span class="line">4 </span><br><span class="line">6 </span><br><span class="line">2 1 0 </span><br><span class="line">SCC in forth graph</span><br><span class="line">8 9 </span><br><span class="line">7 </span><br><span class="line">5 4 6 </span><br><span class="line">3 2 1 0 </span><br><span class="line">10 </span><br><span class="line">SCC in fifth graph</span><br><span class="line">4 3 2 1 0 </span><br></pre></td></tr></table></figure>
-<p>时间复杂度：算法主要使用DFS，邻接表表示的图的DFS算法是O(V+E)复杂度的。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1214,7 +1171,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">140</span>
+          <span class="site-state-item-count">141</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
