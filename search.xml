@@ -370,6 +370,26 @@
       </tags>
   </entry>
   <entry>
+    <title>LeetCode 210 周赛</title>
+    <url>/2020/10/11/LeetCode-210-%E5%91%A8%E8%B5%9B/</url>
+    <content><![CDATA[<h3 id="括号的最大嵌套深度">5535. 括号的最大嵌套深度</h3>
+<p>比较简单，不贴代码了</p>
+<h3 id="最大网络秩">5536. 最大网络秩</h3>
+<p>计算每个点的边，如果两点相连，减去一条重复的边</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maximalNetworkRank</span>(<span class="params">self, n: int, roads: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        neigh = defaultdict(set)</span><br><span class="line">        <span class="keyword">for</span> x, y <span class="keyword">in</span> roads:</span><br><span class="line">            neigh[x].add(y)</span><br><span class="line">            neigh[y].add(x)</span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">maxRank</span>(<span class="params">x, y</span>):</span></span><br><span class="line">            <span class="keyword">if</span> y <span class="keyword">in</span> neigh[x]:</span><br><span class="line">                <span class="keyword">return</span> len(neigh[x]) + len(neigh[y]) - <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> len(neigh[x]) + len(neigh[y])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> x <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">for</span> y <span class="keyword">in</span> range(x + <span class="number">1</span>, n):</span><br><span class="line">                res = max(res, maxRank(x, y))</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="分割两个字符串得到回文串">5537. 分割两个字符串得到回文串</h3>
+<p>找到a b从中心开始的最长回文串，从al, ar, bl, br，然后比较a[:al] == b[ar+1:] or a[:bl] == b[br + 1] or b[:al] == a[ar+1:] or b[:bl] == a[br+1:]</p>
+<p>class Solution: def checkPalindromeFormation(self, a: str, b: str) -&gt; bool: def isPalindrome(s): return s == s[::-1]</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> isPalindrome(a) <span class="keyword">and</span> isPalindrome(b):</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">n = len(a)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> n &amp; <span class="number">1</span>:</span><br><span class="line">    l = r = n &gt;&gt; <span class="number">1</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    l, r = (n &gt;&gt; <span class="number">1</span>) - <span class="number">1</span>, n &gt;&gt; <span class="number">1</span></span><br><span class="line"><span class="comment"># print(len(a))</span></span><br><span class="line"><span class="comment"># print(l, r)</span></span><br><span class="line">al, ar = l, r</span><br><span class="line"><span class="keyword">while</span> al &gt;= <span class="number">0</span> <span class="keyword">and</span> ar &lt; n <span class="keyword">and</span> a[al] == a[ar]:</span><br><span class="line">    al -= <span class="number">1</span></span><br><span class="line">    ar += <span class="number">1</span></span><br><span class="line">bl, br = l, r</span><br><span class="line"><span class="keyword">while</span> bl &gt;= <span class="number">0</span> <span class="keyword">and</span> br &lt; n <span class="keyword">and</span> b[bl] == b[br]:</span><br><span class="line">    bl -= <span class="number">1</span></span><br><span class="line">    br += <span class="number">1</span></span><br><span class="line"><span class="comment"># print(a[:al + 1], b[ar:][::-1])</span></span><br><span class="line"><span class="comment"># print(b[:bl + 1], a[br:][::-1])</span></span><br><span class="line"><span class="keyword">return</span> a[:al + <span class="number">1</span>] == b[ar:][::<span class="number">-1</span>] <span class="keyword">or</span> b[:bl + <span class="number">1</span>] == a[br:][::<span class="number">-1</span>] \</span><br><span class="line">       <span class="keyword">or</span> b[:al + <span class="number">1</span>] == a[ar:][::<span class="number">-1</span>] <span class="keyword">or</span> a[:bl + <span class="number">1</span>] == b[br:][::<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="统计子树中城市之间最大距离">5538. 统计子树中城市之间最大距离</h3>
+<p>状压枚举所有集合，以集合的每一个点为根顶点，bfs计算这个点为根顶点时的树的高度，最大值即为这个集合构成子树的最大距离</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>(<span class="params">object</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">countSubgraphsForEachDiameter</span>(<span class="params">self, n, edges</span>):</span></span><br><span class="line">        G = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        <span class="keyword">for</span> i, j <span class="keyword">in</span> edges:</span><br><span class="line">            G[i - <span class="number">1</span>].append(j - <span class="number">1</span>)</span><br><span class="line">            G[j - <span class="number">1</span>].append(i - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">maxd</span>(<span class="params">mask0</span>):</span></span><br><span class="line">            res = <span class="number">0</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">                <span class="keyword">if</span> (<span class="number">1</span> &lt;&lt; i) &amp; mask0:</span><br><span class="line">                    mask = mask0</span><br><span class="line">                    bfs, bfs2 = [i], []</span><br><span class="line">                    cur = <span class="number">0</span></span><br><span class="line">                    <span class="keyword">while</span> bfs:</span><br><span class="line">                        <span class="keyword">for</span> i <span class="keyword">in</span> bfs:</span><br><span class="line">                            mask ^= <span class="number">1</span> &lt;&lt; i</span><br><span class="line">                            <span class="keyword">for</span> j <span class="keyword">in</span> G[i]:</span><br><span class="line">                                <span class="keyword">if</span> mask &amp; (<span class="number">1</span> &lt;&lt; j):</span><br><span class="line">                                    bfs2.append(j)</span><br><span class="line">                        cur += <span class="number">1</span></span><br><span class="line">                        bfs, bfs2 = bfs2, []</span><br><span class="line">                    <span class="keyword">if</span> mask:</span><br><span class="line">                        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">                    res = max(res, cur - <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">        res = [<span class="number">0</span>] * (n - <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span> mask <span class="keyword">in</span> range(<span class="number">1</span> &lt;&lt; n):</span><br><span class="line">            <span class="keyword">if</span> mask &amp; (mask - <span class="number">1</span>) == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            d = maxd(mask)</span><br><span class="line">            <span class="keyword">if</span> d:</span><br><span class="line">                res[d - <span class="number">1</span>] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL中的锁</title>
     <url>/2020/08/22/MySQL%E4%B8%AD%E7%9A%84%E9%94%81/</url>
     <content><![CDATA[<h2 id="全局锁表锁行锁间隙锁">全局锁、表锁、行锁、间隙锁。</h2>
@@ -684,18 +704,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Nobody exists on purpose</title>
-    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
-    <content><![CDATA[<p>Nobody exists on purpose.</p>
-<p>Nobody belongs anywhere.</p>
-<p>Everybody's gonna die.</p>
-<p>Come watch TV.</p>
-]]></content>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Prim&#39;s最小生成树算法</title>
     <url>/2020/08/21/Prim-s%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>Prim算法是一种Greedy算法。它从一个空的生成树开始。其想法是维护两组顶点。第一组包含已经在MST中的顶点，另一组包含尚未在的顶点。在每一步，它都会考虑连接两组的所有边，并从这些边中挑选出最小权重的边。选取边后，它将边的另一个顶点移动到包含MST的集合中。</p>
@@ -730,6 +738,18 @@
 ]]></content>
       <tags>
         <tag>数据结构与算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Nobody exists on purpose</title>
+    <url>/2019/12/11/Nobody-exists-on-purpose/</url>
+    <content><![CDATA[<p>Nobody exists on purpose.</p>
+<p>Nobody belongs anywhere.</p>
+<p>Everybody's gonna die.</p>
+<p>Come watch TV.</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -920,31 +940,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Splay Tree-II</title>
-    <url>/2020/08/13/Splay-Tree-II/</url>
-    <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
-<p>正如前篇博文所讲的，Splay树是一种自平衡的数据结构，最后一个访问的键总是根。插入操作和二叉搜索树的插入类似，额外多了一些步骤来保证新插入的键称为新的根节点。</p>
-<p>以下是插入键值k到一个Splay Tree的不同情况</p>
-<ol type="1">
-<li>root是空：我们简单的分配一个新的节点，并将它作为root返回</li>
-<li>splay（伸展）给定的键值k。如果k已经存在，那么它称为新的根节点。如果不存在，那么最后访问的叶子节点称为新的根节点。</li>
-<li>如果新的根节点和k相同，什么都不做因为k已经存在了。</li>
-<li>否则，分配内存产生新的节点，并且将k和根的键值比较。
-<ol type="1">
-<li>如果k比根的键值小，将root作为新节点的右孩子，复制root的左孩子作为新节点的左孩子，并且使root的左孩子置为NULL。</li>
-<li>如果k比跟的键值大，将root作为新节点的左孩子，复制root的右孩子作为新节点的右孩子，并且使root的右孩子置为NULL。</li>
-</ol></li>
-<li>将新节点返回，作为整棵树的根。</li>
-</ol>
-<p>感觉Splay很大程度上是可以基于AVL树进行修改的，其中左旋、右旋、左右旋、右左旋操作是相同的，只是splay有splay操作。具体实现有时间会仔细看看，在下面参考的链接中有。</p>
-<h2 id="参考">参考</h2>
-<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMi1pbnNlcnQtZGVsZXRlLz9yZWY9bGJw">https://www.geeksforgeeks.org/splay-tree-set-2-insert-delete/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
-]]></content>
-      <tags>
-        <tag>数据结构与算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Splay Tree</title>
     <url>/2020/08/08/Splay-Tree/</url>
     <content><![CDATA[<p>二叉搜索树最坏的时间复杂度比如查找、删除、插入是O(n)的。最坏的情况发生在这棵树已经倾斜了。我们可以使最坏情况的时间复杂度也为O(logn)使用AVL和红黑树。</p>
@@ -1055,6 +1050,31 @@
 ]]></content>
       <tags>
         <tag>计算机网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Splay Tree-II</title>
+    <url>/2020/08/13/Splay-Tree-II/</url>
+    <content><![CDATA[<h2 id="splay的插入操作">Splay的插入操作</h2>
+<p>正如前篇博文所讲的，Splay树是一种自平衡的数据结构，最后一个访问的键总是根。插入操作和二叉搜索树的插入类似，额外多了一些步骤来保证新插入的键称为新的根节点。</p>
+<p>以下是插入键值k到一个Splay Tree的不同情况</p>
+<ol type="1">
+<li>root是空：我们简单的分配一个新的节点，并将它作为root返回</li>
+<li>splay（伸展）给定的键值k。如果k已经存在，那么它称为新的根节点。如果不存在，那么最后访问的叶子节点称为新的根节点。</li>
+<li>如果新的根节点和k相同，什么都不做因为k已经存在了。</li>
+<li>否则，分配内存产生新的节点，并且将k和根的键值比较。
+<ol type="1">
+<li>如果k比根的键值小，将root作为新节点的右孩子，复制root的左孩子作为新节点的左孩子，并且使root的左孩子置为NULL。</li>
+<li>如果k比跟的键值大，将root作为新节点的左孩子，复制root的右孩子作为新节点的右孩子，并且使root的右孩子置为NULL。</li>
+</ol></li>
+<li>将新节点返回，作为整棵树的根。</li>
+</ol>
+<p>感觉Splay很大程度上是可以基于AVL树进行修改的，其中左旋、右旋、左右旋、右左旋操作是相同的，只是splay有splay操作。具体实现有时间会仔细看看，在下面参考的链接中有。</p>
+<h2 id="参考">参考</h2>
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2Vla3Nmb3JnZWVrcy5vcmcvc3BsYXktdHJlZS1zZXQtMi1pbnNlcnQtZGVsZXRlLz9yZWY9bGJw">https://www.geeksforgeeks.org/splay-tree-set-2-insert-delete/?ref=lbp<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <tags>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -1478,31 +1498,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 329.矩阵中的最长递增路径</title>
-    <url>/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/</url>
-    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
-<p>https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix</p>
-<p>给定一个整数矩阵，找出最长递增路径的长度。</p>
-<p>对于每个单元格，你可以往上，下，左，右四个方向移动。 你不能在对角线方向上移动或移动到边界外（即不允许环绕）。</p>
-<p>示例 1:</p>
-<p>输入: nums = [ [9,9,4], [6,6,8], [2,1,1]] 输出: 4 解释: 最长递增路径为 [1, 2, 6, 9]。 示例 2:</p>
-<p>输入: nums = [ [3,4,5], [3,2,6], [2,2,1]] 输出: 4 解释: 最长递增路径是 [3, 4, 5, 6]。注意不允许在对角线方向上移动。</p>
-<h2 id="思路">思路</h2>
-<p>我们可以对每一个点求出最长递增路径的长度，这样当相邻的点比该点小的时候，我们将该点的最长递增路径的长度加1，就是这个相邻点的最长递增路径的可能值。</p>
-<p>这里面一定不会有重复访问的现象，因为是最长递增路径，不存在相同的值，我们可以放心的使用其他点已经求出的最长递增路径。</p>
-<p>那么这个函数的参数也就出来了，dfs(i, j)。i，j表示是哪个点，函数求出的结果是这点为起始的最长递增路径长度。这个函数怎么求呢？首先自身就是一条路径，也就是最少是1。然后我们往四个方向扩散，这里判断越界，并且要确定这四个方向的值比当前大，否则不能扩散，假设我们已经求出了其他几个方向（小于等于四）的最长递增路径，这些方向上的点的值都是比当前大的，那么这个点的最长递增路径长度就是，这几个方向的最长递增路径的最大值加1，最终要和1比较一下更大，因为可能所有方向的值都小于等于当前。</p>
-<p>最终我们可以加上记忆化，因为我们一旦算出来i，j的最长递增路径的长度之后，我们就可以重复的使用它，不会改变了。这可以节省时间。</p>
-<h2 id="示例代码">示例代码</h2>
-<p>示例代码如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = &#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> (i, j) <span class="keyword">in</span> memo:</span><br><span class="line">                <span class="keyword">return</span> memo[i, j]</span><br><span class="line">            memo[i, j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> di, dj <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + di, j + dj</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i, j] = max(memo[i, j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i, j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i <span class="keyword">in</span> range(h) <span class="keyword">for</span> j <span class="keyword">in</span> range(w))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>优化空间使用矩阵来记忆化搜索：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = [[<span class="number">0</span>] * w <span class="keyword">for</span> _ <span class="keyword">in</span> range(h)]</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> memo[i][j]:</span><br><span class="line">                <span class="keyword">return</span> memo[i][j]</span><br><span class="line">            memo[i][j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> dx, dy <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + dx, j + dy</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i][j] = max(memo[i][j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i][j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i, j <span class="keyword">in</span> itertools.product(range(h), range(w)))</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 23.合并K个排序链表</title>
     <url>/2020/08/11/leetcode-23-%E5%90%88%E5%B9%B6K%E4%B8%AA%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8/</url>
     <content><![CDATA[<p>合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。</p>
@@ -1535,6 +1530,31 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>)</span><br><span class="line">        cur = dummy</span><br><span class="line">        <span class="comment"># 这里的i为了排序</span></span><br><span class="line">        heap = [(l.val, i, l) <span class="keyword">for</span> i, l <span class="keyword">in</span> enumerate(lists) <span class="keyword">if</span> l]</span><br><span class="line">        heapq.heapify(heap)</span><br><span class="line">        <span class="keyword">while</span> heap:</span><br><span class="line">            val, ind, l = heapq.heappop(heap)</span><br><span class="line">            cur.next = l</span><br><span class="line">            <span class="keyword">if</span> l.next:</span><br><span class="line">                l = l.next</span><br><span class="line">                heapq.heappush(heap, (l.val, ind, l))</span><br><span class="line">            cur = cur.next</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
 <p>分支合并</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeKLists</span>(<span class="params">self, lists: List[ListNode]</span>) -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lists:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        n = len(lists)</span><br><span class="line">        <span class="keyword">return</span> self.merge(lists, <span class="number">0</span>, n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">merge</span>(<span class="params">self, lists, l, r</span>):</span></span><br><span class="line">        <span class="keyword">if</span> l &gt;= r:</span><br><span class="line">            <span class="keyword">return</span> lists[l]</span><br><span class="line">        mid = l + ((r - l) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">        l1 = self.merge(lists, l, mid)</span><br><span class="line">        l2 = self.merge(lists, mid + <span class="number">1</span>, r)</span><br><span class="line">        <span class="keyword">return</span> self.mergeTwoLists(l1, l2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1, l2</span>):</span></span><br><span class="line">        dummy = cur = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val &lt;= l2.val:</span><br><span class="line">                cur.next = l1</span><br><span class="line">                l1 = l1.next</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                cur.next = l2</span><br><span class="line">                l2 = l2.next</span><br><span class="line">            cur = cur.next</span><br><span class="line">        cur.next = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> dummy.next</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 329.矩阵中的最长递增路径</title>
+    <url>/2020/08/01/leetcode-329-%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/</url>
+    <content><![CDATA[<h2 id="问题描述">问题描述</h2>
+<p>https://leetcode-cn.com/problems/longest-increasing-path-in-a-matrix</p>
+<p>给定一个整数矩阵，找出最长递增路径的长度。</p>
+<p>对于每个单元格，你可以往上，下，左，右四个方向移动。 你不能在对角线方向上移动或移动到边界外（即不允许环绕）。</p>
+<p>示例 1:</p>
+<p>输入: nums = [ [9,9,4], [6,6,8], [2,1,1]] 输出: 4 解释: 最长递增路径为 [1, 2, 6, 9]。 示例 2:</p>
+<p>输入: nums = [ [3,4,5], [3,2,6], [2,2,1]] 输出: 4 解释: 最长递增路径是 [3, 4, 5, 6]。注意不允许在对角线方向上移动。</p>
+<h2 id="思路">思路</h2>
+<p>我们可以对每一个点求出最长递增路径的长度，这样当相邻的点比该点小的时候，我们将该点的最长递增路径的长度加1，就是这个相邻点的最长递增路径的可能值。</p>
+<p>这里面一定不会有重复访问的现象，因为是最长递增路径，不存在相同的值，我们可以放心的使用其他点已经求出的最长递增路径。</p>
+<p>那么这个函数的参数也就出来了，dfs(i, j)。i，j表示是哪个点，函数求出的结果是这点为起始的最长递增路径长度。这个函数怎么求呢？首先自身就是一条路径，也就是最少是1。然后我们往四个方向扩散，这里判断越界，并且要确定这四个方向的值比当前大，否则不能扩散，假设我们已经求出了其他几个方向（小于等于四）的最长递增路径，这些方向上的点的值都是比当前大的，那么这个点的最长递增路径长度就是，这几个方向的最长递增路径的最大值加1，最终要和1比较一下更大，因为可能所有方向的值都小于等于当前。</p>
+<p>最终我们可以加上记忆化，因为我们一旦算出来i，j的最长递增路径的长度之后，我们就可以重复的使用它，不会改变了。这可以节省时间。</p>
+<h2 id="示例代码">示例代码</h2>
+<p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = &#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> (i, j) <span class="keyword">in</span> memo:</span><br><span class="line">                <span class="keyword">return</span> memo[i, j]</span><br><span class="line">            memo[i, j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> di, dj <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + di, j + dj</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i, j] = max(memo[i, j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i, j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i <span class="keyword">in</span> range(h) <span class="keyword">for</span> j <span class="keyword">in</span> range(w))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>优化空间使用矩阵来记忆化搜索：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestIncreasingPath</span>(<span class="params">self, matrix: List[List[int]]</span>) -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> matrix <span class="keyword">or</span> <span class="keyword">not</span> matrix[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        h, w = len(matrix), len(matrix[<span class="number">0</span>])</span><br><span class="line">        memo = [[<span class="number">0</span>] * w <span class="keyword">for</span> _ <span class="keyword">in</span> range(h)]</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">i, j</span>):</span></span><br><span class="line">            <span class="keyword">if</span> memo[i][j]:</span><br><span class="line">                <span class="keyword">return</span> memo[i][j]</span><br><span class="line">            memo[i][j] = <span class="number">1</span></span><br><span class="line">            cur = matrix[i][j]</span><br><span class="line">            <span class="keyword">for</span> dx, dy <span class="keyword">in</span> ((<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">-1</span>), (<span class="number">-1</span>, <span class="number">0</span>)):</span><br><span class="line">                _i, _j = i + dx, j + dy</span><br><span class="line">                <span class="keyword">if</span> <span class="number">-1</span> &lt; _i &lt; h <span class="keyword">and</span> <span class="number">-1</span> &lt; _j &lt; w \</span><br><span class="line">                        <span class="keyword">and</span> matrix[_i][_j] &gt; cur:</span><br><span class="line">                    memo[i][j] = max(memo[i][j], <span class="number">1</span> + dfs(_i, _j))</span><br><span class="line">            <span class="keyword">return</span> memo[i][j]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> max(dfs(i, j) <span class="keyword">for</span> i, j <span class="keyword">in</span> itertools.product(range(h), range(w)))</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -1588,28 +1608,6 @@
       </tags>
   </entry>
   <entry>
-    <title>leetcode 41.缺失的第一个正数</title>
-    <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
-    <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数">leetcode 41 缺失的第一个正数</h3>
-<h3 id="问题描述">问题描述</h3>
-<p>给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。</p>
-<p>示例 1:</p>
-<p>输入: [1,2,0] 输出: 3 示例 2:</p>
-<p>输入: [3,4,-1,1] 输出: 2 示例 3:</p>
-<p>输入: [7,8,9,11,12] 输出: 1</p>
-<p>提示：</p>
-<p>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。</p>
-<h3 id="思路">思路</h3>
-<p>这道题目和不使用任何额外空间的计数排序很像，因为都对时空复杂度做了严格的限制，我们都不得不改变原数组，设法将其改为我们能够利用的数据结构。否则这两道题目都无法有「真正」的解。不使用额外空间计数排序的那道题目规定数组的元素有一定的范围，我们可以利用32位整数的前16位计数，最终输出计数排序的结果。</p>
-<p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
-<h3 id="算法">算法</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法题目</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>leetcode 363.矩形区域不超过K的最大数值和，通过此题好好了解前缀和的各种应用和变化</title>
     <url>/2020/08/10/leetcode-363-%E7%9F%A9%E5%BD%A2%E5%8C%BA%E5%9F%9F%E4%B8%8D%E8%B6%85%E8%BF%87K%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E5%80%BC%E5%92%8C%EF%BC%8C%E9%80%9A%E8%BF%87%E6%AD%A4%E9%A2%98%E5%A5%BD%E5%A5%BD%E4%BA%86%E8%A7%A3%E5%89%8D%E7%BC%80%E5%92%8C%E7%9A%84%E5%90%84%E7%A7%8D%E5%BA%94%E7%94%A8%E5%92%8C%E5%8F%98%E5%8C%96/</url>
     <content><![CDATA[<h2 id="题目描述">题目描述</h2>
@@ -1650,6 +1648,28 @@
 <p>这道题目就是使用了第一种前缀和的变化，并应用了贪心的思想。</p>
 <p>一旦发现target在区间和中，我们就重新统计前缀和。示例代码如下：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxNonOverlapping</span>(<span class="params">self, nums: List[int], target: int</span>) -&gt; int:</span></span><br><span class="line">        pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">        p = <span class="number">0</span></span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> nums:</span><br><span class="line">            p += n</span><br><span class="line">            <span class="keyword">if</span> p - target <span class="keyword">in</span> pre:</span><br><span class="line">                res += <span class="number">1</span></span><br><span class="line">                pre = &#123;<span class="number">0</span>&#125;</span><br><span class="line">                p = <span class="number">0</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                pre.add(p)</span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法题目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode 41.缺失的第一个正数</title>
+    <url>/2020/08/06/leetcode-41-%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</url>
+    <content><![CDATA[<h3 id="leetcode-41-缺失的第一个正数">leetcode 41 缺失的第一个正数</h3>
+<h3 id="问题描述">问题描述</h3>
+<p>给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。</p>
+<p>示例 1:</p>
+<p>输入: [1,2,0] 输出: 3 示例 2:</p>
+<p>输入: [3,4,-1,1] 输出: 2 示例 3:</p>
+<p>输入: [7,8,9,11,12] 输出: 1</p>
+<p>提示：</p>
+<p>你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。</p>
+<h3 id="思路">思路</h3>
+<p>这道题目和不使用任何额外空间的计数排序很像，因为都对时空复杂度做了严格的限制，我们都不得不改变原数组，设法将其改为我们能够利用的数据结构。否则这两道题目都无法有「真正」的解。不使用额外空间计数排序的那道题目规定数组的元素有一定的范围，我们可以利用32位整数的前16位计数，最终输出计数排序的结果。</p>
+<p>这道题目我们要利用，关心的只有[1, N]之间的数，其他的数字我们其实并不关心，这作为前提。</p>
+<h3 id="算法">算法</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果本题没有额外的时空复杂度要求，那么就很容易实现：</span></span><br><span class="line"><span class="comment"># 1. 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 2. 我们可以从1开始依次枚举正整数，并遍历数组，判断其是否在数组中</span></span><br><span class="line"><span class="comment"># 如果数组的长度为N，那么第一种做法的时间复杂度为O(N)，空间复杂度为O(N)；</span></span><br><span class="line"><span class="comment"># 第二种做法的时间复杂度为O(N^2)，空间复杂度为O(1)。</span></span><br><span class="line"><span class="comment"># 「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：利用给定数组中的空间来存储一些状态。</span></span><br><span class="line"><span class="comment"># 也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；</span></span><br><span class="line"><span class="comment"># 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法一.哈希表</span></span><br><span class="line"><span class="comment"># 对于「前言」中提到的第一种做法</span></span><br><span class="line"><span class="comment"># 我们可以将数组所有的数放入哈希表，随后从1开始依次枚举正整数，并判断其是否在哈希表中；</span></span><br><span class="line"><span class="comment"># 仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：</span></span><br><span class="line"><span class="comment"># 给定一个元素，我们可以在O(1)的时间查找给元素是否在哈希表中。</span></span><br><span class="line"><span class="comment"># 因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。</span></span><br><span class="line"><span class="comment"># 实际上，对于一个长度为N的数组，其中更没有出现的最小正整数只能在[1, N+1]中。</span></span><br><span class="line"><span class="comment"># 这是因为如果[1,N]都出现了，那么答案是N+1，否则答案是[1, N]中没有出现的最小正整数。</span></span><br><span class="line"><span class="comment"># 这样一来，我们将所有在[1,N]范围内的数放入哈希表，也可以得到最终的答案。</span></span><br><span class="line"><span class="comment"># 而给定的数组恰好长度为N，这让我们有了一种将数组设计成哈希表的思路。</span></span><br><span class="line"><span class="comment"># 我们对数组进行遍历，对于遍历到的数x，如果它在[1,N]的范围内，那么就将数组的中的</span></span><br><span class="line"><span class="comment"># 第x-1个位置（注意：数组下标从0开始）打上『标记』。</span></span><br><span class="line"><span class="comment"># 在遍历结束后，如果所有的位置都打上了标记，那么答案是N+1，</span></span><br><span class="line"><span class="comment"># 否则答案是最小的没有打上标记的位置加1.</span></span><br><span class="line"><span class="comment"># 那么如何设计这个『标记』呢？由于数组中的数没有任何限制，因此这并不是一件很容易的事情。</span></span><br><span class="line"><span class="comment"># 但我们可以继续利用上面提到的性质：由于我们只在意[1,N]中的数</span></span><br><span class="line"><span class="comment"># 因此我们可以先对数组进行遍历，把不在[1,N]范围内的数修改成任意一个大于N的数（例如N+1）</span></span><br><span class="line"><span class="comment"># 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下</span></span><br><span class="line"><span class="comment"># 我们将数组中所有小于等于0的数修改成N+1</span></span><br><span class="line"><span class="comment"># 我们遍历数组中的每一个数x，它可能已经被打了标记，因此原本对应的数|x|，其中||为绝对值符号。</span></span><br><span class="line"><span class="comment"># 如果|x|∈[1,N]，那么我们给数组中的第|x|-1个位置添加一个负号。</span></span><br><span class="line"><span class="comment"># 注意如果它已经有负号，不需要重复添加；</span></span><br><span class="line"><span class="comment"># 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是N+1，否则答案是第一个正数的位置加1.</span></span><br><span class="line"><span class="comment"># 时间复杂度：O(n)，遍历3次数组</span></span><br><span class="line"><span class="comment"># 空间复杂度：O(1)</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &lt;= <span class="number">0</span>:</span><br><span class="line">                nums[i] = n + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            x = abs(nums[i])</span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; x &lt;= n:</span><br><span class="line">                nums[x - <span class="number">1</span>] = nums[x - <span class="number">1</span>] <span class="keyword">if</span> nums[x - <span class="number">1</span>] &lt; <span class="number">0</span> <span class="keyword">else</span> -nums[x - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了打标记之外，我们哈可以使用置换的方法，将给定的数组「恢复」成下面的形式：</span></span><br><span class="line"><span class="comment"># 如果数组中包含x∈[1,N]，那么恢复后，数组的第x-1和元素为x。</span></span><br><span class="line"><span class="comment"># 在恢复后，数组应当有[1,2,...,N]的形式，但其中有若干个位置上的数是错误的</span></span><br><span class="line"><span class="comment"># 每一个错误的位置就代表一个缺失的正数。以题目中的示例2[3,4,-1,1]为例，</span></span><br><span class="line"><span class="comment"># 恢复后的数组应当为[1,-1,3,4]，我们就可以知道缺失的数为2.</span></span><br><span class="line"><span class="comment"># 那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历吗，对于遍历到的数x=nums[i]，</span></span><br><span class="line"><span class="comment"># 如果x∈[1, N]，我们就知道x应当出现在数组中的x-1的位置，因此交换nums[i]和nums[x-1]，</span></span><br><span class="line"><span class="comment"># 这样x就出现在了正确的位置。在完成交换之后，新的nums[i]可能还在[1,N]的范围内，</span></span><br><span class="line"><span class="comment"># 我们需要继续进行交换操作，直到x∉[1,N].</span></span><br><span class="line"><span class="comment"># 注意到上面的方法可能会陷入死循环，如果nums[i]恰好与nums[x-1]相等，那么就会无限交换下去。</span></span><br><span class="line"><span class="comment"># 此时我们有nums[i] = x = nums[x-1]，说明x已经出现在了正确的位置。</span></span><br><span class="line"><span class="comment"># 因此我们可以跳出循环，开始遍历下一个数。</span></span><br><span class="line"><span class="comment"># 由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为N，</span></span><br><span class="line"><span class="comment"># 整个方法的时间复杂度为O(N)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">firstMissingPositive</span>(<span class="params">self, nums: List[int]</span>) -&gt; int:</span></span><br><span class="line">        n = len(nums)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">while</span> <span class="number">0</span> &lt; nums[i] &lt;= n <span class="keyword">and</span> nums[i] != nums[nums[i] - <span class="number">1</span>]:</span><br><span class="line">                nums[nums[i] - <span class="number">1</span>], nums[i] = nums[i], nums[nums[i] - <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="keyword">if</span> nums[i] != i + <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> i + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法题目</tag>
@@ -4569,21 +4589,21 @@ x = \frac{4-\pi}{4}r \approx0.2146r
       </tags>
   </entry>
   <entry>
-    <title>计算机网络学习之-TCP协议1-TCP历史及其设计哲学</title>
-    <url>/2020/09/25/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E4%B9%8B-TCP%E5%8D%8F%E8%AE%AE1-TCP%E5%8E%86%E5%8F%B2%E5%8F%8A%E5%85%B6%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6/</url>
-    <content><![CDATA[
-]]></content>
-      <tags>
-        <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>计算机基础构架的三大件——计算、存储、网络</title>
     <url>/2020/09/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E7%9A%84%E4%B8%89%E5%A4%A7%E4%BB%B6%E2%80%94%E2%80%94%E8%AE%A1%E7%AE%97%E3%80%81%E5%AD%98%E5%82%A8%E3%80%81%E7%BD%91%E7%BB%9C/</url>
     <content><![CDATA[<p>关于计算机的相关系统，至少要掌握三个系统的基础知识，一个是操作系统，一个是网络系统，还有一个是数据库系统。它们分别代表着计算机基础构架的三大件——计算、存储、网络。</p>
 ]]></content>
       <tags>
         <tag>计算机科学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机网络学习之-TCP协议1-TCP历史及其设计哲学</title>
+    <url>/2020/09/25/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E4%B9%8B-TCP%E5%8D%8F%E8%AE%AE1-TCP%E5%8E%86%E5%8F%B2%E5%8F%8A%E5%85%B6%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6/</url>
+    <content><![CDATA[
+]]></content>
+      <tags>
+        <tag>计算机网络</tag>
       </tags>
   </entry>
   <entry>
